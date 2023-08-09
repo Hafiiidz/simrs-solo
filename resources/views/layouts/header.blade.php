@@ -35,8 +35,8 @@
                             <!--end::Avatar-->
                             <!--begin::Username-->
                             <div class="d-flex flex-column">
-                                <div class="fw-bold d-flex align-items-center fs-5">{{ auth()->user()->with('detail')->first()->detail->nama }}</div>
-                                <a href="#" class="fw-semibold text-muted text-hover-primary fs-7">{{ auth()->user()->with('detail')->first()->detail->email }}</a>
+                                <div class="fw-bold d-flex align-items-center fs-5">{{ auth()->user()->detail->nama }}</div>
+                                <a href="#" class="fw-semibold text-muted text-hover-primary fs-7">{{ auth()->user()->detail->email }}</a>
                             </div>
                             <!--end::Username-->
                         </div>

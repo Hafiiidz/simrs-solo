@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticateUsers;
 use App\Models\User;
 use Auth;
 use Hash;
+use Session;
 
 class UserController extends Controller
 {
@@ -16,7 +17,7 @@ class UserController extends Controller
 
         if(Auth::guard('web')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect('/dashboard');
+            return redirect('/index');
         }
 
         return redirect()->back();
@@ -26,7 +27,8 @@ class UserController extends Controller
     {
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
+        Auth::logout();
+        Session::flush();
         return redirect('/');
     }
 }

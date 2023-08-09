@@ -32,4 +32,11 @@ class User extends Authenticatable
     {
         return $this->belongsTo(UserDetail::class, 'kode_user', 'kode_user');
     }
+
+    public function privilages()
+    {
+        return $this->belongsTo(UserPrivilages::class, 'idpriv');
+    }
+
+
 }

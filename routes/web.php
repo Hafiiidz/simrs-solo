@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PasienController;
+use App\Http\Controllers\LaporanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,12 +18,22 @@ use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('auth.login');
-});
+})->name('login');
 
 //auth
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
-Route::get('/dashboard', function () {
+Route::get('/index', function () {
     return view('layouts.index');
+})->middleware('auth');
+
+//Laporan
+Route::prefix('/laporan')->group(function () {
+    Route::get('/', [LaporanController::class, 'index']);
+});
+
+//pasien
+Route::prefix('/pasien')->group(function () {
+    Route::get('/', [PasienController::class, 'index']);
 });
