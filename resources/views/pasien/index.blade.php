@@ -52,42 +52,19 @@
                 </div>
                 <!--begin::Body-->
                 <div class="card-body p-lg-15">
-                    <table id="kt_datatable_dom_positioning" class="table table-striped table-row-bordered gy-5 gs-7 border rounded">
+                    <table id="tbl-pasien" class="table table-striped table-row-bordered gy-5 gs-7 border rounded">
                         <thead class="border">
                             <tr class="fw-bold fs-6 text-gray-800 px-7">
-                                <th>Name</th>
-                                <th>Position</th>
-                                <th>Salary</th>
-                                <th>Office</th>
-                                <th>Extn.</th>
+                                <th>Nik</th>
+                                <th>No BPJS</th>
+                                <th>Nama</th>
+                                <th>Tempat Lahir</th>
+                                <th>No Handphone.</th>
                                 <th>Opsi</th>
                             </tr>
                         </thead>
                         <tbody class="border">
-                            <tr>
-                                <td>Tiger Nixon</td>
-                                <td>System Architect</td>
-                                <td>Edinburgh</td>
-                                <td>61</td>
-                                <td>2011/04/25</td>
-                                <td>
-                                    <a href="#" class="btn btn-icon btn-success btn-sm"><i class="bi bi-eye-fill fs-4"></i></a>
-                                    <a href="#" class="btn btn-icon btn-primary btn-sm"><i class="bi bi-pencil-fill fs-4"></i></a>
-                                    <a class="btn btn-icon btn-warning btn-sm"><i class="bi bi-trash-fill fs-4"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Garrett Winters</td>
-                                <td>Accountant</td>
-                                <td>Tokyo</td>
-                                <td>63</td>
-                                <td>2011/07/25</td>
-                                <td>
-                                    <a href="#" class="btn btn-icon btn-success btn-sm"><i class="bi bi-eye-fill fs-4"></i></a>
-                                    <a href="#" class="btn btn-icon btn-primary btn-sm"><i class="bi bi-pencil-fill fs-4"></i></a>
-                                    <a class="btn btn-icon btn-warning btn-sm"><i class="bi bi-trash-fill fs-4"></i></a>
-                                </td>
-                            </tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -103,7 +80,7 @@
 @section('js')
 <script>
     $(function(){
-        $("#kt_datatable_dom_positioning").DataTable({
+        $("#tbl-pasien").DataTable({
             "language": {
                 "lengthMenu": "Show _MENU_",
             },
@@ -118,7 +95,21 @@
                 "<'row'" +
                 "<'col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start'i>" +
                 "<'col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end'p>" +
-                ">"
+                ">",
+            processing: true,
+            serverSide: true,
+            search: {
+                return: true
+            },
+            ajax: '{{ url()->current() }}',
+            columns: [
+                { data: 'nik', name: 'nik' },
+                { data: 'no_bpjs', name: 'no_bpjs' },
+                { data: 'nama_pasien', name: 'nama_pasien' },
+                { data: 'tempat_lahir', name: 'tempat_lahir' },
+                { data: 'nohp', name: 'nohp' },
+                { data: 'opsi', name: 'opsi', orderable: false, searcheable: false },
+            ]
         });
     });
 
