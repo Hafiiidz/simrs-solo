@@ -58,12 +58,12 @@
                         <h5 class="card-title">Rekap Medis Pasien</h5>
                     </div>
                     <div class="card-toolbar">
-                        <a href="{{ route('rekap-medis-index', $pasien->id) }}" class="btn btn-sm btn-secondary">Kembali</a>
+                        <a href="{{ route('detail-rekap-medis-index', $data->id) }}" class="btn btn-sm btn-secondary">Kembali</a>
                     </div>
                 </div>
                 <!--begin::Body-->
                 <div class="card-body p-lg-10">
-                    <form action="{{ route('rekap-medis-store', $pasien->id) }}" method="post" autocomplete="off" id="frm-data">
+                    <form action="{{ route('detail-rekap-medis-store', $data->id) }}" method="post" autocomplete="off" id="frm-data">
                         @csrf
                         <input type="hidden" name="kategori" value="{{ $kategori->id }}">
                         <div class="alert alert-dismissible bg-light-success border border-success border-3 border-dashed d-flex flex-column flex-sm-row w-100 p-5 mb-10">

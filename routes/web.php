@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\RekapMedisController;
+use App\Http\Controllers\DetailRekapMedisController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,10 +41,14 @@ Route::prefix('/pasien')->group(function () {
     //Rekap Medis
     Route::prefix('/rekap-medis')->group(function () {
         Route::get('/{id_pasien}/show', [RekapMedisController::class, 'index'])->name('rekap-medis-index');
-        Route::get('/create', [RekapMedisController::class, 'create'])->name('rekap-medis-create');
-        Route::post('/{id_pasien}/store', [RekapMedisController::class, 'store'])->name('rekap-medis-store');
-        Route::get('/show/{id}', [RekapMedisController::class, 'show'])->name('rekap-medis-show');
-        Route::post('/{id_pasien}/update', [RekapMedisController::class, 'update'])->name('rekap-medis-update');
+        Route::post('/store}', [RekapMedisController::class, 'store'])->name('rekap-medis-store');
+        Route::prefix('/detail')->group(function () {
+            Route::get('/{id_rekapmedis}/index', [DetailRekapMedisController::class, 'index'])->name('detail-rekap-medis-index');
+            Route::get('/create', [DetailRekapMedisController::class, 'create'])->name('detail-rekap-medis-create');
+            Route::post('/{id_rekapmedis}/store', [DetailRekapMedisController::class, 'store'])->name('detail-rekap-medis-store');
+            Route::get('/show/{id}', [DetailRekapMedisController::class, 'show'])->name('detail-rekap-medis-show');
+            Route::post('/{id_pasien}/update', [DetailRekapMedisController::class, 'update'])->name('detail-rekap-medis-update');
+        });
     });
 });
 

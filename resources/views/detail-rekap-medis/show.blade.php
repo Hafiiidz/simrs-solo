@@ -58,21 +58,21 @@
                         <h5 class="card-title">Rekap Medis Pasien</h5>
                     </div>
                     <div class="card-toolbar">
-                        <a href="{{ route('rekap-medis-index', $rekap->idpasien) }}" class="btn btn-sm btn-secondary">Kembali</a>
+                        <a href="{{ route('detail-rekap-medis-index', $rekap->idrekapmedis) }}" class="btn btn-sm btn-secondary">Kembali</a>
                     </div>
                 </div>
                 <!--begin::Body-->
                 <div class="card-body p-lg-10">
-                    <form action="{{ route('rekap-medis-update', $rekap->id) }}" method="post" autocomplete="off" id="frm-data">
+                    <form action="{{ route('detail-rekap-medis-update', $rekap->id) }}" method="post" autocomplete="off" id="frm-data">
                         @csrf
-                        <input type="hidden" name="kategori" value="{{ $rekap->kategori->id }}">
+                        <input type="hidden" name="kategori" value="{{ $rekap->rekapMedis->kategori->id }}">
                         <div class="alert alert-dismissible bg-light-success border border-success border-3 border-dashed d-flex flex-column flex-sm-row w-100 p-5 mb-10">
                             <!--begin::Icon-->
                             <i class="ki-duotone ki-pulse fs-2hx text-success me-4 mb-5 mb-sm-0"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>                    <!--end::Icon-->
 
                             <!--begin::Content-->
                             <div class="d-flex flex-column justify-content-center">
-                                <h2 class="mb-1">{{ $rekap->kategori->nama }}</h2>
+                                <h2 class="mb-1">{{ $rekap->rekapMedis->kategori->nama }}</h2>
                             </div>
                             <!--end::Content-->
                         </div>
@@ -92,7 +92,7 @@
                         <div class="row">
                             <div class="row mb-3">
                                 <div class="col-lg-8">
-                                    <span class="fw-bold fs-4">{{ $rekap->pasien->nama_pasien }}</span>
+                                    <span class="fw-bold fs-4">{{ $rekap->rekapMedis->pasien->nama_pasien }}</span>
                                 </div>
                             </div>
                             <div class="row mb-5">
@@ -101,7 +101,7 @@
                                 <!--end::Label-->
                                 <!--begin::Col-->
                                 <div class="col-lg-8">
-                                    <span class="fw-bold fs-6 text-gray-800">{{ $rekap->pasien->nik }}</span>
+                                    <span class="fw-bold fs-6 text-gray-800">{{ $rekap->rekapMedis->pasien->nik }}</span>
                                 </div>
                                 <!--end::Col-->
                             </div>
@@ -111,7 +111,7 @@
                                 <!--end::Label-->
                                 <!--begin::Col-->
                                 <div class="col-lg-8">
-                                    <span class="fw-bold fs-6 text-gray-800">{{ $rekap->pasien->no_bpjs }}</span>
+                                    <span class="fw-bold fs-6 text-gray-800">{{ $rekap->rekapMedis->pasien->no_bpjs }}</span>
                                 </div>
                                 <!--end::Col-->
                             </div>
@@ -121,7 +121,7 @@
                                 <!--end::Label-->
                                 <!--begin::Col-->
                                 <div class="col-lg-8">
-                                    <span class="fw-bold fs-6 text-gray-800">{{ $rekap->pasien->nohp }}</span>
+                                    <span class="fw-bold fs-6 text-gray-800">{{ $rekap->rekapMedis->pasien->nohp }}</span>
                                 </div>
                                 <!--end::Col-->
                             </div>
@@ -131,7 +131,7 @@
                                 <!--end::Label-->
                                 <!--begin::Col-->
                                 <div class="col-lg-8">
-                                    <span class="fw-bold fs-6 text-gray-800">{{ $rekap->pasien->alamat->alamat }}</span>
+                                    <span class="fw-bold fs-6 text-gray-800">{{ $rekap->rekapMedis->pasien->alamat->alamat }}</span>
                                 </div>
                                 <!--end::Col-->
                             </div>
