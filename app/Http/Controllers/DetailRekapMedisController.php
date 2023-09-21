@@ -10,14 +10,13 @@ use App\Models\RekapMedis\RekapMedis;
 use App\Models\RekapMedis\DetailRekapMedis;
 use App\Models\RekapMedis\Kategori;
 use App\Models\Pasien\Pasien;
+use App\Models\Obat\Obat;
+use PDF;
 
 class DetailRekapMedisController extends Controller
 {
     public function index($id_rekapmedis)
     {
-        // $detail = DetailRekapMedis::with('rekapMedis','rekapMedis.pasien','rekapMedis.pasien.alamat','rekapMedis.kategori')
-        //     ->where('idrekapmedis', $id_rekapmedis)->get();
-        // dd($detail);
         $data = RekapMedis::find($id_rekapmedis);
         $pasien = Pasien::with('alamat')->find($data->idpasien);
         $kategori = Kategori::find($data->idkategori);
@@ -33,7 +32,10 @@ class DetailRekapMedisController extends Controller
                 return Carbon::parse($detail->created_at)->translatedFormat('l, d F Y');
             })
             ->addColumn('opsi', function(DetailRekapMedis $detail) {
-                return '<a href="'. route('detail-rekap-medis-show', $detail->id) .'" class="btn btn-sm btn-success">Detail</a>';
+                $html = '';
+                $html .= '<a href="'. route('detail-rekap-medis-show', $detail->id) .'" class="btn btn-sm btn-success">Detail</a>';
+                $html .= '&nbsp;&nbsp;<a href="'. route('detail-rekap-medis-cetak', $detail->id) .'" class="btn btn-sm btn-danger" target="_blank">PDF</a>';
+                return $html;
             })
             ->rawColumns(['kategori','tanggal','opsi'])
             ->addIndexColumn()
@@ -43,13 +45,13 @@ class DetailRekapMedisController extends Controller
         return view('detail-rekap-medis.index', compact('pasien','kategori','id_rekapmedis','data'));
     }
 
-
     public function create(Request $request)
     {
         $data = RekapMedis::find($request->id_rekapmedis);
         $pasien = Pasien::with('alamat')->find($data->idpasien);
         $kategori = Kategori::find($data->idkategori);
-        return view('detail-rekap-medis.create', compact('pasien','kategori','data'));
+        $obat = Obat::with('satuan')->where('obat.idjenis', 1)->orderBy('obat.nama_obat','asc')->get();
+        return view('detail-rekap-medis.create', compact('pasien','kategori','data','obat'));
     }
 
     public function store(Request $request, $id_rekapmedis)
@@ -88,6 +90,7 @@ class DetailRekapMedisController extends Controller
         $rekap->pemeriksaan_fisik = $pemeriksaan_fisik->toJson();
         $rekap->riwayat_kesehatan = $riwayat_kesehatan->toJson();
         $rekap->rencana_pemeriksaan = $request->rencana_pemeriksaan;
+        $rekap->terapi_obat = json_encode($request->terapi_obat);
         $rekap->terapi = $request->terapi;
         $rekap->save();
 
@@ -100,8 +103,9 @@ class DetailRekapMedisController extends Controller
         $alergi = json_decode($rekap->alergi);
         $pfisik = json_decode($rekap->pemeriksaan_fisik);
         $rkesehatan = json_decode($rekap->riwayat_kesehatan);
+        $obat = Obat::with('satuan')->where('obat.idjenis', 1)->orderBy('obat.nama_obat','asc')->get();
 
-        return view('detail-rekap-medis.show', compact('rekap','alergi','pfisik','rkesehatan'));
+        return view('detail-rekap-medis.show', compact('rekap','alergi','pfisik','rkesehatan','obat'));
     }
 
     public function update(Request $request, $id)
@@ -138,9 +142,25 @@ class DetailRekapMedisController extends Controller
         $rekap->pemeriksaan_fisik = $pemeriksaan_fisik->toJson();
         $rekap->riwayat_kesehatan = $riwayat_kesehatan->toJson();
         $rekap->rencana_pemeriksaan = $request->rencana_pemeriksaan;
+        $rekap->terapi_obat = json_encode($request->terapi_obat);
         $rekap->terapi = $request->terapi;
         $rekap->save();
 
         return redirect()->route('detail-rekap-medis-index', $rekap->idrekapmedis)->with('berhasil','Data Rekap Medis Pasien Berhasil Di Simpan!');
+    }
+
+    public function cetak($id){
+
+        $data = DetailRekapMedis::with('rekapMedis','rekapMedis.kategori','rekapMedis.pasien')->find($id);
+
+        $alergi = json_decode($data->alergi);
+        $pfisik = json_decode($data->pemeriksaan_fisik);
+        $rkesehatan = json_decode($data->riwayat_kesehatan);
+        $obat = Obat::with('satuan')->where('obat.idjenis', 1)->orderBy('obat.nama_obat','asc')->get();
+
+        $pdf = PDF::loadview('detail-rekap-medis.cetak', compact('data','alergi','pfisik','rkesehatan','obat'));
+        return $pdf->stream();
+    	// return $pdf->download('rekap-medis.pdf');
+        // return view('detail-rekap-medis.cetak');
     }
 }

@@ -415,9 +415,53 @@
                             <!--end::Line-->
                         </span>
                         <!--end::Underline-->
+                        <div class="row mb-5">
+                            <!--begin::Repeater-->
+                            <div id="kt_docs_repeater_basic">
+                                <!--begin::Form group-->
+                                <div class="form-group">
+                                    <div data-repeater-list="terapi_obat">
+                                        <div data-repeater-item>
+                                            <div class="form-group row mb-5">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Obat</label>
+                                                    <select name="obat" class="form-select" data-kt-repeater="select2" data-placeholder="-Pilih-" required>
+                                                        <option></option>
+                                                        @foreach ($obat as $val)
+                                                            <option value="{{ $val->id }}">{{ $val->nama_obat }} - {{ $val->satuan->satuan }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">Jumlah Obat</label>
+                                                    <input type="number" name="jumlah_obat" class="form-control mb-5 mb-md-0" min="0" required>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                        <i class="ki-duotone ki-trash fs-5"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i>
+                                                        Hapus
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--end::Form group-->
+
+                                <!--begin::Form group-->
+                                <div class="form-group mt-5">
+                                    <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
+                                        <i class="ki-duotone ki-plus fs-3"></i>
+                                        Tambah Obat
+                                    </a>
+                                </div>
+                                <!--end::Form group-->
+                            </div>
+                            <!--end::Repeater-->
+                        </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <textarea name="terapi" rows="3" class="form-control" placeholder="Baik Obat, Prosedur, Operasi, Rehabilitasi dan Diet"></textarea>
+                                <textarea name="terapi" rows="3" class="form-control" placeholder="Prosedur, Operasi, Rehabilitasi dan Diet"></textarea>
                             </div>
                         </div>
                 </div>
@@ -435,6 +479,7 @@
 </div>
 @endsection
 @section('js')
+<script src="{{ asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
 <script type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js">
 </script>
@@ -474,6 +519,24 @@
                     this.submit();
                 }
             });
+        });
+
+        $('#kt_docs_repeater_basic').repeater({
+            initEmpty: true,
+
+            show: function () {
+                $(this).slideDown();
+
+                $(this).find('[data-kt-repeater="select2"]').select2();
+            },
+
+            hide: function (deleteElement) {
+                $(this).slideUp(deleteElement);
+            },
+
+            ready: function(){
+                $('[data-kt-repeater="select2"]').select2();
+            }
         });
 
     });
