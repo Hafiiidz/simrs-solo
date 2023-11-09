@@ -12,7 +12,7 @@
                 <!--begin::Page title-->
                 <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
                     <!--begin::Title-->
-                    <h1 class="page-heading d-flex flex-column justify-content-center text-dark fw-bold fs-3 m-0">List Kategori Rekap Medis Pasien</h1>
+                    <h1 class="page-heading d-flex flex-column justify-content-center text-dark fw-bold fs-3 m-0">List Rekap Medis Pasien</h1>
                     <!--end::Title-->
                     <!--begin::Breadcrumb-->
                     <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0">
@@ -35,7 +35,7 @@
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted">Kategori Rekap Medis</li>
+                        <li class="breadcrumb-item text-muted">Rekap Medis</li>
                         <!--end::Item-->
                     </ul>
                     <!--end::Breadcrumb-->
@@ -55,10 +55,10 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">
-                        <h5 class="card-title">Data Kategori Rekap Medis Pasien</h5>
+                        <h5 class="card-title">Data Rekap Medis Pasien</h5>
                     </div>
                     <div class="card-toolbar">
-                        <a href="{{ url('/pasien') }}" class="btn btn-sm btn-secondary">Kembali</a>
+                        <a href="{{ route('rekap-medis-index', $pasien->id) }}" class="btn btn-sm btn-secondary">Kembali</a>
                     </div>
                 </div>
                 <!--begin::Body-->
@@ -81,9 +81,11 @@
                         </div>
                         <div class="p-2">
                             @canany(['dokter', 'perawat'])
-                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#tambah-rekap">
-                                    Tambah Data Kategori Rekap Medis
-                                </button>
+                                <form action="{{ route('detail-rekap-medis-create') }}" method="GET">
+                                    <input type="hidden" name="id_rekapmedis" value="{{ $id_rekapmedis }}">
+                                    <button type="submit" class="btn btn-sm btn-primary">
+                                        Tambah Data Rekap Medis
+                                    </button></form>
                             @endcanany
                         </div>
                     </div>
@@ -134,12 +136,23 @@
                             </div>
                             <!--end::Col-->
                         </div>
+                        <div class="row mb-5">
+                            <!--begin::Label-->
+                            <label class="col-lg-1 fw-semibold text-muted">Kategori</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8">
+                                <span class="fw-bold fs-6 text-gray-800">{{ $kategori->nama }} - {{ \Carbon\Carbon::parse($data->created_at)->translatedFormat('l, d F Y'); }}</span>
+                            </div>
+                            <!--end::Col-->
+                        </div>
                     </div>
                     <div class="separator separator-dashed border-secondary mb-5"></div>
                     <table id="tbl-rekap" class="table table-striped table-row-bordered gy-5 gs-7 border rounded">
                         <thead class="border">
                             <tr class="fw-bold fs-6 text-gray-800 px-7">
                                 <th>No</th>
+                                <th>Diagnosa</th>
                                 <th>Kategori</th>
                                 <th>Tanggal</th>
                                 <th>Opsi</th>
@@ -159,35 +172,6 @@
     <!--end::Content-->
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="tambah-rekap" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Tambah Rekap Medis</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <form id="frm-data" action="{{ route('rekap-medis-store') }}" method="POST" autocomplete="off">
-                @csrf
-                <div class="row">
-                    <label class="form-label">Kategori</label>
-                    <input type="hidden" name="id_pasien" value="{{ $pasien->id }}">
-                    <select class="form-select" name="kategori" data-control="select2" data-placeholder="Pilih Kategori" data-dropdown-parent="#tambah-rekap" required>
-                        <option></option>
-                        @foreach ($kategori as $val)
-                            <option value="{{ $val->id }}">{{ $val->nama }}</option>
-                        @endforeach
-                    </select>
-                </div>
-        </div>
-        <div class="modal-footer">
-                <button type="submit" class="btn btn-success">Tambah</button>
-            </form>
-        </div>
-        </div>
-    </div>
-</div>
 @endsection
 @section('js')
 <script type="text/javascript"
@@ -219,43 +203,11 @@
                 ajax: '{{ url()->current() }}',
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                    { data: 'kategori', name: 'kategori.nama' },
+                    { data: 'diagnosa', name: 'diagnosa'},
+                    { data: 'kategori', name: 'rekapMedis.kategori.nama' },
                     { data: 'tanggal', name: 'tanggal' },
                     { data: 'opsi', name: 'opsi', orderable: false, searcheable: false },
                 ]
-        });
-
-        $("#frm-data").on( "submit", function(event) {
-            event.preventDefault();
-            var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
-            Swal.fire({
-                title: 'Simpan Data',
-                text: "Apakah Anda yakin akan menyimpan data ini ?",
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, Simpan Data',
-                cancelButtonText: 'Tidak'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.blockUI({
-                        css: {
-                            border: 'none',
-                            padding: '15px',
-                            backgroundColor: '#000',
-                            '-webkit-border-radius': '10px',
-                            '-moz-border-radius': '10px',
-                            opacity: .5,
-                            color: '#fff',
-                            fontSize: '16px'
-                        },
-                        message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
-                        baseZ: 9000,
-                    });
-                    this.submit();
-                }
-            });
         });
 
     });
