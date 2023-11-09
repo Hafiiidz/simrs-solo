@@ -6,6 +6,7 @@ use App\Http\Controllers\PasienController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\RekapMedisController;
 use App\Http\Controllers\DetailRekapMedisController;
+use App\Http\Controllers\PoliklinikController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,9 +37,18 @@ Route::prefix('/laporan')->group(function () {
 });
 
 //pasien
+Route::prefix('/rawat-jalan')->group(function () {
+    Route::get('/ugd', [PoliklinikController::class, 'index'])->middleware('auth');
+    Route::get('/poli', [PoliklinikController::class, 'index'])->middleware('auth');
+    Route::prefix('/rekam-medis')->group(function () {
+        Route::get('/{id_pasien}/show', [RekapMedisController::class, 'index_poli'])->name('rekam-medis-poli');
+        Route::post('/post-resume', [RekapMedisController::class, 'input_resume_poli'])->name('post.resume-poli');
+    });
+});
 Route::prefix('/pasien')->group(function () {
     Route::get('/', [PasienController::class, 'index']);
-    //Rekap Medis
+  
+    //Rekam Medis
     Route::prefix('/rekap-medis')->group(function () {
         Route::get('/{id_pasien}/show', [RekapMedisController::class, 'index'])->name('rekap-medis-index');
         Route::post('/store}', [RekapMedisController::class, 'store'])->name('rekap-medis-store');
@@ -51,5 +61,5 @@ Route::prefix('/pasien')->group(function () {
             Route::get('/cetak/{id}', [DetailRekapMedisController::class, 'cetak'])->name('detail-rekap-medis-cetak');
         });
     });
-});
+})->middleware('auth');
 

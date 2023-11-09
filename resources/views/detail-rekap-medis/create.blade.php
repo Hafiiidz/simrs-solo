@@ -12,7 +12,7 @@
                 <!--begin::Page title-->
                 <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
                     <!--begin::Title-->
-                    <h1 class="page-heading d-flex flex-column justify-content-center text-dark fw-bold fs-3 m-0">Tambah Rekap Medis Pasien</h1>
+                    <h1 class="page-heading d-flex flex-column justify-content-center text-dark fw-bold fs-3 m-0">Tambah Rekam Medis Pasien</h1>
                     <!--end::Title-->
                     <!--begin::Breadcrumb-->
                     <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0">
@@ -35,7 +35,7 @@
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted">Rekap Medis</li>
+                        <li class="breadcrumb-item text-muted">Rekam Medis</li>
                         <!--end::Item-->
                     </ul>
                     <!--end::Breadcrumb-->
@@ -55,7 +55,7 @@
             <div class="card shadow-sm">
                 <div class="card-header">
                     <div class="card-title">
-                        <h5 class="card-title">Rekap Medis Pasien</h5>
+                        <h5 class="card-title">Rekam Medis Pasien</h5>
                     </div>
                     <div class="card-toolbar">
                         <a href="{{ route('detail-rekap-medis-index', $data->id) }}" class="btn btn-sm btn-secondary">Kembali</a>
@@ -97,7 +97,7 @@
                             </div>
                             <div class="row mb-5">
                                 <!--begin::Label-->
-                                <label class="col-lg-1 fw-semibold text-muted">NIK</label>
+                                <label class="col-lg-2 fw-semibold text-muted">NIK</label>
                                 <!--end::Label-->
                                 <!--begin::Col-->
                                 <div class="col-lg-8">
@@ -107,7 +107,7 @@
                             </div>
                             <div class="row mb-5">
                                 <!--begin::Label-->
-                                <label class="col-lg-1 fw-semibold text-muted">No BPJS</label>
+                                <label class="col-lg-2 fw-semibold text-muted">No BPJS</label>
                                 <!--end::Label-->
                                 <!--begin::Col-->
                                 <div class="col-lg-8">
@@ -117,7 +117,7 @@
                             </div>
                             <div class="row mb-5">
                                 <!--begin::Label-->
-                                <label class="col-lg-1 fw-semibold text-muted">No Handphone</label>
+                                <label class="col-lg-2 fw-semibold text-muted">No Handphone</label>
                                 <!--end::Label-->
                                 <!--begin::Col-->
                                 <div class="col-lg-8">
@@ -127,7 +127,7 @@
                             </div>
                             <div class="row mb-5">
                                 <!--begin::Label-->
-                                <label class="col-lg-1 fw-semibold text-muted">Alamat</label>
+                                <label class="col-lg-2 fw-semibold text-muted">Alamat</label>
                                 <!--end::Label-->
                                 <!--begin::Col-->
                                 <div class="col-lg-8">
@@ -431,6 +431,14 @@
                                                             <option value="{{ $val->id }}">{{ $val->nama_obat }} - {{ $val->satuan->satuan }}</option>
                                                         @endforeach
                                                     </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">Signa</label>
+                                                    <div class="input-group mb-5">
+                                                        <input type="text" class="form-control" name='signa1' placeholder="...." aria-label="Username">
+                                                        <span class="input-group-text">X</span>
+                                                        <input type="text" class="form-control" name='signa2' placeholder="...." aria-label="Server">
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-2">
                                                     <label class="form-label">Jumlah Obat</label>

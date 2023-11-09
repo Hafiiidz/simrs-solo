@@ -12,7 +12,7 @@
                 <!--begin::Page title-->
                 <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
                     <!--begin::Title-->
-                    <h1 class="page-heading d-flex flex-column justify-content-center text-dark fw-bold fs-3 m-0">List Rekap Medis Pasien</h1>
+                    <h1 class="page-heading d-flex flex-column justify-content-center text-dark fw-bold fs-3 m-0">List Rekam Medis Pasien</h1>
                     <!--end::Title-->
                     <!--begin::Breadcrumb-->
                     <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0">
@@ -35,7 +35,7 @@
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted">Rekap Medis</li>
+                        <li class="breadcrumb-item text-muted">Rekam Medis</li>
                         <!--end::Item-->
                     </ul>
                     <!--end::Breadcrumb-->
@@ -55,7 +55,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">
-                        <h5 class="card-title">Data Rekap Medis Pasien</h5>
+                        <h5 class="card-title">Data Rekam Medis Pasien</h5>
                     </div>
                     <div class="card-toolbar">
                         <a href="{{ route('rekap-medis-index', $pasien->id) }}" class="btn btn-sm btn-secondary">Kembali</a>
@@ -84,7 +84,7 @@
                                 <form action="{{ route('detail-rekap-medis-create') }}" method="GET">
                                     <input type="hidden" name="id_rekapmedis" value="{{ $id_rekapmedis }}">
                                     <button type="submit" class="btn btn-sm btn-primary">
-                                        Tambah Data Rekap Medis
+                                        Tambah Data Rekam Medis
                                     </button></form>
                             @endcanany
                         </div>

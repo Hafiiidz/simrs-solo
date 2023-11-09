@@ -12,7 +12,7 @@
                 <!--begin::Page title-->
                 <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
                     <!--begin::Title-->
-                    <h1 class="page-heading d-flex flex-column justify-content-center text-dark fw-bold fs-3 m-0">Detail Rekap Medis Pasien</h1>
+                    <h1 class="page-heading d-flex flex-column justify-content-center text-dark fw-bold fs-3 m-0">Detail Rekam Medis Pasien</h1>
                     <!--end::Title-->
                     <!--begin::Breadcrumb-->
                     <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0">
@@ -35,7 +35,7 @@
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted">Rekap Medis</li>
+                        <li class="breadcrumb-item text-muted">Rekam Medis</li>
                         <!--end::Item-->
                     </ul>
                     <!--end::Breadcrumb-->
@@ -55,7 +55,7 @@
             <div class="card shadow-sm">
                 <div class="card-header">
                     <div class="card-title">
-                        <h5 class="card-title">Rekap Medis Pasien</h5>
+                        <h5 class="card-title">Rekam Medis Pasien</h5>
                     </div>
                     <div class="card-toolbar">
                         <a href="{{ route('detail-rekap-medis-index', $rekap->idrekapmedis) }}" class="btn btn-sm btn-secondary">Kembali</a>
@@ -435,6 +435,14 @@
                                                             </select>
                                                         </div>
                                                         <div class="col-md-2">
+                                                            <label class="form-label">Signa</label>
+                                                            <div class="input-group mb-5">
+                                                                <input type="text" class="form-control" name='signa1' value="{{ $val->signa1 }}" placeholder="...." aria-label="Username">
+                                                                <span class="input-group-text">X</span>
+                                                                <input type="text" class="form-control" name='signa2' value="{{ $val->signa2 }}" placeholder="...." aria-label="Server">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2">
                                                             <label class="form-label">Jumlah Obat</label>
                                                             <input type="number" name="jumlah_obat" value="{{ $val->jumlah_obat }}" class="form-control mb-5 mb-md-0" min="0"/>
                                                         </div>
@@ -458,6 +466,14 @@
                                                                 <option value="{{ $val->id }}">{{ $val->nama_obat }} - {{ $val->satuan->satuan }}</option>
                                                             @endforeach
                                                         </select>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <label class="form-label">Signa</label>
+                                                        <div class="input-group mb-5">
+                                                            <input type="text" class="form-control" name='signa1' placeholder="...." aria-label="Username">
+                                                            <span class="input-group-text">X</span>
+                                                            <input type="text" class="form-control" name='signa2' placeholder="...." aria-label="Server">
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-2">
                                                         <label class="form-label">Jumlah Obat</label>

@@ -35,7 +35,7 @@
 						</a>
 						<!--end::Logo-->
 						<!--begin::Title-->
-						<h2 class="text-white fw-normal m-0">Branding tools designed for your business</h2>
+						<h2 class="text-white fw-normal m-0">Elektronik Rekam Medis</h2>
 						<!--end::Title-->
 					</div>
 					<!--begin::Aside-->
@@ -53,13 +53,13 @@
 								<!--begin::Heading-->
 								<div class="text-center mb-11">
 									<!--begin::Title-->
-									<h1 class="text-dark fw-bolder mb-3">Sign In</h1>
+									<h1 class="text-dark fw-bolder mb-3">Login</h1>
 									<!--end::Title-->
 								</div>
 								<!--begin::Heading-->
 								<!--begin::Separator-->
 								<div class="separator separator-content my-14">
-									<span class="w-125px text-gray-500 fw-semibold fs-7">with email</span>
+									<span class="w-125px text-gray-500 fw-semibold fs-7"></span>
 								</div>
 								<!--end::Separator-->
 								<!--begin::Input group=-->

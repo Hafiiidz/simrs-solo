@@ -21,6 +21,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        config(['app.locale' => 'id']);
+        setlocale(LC_ALL, 'IND');
+        \Carbon\Carbon::setLocale('id');
+
         Gate::define('direktur', function (User $user) {
             return $user->idpriv === 2;
         });

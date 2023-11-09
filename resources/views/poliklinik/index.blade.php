@@ -56,15 +56,15 @@
                         <thead class="border">
                             <tr class="fw-bold fs-6 text-gray-800 px-7">
                                 <th>No RM</th>
-                                <th>Nik</th>
-                                <th>No BPJS</th>
-                                <th>Nama</th>
-                                <th>Tempat Lahir</th>
-                                <th>No Handphone.</th>
+                                <th>Nama Pasien</th>
+                                <th>Tgl.Masuk</th>
+                                <th>Poli</th>
+                                <th>Bayar</th>
+                                <th>Status</th>
                                 <th>Opsi</th>
                             </tr>
                         </thead>
-                        <tbody class="border fs-6">
+                        <tbody class="border">
 
                         </tbody>
                     </table>
@@ -105,11 +105,11 @@
             ajax: '{{ url()->current() }}',
             columns: [
                 { data: 'no_rm', name: 'no_rm' },
-                { data: 'nik', name: 'nik' },
-                { data: 'no_bpjs', name: 'no_bpjs' },
-                { data: 'nama_pasien', name: 'nama_pasien' },
-                { data: 'tempat_lahir', name: 'tempat_lahir' },
-                { data: 'nohp', name: 'nohp' },
+                { data: 'nama_pasien', name: 'pasien.nama_pasien' },
+                { data: 'tglmasuk', name: 'rawat.tglmasuk' },
+                { data: 'poli', name: 'poli.poli' },
+                { data: 'bayar', name: 'rawat_bayar.bayar' },
+                { data: 'status', name: 'rawat_status.status' },
                 { data: 'opsi', name: 'opsi', orderable: false, searcheable: false },
             ]
         });
@@ -117,3 +117,4 @@
 
 </script>
 @endsection
+x

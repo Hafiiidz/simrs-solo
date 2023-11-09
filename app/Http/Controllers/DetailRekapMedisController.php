@@ -79,7 +79,7 @@ class DetailRekapMedisController extends Controller
             'riwayat_3' => $request->riwayat_3,
             'riwayat_4' => $request->riwayat_4,
         ]);
-
+        $rekap_medis = RekapMedis::find($id_rekapmedis);
         $rekap = new DetailRekapMedis;
         $rekap->idrekapmedis = $id_rekapmedis;
         $rekap->diagnosa = $request->diagnosa;
@@ -92,9 +92,10 @@ class DetailRekapMedisController extends Controller
         $rekap->rencana_pemeriksaan = $request->rencana_pemeriksaan;
         $rekap->terapi_obat = json_encode($request->terapi_obat);
         $rekap->terapi = $request->terapi;
+        $rekap->idrawat = $rekap_medis->idrawat;
         $rekap->save();
 
-        return redirect()->route('detail-rekap-medis-index', $id_rekapmedis)->with('berhasil','Data Rekap Medis Pasien Berhasil Di Simpan!');
+        return redirect()->route('rekam-medis-poli', $id_rekapmedis)->with('berhasil','Data Rekam Medis Pasien Berhasil Di Simpan!');
     }
 
     public function show($id)
@@ -146,7 +147,7 @@ class DetailRekapMedisController extends Controller
         $rekap->terapi = $request->terapi;
         $rekap->save();
 
-        return redirect()->route('detail-rekap-medis-index', $rekap->idrekapmedis)->with('berhasil','Data Rekap Medis Pasien Berhasil Di Simpan!');
+        return redirect()->route('detail-rekap-medis-index', $rekap->idrekapmedis)->with('berhasil','Data Rekam Medis Pasien Berhasil Di Simpan!');
     }
 
     public function cetak($id){

@@ -12,7 +12,7 @@
                 <!--begin::Page title-->
                 <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
                     <!--begin::Title-->
-                    <h1 class="page-heading d-flex flex-column justify-content-center text-dark fw-bold fs-3 m-0">List Kategori Rekap Medis Pasien</h1>
+                    <h1 class="page-heading d-flex flex-column justify-content-center text-dark fw-bold fs-3 m-0">List Kategori Rekam Medis Pasien</h1>
                     <!--end::Title-->
                     <!--begin::Breadcrumb-->
                     <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0">
@@ -35,7 +35,7 @@
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted">Kategori Rekap Medis</li>
+                        <li class="breadcrumb-item text-muted">Kategori Rekam Medis</li>
                         <!--end::Item-->
                     </ul>
                     <!--end::Breadcrumb-->
@@ -55,7 +55,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">
-                        <h5 class="card-title">Data Kategori Rekap Medis Pasien</h5>
+                        <h5 class="card-title">Data Kategori Rekam Medis Pasien</h5>
                     </div>
                     <div class="card-toolbar">
                         <a href="{{ url('/pasien') }}" class="btn btn-sm btn-secondary">Kembali</a>
@@ -82,7 +82,7 @@
                         <div class="p-2">
                             @canany(['dokter', 'perawat'])
                                 <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#tambah-rekap">
-                                    Tambah Data Kategori Rekap Medis
+                                    Tambah Data Kategori Rekam Medis
                                 </button>
                             @endcanany
                         </div>
@@ -96,7 +96,7 @@
                         </div>
                         <div class="row mb-5">
                             <!--begin::Label-->
-                            <label class="col-lg-1 fw-semibold text-muted">NIK</label>
+                            <label class="col-lg-2 fw-semibold text-muted">NIK</label>
                             <!--end::Label-->
                             <!--begin::Col-->
                             <div class="col-lg-8">
@@ -106,7 +106,7 @@
                         </div>
                         <div class="row mb-5">
                             <!--begin::Label-->
-                            <label class="col-lg-1 fw-semibold text-muted">No BPJS</label>
+                            <label class="col-lg-2 fw-semibold text-muted">No BPJS</label>
                             <!--end::Label-->
                             <!--begin::Col-->
                             <div class="col-lg-8">
@@ -116,7 +116,7 @@
                         </div>
                         <div class="row mb-5">
                             <!--begin::Label-->
-                            <label class="col-lg-1 fw-semibold text-muted">No Handphone</label>
+                            <label class="col-lg-2 fw-semibold text-muted">No Handphone</label>
                             <!--end::Label-->
                             <!--begin::Col-->
                             <div class="col-lg-8">
@@ -126,7 +126,7 @@
                         </div>
                         <div class="row mb-5">
                             <!--begin::Label-->
-                            <label class="col-lg-1 fw-semibold text-muted">Alamat</label>
+                            <label class="col-lg-2 fw-semibold text-muted">Alamat</label>
                             <!--end::Label-->
                             <!--begin::Col-->
                             <div class="col-lg-8">
@@ -164,7 +164,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Tambah Rekap Medis</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Tambah Rekam Medis</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">

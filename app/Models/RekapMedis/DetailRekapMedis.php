@@ -24,8 +24,8 @@ class DetailRekapMedis extends Model
     {
         return LogOptions::defaults()
             ->logOnly(['*'])
-            ->useLogName('Rekap Medis')
-            ->setDescriptionForEvent(fn(string $eventName) =>"Detail Rekap Medis {$eventName} Oleh: " . Auth::user()->detail->nama);
+            ->useLogName('Rekam Medis')
+            ->setDescriptionForEvent(fn(string $eventName) =>"Detail Rekam Medis {$eventName} Oleh: " . Auth::user()->detail->nama);
     }
 
     /**
