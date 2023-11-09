@@ -6,6 +6,9 @@ use App\Http\Controllers\PasienController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\RekapMedisController;
 use App\Http\Controllers\DetailRekapMedisController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\RuanganController;
+use App\Http\Controllers\RuanganBedController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +33,26 @@ Route::get('/index', function () {
     return view('layouts.index');
 })->middleware('auth');
 
+//Dasboard
+Route::prefix('dashboard')->group(function () {
+    Route::get('/', [DashboardController::class, 'index']);
+});
+
+//Data Master
+Route::prefix('data-master')->group(function() {
+    //Ruangan
+    Route::prefix('/ruangan')->group(function() {
+        Route::get('/', [RuanganController::class, 'index'])->name('index.ruangan');
+        Route::post('/store', [RuanganController::class, 'store'])->name('store.ruangan');
+            //BED
+            Route::prefix('/bed')->group(function() {
+                Route::get('/{id_ruangan}', [RuanganBedController::class, 'index'])->name('index.ruangan-bed');
+                Route::post('/store', [RuanganBedController::class, 'store'])->name('store.ruangan-bed');
+                Route::post('/update', [RuanganBedController::class, 'update'])->name('update.ruangan-bed');
+        });
+    });
+});
+
 //Laporan
 Route::prefix('/laporan')->group(function () {
     Route::get('/', [LaporanController::class, 'index']);
@@ -51,5 +74,10 @@ Route::prefix('/pasien')->group(function () {
             Route::get('/cetak/{id}', [DetailRekapMedisController::class, 'cetak'])->name('detail-rekap-medis-cetak');
         });
     });
+});
+
+//Ajax
+Route::prefix('ajax')->group(function() {
+    Route::get('bed/edit', [RuanganBedController::class, 'edit'])->name('edit.ruangan-bed-ajax');
 });
 
