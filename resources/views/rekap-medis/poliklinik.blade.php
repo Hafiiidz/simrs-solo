@@ -53,13 +53,36 @@
             <!--begin::Content container-->
             <div id="kt_app_content_container" class="app-container container-fluid">
                 <!--begin::FAQ card-->
+                {{-- {{ dd($resume_medis) }} --}}
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">
                             <h5 class="card-title">Data Kategori Rekam Medis Pasien</h5>
                         </div>
                         <div class="card-toolbar">
-                            <a href="{{ url('/pasien') }}" class="btn btn-sm btn-secondary">Kembali</a>
+                            <a href="{{ route('poliklinik') }}" class="btn btn-sm btn-secondary me-2">Kembali</a>
+                            @if ($resume_medis)
+                                <form action="{{ route('rekap-medis-selesai', $resume_medis->id) }}" id='frmSelesai'
+                                    method="POST">
+                                    @csrf
+
+                                    @if ($resume_medis->perawat != 1)
+                                        @can('perawat')
+                                            @csrf
+                                            <input type="hidden" name="jenis" id="" value="perawat">
+                                            <button class="btn btn-light-success btn-sm">Selesai</button>
+                                        @endcan
+                                    @endif
+
+                                    @if ($resume_medis->dokter != 1)
+                                        @can('dokter')
+                                            <input type="hidden" name="jenis" id="" value="dokter">
+                                            <button class="btn btn-light-success btn-sm">Selesai</button>
+                                        @endcan
+                                    @endif
+                                </form>
+                            @endif
+
                         </div>
                     </div>
                     <!--begin::Body-->
@@ -104,6 +127,28 @@
                                 <!--begin::Col-->
                                 <div class="col-lg-8">
                                     <span class="fw-bold fs-6 text-gray-800">{{ $pasien->nik }}</span>
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <div class="row mb-5">
+                                <!--begin::Label-->
+                                <label class="col-lg-2 fw-semibold text-muted">No.RM</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8">
+                                    <span class="fw-bold fs-6 text-gray-800">{{ $pasien->no_rm }}</span>
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <div class="row mb-5">
+                                <!--begin::Label-->
+                                <label class="col-lg-2 fw-semibold text-muted">Tgl.Lahir</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8">
+                                    <span class="fw-bold fs-6 text-gray-800">{{ $pasien->tgllahir }} -
+                                        {{ $pasien->usia_tahun }}Th {{ $pasien->usia_bulan }}Bln
+                                        {{ $pasien->usia_hari }}Hr</span>
                                 </div>
                                 <!--end::Col-->
                             </div>
@@ -163,6 +208,16 @@
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
                                                 data-bs-toggle="tab" href="#kt_tab_pane_4" aria-selected="false"
                                                 role="tab" tabindex="-1">Tindakan</a>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
+                                                data-bs-toggle="tab" href="#kt_tab_pane_5" aria-selected="false"
+                                                role="tab" tabindex="-1">Hasil Pemeriksaan Penunjang</a>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
+                                                data-bs-toggle="tab" href="#kt_tab_pane_6" aria-selected="false"
+                                                role="tab" tabindex="-1">Upload Hasil Pemeriksaan Penunjang Luar</a>
                                         </li>
 
 
@@ -236,174 +291,436 @@
                                             <button class="btn btn-warning btn-sm">Input Resume</button>
                                         </form>
                                     @else
-                                        @if ($resume_detail)
-                                            <a class="btn btn-primary btn-sm" href="{{ route('detail-rekap-medis-cetak', $resume_detail->id) }}"
-                                                target="blank">Print</a>
+                                        @if (!$resume_detail)
+                                            <form action="{{ route('post.resume-poli') }}" id="frmResume"
+                                                method="post">
+                                                @csrf
+                                                <input type="hidden" name="idrawat" id="idrawat"
+                                                    value={{ $rawat->id }}>
+                                                @if ($rawat->idjenisrawat == 1)
+                                                    <input type="hidden" name="idkategori" id="idkategori" value=1>
+                                                @else
+                                                    <input type="hidden" name="idkategori" id="idkategori" value=3>
+                                                @endif
+                                                <input type="hidden" name='idpasien' value={{ $pasien->id }}>
+                                                <button class="btn btn-warning btn-sm">Input Resume</button>
+                                            </form>
+                                        @else
+                                            @if ($resume_detail)
+                                                <a class="btn btn-primary btn-sm"
+                                                    href="{{ route('detail-rekap-medis-cetak', $resume_detail->id) }}"
+                                                    target="blank">Print</a>
                                                 <div class="separator separator-dashed border-secondary mb-5 mt-5">
                                                 </div>
-                                        @endif
-                                        <table class="table table-striped table-row-bordered gy-3 gs-5 border rounded">
-                                            <thead class="border">
-                                                <tr class="fw-bold fs-6 text-gray-800 px-7">
-                                                    <th>Diagnosa</th>
-                                                    <th>Anamnesa</th>
-                                                    <th>Rencana Pemeriksaan</th>
-                                                    <th>Terapi</th>
-                                                    <th>Opsi</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @if ($resume_detail)
-                                                    @php
-                                                        $alergi = json_decode($resume_detail->alergi);
-                                                        $pfisik = json_decode($resume_detail->pemeriksaan_fisik);
-                                                        $rkesehatan = json_decode($resume_detail->riwayat_kesehatan);
-                                                    @endphp
-                                                    <tr>
-                                                        <td>{{ $resume_detail?->diagnosa }}</td>
-                                                        <td>{{ $resume_detail?->anamnesa }}</td>
-                                                        <td>{{ $resume_detail?->rencana_pemeriksaan }}</td>
-                                                        <td>
-                                                            {{ $resume_detail?->terapi }}
-                                                            <div class="separator separator-dashed border-secondary mb-5">
-                                                            </div>
-                                                            @if ($resume_detail->terapi_obat != 'null')
-                                                                <ul>
-                                                                    @foreach (json_decode($resume_detail->terapi_obat) as $val)
-                                                                        @foreach ($obat as $item)
-                                                                            @if ($val->obat == $item->id)
-                                                                                <li>{{ $item->nama_obat }}</li>
-                                                                            @endif
+                                            @endif
+                                            <table class="table table-striped table-row-bordered gy-3 gs-5 border rounded">
+                                                <thead class="border">
+                                                    <tr class="fw-bold fs-6 text-gray-800 px-7">
+                                                        <th>Diagnosa</th>
+                                                        <th>Anamnesa</th>
+                                                        <th>Rencana Pemeriksaan</th>
+                                                        <th>Terapi</th>
+                                                        <th>Opsi</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if ($resume_detail)
+                                                        @php
+                                                            $alergi = json_decode($resume_detail->alergi);
+                                                            $pfisik = json_decode($resume_detail->pemeriksaan_fisik);
+                                                            $rkesehatan = json_decode($resume_detail->riwayat_kesehatan);
+                                                        @endphp
+                                                        <tr>
+                                                            <td>{{ $resume_detail?->diagnosa }}</td>
+                                                            <td>{{ $resume_detail?->anamnesa_dokter }}</td>
+                                                            <td>
+                                                                {{ $resume_detail?->rencana_pemeriksaan }}
+                                                                @if ($resume_detail->radiologi != 'null')
+                                                                    <div
+                                                                        class="separator separator-dashed border-secondary mb-5">
+                                                                    </div>
+                                                                    <h5>Radiologi</h5>
+                                                                    <ul>
+                                                                        @foreach (json_decode($resume_detail->radiologi) as $val)
+                                                                            @foreach ($radiologi as $item)
+                                                                                @if ($val->tindakan_rad == $item->id)
+                                                                                    <li>{{ $item->nama_tindakan }}</li>
+                                                                                @endif
+                                                                            @endforeach
                                                                         @endforeach
-                                                                    @endforeach
-                                                                </ul>
-                                                            @endif
+                                                                    </ul>
+                                                                @endif
+                                                                @if ($resume_detail->radiologi != 'null')
+                                                                    <div
+                                                                        class="separator separator-dashed border-secondary mb-5">
+                                                                    </div>
+                                                                    <h5>Lab</h5>
+                                                                    <ul>
+                                                                        @foreach (json_decode($resume_detail->laborat) as $val)
+                                                                            @foreach ($lab as $item)
+                                                                                @if ($val->tindakan_lab == $item->id)
+                                                                                    <li>{{ $item->nama_pemeriksaan }}</li>
+                                                                                @endif
+                                                                            @endforeach
+                                                                        @endforeach
+                                                                    </ul>
+                                                                @endif
+                                                            </td>
+                                                            <td>
+                                                                {{ $resume_detail?->terapi }}
+                                                                <div
+                                                                    class="separator separator-dashed border-secondary mb-5">
+                                                                </div>
+                                                                @if ($resume_detail->terapi_obat != 'null')
+                                                                    <h5>Obat</h5>
+                                                                    <ul>
+                                                                        @foreach (json_decode($resume_detail->terapi_obat) as $val)
+                                                                            @foreach ($obat as $item)
+                                                                                @if ($val->obat == $item->id)
+                                                                                    <li>{{ $item->nama_obat }}
+                                                                                        ({{ $val->signa1 }} x
+                                                                                        {{ $val->signa2 }} |
+                                                                                        {{ $val->jumlah_obat }})
+                                                                                    </li>
+                                                                                @endif
+                                                                            @endforeach
+                                                                        @endforeach
+                                                                    </ul>
+                                                                @endif
+                                                            </td>
+                                                            <td>
+                                                                @can('dokter')
+                                                                    @if ($resume_medis->dokter != 1)
+                                                                        <a href="{{ route('detail-rekap-medis-show', $resume_detail->id) }}"
+                                                                            class="btn btn-warning btn-sm">Edit</a>
+                                                                    @endif
+
+                                                                    @if ($resume_detail->terapi_obat != 'null')
+                                                                        <a href="{{ route('resep-rekap-medis-cetak', $resume_detail->id) }}"
+                                                                            class="btn btn-info btn-sm">Print Resep</a>
+                                                                    @endif
+                                                                @endcan
+                                                            </td>
+                                                        </tr>
+                                                    @endif
+
+                                                </tbody>
+                                            </table>
+                                            <div class="separator separator-dashed border-secondary mb-5 mt-5">
+                                            </div>
+                                            <table class="table table-striped table-row-bordered gy-3 gs-5 border rounded">
+                                                <thead class="border">
+                                                    <tr class="fw-bold fs-6 text-gray-800 px-7">
+                                                        <th>Pemeriksaan Fisik</th>
+                                                        <th>Riwayat Kesehatan</th>
+                                                        <th>Alergi</th>
+                                                        <th>Obat yang dikonsumsi</th>
+                                                        <th>Opsi</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if ($resume_detail)
+                                                        <td>
+                                                            <table>
+                                                                <tr>
+                                                                    <td>&nbsp;&nbsp;Tekanan Darah</td>
+                                                                    <td class="text-start">:
+                                                                        {{ $pfisik->tekanan_darah ? $pfisik->tekanan_darah : '-' }}
+                                                                        mmHg</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>&nbsp;&nbsp;Nadi</td>
+                                                                    <td class="text-start">:
+                                                                        {{ $pfisik->nadi ? $pfisik->nadi : '-' }} x/menit
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>&nbsp;&nbsp;Pernapasan</td>
+                                                                    <td class="text-start">:
+                                                                        {{ $pfisik->pernapasan ? $pfisik->pernapasan : '-' }}
+                                                                        x/menit</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>&nbsp;&nbsp;Suhu</td>
+                                                                    <td class="text-start">:
+                                                                        {{ $pfisik->suhu ? $pfisik->suhu : '-' }} celcius
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>&nbsp;&nbsp;Berat Badan</td>
+                                                                    <td class="text-start">:
+                                                                        {{ $pfisik->berat_badan ? $pfisik->berat_badan : '-' }}
+                                                                        Kg</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>&nbsp;&nbsp;Tinggi Badan</td>
+                                                                    <td class="text-start">:
+                                                                        {{ $pfisik->tinggi_badan ? $pfisik->tinggi_badan : '-' }}
+                                                                        Cm</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>&nbsp;&nbsp;BMI</td>
+                                                                    <td class="text-start">:
+                                                                        {{ $pfisik->bmi ? $pfisik->bmi : '-' }} Kg/M2</td>
+                                                                </tr>
+                                                            </table>
                                                         </td>
                                                         <td>
-                                                            @can('dokter')
-                                                            <a href="{{ route('detail-rekap-medis-show', $resume_detail->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                                            <table>
+                                                                <tr>
+                                                                    <td>&nbsp;&nbsp;Riwayat penyakit yang lalu</td>
+                                                                    <td class="text-start">:
+                                                                        {{ $rkesehatan->riwayat_1 == 1 ? 'Ya' : 'Tidak' }}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>&nbsp;&nbsp;Pernah dirawat</td>
+                                                                    <td class="text-start">:
+                                                                        {{ $rkesehatan->riwayat_2 == 1 ? 'Ya' : 'Tidak' }}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>&nbsp;&nbsp;Pernah dioperasi</td>
+                                                                    <td class="text-start">:
+                                                                        {{ $rkesehatan->riwayat_3 == 1 ? 'Ya' : 'Tidak' }}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>&nbsp;&nbsp;Dalam Pengobatan Khusus</td>
+                                                                    <td class="text-start">:
+                                                                        {{ $rkesehatan->riwayat_4 == 1 ? 'Ya' : 'Tidak' }}
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                        <td>
+                                                            <ul>
+                                                                <li>Obat :
+                                                                    <b>{{ $alergi->value_obat ? $alergi->value_obat : '-' }}</b>
+                                                                </li>
+                                                                <li>Makanan :
+                                                                    <b>{{ $alergi->value_makanan ? $alergi->value_makanan : '-' }}</b>
+                                                                </li>
+                                                                <li>Lain Lain :
+                                                                    <b>{{ $alergi->value_lain ? $alergi->value_lain : '-' }}</b>
+                                                                </li>
+                                                            </ul>
+                                                        </td>
+                                                        <td>{{ $resume_detail->obat_yang_dikonsumsi }}</td>
+                                                        <td>
+                                                            @can('perawat')
+                                                                @if ($resume_medis->perawat != 1)
+                                                                    <a href="{{ route('detail-rekap-medis-show', $resume_detail->id) }}"
+                                                                        class="btn btn-warning btn-sm">Edit</a>
+                                                                @endif
                                                             @endcan
                                                         </td>
-                                                    </tr>
-                                                @endif
+                                                    @endif
+                                                </tbody>
+                                            </table>
+                                        @endif
 
-                                            </tbody>
-                                        </table>
-                                        <div class="separator separator-dashed border-secondary mb-5 mt-5">
-                                        </div>
-                                        <table class="table table-striped table-row-bordered gy-3 gs-5 border rounded">
-                                            <thead class="border">
-                                                <tr class="fw-bold fs-6 text-gray-800 px-7">
-                                                    <th>Pemeriksaan Fisik</th>
-                                                    <th>Riwayat Kesehatan</th>
-                                                    <th>Alergi</th>
-                                                    <th>Obat yang dikonsumsi</th>
-                                                    <th>Opsi</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <td>
-                                                    <table>
-                                                        <tr>
-                                                            <td>&nbsp;&nbsp;Tekanan Darah</td>
-                                                            <td class="text-start">:
-                                                                {{ $pfisik->tekanan_darah ? $pfisik->tekanan_darah : '-' }}
-                                                                mmHg</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>&nbsp;&nbsp;Nadi</td>
-                                                            <td class="text-start">:
-                                                                {{ $pfisik->nadi ? $pfisik->nadi : '-' }} x/menit</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>&nbsp;&nbsp;Pernapasan</td>
-                                                            <td class="text-start">:
-                                                                {{ $pfisik->pernapasan ? $pfisik->pernapasan : '-' }}
-                                                                x/menit</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>&nbsp;&nbsp;Suhu</td>
-                                                            <td class="text-start">:
-                                                                {{ $pfisik->suhu ? $pfisik->suhu : '-' }} celcius</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>&nbsp;&nbsp;Berat Badan</td>
-                                                            <td class="text-start">:
-                                                                {{ $pfisik->berat_badan ? $pfisik->berat_badan : '-' }}
-                                                                Kg</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>&nbsp;&nbsp;Tinggi Badan</td>
-                                                            <td class="text-start">:
-                                                                {{ $pfisik->tinggi_badan ? $pfisik->tinggi_badan : '-' }}
-                                                                Cm</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>&nbsp;&nbsp;BMI</td>
-                                                            <td class="text-start">:
-                                                                {{ $pfisik->bmi ? $pfisik->bmi : '-' }} Kg/M2</td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                                <td>
-                                                    <table>
-                                                        <tr>
-                                                            <td>&nbsp;&nbsp;Riwayat penyakit yang lalu</td>
-                                                            <td class="text-start">:
-                                                                {{ $rkesehatan->riwayat_1 == 1 ? 'Ya' : 'Tidak' }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>&nbsp;&nbsp;Pernah dirawat</td>
-                                                            <td class="text-start">:
-                                                                {{ $rkesehatan->riwayat_2 == 1 ? 'Ya' : 'Tidak' }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>&nbsp;&nbsp;Pernah dioperasi</td>
-                                                            <td class="text-start">:
-                                                                {{ $rkesehatan->riwayat_3 == 1 ? 'Ya' : 'Tidak' }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>&nbsp;&nbsp;Dalam Pengobatan Khusus</td>
-                                                            <td class="text-start">:
-                                                                {{ $rkesehatan->riwayat_4 == 1 ? 'Ya' : 'Tidak' }}</td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                                <td>
-                                                    <ul>
-                                                        <li>Obat :
-                                                            <b>{{ $alergi->value_obat ? $alergi->value_obat : '-' }}</b>
-                                                        </li>
-                                                        <li>Makanan :
-                                                            <b>{{ $alergi->value_makanan ? $alergi->value_makanan : '-' }}</b>
-                                                        </li>
-                                                        <li>Lain Lain :
-                                                            <b>{{ $alergi->value_lain ? $alergi->value_lain : '-' }}</b>
-                                                        </li>
-                                                    </ul>
-                                                </td>
-                                                <td>{{ $resume_detail->obat_yang_dikonsumsi }}</td>
-                                                <td>
-                                                    @can('perawat')
-                                                        <a href="{{ route('detail-rekap-medis-show', $resume_detail->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                                    @endcan
-                                                </td>
-                                            </tbody>
-                                        </table>
                                     @endif
                                 </div>
 
                                 <div class="tab-pane fade" id="kt_tab_pane_3" role="tabpanel">
-                                    Sint sit mollit irure quis est nostrud cillum consequat Lorem esse do quis dolor esse
-                                    fugiat sunt do.
-                                    Eu ex commodo veniam Lorem aliquip laborum occaecat qui Lorem esse mollit dolore anim
-                                    cupidatat.
-                                    eserunt officia id Lorem nostrud aute id commodo elit eiusmod enim irure amet eiusmod
-                                    qui reprehenderit nostrud tempor.
-                                    Fugiat ipsum excepteur in aliqua non et quis aliquip ad irure in labore cillum elit
-                                    enim. Consequat aliquip incididunt
-                                    ipsum et minim laborum laborum laborum et cillum labore. Deserunt adipisicing cillum id
-                                    nulla minim nostrud labore eiusmod et amet.
+                                    <h4>Rencana Tindak Lanjut</h4>
+                                    @if (!$tindak_lanjut)
+                                        <form action="{{ route('tindak-lanjut.index') }}" method="post"
+                                            id='frmTindakLanjut'>
+                                            @csrf
+                                            <input type="hidden" name='idrawat' value="{{ $rawat->id }}">
+                                            <input type="hidden" name='idbayar' value="{{ $rawat->idbayar }}">
+                                            <button class="btn btn-info btn-sm">Tindak Lanjut</button>
+                                        </form>
+                                    @else
+                                        <table class="table table-striped table-row-bordered gy-3 gs-5 border rounded">
+                                            <thead class="border">
+                                                <tr class="fw-bold fs-6 text-gray-800 px-7">
+                                                    <th>Tindak Lanjut</th>
+                                                    <th>Tgl Tindak Lanjut</th>
+                                                    <th>Dokter</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>{{ $tindak_lanjut->tindak_lanjut }}</td>
+                                                    <td>{{ $tindak_lanjut->tgl_tindak_lanjut }}</td>
+                                                    <td>{{ $tindak_lanjut->rawat->dokter->nama_dokter }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    @endif
+                                </div>
+                                <div class="tab-pane fade" id="kt_tab_pane_4" role="tabpanel">
+                                    @if ($resume_medis)
+                                        <form action="{{ route('post.tindakan', $rawat->id) }}" method="post"
+                                            id=frmTindakan>
+                                            @csrf
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div id="kt_tindakan_repeater">
+                                                        <!--begin::Form group-->
+                                                        <div class="form-group">
+                                                            <div data-repeater-list="tindakan_repeater">
+                                                                @if ($resume_medis?->tindakan != null)
+                                                                    @foreach (json_decode($resume_medis->tindakan) as $st)
+                                                                        <div data-repeater-item>
+                                                                            <div class="form-group row mb-5">
+                                                                                <div class="col-md-4">
+                                                                                    <label
+                                                                                        class="form-label">Tindakan</label>
+                                                                                    <select name="tindakan"
+                                                                                        class="form-select"
+                                                                                        data-kt-repeater="select22"
+                                                                                        data-placeholder="-Pilih-"required>
+                                                                                        <option></option>
+                                                                                        @foreach ($tarif as $val)
+                                                                                            <option
+                                                                                                value="{{ $val->id }}"
+                                                                                                {{ $st->tindakan == $val->id ? 'selected' : '' }}>
+                                                                                                {{ $val->nama_tarif }}
+                                                                                            </option>
+                                                                                        @endforeach
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div class="col-md-4">
+                                                                                    <label
+                                                                                        class="form-label">Dokter</label>
+                                                                                    <select name="dokter"
+                                                                                        class="form-select"
+                                                                                        data-kt-repeater="select22"
+                                                                                        data-placeholder="-Pilih-">
+                                                                                        <option></option>
+                                                                                        @foreach ($dokter as $val)
+                                                                                            <option
+                                                                                                value="{{ $val->id }}"
+                                                                                                {{ $st->dokter == $val->id ? 'selected' : '' }}>
+                                                                                                {{ $val->nama_dokter }}
+                                                                                            </option>
+                                                                                        @endforeach
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <label
+                                                                                        class="form-label">Jumlah</label>
+                                                                                    <input type="number" name="jumlah"
+                                                                                        class="form-control mb-5 mb-md-0"
+                                                                                        value="{{ $st->jumlah }}"
+                                                                                        min="0"required />
+                                                                                </div>
+                                                                                <div class="col-md-4">
+                                                                                    <a href="javascript:;"
+                                                                                        data-repeater-delete
+                                                                                        class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                                        <i
+                                                                                            class="ki-duotone ki-trash fs-5"><span
+                                                                                                class="path1"></span><span
+                                                                                                class="path2"></span><span
+                                                                                                class="path3"></span><span
+                                                                                                class="path4"></span><span
+                                                                                                class="path5"></span></i>
+                                                                                        Hapus
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endforeach
+                                                                @else
+                                                                    <div data-repeater-item>
+                                                                        <div class="form-group row mb-5">
+                                                                            <div class="col-md-4">
+                                                                                <label class="form-label">Tindakan</label>
+                                                                                <select name="tindakan"
+                                                                                    class="form-select"
+                                                                                    data-kt-repeater="select22"
+                                                                                    data-placeholder="-Pilih-"required>
+                                                                                    <option></option>
+                                                                                    @foreach ($tarif as $val)
+                                                                                        <option
+                                                                                            value="{{ $val->id }}">
+                                                                                            {{ $val->nama_tarif }}
+                                                                                        </option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <label class="form-label">Dokter</label>
+                                                                                <select name="dokter" class="form-select"
+                                                                                    data-kt-repeater="select22"
+                                                                                    data-placeholder="-Pilih-">
+                                                                                    <option></option>
+                                                                                    @foreach ($dokter as $val)
+                                                                                        <option
+                                                                                            value="{{ $val->id }}">
+                                                                                            {{ $val->nama_dokter }}
+                                                                                        </option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="col-md-2">
+                                                                                <label class="form-label">Jumlah</label>
+                                                                                <input type="number" name="jumlah"
+                                                                                    class="form-control mb-5 mb-md-0"
+                                                                                    min="0"required />
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <a href="javascript:;" data-repeater-delete
+                                                                                    class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                                    <i class="ki-duotone ki-trash fs-5"><span
+                                                                                            class="path1"></span><span
+                                                                                            class="path2"></span><span
+                                                                                            class="path3"></span><span
+                                                                                            class="path4"></span><span
+                                                                                            class="path5"></span></i>
+                                                                                    Hapus
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                @endif
+
+                                                            </div>
+                                                        </div>
+                                                        <!--end::Form group-->
+
+                                                        <!--begin::Form group-->
+                                                        <div class="form-group mt-5">
+                                                            <a href="javascript:;" data-repeater-create
+                                                                class="btn btn-light-primary">
+                                                                <i class="ki-duotone ki-plus fs-3"></i>
+                                                                Tambah Tindakan
+                                                            </a>
+                                                        </div>
+                                                        <!--end::Form group-->
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="separator separator-dashed border-secondary mb-5 mt-5">
+                                            </div>
+
+                                            <button class="btn btn-info ">Simpan Tindakan</button>
+                                        </form>
+                                    @else
+                                        Silahkan Input Resume Medis Terlebih Dahulu
+                                    @endif
+
+
+
+                                </div>
+                                <div class="tab-pane fade" id="kt_tab_pane_6" role="tabpanel">
+                                    <h5>Upload Hasil Pemerikasaan Penunjang Luar</h5>
+                                    <form action="" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="">Upload File</label>
+                                                <input type="file" class="form-control" name="file_penunjang_luar">
+                                            </div>
+                                        </div>
+                                       <button class="btn btn-primary btn-sm mt-10">Upload</button>
+                                    </form>                                    
                                 </div>
                             </div>
                         </div>
@@ -414,7 +731,7 @@
                             <thead class="border">
                                 <tr class="fw-bold fs-6 text-gray-800 px-7">
                                     <th>No</th>
-                                    <th>Kategori</th>
+                                    <th>Kunjungan</th>
                                     <th>Tanggal</th>
                                     <th>Opsi</th>
                                 </tr>
@@ -465,6 +782,7 @@
     </div> --}}
 @endsection
 @section('js')
+    <script src="{{ asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
     <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js"></script>
     <script>
@@ -512,18 +830,134 @@
                     },
                 ]
             });
+            $('#kt_tindakan_repeater').repeater({
+                initEmpty: false,
 
+                show: function() {
+                    $(this).slideDown();
+
+                    $(this).find('[data-kt-repeater="select22"]').select2({
+                        allowClear: true,
+                    });
+                },
+
+                hide: function(deleteElement) {
+                    $(this).slideUp(deleteElement);
+                },
+
+                ready: function() {
+                    $('[data-kt-repeater="select22"]').select2({
+                        allowClear: true,
+                    });
+                }
+            });
+            $("#frmTindakLanjut").on("submit", function(event) {
+                event.preventDefault();
+                var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                Swal.fire({
+                    title: 'Tindak Lanjut',
+                    text: "Tindak Lanjut?",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.blockUI({
+                            css: {
+                                border: 'none',
+                                padding: '15px',
+                                backgroundColor: '#000',
+                                '-webkit-border-radius': '10px',
+                                '-moz-border-radius': '10px',
+                                opacity: .5,
+                                color: '#fff',
+                                fontSize: '16px'
+                            },
+                            message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                            baseZ: 9000,
+                        });
+                        this.submit();
+                    }
+                });
+            });
+            $("#frmTindakan").on("submit", function(event) {
+                event.preventDefault();
+                var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                Swal.fire({
+                    title: 'Simpan Tindakan',
+                    text: "Yakin menyimpan tindakan ?",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.blockUI({
+                            css: {
+                                border: 'none',
+                                padding: '15px',
+                                backgroundColor: '#000',
+                                '-webkit-border-radius': '10px',
+                                '-moz-border-radius': '10px',
+                                opacity: .5,
+                                color: '#fff',
+                                fontSize: '16px'
+                            },
+                            message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                            baseZ: 9000,
+                        });
+                        this.submit();
+                    }
+                });
+            });
             $("#frmResume").on("submit", function(event) {
                 event.preventDefault();
                 var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
                 Swal.fire({
-                    title: 'Simpan Data',
+                    title: 'Input Resume',
                     text: "Apakah Anda yakin menginput resume ?",
                     icon: 'info',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, Simpan Data',
+                    confirmButtonText: 'Ya',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.blockUI({
+                            css: {
+                                border: 'none',
+                                padding: '15px',
+                                backgroundColor: '#000',
+                                '-webkit-border-radius': '10px',
+                                '-moz-border-radius': '10px',
+                                opacity: .5,
+                                color: '#fff',
+                                fontSize: '16px'
+                            },
+                            message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                            baseZ: 9000,
+                        });
+                        this.submit();
+                    }
+                });
+            });
+            $("#frmSelesai").on("submit", function(event) {
+                event.preventDefault();
+                var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                Swal.fire({
+                    title: 'Selesai Pemerikasaan',
+                    text: "Apakah Anda yakin menyelesaikan pemerikasaan ? Pemerikasaan tidak dapat diubah kembali setelah disimpan",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya',
                     cancelButtonText: 'Tidak'
                 }).then((result) => {
                     if (result.isConfirmed) {

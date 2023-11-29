@@ -49,6 +49,9 @@
                     <div class="card-title">
                         <h5 class="card-title">Data Pasien</h5>
                     </div>
+                    <div class="card-toolbar">
+                        <a href="{{ route('pasien.tambah-pasien') }}" class="btn btn-primary">Tambah Pasien</a>
+                    </div>
                 </div>
                 <!--begin::Body-->
                 <div class="card-body p-lg-15">
@@ -65,7 +68,7 @@
                             </tr>
                         </thead>
                         <tbody class="border fs-6">
-
+                            
                         </tbody>
                     </table>
                 </div>

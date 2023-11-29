@@ -1,0 +1,146 @@
+<form action="" id='frmpemeriksaan_fisik' class="mt-5" method="post">
+    @csrf
+    <span class="d-inline-block position-relative mb-7">
+        <!--begin::Label-->
+        <span class="d-inline-block mb-2 fs-4 fw-bold">
+            Anamnesa
+        </span>
+        <!--end::Label-->
+
+        <!--begin::Line-->
+        <span
+            class="d-inline-block position-absolute h-5px bottom-0 end-0 start-0 bg-success translate rounded"></span>
+        <!--end::Line-->
+    </span>
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <label class="form-label fw-bold">Keluhan Utama</label>
+            <textarea name="keluhan_utama" rows="3" class="form-control" placeholder="Keluhan Utama"></textarea>
+        </div>
+    </div>
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <label class="form-label fw-bold">Riwayat Penyakit Sekarang</label>
+            <textarea name="rwt_penyakit_sekarang" rows="3" class="form-control" placeholder="Riwayat Penyakit Sekarang"></textarea>
+        </div>
+    </div>
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <label class="form-label fw-bold">Riwayat Penyakit Dulu</label>
+            <textarea name="rwt_penyakit_dulu" rows="3" class="form-control" placeholder="Riwayat Penyakit Dulu"></textarea>
+        </div>
+    </div>
+    <br>
+    <span class="d-inline-block position-relative mb-7">
+        <!--begin::Label-->
+        <span class="d-inline-block mb-2 fs-4 fw-bold">
+            Pemeriksaan Fisik
+        </span>
+        <!--end::Label-->
+
+        <!--begin::Line-->
+        <span
+            class="d-inline-block position-absolute h-5px bottom-0 end-0 start-0 bg-success translate rounded"></span>
+        <!--end::Line-->
+    </span>
+    <div class="row md-5">
+        <div class="col-md-6">
+            <label class="form-label">Kesadaran</label>
+            <div class="input-group mb-5">
+                <input type="text" class="form-control" name="kesadaran"
+                    placeholder="" aria-label="" aria-describedby="kesadaran" />
+            </div>
+        </div>
+    </div>
+    <div class="row md-5">
+        <div class="col-md-3">
+            <label class="form-label">Tekanan Darah</label>
+            <div class="input-group mb-5">
+                <input type="text" class="form-control" name="tekanan_darah"
+                    placeholder="...." aria-label="...." aria-describedby="tdarah" />
+                <span class="input-group-text" id="tdarah">mmHg</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Nadi</label>
+            <div class="input-group mb-5">
+                <input type="text" class="form-control" name="nadi"
+                    placeholder="...." aria-label="...." aria-describedby="nadi" />
+                <span class="input-group-text" id="nadi">x/Menit</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Pernapasan</label>
+            <div class="input-group mb-5">
+                <input type="text" class="form-control" name="pernapasan"
+                    placeholder="...." aria-label="...."
+                    aria-describedby="pernapasan" />
+                <span class="input-group-text" id="pernapasan">x/Menit</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Suhu</label>
+            <div class="input-group mb-5">
+                <input type="text" class="form-control" name="suhu"
+                    placeholder="...." aria-label="...."
+                    aria-describedby="suhu" />
+                <span class="input-group-text" id="suhu">Derajat</span>
+            </div>
+        </div>
+    </div>
+    <div class="row md-5">
+        <div class="col-md-12">
+            <label class="form-label">Keadaan Umum</label>
+            <textarea name="keadaan_umum" rows="3" class="form-control" placeholder="Keadaan Umum"></textarea>
+        </div>
+    </div>
+    <div class="row md-5">
+        <div class="col-md-12">
+            <label class="form-label">Kepala</label>
+            <textarea name="kepala" rows="3" class="form-control" placeholder="Kepala"></textarea>
+        </div>
+    </div>
+    <div class="row md-5">
+        <div class="col-md-12">
+            <label class="form-label">Leher</label>
+            <textarea name="kepala" rows="3" class="form-control" placeholder="leher"></textarea>
+        </div>
+    </div>
+    <div class="row md-5">
+        <div class="col-md-12">
+            <label class="form-label">Paru</label>
+            <textarea name="paru" rows="3" class="form-control" placeholder="paru"></textarea>
+        </div>
+    </div>
+    <div class="row md-5">
+        <div class="col-md-12">
+            <label class="form-label">Jantung</label>
+            <textarea name="jantung" rows="3" class="form-control" placeholder="jantung"></textarea>
+        </div>
+    </div>
+    <div class="row md-5">
+        <div class="col-md-12">
+            <label class="form-label">Abdomen</label>
+            <textarea name="abdomen" rows="3" class="form-control" placeholder="Abdomen"></textarea>
+        </div>
+    </div>
+    <div class="row md-5">
+        <div class="col-md-12">
+            <label class="form-label">Kulit</label>
+            <textarea name="kulit" rows="3" class="form-control" placeholder="Kulit"></textarea>
+        </div>
+    </div>
+    <div class="row md-5">
+        <div class="col-md-12">
+            <label class="form-label">Extremitas</label>
+            <textarea name="extremitas" rows="3" class="form-control" placeholder="Extremitas"></textarea>
+        </div>
+    </div>
+    <div class="row md-5 mb-5">
+        <div class="col-md-12">
+            <label class="form-label">Status neurologis</label>
+            <textarea name="status_neurologis" rows="3" class="form-control" placeholder="Status neurologis"></textarea>
+        </div>
+    </div>
+    <button class="btn btn-primary"> Simpan </button>
+</form>

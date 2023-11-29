@@ -98,6 +98,16 @@
                         </div>
                         <div class="row mb-5">
                             <!--begin::Label-->
+                            <label class="col-lg-1 fw-semibold text-muted">No.RM</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8">
+                                <span class="fw-bold fs-6 text-gray-800">{{ $pasien->no_rm }}</span>
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <div class="row mb-5">
+                            <!--begin::Label-->
                             <label class="col-lg-1 fw-semibold text-muted">NIK</label>
                             <!--end::Label-->
                             <!--begin::Col-->

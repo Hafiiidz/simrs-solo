@@ -37,7 +37,7 @@
                     <!--end:Menu link-->
                 </div>
                 <!--end:Menu item-->
-                @canany(['dokter', 'perawat', 'rekammedis'])
+                {{-- @canany(['dokter', 'perawat', 'rekammedis']) --}}
                     <!--begin:Menu item-->
                     <div data-kt-menu-trigger="click" class="menu-item {{ Request::is('data-master') || Request::is('data-master/*') ? 'show' : '' }} menu-accordion">
                         <!--begin:Menu link-->
@@ -79,11 +79,64 @@
                         </span>
                         <!--end:Menu link-->
                         <!--begin:Menu sub-->
+                        @if(auth()->user()->detail->idpoli == null )
+                            @can('farmasi')
+                            <div class="menu-sub menu-sub-accordion">
+                                <!--begin:Menu item-->
+                                <div class="menu-item">
+                                    <!--begin:Menu link-->
+                                    <a class="menu-link {{ Request::is('farmasi') || Request::is('farmasi/') ? 'active' : '' }}" href="{{ route('farmasi.list-pasien-rawat') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">List Pasien Rawat</span>
+                                    </a>
+                                </div>
+                                <!--end:Menu item-->
+                            </div>
+                            @endcan
+                            @can('rekammedis')
+                            <div class="menu-sub menu-sub-accordion">
+                                <!--begin:Menu item-->
+                                <div class="menu-item">
+                                    <!--begin:Menu link-->
+
+                                    <a class="menu-link {{ Request::is('pasien') || Request::is('pasien/') ? 'active' : '' }}" href="{{ url('/pasien') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">List Pasien</span>
+                                    </a>
+                                    <!--end:Menu link-->
+                                </div>
+                                <!--end:Menu item-->
+                            </div>
+                            @endcan
+                            @can('perawat_ruangan')
+                            <div class="menu-sub menu-sub-accordion">
+                                <!--begin:Menu item-->
+                                <div class="menu-item">
+                                    <!--begin:Menu link-->
+
+                                    <a class="menu-link {{ Request::is('pasien') || Request::is('pasien/') ? 'active' : '' }}" href="{{ route('index.rawat-inap')}}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Keperawatan</span>
+                                    </a>
+                                    <!--end:Menu link-->
+                                </div>
+                                <!--end:Menu item-->
+                            </div>
+                            @endcan
+                            
+                        @else
                         <div class="menu-sub menu-sub-accordion">
                             <!--begin:Menu item-->
                             <div class="menu-item">
                                 <!--begin:Menu link-->
-                                <a class="menu-link {{ Request::is('pasien') || Request::is('pasien/*') ? 'active' : '' }}" href="{{ url('pasien/') }}">
+
+                                <a class="menu-link {{ Request::is('rawat-jalan') || Request::is('rawat-jalan/poli') ? 'active' : '' }}" href="{{ route('poliklinik') }}">
                                     <span class="menu-bullet">
                                         <span class="bullet bullet-dot"></span>
                                     </span>
@@ -93,12 +146,88 @@
                             </div>
                             <!--end:Menu item-->
                         </div>
+                        <div class="menu-sub menu-sub-accordion">
+                            <!--begin:Menu item-->
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+                                
+                                <a class="menu-link {{ Request::is('rawat-jalan') || Request::is('rawat-jalan/poli-semua') ? 'active' : '' }}" href="{{ route('poliklinik-semua') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <span class="menu-title">Semua Pasien</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <!--end:Menu item-->
+                        </div>
+                        @endif
+                       
                         <!--end:Menu sub-->
                     </div>
+
+                    @can('farmasi')
+                    <div data-kt-menu-trigger="click" class="menu-item {{ Request::is('farmasi') || Request::is('farmasi/*') ? 'show' : '' }} menu-accordion">
+                        <!--begin:Menu link-->
+                        <span class="menu-link">
+                            <span class="menu-icon">
+                                <i class="ki-outline ki-office-bag fs-2"></i>
+                            </span>
+                            <span class="menu-title">Farmasi</span>
+                            <span class="menu-arrow"></span>
+                        </span>
+                        <div class="menu-sub menu-sub-accordion">
+                            <!--begin:Menu item-->
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+
+                                <a class="menu-link {{ Request::is('farmasi.antrian-resep') || Request::is('farmasi/') ? 'active' : '' }}" href="{{ route('farmasi.antrian-resep') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <span class="menu-title">Antrian Resep</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <!--end:Menu item-->
+                        </div>
+                        <div class="menu-sub menu-sub-accordion">
+                            <!--begin:Menu item-->
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+
+                                <a class="menu-link {{ Request::is('farmasi.list-resep') || Request::is('farmasi/') ? 'active' : '' }}" href="{{ route('farmasi.list-resep') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <span class="menu-title">List Resep</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <!--end:Menu item-->
+                        </div>
+                        <div class="menu-sub menu-sub-accordion">
+                            <!--begin:Menu item-->
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+
+                                <a class="menu-link {{ Request::is('pasien') || Request::is('pasien/') ? 'active' : '' }}" href="{{ route('farmasi.list-obat') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <span class="menu-title">Obat Obatan</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <!--end:Menu item-->
+                        </div>
+                    </div>
+
+                    @endcan
                     <!--end:Menu item-->
-                @endcanany
+                {{-- @endcanany --}}
                 <!--begin:Menu item-->
-                <div class="menu-item">
+                {{-- <div class="menu-item">
                     <!--begin:Menu link-->
                     <a class="menu-link {{ Request::is('laporan') || Request::is('laporan/*') ? 'active' : '' }}" href="{{ url('laporan/') }}">
                         <span class="menu-icon">
@@ -107,7 +236,7 @@
                         <span class="menu-title">Laporan</span>
                     </a>
                     <!--end:Menu link-->
-                </div>
+                </div> --}}
                 <!--end:Menu item-->
             </div>
             <!--end::Sidebar menu-->

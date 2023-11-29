@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\RekapMedis\Kategori;
 use App\Models\RekapMedis\DetailRekapMedis;
 use App\Models\Pasien\Pasien;
+use App\Models\Rawat;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use Auth;
@@ -48,6 +49,10 @@ class RekapMedis extends Model
    public function pasien(): BelongsTo
    {
        return $this->BelongsTo(Pasien::class, 'idpasien', 'id');
+   }
+   public function rawat(): HasOne
+   {
+       return $this->hasOne(Rawat::class, 'id', 'idrawat');
    }
 
    /**

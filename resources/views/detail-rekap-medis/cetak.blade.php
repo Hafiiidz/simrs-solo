@@ -8,12 +8,12 @@
             <tr class="border">
                 <td class="w-50" style="border: 1px solid black;"></td>
                 <td class="w-75" style="border: 1px solid black;">
-                    <div class="row p-1">
+                    <div class="row">
                         <div class="col-md-12">
                             <p><b>Identitas Pasien</b></p>
                         </div>
                     </div>
-                    <div class="row p-1">
+                    <div class="row">
                         <table>
                             <tr>
                                 <td>Nama</td>
@@ -29,16 +29,30 @@
                                 <td>Tgl Lahir</td>
                                 <td>:</td>
                                 <td>{{ date('d-m-Y', strtotime($data->rekapMedis->pasien->tgllahir)) }}</td>
-                            </tr>
-                            <tr>
+                                <td></td>
                                 <td>Usia</td>
                                 <td>:</td>
-                                <td>{{ \Carbon\Carbon::parse($data->rekapMedis->pasien->tgllahir)->age; }}</td>
+                                <td>{{ $rawat->pasien->usia_tahun }}Th {{ $rawat->pasien->usia_bulan }}Bln {{ $rawat->pasien->usia_hari }}Hr</td>
                             </tr>
                             <tr>
                                 <td>No.RM</td>
                                 <td>:</td>
-                                <td>{{ $data->rekapMedis->pasien->no_rm }}</td>
+                                <td>{{ $rawat->no_rm }}</td>
+                            </tr>
+                            <tr>
+                                <td>Klinik</td>
+                                <td>:</td>
+                                <td>{{ $rawat->poli->poli }}</td>
+                            </tr>
+                            <tr>
+                                <td>Dokter</td>
+                                <td>:</td>
+                                <td>{{ $rawat->dokter->nama_dokter }}</td>
+                            </tr>
+                            <tr>
+                                <td>Penjamin</td>
+                                <td>:</td>
+                                <td>{{ $rawat->bayar->bayar }}</td>
                             </tr>
                             <tr>
                                 <td>Tgl Registrasi</td>
@@ -191,8 +205,8 @@
                                 @foreach ($obat as $item)
                                     @if ($val->obat == $item->id)
                                         <tr>
-                                            <td class="text-start">{{ $item->nama_obat }}</td>
-                                            <td class="text-end">{{ $val->jumlah_obat }} {{ $item->satuan->satuan }}</td>
+                                            <td class="text-start">R/ {{ $item->nama_obat }} <br>{{ $val->signa1 }} X {{ $val->signa2 }}</td>
+                                            <td class="text-end">No. {{ $val->jumlah_obat }} </td>
                                         </tr>
                                     @endif
                                 @endforeach
@@ -202,6 +216,37 @@
                     <p>{{ $data->terapi }}</p>
                 </td>
             </tr>
+            @if($tindak_lanjut)
+            <tr>
+                <td colspan="2" class="text-center" style="border: 1px solid black;">
+                    <b style="text-transform:uppercase">Rencana Tindak Lanjut</b>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="border: 1px solid black;"> 
+                    <table>
+                        <tr>
+                            <td colspan="3">Pasien {{ $tindak_lanjut->tindak_lanjut }}</td>
+                        </tr>
+                        <tr>
+                            <td>Dokter</td>
+                            <td>:</td>
+                            <td>{{ $tindak_lanjut->rawat->dokter->nama_dokter }}</td>
+                        </tr>
+                        <tr>
+                            <td>Tanggal</td>
+                            <td>:</td>
+                            <td>{{ $tindak_lanjut->tgl_tindak_lanjut }}</td>
+                        </tr>
+                        <tr>
+                            <td>Catatan</td>
+                            <td>:</td>
+                            <td>{{ $tindak_lanjut->catatan }}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            @endif
         </table>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>

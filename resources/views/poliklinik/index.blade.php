@@ -61,6 +61,7 @@
                                 <th>Poli</th>
                                 <th>Bayar</th>
                                 <th>Status</th>
+                                <th>Pemeriksaan</th>
                                 <th>Opsi</th>
                             </tr>
                         </thead>
@@ -109,7 +110,14 @@
                 { data: 'tglmasuk', name: 'rawat.tglmasuk' },
                 { data: 'poli', name: 'poli.poli' },
                 { data: 'bayar', name: 'rawat_bayar.bayar' },
-                { data: 'status', name: 'rawat_status.status' },
+                { data: 'status', name: 'rawat_status.status' ,render: function(data, type, row){
+                    if(data == 'Pulang'){
+                        return '<span class="badge badge-light-success">Selesai</span>';
+                    }else{
+                        return '<span class="badge badge-secondary">'+data+'</span>';
+                    }
+                }},
+                { data: 'status_pemeriksaan', name: 'status_pemeriksaan' },
                 { data: 'opsi', name: 'opsi', orderable: false, searcheable: false },
             ]
         });
@@ -117,4 +125,3 @@
 
 </script>
 @endsection
-x
