@@ -8,6 +8,7 @@ use App\Http\Controllers\RekapMedisController;
 use App\Http\Controllers\DetailRekapMedisController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FarmasiController;
+use App\Http\Controllers\PenunjangController;
 use App\Http\Controllers\PoliklinikController;
 use App\Http\Controllers\RawatInapController;
 use App\Http\Controllers\RuanganController;
@@ -63,6 +64,19 @@ Route::prefix('/laporan')->group(function () {
 });
 
 //pasien
+Route::prefix('/penunjang')->group(function () {
+    Route::get('/antrian/{jenis}', [PenunjangController::class, 'antrian'])->middleware('auth')->name('penunjang.antrian');
+    Route::get('/detail-penunjang/{id}/{jenis}', [PenunjangController::class, 'detail_penunjang'])->middleware('auth')->name('penunjang.detail');
+    Route::get('/input-hasil-radiologi/{id}/{idpemeriksaan}', [PenunjangController::class, 'input_hasil_radiologi'])->middleware('auth')->name('penunjang.input-hasil-radiologi');
+    Route::get('/input-hasil/{id}/{idpemeriksaan}', [PenunjangController::class, 'input_hasil_lab'])->middleware('auth')->name('penunjang.input-hasil');
+    Route::get('/lihat-hasil/{id}/{idpemeriksaan}', [PenunjangController::class, 'lihat_hasil_lab'])->middleware('auth')->name('penunjang.lihat-hasil');
+
+    Route::post('/post-lab-hasil/{id}', [PenunjangController::class, 'post_data_hasil_lab'])->middleware('auth')->name('penunjang.lab-post-hasil');
+    Route::post('/post-rad-hasil/{id}', [PenunjangController::class, 'post_data_hasil_rad'])->middleware('auth')->name('penunjang.rad-post-hasil');
+    Route::post('/post-lab/{id}', [PenunjangController::class, 'kerjakan_lab'])->middleware('auth')->name('penunjang.lab-post');
+    Route::post('/post-rad/{id}', [PenunjangController::class, 'kerjakan_rad'])->middleware('auth')->name('penunjang.rad-post');
+    Route::post('/post-foto/{id}', [PenunjangController::class, 'post_foto_rad'])->middleware('auth')->name('penunjang.rad-post-foto');
+});
 Route::prefix('/farmasi')->group(function () {
     Route::get('/antrian', [FarmasiController::class, 'antrian_resep'])->middleware('auth')->name('farmasi.antrian-resep');
     Route::get('/status-rajal/{id}', [FarmasiController::class, 'status_rajal'])->middleware('auth')->name('farmasi.status-rajal');
@@ -93,6 +107,7 @@ Route::prefix('/rawat-inap')->group(function () {
     Route::get('{id}/detail', [RawatInapController::class, 'detail'])->name('detail.rawat-inap');
     Route::post('{id}/ringkasan-masuk', [RawatInapController::class, 'postRingkasan'])->name('postRingkasanmasuk.rawat-inap');
     Route::post('{id}/order-obat', [RawatInapController::class, 'postOrderObat'])->name('postOrderObat.rawat-inap');
+    Route::post('{id}/order-penunjang', [RawatInapController::class, 'postOrderPenunjang'])->name('postOrderPenunjang.rawat-inap');
 });
 Route::prefix('/pasien')->group(function () {
     Route::get('/', [PasienController::class, 'index'])->name('pasien.index');

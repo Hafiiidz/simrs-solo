@@ -350,7 +350,7 @@
                                                                         @endforeach
                                                                     </ul>
                                                                 @endif
-                                                                @if ($resume_detail->radiologi != 'null')
+                                                                @if ($resume_detail->laborat != 'null')
                                                                     <div
                                                                         class="separator separator-dashed border-secondary mb-5">
                                                                     </div>
@@ -365,6 +365,21 @@
                                                                         @endforeach
                                                                     </ul>
                                                                 @endif
+                                                                @if ($resume_detail->fisio != 'null')
+                                                                    <div
+                                                                        class="separator separator-dashed border-secondary mb-5">
+                                                                    </div>
+                                                                    <h5>Fisio</h5>
+                                                                    <ul>
+                                                                        @foreach (json_decode($resume_detail->fisio) as $val)
+                                                                            @foreach ($fisio as $item)
+                                                                                @if ($val->tindakan_fisio == $item->id)
+                                                                                    <li>{{ $item->nama_tarif }}</li>
+                                                                                @endif
+                                                                            @endforeach
+                                                                        @endforeach
+                                                                    </ul>
+                                                                @endif
                                                             </td>
                                                             <td>
                                                                 {{ $resume_detail?->terapi }}
@@ -372,7 +387,7 @@
                                                                     class="separator separator-dashed border-secondary mb-5">
                                                                 </div>
                                                                 @if ($resume_detail->terapi_obat != 'null')
-                                                                    <h5>Obat</h5>
+                                                                    <h5>Obat & Alkes</h5>
                                                                     <ul>
                                                                         @foreach (json_decode($resume_detail->terapi_obat) as $val)
                                                                             @foreach ($obat as $item)
@@ -709,6 +724,90 @@
 
 
                                 </div>
+                                <div class="tab-pane fade" id="kt_tab_pane_5" role="tabpanel">
+                                    <h5>Hasil Pemeriksaan Radiologi</h5>
+                                    <div class="separator separator-dashed border-secondary mt-5 mb-5"></div>
+                                    @if ($pemeriksaan_lab)
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Kode Pemeriksaan</th>
+                                                    <th>Tgl Pemeriksaan</th>
+                                                    <th>Aksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($pemeriksaan_lab as $pl)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $pl->labid }}</td>
+                                                        <td>{{ $pl->tgl_hasil }}</td>
+                                                        <td>
+                                                            @php
+                                                            $pemeriksaan_lab_detail = DB::table('laboratorium_hasildetail')
+                                                                ->where('idhasil', $pl->id)
+                                                                ->get();
+                                                            @endphp
+                                                        <ol>
+                                                            @foreach ($pemeriksaan_lab_detail as $plb)                                                           
+                                                            <li>
+                                                                <a href="">{{ $plb->nama_pemeriksaan }}</a>
+                                                            </li>
+                                                            @endforeach
+                                                        </ol>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+
+                                            </tbody>
+                                        </table>
+                                    @endif
+                                    <h5>Hasil Pemeriksaan Lab</h5>
+                                    <div class="separator separator-dashed border-secondary mt-5 mb-5"></div>
+                                    @if ($pemeriksaan_radiologi)
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Kode Pemeriksaan</th>
+                                                    <th>Tgl Pemeriksaan</th>
+                                                    <th>Pemeriksaan</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($pemeriksaan_radiologi as $pr)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $pr->idhasil }}</td>
+                                                        <td>{{ $pl->tgl_hasil }}</td>
+                                                        <td>
+                                                            @php
+                                                                $pemeriksaan_radio_detail = DB::table('radiologi_hasildetail')
+                                                                    ->where('idhasil', $pr->id)
+                                                                    ->get();
+                                                            @endphp
+                                                            <ol>
+                                                                @foreach ($pemeriksaan_radio_detail as $pld)
+                                                                @php
+                                                                    $tindakan = DB::table('radiologi_tindakan')
+                                                                        ->where('id', $pld->idtindakan)
+                                                                        ->first();
+                                                                @endphp
+                                                                <li>
+                                                                    <a href="">{{ $tindakan->nama_tindakan }}</a>
+                                                                </li>
+                                                            @endforeach
+                                                            </ol>
+                                                            
+                                                </td>
+                                                </tr>
+                                    @endforeach
+
+                                    </tbody>
+                                    </table>
+                                    @endif
+                                </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_6" role="tabpanel">
                                     <h5>Upload Hasil Pemerikasaan Penunjang Luar</h5>
                                     <form action="" method="POST" enctype="multipart/form-data">
@@ -719,8 +818,8 @@
                                                 <input type="file" class="form-control" name="file_penunjang_luar">
                                             </div>
                                         </div>
-                                       <button class="btn btn-primary btn-sm mt-10">Upload</button>
-                                    </form>                                    
+                                        <button class="btn btn-primary btn-sm mt-10">Upload</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>

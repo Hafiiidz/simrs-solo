@@ -80,6 +80,43 @@ class RawatInapController extends Controller
             'rawat' => $rawat
         ],compact('pasien','ringakasan_pasien_masuk','obat','tindak_lanjut','radiologi','lab','tarif','dokter'));
     }
+    public function postOrderPenunjang(Request $request,$id){
+
+        $rawat = Rawat::where('id',$id)->first();
+        if($request->radiologi != 'null' || $request->radiologi != ''){
+            DB::table('demo_permintaan_penunjang')->insert([
+                'idrawat'=>$rawat->id,
+                'idbayar'=>$rawat->idbayar,
+                'status_pemeriksaan'=>'Antrian',
+                'no_rm'=>$rawat->no_rm,
+                'pemeriksaan_penunjang'=>json_encode($request->radiologi),
+                'jenis_penunjang'=>'Radiologi',
+                'peminta'=>now(),
+                'created_at'=>now(),
+                'updated_at'=>now(),
+                'peminta'=>auth()->user()->id,
+                'jenis_rawat'=>$rawat->idjenisrawat,  
+                               
+            ]);
+        }
+        if($request->lab != 'null' || $request->lab != ''){
+            DB::table('demo_permintaan_penunjang')->insert([
+                'idrawat'=>$rawat->id,
+                'idbayar'=>$rawat->idbayar,
+                'status_pemeriksaan'=>'Antrian',
+                'no_rm'=>$rawat->no_rm,
+                'pemeriksaan_penunjang'=>json_encode($request->lab),
+                'jenis_penunjang'=>'Lab',
+                'peminta'=>now(),
+                'created_at'=>now(),
+                'updated_at'=>now(),
+                'peminta'=>auth()->user()->id,
+                'jenis_rawat'=>$rawat->idjenisrawat,  
+                               
+            ]);
+        }
+        return redirect()->back()->with('berhasil','Order Penunjang Di Simpan');
+    }
     public function postOrderObat(Request $request,$id){
         // return $request->all();
         $rawat = Rawat::where('id',$id)->first();

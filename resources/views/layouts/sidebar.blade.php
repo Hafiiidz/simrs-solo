@@ -80,6 +80,36 @@
                         <!--end:Menu link-->
                         <!--begin:Menu sub-->
                         @if(auth()->user()->detail->idpoli == null )
+                            @can('lab')
+                            <div class="menu-sub menu-sub-accordion">
+                                <!--begin:Menu item-->
+                                <div class="menu-item">
+                                    <!--begin:Menu link-->
+                                    <a class="menu-link {{ Request::is('farmasi') || Request::is('farmasi/') ? 'active' : '' }}" href="{{ route('penunjang.antrian','Lab') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Antrian Lab</span>
+                                    </a>
+                                </div>
+                                <!--end:Menu item-->
+                            </div>
+                            @endcan
+                            @can('radiologi')
+                            <div class="menu-sub menu-sub-accordion">
+                                <!--begin:Menu item-->
+                                <div class="menu-item">
+                                    <!--begin:Menu link-->
+                                    <a class="menu-link {{ Request::is('farmasi') || Request::is('farmasi/') ? 'active' : '' }}" href="{{ route('penunjang.antrian','Radiologi') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Antrian Radiologi</span>
+                                    </a>
+                                </div>
+                                <!--end:Menu item-->
+                            </div>
+                            @endcan
                             @can('farmasi')
                             <div class="menu-sub menu-sub-accordion">
                                 <!--begin:Menu item-->

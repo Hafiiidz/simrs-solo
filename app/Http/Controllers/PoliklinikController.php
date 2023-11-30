@@ -39,9 +39,23 @@ class PoliklinikController extends Controller
                 return '<a href="' . route('rekam-medis-poli', $rawat->id) . '" class="btn btn-sm btn-success">Lihat</a>';
             })
             ->addColumn('status_pemeriksaan',function($rawat){
-                
+                #span class="badge badge-success">Selesai</span>
+                if($rawat->perawat ==1 ){
+                    $color_perawat = 'primary';
+                }else{
+                    $color_perawat = 'danger';
+                }
+                if($rawat->dokter ==1 ){
+                    $color_dokter = 'primary';
+                }else{
+                    $color_dokter = 'danger';
+                }
+                $perawat = '<span class="badge badge-'.$color_perawat.'">Perawat</span>';
+                $dokter = '<span class="badge badge-'.$color_dokter.'">Dokter</span>';
+
+                return $dokter.' '.$perawat;
             })
-            ->rawColumns(['opsi'])
+            ->rawColumns(['opsi','status_pemeriksaan'])
             ->make(true);
         }
         return view('poliklinik.index');
@@ -88,7 +102,7 @@ class PoliklinikController extends Controller
                 }else{
                     $color_dokter = 'danger';
                 }
-                $perawat = '<span class="badge badge-'.$color_perawat.'">Pewawat</span>';
+                $perawat = '<span class="badge badge-'.$color_perawat.'">Perawat</span>';
                 $dokter = '<span class="badge badge-'.$color_dokter.'">Dokter</span>';
 
                 return $dokter.' '.$perawat;

@@ -174,7 +174,7 @@
                                     </div>
                                 </div>
                             @endcan
-
+                            @can('dokter')
                             <div class="row mb-5">
                                 <div class="col-md-12">
                                     <div id="icdx_repeater">
@@ -235,6 +235,7 @@
                                     <textarea name="diagnosa" rows="3" class="form-control" placeholder="..."></textarea>
                                 </div>
                             </div>
+                            @endcan
                             <!--begin::Underline-->
                             <span class="d-inline-block position-relative mb-7">
                                 <!--begin::Label-->
@@ -326,7 +327,7 @@
                                 </div>
                                 <div class="row mb-5">
                                     <div class="col-md-12">
-                                        <label class="form-label fw-bold">Pasien Sedang</label>
+                                        <label class="form-label fw-bold">Pasien Dalam Kondisi Tertentu</label>
                                         <input name="pasien_sedang" rows="3" class="form-control" placeholder="....">
                                     </div>
                                 </div>
@@ -511,7 +512,7 @@
                                     </div>
                                 </div>
                             @endcan
-
+                            @can('dokter')                                                         
                             <!--begin::Underline-->
                             <span class="d-inline-block position-relative mb-7">
                                 <!--begin::Label-->
@@ -535,7 +536,7 @@
                                             <div data-repeater-item>
                                                 <div class="form-group row mb-5">
                                                     <div class="col-md-6">
-                                                        <label class="form-label">Tindakan Rad</label>
+                                                        <label class="form-label">Tindakan Radiologi</label>
                                                         <select name="tindakan_rad" class="form-select"
                                                             data-kt-repeater="select2radiologi" data-placeholder="-Pilih-"
                                                             required>
@@ -618,6 +619,55 @@
                                         <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
                                             <i class="ki-duotone ki-plus fs-3"></i>
                                             Tambah Lab
+                                        </a>
+                                    </div>
+                                    <!--end::Form group-->
+                                </div>
+                                <!--end::Repeater-->
+                            </div>
+                            <div class="row mb-5">
+                                <!--begin::Repeater-->
+                                <div id="fisio_repeater">
+                                    <!--begin::Form group-->
+                                    <div class="form-group">
+                                        <div data-repeater-list="fisio">
+                                            <div data-repeater-item>
+                                                <div class="form-group row mb-5">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Fisio Terapi</label>
+                                                        <select name="tindakan_fisio" class="form-select"
+                                                            data-kt-repeater="select2fisio" data-placeholder="-Pilih-"
+                                                            required>
+                                                            <option></option>
+                                                            @foreach ($fisio as $fisio)
+                                                                <option value="{{ $fisio->id }}">
+                                                                    {{ $fisio->nama_tarif }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="col-md-4">
+                                                        <a href="javascript:;" data-repeater-delete
+                                                            class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                            <i class="ki-duotone ki-trash fs-5"><span
+                                                                    class="path1"></span><span
+                                                                    class="path2"></span><span
+                                                                    class="path3"></span><span
+                                                                    class="path4"></span><span class="path5"></span></i>
+                                                            Hapus
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--end::Form group-->
+
+                                    <!--begin::Form group-->
+                                    <div class="form-group mt-5">
+                                        <a href="javascript:;" data-repeater-create class="btn btn-light-info">
+                                            <i class="ki-duotone ki-plus fs-3"></i>
+                                            Tambah Fisio
                                         </a>
                                     </div>
                                     <!--end::Form group-->
@@ -712,6 +762,7 @@
                                     <textarea name="terapi" rows="3" class="form-control" placeholder="Prosedur, Operasi, Rehabilitasi dan Diet"></textarea>
                                 </div>
                             </div>
+                            @endcan
                     </div>
                     <!--end::Body-->
                     <div class="card-footer">
@@ -819,6 +870,23 @@
 
                 ready: function() {
                     $('[data-kt-repeater="select2lab"]').select2();
+                }
+            });
+            $('#fisio_repeater').repeater({
+                initEmpty: true,
+
+                show: function() {
+                    $(this).slideDown();
+
+                    $(this).find('[data-kt-repeater="select2fisio"]').select2();
+                },
+
+                hide: function(deleteElement) {
+                    $(this).slideUp(deleteElement);
+                },
+
+                ready: function() {
+                    $('[data-kt-repeater="select2fisio"]').select2();
                 }
             });
 

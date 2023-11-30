@@ -53,8 +53,9 @@ class DetailRekapMedisController extends Controller
         $data = RekapMedis::find($request->id_rekapmedis);
         $pasien = Pasien::with('alamat')->find($data->idpasien);
         $kategori = Kategori::find($data->idkategori);
-        $obat = Obat::with('satuan')->where('obat.idjenis', 1)->orderBy('obat.nama_obat', 'asc')->get();
-        return view('detail-rekap-medis.create', compact('pasien', 'kategori', 'data', 'obat'));
+        $obat = Obat::with('satuan')->orderBy('obat.nama_obat', 'asc')->get();
+       
+        // return view('detail-rekap-medis.create', compact('pasien', 'kategori', 'data', 'obat'));
     }
 
     public function store(Request $request, $id_rekapmedis)
@@ -98,6 +99,7 @@ class DetailRekapMedisController extends Controller
         $rekap->terapi_obat = json_encode($request->terapi_obat);
         $rekap->radiologi = json_encode($request->radiologi);
         $rekap->laborat = json_encode($request->lab);
+        $rekap->fisio = json_encode($request->fisio);
         $rekap->icdx = json_encode($request->icdx);
         $rekap->kategori_penyakit = $request->kategori_penyakit;
         $rekap->terapi = $request->terapi;
@@ -117,8 +119,9 @@ class DetailRekapMedisController extends Controller
         $kategori_diagnosa = DB::table('kategori_diagnosa')->get();
         $radiologi = DB::table('radiologi_tindakan')->get();
         $lab = DB::table('laboratorium_pemeriksaan')->get();
+        $fisio = DB::table('tarif')->where('idkategori',8)->get();
         // dd($lab);
-        return view('detail-rekap-medis.show', compact('rekap', 'alergi', 'pfisik', 'rkesehatan', 'obat', 'kategori_diagnosa', 'radiologi', 'lab'));
+        return view('detail-rekap-medis.show', compact('rekap', 'alergi', 'pfisik', 'rkesehatan', 'obat', 'kategori_diagnosa', 'radiologi', 'lab', 'fisio'));
     }
 
     public function update(Request $request, $id)
@@ -150,6 +153,11 @@ class DetailRekapMedisController extends Controller
                 $rekap->icdx = json_encode($request->icdx);
             } else {
                 $rekap->icdx = 'null';
+            }
+            if ($request->fisio) {
+                $rekap->fisio = json_encode($request->fisio);
+            } else {
+                $rekap->fisio = 'null';
             }
             $rekap->terapi = $request->terapi;
 

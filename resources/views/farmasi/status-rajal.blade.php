@@ -211,8 +211,14 @@
                                                                             <input type="number"
                                                                                 value={{ $val->jumlah_obat }}
                                                                                 name="jumlah_obat"
-                                                                                class="form-control mb-5 mb-md-0"
-                                                                                min="0" required>
+                                                                                class="form-control form-control-solid mb-5 mb-md-0"
+                                                                                min="0" readonly required>
+                                                                        </div>
+                                                                        <div class="col-md-1">
+                                                                            <label class="form-label">Pemberian</label>
+                                                                            <input type="number" name="pemberian_obat"
+                                                                                class="form-control mb-5 mb-md-0" min="0"
+                                                                                required>
                                                                         </div>
                                                                         <div class="col-md-2">
                                                                             <label class="form-label">Jenis Obat</label>
@@ -271,6 +277,12 @@
                                                                     <div class="col-md-2">
                                                                         <label class="form-label">Jumlah Obat</label>
                                                                         <input type="number" name="jumlah_obat"
+                                                                            class="form-control form-control-solid mb-5 mb-md-0" min="0"
+                                                                            required readonly>
+                                                                    </div>
+                                                                    <div class="col-md-2">
+                                                                        <label class="form-label">Pemberian</label>
+                                                                        <input type="number" name="pemberian_obat"
                                                                             class="form-control mb-5 mb-md-0" min="0"
                                                                             required>
                                                                     </div>
@@ -375,7 +387,7 @@
     <script>
         $(function() {
             $('#kt_docs_repeater_basic').repeater({
-                initEmpty: {{ $antrian->obat == 'null' ? 'true' : 'false' }},
+                initEmpty: false,
                 show: function() {
                     $(this).slideDown();
 

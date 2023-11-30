@@ -193,6 +193,7 @@
                                 <div class="tab-content" id="myTabContent">
                                     <div class="tab-pane fade show active" id="kt_tab_pane_1" role="tabpanel">
                                         <div class="card-body p-lg-15">
+                                            {{-- @dd($antrian) --}}
                                             @if ($antrian)
                                             @if ($antrian->status_antrian == 'Antrian')
                                             <h4>Permintaan Resep</h4>
@@ -259,9 +260,15 @@
                                                                                             class="form-label">Qty</label>
                                                                                         <input type="number"
                                                                                             value={{ $val->jumlah_obat }}
-                                                                                            name="jumlah_obat"
-                                                                                            class="form-control mb-5 mb-md-0"
+                                                                                            name="jumlah_obat" readonly
+                                                                                            class="form-control form-control-solid mb-5 mb-md-0"
                                                                                             min="0" required>
+                                                                                    </div>
+                                                                                    <div class="col-md-1">
+                                                                                        <label class="form-label">Pemberian</label>
+                                                                                        <input type="number" name="pemberian_obat"
+                                                                                            class="form-control mb-5 mb-md-0" min="0"
+                                                                                            required>
                                                                                     </div>
                                                                                     <div class="col-md-2">
                                                                                         <label class="form-label">Jenis
@@ -339,12 +346,17 @@
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="col-md-2">
-                                                                                    <label class="form-label">Jumlah
-                                                                                        Obat</label>
+                                                                                    <label class="form-label">Qty</label>
                                                                                     <input type="number"
                                                                                         name="jumlah_obat"
                                                                                         class="form-control mb-5 mb-md-0"
                                                                                         min="0" required>
+                                                                                </div>
+                                                                                <div class="col-md-1">
+                                                                                    <label class="form-label">Pemberian</label>
+                                                                                    <input type="number" name="pemberian_obat"
+                                                                                        class="form-control mb-5 mb-md-0" min="0"
+                                                                                        required>
                                                                                 </div>
                                                                                 <div class="col-md-2">
                                                                                     <label class="form-label">Jenis
@@ -788,7 +800,7 @@
             });
 
             $('#kt_docs_repeater_nested').repeater({
-                initEmpty: true,
+                initEmpty: false,
                 repeaters: [{
                     selector: '.inner-repeater',
                     show: function() {
@@ -810,7 +822,7 @@
             });
 
             $('#kt_docs_repeater_basic').repeater({
-                initEmpty: {{ isset($antrian->obat) == 'null' ? 'true' : 'false' }},
+                initEmpty: false,
                 show: function() {
                     $(this).slideDown();
 

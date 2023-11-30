@@ -657,9 +657,10 @@
                         </div>
                         <!--end::Close-->
                     </div>
+                    <form id='frmpenunjang' action="{{ route('postOrderPenunjang.rawat-inap', $rawat->id) }}" method="post">
+                        <div class="modal-body">
 
-                    <div class="modal-body">
-                        <form action="">
+                            @csrf
                             <div class="row mb-5">
                                 <!--begin::Repeater-->
                                 <div id="radiologi_repeater">
@@ -758,13 +759,14 @@
                                 </div>
                                 <!--end::Repeater-->
                             </div>
-                        </form>
-                    </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Simpan</button>
-                    </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -886,6 +888,38 @@
                     Swal.fire({
                         title: 'Order Obat',
                         text: "Apakah Anda yakin akan order obat ?",
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, Simpan Data',
+                        cancelButtonText: 'Tidak'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.blockUI({
+                                css: {
+                                    border: 'none',
+                                    padding: '15px',
+                                    backgroundColor: '#000',
+                                    '-webkit-border-radius': '10px',
+                                    '-moz-border-radius': '10px',
+                                    opacity: .5,
+                                    color: '#fff',
+                                    fontSize: '16px'
+                                },
+                                message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                                baseZ: 9000,
+                            });
+                            this.submit();
+                        }
+                    });
+                });
+                $("#frmpenunjang").on("submit", function(event) {
+                    event.preventDefault();
+                    var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                    Swal.fire({
+                        title: 'Order Obat',
+                        text: "Apakah Anda yakin akan order pemeriksaan penunjang ?",
                         icon: 'info',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',

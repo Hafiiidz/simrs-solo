@@ -655,10 +655,10 @@
                                                                             data-kt-repeater="select2lab"
                                                                             data-placeholder="-Pilih-" required>
                                                                             <option></option>
-                                                                            @foreach ($lab as $lab)
-                                                                                <option value="{{ $lab->id }}"
-                                                                                    {{ $val->tindakan_lab == $lab->id ? 'selected' : '' }}>
-                                                                                    {{ $lab->nama_pemeriksaan }}</option>
+                                                                            @foreach ($lab as $l)
+                                                                                <option value="{{ $l->id }}"
+                                                                                    {{ $val->tindakan_lab == $l->id ? 'selected' : '' }}>
+                                                                                    {{ $l->nama_pemeriksaan }}</option>
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
@@ -686,9 +686,9 @@
                                                                         data-kt-repeater="select2lab"
                                                                         data-placeholder="-Pilih-" required>
                                                                         <option></option>
-                                                                        @foreach ($lab as $lab)
-                                                                            <option value="{{ $lab->id }}">
-                                                                                {{ $lab->nama_pemeriksaan }}</option>
+                                                                        @foreach ($lab as $l)
+                                                                            <option value="{{ $l->id }}">
+                                                                                {{ $l->nama_pemeriksaan }}</option>
                                                                         @endforeach
                                                                     </select>
                                                                 </div>
@@ -724,6 +724,92 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="row mb-5">
+                                    <!--begin::Repeater-->
+                                    <div id="fisio_repeater">
+                                        <!--begin::Form group-->
+                                        <div class="form-group">
+                                            <div data-repeater-list="fisio">
+                                                @if ($rekap->fisio != 'null')
+                                                {{-- {{ dd($rekap->laborat) }} --}}
+                                                @foreach (json_decode($rekap->fisio) as $val)
+                                                <div data-repeater-item>
+                                                    <div class="form-group row mb-5">
+                                                        <div class="col-md-6">
+                                                            <label class="form-label">Fisio Terapi</label>
+                                                            <select name="tindakan_fisio" class="form-select"
+                                                                data-kt-repeater="select2fisio" data-placeholder="-Pilih-"
+                                                                required>
+                                                                <option></option>
+                                                                @foreach ($fisio as $f)
+                                                                    <option value="{{ $f->id }}" {{ $val->tindakan_fisio == $f->id ? 'selected' : '' }}>
+                                                                        {{ $f->nama_tarif }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+    
+                                                        <div class="col-md-4">
+                                                            <a href="javascript:;" data-repeater-delete
+                                                                class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                <i class="ki-duotone ki-trash fs-5"><span
+                                                                        class="path1"></span><span
+                                                                        class="path2"></span><span
+                                                                        class="path3"></span><span
+                                                                        class="path4"></span><span class="path5"></span></i>
+                                                                Hapus
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @endforeach
+                                                @else
+                                                <div data-repeater-item>
+                                                    <div class="form-group row mb-5">
+                                                        <div class="col-md-6">
+                                                            <label class="form-label">Fisio Terapi</label>
+                                                            <select name="tindakan_fisio" class="form-select"
+                                                                data-kt-repeater="select2fisio" data-placeholder="-Pilih-"
+                                                                required>
+                                                                <option></option>
+                                                                @foreach ($fisio as $fisio)
+                                                                    <option value="{{ $fisio->id }}">
+                                                                        {{ $fisio->nama_tarif }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+    
+                                                        <div class="col-md-4">
+                                                            <a href="javascript:;" data-repeater-delete
+                                                                class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                <i class="ki-duotone ki-trash fs-5"><span
+                                                                        class="path1"></span><span
+                                                                        class="path2"></span><span
+                                                                        class="path3"></span><span
+                                                                        class="path4"></span><span class="path5"></span></i>
+                                                                Hapus
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @endif
+                                                
+                                            </div>
+                                        </div>
+                                        <!--end::Form group-->
+    
+                                        <!--begin::Form group-->
+                                        <div class="form-group mt-5">
+                                            <a href="javascript:;" data-repeater-create class="btn btn-light-info">
+                                                <i class="ki-duotone ki-plus fs-3"></i>
+                                                Tambah Fisio
+                                            </a>
+                                        </div>
+                                        <!--end::Form group-->
+                                    </div>
+                                    <!--end::Repeater-->
+                                </div>
+
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <textarea name="rencana_pemeriksaan" rows="3" class="form-control"
@@ -924,6 +1010,24 @@
                     }
                 });
             });
+            $('#fisio_repeater').repeater({
+                initEmpty: {{ $rekap->fisio == 'null' ? 'true' : 'false' }},
+
+                show: function() {
+                    $(this).slideDown();
+
+                    $(this).find('[data-kt-repeater="select2fisio"]').select2();
+                },
+
+                hide: function(deleteElement) {
+                    $(this).slideUp(deleteElement);
+                },
+
+                ready: function() {
+                    $('[data-kt-repeater="select2fisio"]').select2();
+                }
+            });
+
 
             $('#kt_docs_repeater_basic').repeater({
                 initEmpty: {{ $rekap->terapi_obat == 'null' ? 'true' : 'false' }},
