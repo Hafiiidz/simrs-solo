@@ -12,6 +12,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
+use App\Models\Operasi\LaporanOperasi;
 
 class RawatInapController extends Controller
 {
@@ -56,13 +57,13 @@ class RawatInapController extends Controller
                 ';
             })
             ->rawColumns(['action','terisi'])
-            ->make(true);   
+            ->make(true);
         }
         return view('rawat-inap.view',[
             'ruangan' => $ruangan
         ]);
     }
-    #detail 
+    #detail
     public function detail($id)
     {
         $rawat = Rawat::with('pasien','bayar')->where('id',$id)->first();
@@ -76,9 +77,11 @@ class RawatInapController extends Controller
         $dokter = Dokter::get();
         $tarif = DB::table('tarif')->whereNull('idjenisrawat')->orWhere('idjenisrawat', $rawat->id_jenis_rawat)->whereNull('idpoli')->orWhereIn('idkelas', [$rawat->idkelas])->get();
 
+        $data_operasi = LaporanOperasi::where('idrawat', $rawat->id)->get();
+
         return view('rawat-inap.detail',[
             'rawat' => $rawat
-        ],compact('pasien','ringakasan_pasien_masuk','obat','tindak_lanjut','radiologi','lab','tarif','dokter'));
+        ],compact('pasien','ringakasan_pasien_masuk','obat','tindak_lanjut','radiologi','lab','tarif','dokter','data_operasi'));
     }
     public function postOrderPenunjang(Request $request,$id){
 
@@ -95,8 +98,8 @@ class RawatInapController extends Controller
                 'created_at'=>now(),
                 'updated_at'=>now(),
                 'peminta'=>auth()->user()->id,
-                'jenis_rawat'=>$rawat->idjenisrawat,  
-                               
+                'jenis_rawat'=>$rawat->idjenisrawat,
+
             ]);
         }
         if($request->lab != 'null' || $request->lab != ''){
@@ -111,8 +114,8 @@ class RawatInapController extends Controller
                 'created_at'=>now(),
                 'updated_at'=>now(),
                 'peminta'=>auth()->user()->id,
-                'jenis_rawat'=>$rawat->idjenisrawat,  
-                               
+                'jenis_rawat'=>$rawat->idjenisrawat,
+
             ]);
         }
         return redirect()->back()->with('berhasil','Order Penunjang Di Simpan');
@@ -131,10 +134,10 @@ class RawatInapController extends Controller
             'created_at'=>now(),
             'updated_at'=>now(),
         ]);
-        
+
         return redirect()->back()->with('berhasil','Order Obat Berhasil Di Simpan');
     }
-    #post ringkasan pasien 
+    #post ringkasan pasien
     public function postRingkasan(Request $request,$id)
     {
         $rawat = Rawat::where('id',$id)->first();

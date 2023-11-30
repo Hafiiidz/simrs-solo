@@ -306,9 +306,10 @@
                                         data-bs-target="#modal_penunjang">Tambah Penunjang</button>
                                     @include('rawat-inap.menu.penunjang')
                                 </div>
-                                <div class="tab-pane fade" id="kt_tab_pane_7" role="tabpanel">
-                                    <button class="btn btn-danger btn-sm mb-5">Tambah Operasi</button>
-                                    @include('rawat-inap.menu.penunjang')
+                                <div class="tab-pane fade" id="kt_tab_pane_7" role="tabpanel" >
+                                    <button class="btn btn-danger btn-sm mb-5" data-bs-toggle="modal"
+                                    data-bs-target="#modal_operasi">Tambah Operasi</button>
+                                    @include('rawat-inap.menu.operasi')
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_8" role="tabpanel">
                                     Diagnosa
@@ -798,6 +799,46 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" tabindex="-1" id="modal_operasi">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Tambah Operasi</h3>
+                        <!--begin::Close-->
+                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span
+                                    class="path2"></span></i>
+                        </div>
+                        <!--end::Close-->
+                    </div>
+
+                    <div class="modal-body">
+                        <form action="{{ route('store.operasi') }}" method="POST" autocomplete="off">
+                            @csrf
+                            <input type="hidden" name="idrawat" value="{{ $rawat->id }}">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="" class="form-label required">Tanggal Operasi</label>
+                                    <input class="form-control" placeholder="Pilih Tanggal Operasi" id="tgl_operasi" name="tgl_operasi" required/>
+                                </div>
+                            </div>
+                            <div class="row mt-5">
+                                <div class="col-md-12">
+                                    <label for="" class="form-label required">Diagnosis Prabedah</label>
+                                    <textarea name="diagnosis_prabedah" id="diagnosis_prabedah" rows="3" class="form-control" placeholder="Masukan Diagnosis" required></textarea>
+                                </div>
+                            </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                        </form>
+                </div>
+            </div>
+        </div>
     @endsection
     @section('js')
         <script src="{{ asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
@@ -1231,6 +1272,12 @@
                             placeholder: 'Search for a user...'
                         });
                     }
+                });
+
+                $("#tgl_operasi").flatpickr({
+                    altInput: true,
+                    altFormat: "d-m-Y",
+                    dateFormat: "Y-m-d"
                 });
 
             });

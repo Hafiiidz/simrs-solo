@@ -39,7 +39,7 @@ class AppServiceProvider extends ServiceProvider
         });
         Gate::define('rekammedis', function (User $user) {
             return $user->idpriv === 8;
-        });        
+        });
         Gate::define('farmasi', function (User $user) {
             return $user->idpriv === 10;
         });
@@ -51,6 +51,12 @@ class AppServiceProvider extends ServiceProvider
         });
         Gate::define('fisio', function (User $user) {
             return $user->idpriv === 29;
+        });
+        Gate::define('ruangok', function (User $user) {
+            return $user->idpriv === 13;
+        });
+        Gate::define('gizi', function (User $user) {
+            return $user->idpriv === 6;
         });
     }
 }

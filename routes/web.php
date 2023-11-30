@@ -14,6 +14,8 @@ use App\Http\Controllers\RawatInapController;
 use App\Http\Controllers\RuanganController;
 use App\Http\Controllers\RuanganBedController;
 use App\Http\Controllers\TindakLanjutController;
+use App\Http\Controllers\LaporanOperasiController;
+use App\Http\Controllers\GiziController;
 
 /*
 |--------------------------------------------------------------------------
@@ -91,9 +93,9 @@ Route::prefix('/rawat-jalan')->group(function () {
     Route::get('/poli', [PoliklinikController::class, 'index'])->middleware('auth')->name('poliklinik');
     Route::get('/poli-semua', [PoliklinikController::class, 'index_semua'])->middleware('auth')->name('poliklinik-semua');
     Route::prefix('/tindak-lanjut')->group(function () {
-        Route::post('/', [TindakLanjutController::class, 'index'])->name('tindak-lanjut.index'); 
-        Route::get('/aksi-tindak-lanjut/{id}', [TindakLanjutController::class, 'aksi_tindak_lanjut'])->name('tindak-lanjut.aksi_tindak_lanjut'); 
-        Route::post('/post-tindak-lanjut/{id}', [TindakLanjutController::class, 'post_tindak_lanjut'])->name('tindak-lanjut.post_tindak_lanjut'); 
+        Route::post('/', [TindakLanjutController::class, 'index'])->name('tindak-lanjut.index');
+        Route::get('/aksi-tindak-lanjut/{id}', [TindakLanjutController::class, 'aksi_tindak_lanjut'])->name('tindak-lanjut.aksi_tindak_lanjut');
+        Route::post('/post-tindak-lanjut/{id}', [TindakLanjutController::class, 'post_tindak_lanjut'])->name('tindak-lanjut.post_tindak_lanjut');
     });
     Route::prefix('/rekam-medis')->group(function () {
         Route::get('/{id_pasien}/show', [RekapMedisController::class, 'index_poli'])->name('rekam-medis-poli');
@@ -113,7 +115,7 @@ Route::prefix('/pasien')->group(function () {
     Route::get('/', [PasienController::class, 'index'])->name('pasien.index');
     Route::get('/create', [PasienController::class, 'tambah_pasien_baru'])->name('pasien.tambah-pasien');
     Route::get('/cari-kelurahan', [PasienController::class, 'cari_kelurahan'])->name('pasien.cari-kelurahan');
-  
+
     //Rekam Medis
     Route::prefix('/rekap-medis')->group(function () {
         Route::get('/{id_pasien}/show', [RekapMedisController::class, 'index'])->name('rekap-medis-index');
@@ -129,6 +131,25 @@ Route::prefix('/pasien')->group(function () {
             Route::get('/cetak-resep/{id}', [DetailRekapMedisController::class, 'cetak_resep'])->name('resep-rekap-medis-cetak');
         });
     });
+
+    //operasi
+    Route::prefix('/operasi')->group(function () {
+        Route::get('/', [LaporanOperasiController::class, 'index'])->name('index.operasi');
+        Route::post('/store', [LaporanOperasiController::class, 'store'])->name('store.operasi');
+        Route::get('{id}/show', [LaporanOperasiController::class, 'show'])->name('show.operasi');
+        Route::get('{id}/edit', [LaporanOperasiController::class, 'edit'])->name('edit.operasi');
+        Route::post('{id}/update', [LaporanOperasiController::class, 'update'])->name('update.operasi');
+        Route::post('{id}/update-status', [LaporanOperasiController::class, 'updateStatus'])->name('update-status.operasi');
+    });
+
+    //gizi
+    Route::prefix('/gizi')->group(function () {
+        Route::get('/', [GiziController::class, 'index'])->name('index.gizi');
+        Route::get('{id}/show', [GiziController::class, 'show'])->name('show.gizi');
+        Route::post('/store/evaluasi-gizi', [GiziController::class, 'storeEvaluasi'])->name('store.evaluasi-gizi');
+        Route::post('/store/asuhan-gizi', [GiziController::class, 'storeAsuhan'])->name('store.asuhan-gizi');
+    });
+
 })->middleware('auth');
 
 //Ajax
