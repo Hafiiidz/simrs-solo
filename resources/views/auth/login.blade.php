@@ -4,7 +4,7 @@
 <html lang="en">
 	<!--begin::Head-->
 	<head>
-		<title>Metro</title>
+		<title>Medric</title>
 		<link rel="canonical" href="https://preview.keenthemes.com/metronic8" />
 		<link rel="shortcut icon" href="assets/media/logos/favicon.ico" />
 		<!--begin::Fonts(mandatory for all pages)-->
@@ -30,12 +30,12 @@
 					<!--begin::Aside-->
 					<div class="d-flex flex-center flex-lg-start flex-column">
 						<!--begin::Logo-->
-						<a href="#" class="mb-7">
-							<img alt="Logo" src="{{ asset('assets/media/logos/custom-3.svg') }}" />
+						<a href="#" class="fs-5x ">
+							MEDRONIC
 						</a>
 						<!--end::Logo-->
 						<!--begin::Title-->
-						<h2 class="text-white fw-normal m-0">Elektronik Rekam Medis</h2>
+						{{-- <h2 class="text-white fw-normal m-0">Medical Record Electronic</h2> --}}
 						<!--end::Title-->
 					</div>
 					<!--begin::Aside-->
