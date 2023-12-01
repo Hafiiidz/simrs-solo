@@ -355,7 +355,7 @@
                                                             @endif
                                                         </td>
                                                         <td width=200>
-
+                                                            @if ($resume_medis)
                                                             <form action="{{ route('post.copy-data', $rawat->id) }}"
                                                                 method="post" id='formCopy{{ $rb->id }}'>
                                                                 @csrf
@@ -371,6 +371,23 @@
                                                                     @endif
                                                                 @endcan
                                                             </form>
+                                                            @else
+                                                            <form action="{{ route('post.copy-data', $rawat->id) }}"
+                                                                method="post" id='formCopy{{ $rb->id }}'>
+                                                                @csrf
+                                                                <input type="hidden" name='idrekap'
+                                                                    value="{{ $rb->id }}" name=""
+                                                                    id="">
+                                                                <button type="button"
+                                                                    onclick="modalHasil({{ $rb->id }})"
+                                                                    class="btn btn-success btn-sm">Lihat</button>
+                                                                @can('dokter')
+                                                                    
+                                                                        <button class="btn btn-warning btn-sm">Copy</button>
+                                                                @endcan
+                                                            </form>
+                                                            @endif
+                                                            
 
                                                         </td>
                                                     </tr>
