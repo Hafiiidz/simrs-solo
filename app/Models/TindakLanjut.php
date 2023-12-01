@@ -28,7 +28,7 @@ class TindakLanjut extends Model
         $year = date('Y');
         // $time = strtotime(date('Y-m-d H:i:s'));
         $bulan = date('m');
-        $kode = 'SPP';
+        $kode = 'SKPD';
         $get_kode = TindakLanjut::whereYear('created_at', $year)->whereMonth('created_at',$bulan)->first();
         if ($get_kode) {            
             $no_spp = $get_kode->nomor + 1;

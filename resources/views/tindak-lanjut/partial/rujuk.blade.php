@@ -8,18 +8,22 @@
     <div class="row mb-5">
         <div class="col-md-12">
             <label class="form-label fw-bold">Tujuan Rujuk</label>
-            <select name="" class="form-select" id=""
+            <select name="tujuan_rujuk" class="form-select" id=""
                 arial-placeholder="Rencana Tindak Lanjut">
-                <option value="Kontrol Kembali">Tujuan Rujuk</option>
+                <option value="">Tujuan Rujuk</option>
+                <option value="rslain">Rs Lain</option>
+                
             </select>
         </div>
     </div>
     <div class="row mb-5">
         <div class="col-md-12">
             <label class="form-label fw-bold">Poli Rujuk</label>
-            <select name="" class="form-select" id=""
-                arial-placeholder="Rencana Tindak Lanjut">
-                <option value="Kontrol Kembali">Poli Rujuk</option>
+            <select name="poli_rujuk" data-control="select2" data-placeholder="Select an option" class="form-select" id=""
+                arial-placeholder="Poli Rujuk">
+                @foreach ($poli as $p)
+                    <option value="{{ $p->id }}">{{ $p->poli }}</option>
+                @endforeach
             </select>
         </div>
     </div>

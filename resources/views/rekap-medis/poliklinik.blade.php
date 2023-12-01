@@ -201,6 +201,11 @@
                                         </li>
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
+                                                data-bs-toggle="tab" href="#kt_tab_pane_rb" aria-selected="false"
+                                                role="tab" tabindex="-1">Riwayat Berobat</a>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
                                                 data-bs-toggle="tab" href="#kt_tab_pane_3" aria-selected="false"
                                                 role="tab" tabindex="-1">Rencana Tindak Lanjut</a>
                                         </li>
@@ -276,6 +281,104 @@
                                     </div>
                                 </div>
 
+                                <div class="tab-pane fade" id="kt_tab_pane_rb" role="tabpanel">
+                                    <h5>Riwayat Berobat</h5>
+                                    <div class="separator separator-dashed border-secondary mb-5 mt-5">
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table id="tbl_histori"
+                                            class="table table-rounded table-striped border gy-7 gs-7">
+                                            <thead>
+                                                <tr class="fw-semibold fs-6 text-gray-800 border-bottom border-gray-200">
+                                                    <th>Tgl.Kunjungan</th>
+                                                    <th>Poliklinik</th>
+                                                    <th>Dokter</th>
+                                                    <th>Obat Obatan</th>
+                                                    <th>Diagnosa</th>
+                                                    <th>Aksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($riwayat_berobat as $rb)
+                                                    @php
+                                                        $rekap_resume = App\Models\RekapMedis\DetailRekapMedis::where('idrekapmedis', $rb->id)->first();
+                                                    @endphp
+                                                    <tr data-id="{{ $rb->id }}">
+                                                        <td>{{ $rb->created_at }}</td>
+                                                        <td>{{ $rb->rawat->poli->poli }}</td>
+                                                        <td>{{ $rb->rawat->dokter->nama_dokter }}</td>
+                                                        <td>
+                                                            @if ($rekap_resume)
+                                                                @if ($rekap_resume->terapi_obat != 'null')
+                                                                    @foreach (json_decode($rekap_resume->terapi_obat) as $val)
+                                                                        @foreach ($obat as $item)
+                                                                            @if ($val->obat == $item->id)
+                                                                                {{ $item->nama_obat }}
+                                                                                ({{ $val->signa1 }} x
+                                                                                {{ $val->signa2 }} |
+                                                                                {{ $val->jumlah_obat }})
+                                                                                <br>
+                                                                            @endif
+                                                                        @endforeach
+                                                                    @endforeach
+                                                                @endif
+                                                            @endif
+                                                        </td>
+                                                        <td width=300>
+                                                            @if ($rekap_resume)
+                                                                {{ $rekap_resume?->diagnosa }}
+                                                                <div
+                                                                    class="separator separator-dashed border-secondary mb-5">
+                                                                </div>
+                                                                <h5>ICD X</h5>
+                                                                <ul>
+                                                                    @if ($rekap_resume->icdx != 'null')
+                                                                        @foreach (json_decode($rekap_resume->icdx) as $val)
+                                                                            <li>{{ $val->diagnosa_icdx }}
+                                                                                (<b>{{ $val->jenis_diagnosa == 'P' ? 'Primer' : 'Sekunder' }}</b>)
+                                                                            </li>
+                                                                        @endforeach
+                                                                    @endif
+
+                                                                </ul>
+                                                                <div
+                                                                    class="separator separator-dashed border-secondary mb-5">
+                                                                </div>
+                                                                <h5>ICD IX</h5>
+                                                                <ul>
+                                                                    {{-- @if ($rekap_resume->icd9 != 'null')
+                                                                        @foreach (json_decode($rekap_resume->icd9) as $val)
+                                                                            <li>{{ $val->diagnosa_icdx }}</li>
+                                                                        @endforeach
+                                                                    @endif --}}
+                                                                </ul>
+                                                            @endif
+                                                        </td>
+                                                        <td width=200>
+
+                                                            <form action="{{ route('post.copy-data', $rawat->id) }}"
+                                                                method="post" id='formCopy{{ $rb->id }}'>
+                                                                @csrf
+                                                                <input type="hidden" name='idrekap'
+                                                                    value="{{ $rb->id }}" name=""
+                                                                    id="">
+                                                                <button type="button"
+                                                                    onclick="modalHasil({{ $rb->id }})"
+                                                                    class="btn btn-success btn-sm">Lihat</button>
+                                                                @can('dokter')
+                                                                    @if ($resume_medis->dokter != 1)
+                                                                        <button class="btn btn-warning btn-sm">Copy</button>
+                                                                    @endif
+                                                                @endcan
+                                                            </form>
+
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_2" role="tabpanel">
                                     @if (!$resume_medis)
                                         <form action="{{ route('post.resume-poli') }}" id="frmResume" method="post">
@@ -331,8 +434,30 @@
                                                             $rkesehatan = json_decode($resume_detail->riwayat_kesehatan);
                                                         @endphp
                                                         <tr>
-                                                            <td>{{ $resume_detail?->diagnosa }}</td>
-                                                            <td>{{ $resume_detail?->anamnesa_dokter }}</td>
+                                                            <td width=300>
+                                                                {{ $resume_detail?->diagnosa }}
+                                                                <div
+                                                                    class="separator separator-dashed border-secondary mb-5">
+                                                                </div>
+                                                                <h5>ICD X</h5>
+                                                                <ul>
+                                                                    @foreach (json_decode($resume_detail->icdx) as $val)
+                                                                        <li>{{ $val->diagnosa_icdx }}
+                                                                            (<b>{{ $val->jenis_diagnosa == 'P' ? 'Primer' : 'Sekunder' }}</b>)
+                                                                        </li>
+                                                                    @endforeach
+                                                                </ul>
+                                                                <div
+                                                                    class="separator separator-dashed border-secondary mb-5">
+                                                                </div>
+                                                                <h5>ICD IX</h5>
+                                                                <ul>
+                                                                    @foreach (json_decode($resume_detail->icd9) as $val)
+                                                                        <li>{{ $val->diagnosa_icdx }}</li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            </td>
+                                                            <td width=300>{{ $resume_detail?->anamnesa_dokter }}</td>
                                                             <td>
                                                                 {{ $resume_detail?->rencana_pemeriksaan }}
                                                                 @if ($resume_detail->radiologi != 'null')
@@ -426,6 +551,7 @@
                                             <table class="table table-striped table-row-bordered gy-3 gs-5 border rounded">
                                                 <thead class="border">
                                                     <tr class="fw-bold fs-6 text-gray-800 px-7">
+                                                        <th>Anamnesa Perawat</th>
                                                         <th>Pemeriksaan Fisik</th>
                                                         <th>Riwayat Kesehatan</th>
                                                         <th>Alergi</th>
@@ -435,6 +561,7 @@
                                                 </thead>
                                                 <tbody>
                                                     @if ($resume_detail)
+                                                        <td>{{ $resume_medis->anamnesa }}</td>
                                                         <td>
                                                             <table>
                                                                 <tr>
@@ -725,7 +852,7 @@
 
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_5" role="tabpanel">
-                                    <h5>Hasil Pemeriksaan Radiologi</h5>
+                                    <h5>Hasil Pemeriksaan Lab</h5>
                                     <div class="separator separator-dashed border-secondary mt-5 mb-5"></div>
                                     @if ($pemeriksaan_lab)
                                         <table class="table table-bordered">
@@ -745,17 +872,17 @@
                                                         <td>{{ $pl->tgl_hasil }}</td>
                                                         <td>
                                                             @php
-                                                            $pemeriksaan_lab_detail = DB::table('laboratorium_hasildetail')
-                                                                ->where('idhasil', $pl->id)
-                                                                ->get();
+                                                                $pemeriksaan_lab_detail = DB::table('laboratorium_hasildetail')
+                                                                    ->where('idhasil', $pl->id)
+                                                                    ->get();
                                                             @endphp
-                                                        <ol>
-                                                            @foreach ($pemeriksaan_lab_detail as $plb)                                                           
-                                                            <li>
-                                                                <a href="">{{ $plb->nama_pemeriksaan }}</a>
-                                                            </li>
-                                                            @endforeach
-                                                        </ol>
+                                                            <ol>
+                                                                @foreach ($pemeriksaan_lab_detail as $plb)
+                                                                    <li>
+                                                                        <a href="#" onclick="modalHasilLab({{ $plb->id }})">{{ $plb->nama_pemeriksaan }}</a>
+                                                                    </li>
+                                                                @endforeach
+                                                            </ol>
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -763,7 +890,7 @@
                                             </tbody>
                                         </table>
                                     @endif
-                                    <h5>Hasil Pemeriksaan Lab</h5>
+                                    <h5>Hasil Pemeriksaan Radiologi</h5>
                                     <div class="separator separator-dashed border-secondary mt-5 mb-5"></div>
                                     @if ($pemeriksaan_radiologi)
                                         <table class="table table-bordered">
@@ -780,7 +907,7 @@
                                                     <tr>
                                                         <td>{{ $loop->iteration }}</td>
                                                         <td>{{ $pr->idhasil }}</td>
-                                                        <td>{{ $pl->tgl_hasil }}</td>
+                                                        <td>{{ $pr->tgl_hasil }}</td>
                                                         <td>
                                                             @php
                                                                 $pemeriksaan_radio_detail = DB::table('radiologi_hasildetail')
@@ -789,23 +916,23 @@
                                                             @endphp
                                                             <ol>
                                                                 @foreach ($pemeriksaan_radio_detail as $pld)
-                                                                @php
-                                                                    $tindakan = DB::table('radiologi_tindakan')
-                                                                        ->where('id', $pld->idtindakan)
-                                                                        ->first();
-                                                                @endphp
-                                                                <li>
-                                                                    <a href="">{{ $tindakan->nama_tindakan }}</a>
-                                                                </li>
-                                                            @endforeach
+                                                                    @php
+                                                                        $tindakan = DB::table('radiologi_tindakan')
+                                                                            ->where('id', $pld->idtindakan)
+                                                                            ->first();
+                                                                    @endphp
+                                                                    <li>
+                                                                        <a href="#" onclick="modalHasilRad({{ $pld->id }})">{{ $tindakan->nama_tindakan }}</a>
+                                                                    </li>
+                                                                @endforeach
                                                             </ol>
-                                                            
-                                                </td>
-                                                </tr>
-                                    @endforeach
 
-                                    </tbody>
-                                    </table>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+
+                                            </tbody>
+                                        </table>
                                     @endif
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_6" role="tabpanel">
@@ -879,13 +1006,69 @@
             </div>
         </div>
     </div> --}}
+    <div class="modal fade" tabindex="-1" id="modal_lihat">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div id="modal-hasil">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
 @endsection
 @section('js')
     <script src="{{ asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
     <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js"></script>
     <script>
+        function modalHasilLab(id) {
+            // alert(id)
+            url = "{{ route('get-hasil-lab', '') }}" + "/" + id;
+            $("#modal-hasil").empty();
+            $.get(url).done(function(data) {
+                $("#modal-hasil").html(data);
+                $("#modal_lihat").modal('show');
+            });
+        }
+        function modalHasilRad(id) {
+            // alert(id)
+            url = "{{ route('get-hasil-rad', '') }}" + "/" + id;
+            $("#modal-hasil").empty();
+            $.get(url).done(function(data) {
+                $("#modal-hasil").html(data);
+                $("#modal_lihat").modal('show');
+            });
+        }
+        function modalHasil(id) {
+            url = "{{ route('get-hasil', '') }}" + "/" + id;
+            $("#modal-hasil").empty();
+            $.get(url).done(function(data) {
+                $("#modal-hasil").html(data);
+                $("#modal_lihat").modal('show');
+            });
+        }
         $(function() {
+            $("#tbl_histori").DataTable({
+                "language": {
+                    "lengthMenu": "Show _MENU_",
+                },
+                "dom": "<'row'" +
+                    "<'col-sm-6 d-flex align-items-center justify-conten-start'l>" +
+                    "<'col-sm-6 d-flex align-items-center justify-content-end'f>" +
+                    ">" +
+
+                    "<'table-responsive'tr>" +
+
+                    "<'row'" +
+                    "<'col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start'i>" +
+                    "<'col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end'p>" +
+                    ">",
+                search: {
+                    return: true
+                },
+            });
             $("#tbl-rekap").DataTable({
                 "language": {
                     "lengthMenu": "Show _MENU_",
@@ -1078,6 +1261,41 @@
                     }
                 });
             });
+            @foreach ($riwayat_berobat as $rb)
+                $("#formCopy{{ $rb->id }}").on("submit", function(event) {
+                    event.preventDefault();
+                    var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                    Swal.fire({
+                        title: 'Copy Data Pemeriksaan',
+                        text: "Apakah Anda yakin menyalin data ?",
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya',
+                        cancelButtonText: 'Tidak'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.blockUI({
+                                css: {
+                                    border: 'none',
+                                    padding: '15px',
+                                    backgroundColor: '#000',
+                                    '-webkit-border-radius': '10px',
+                                    '-moz-border-radius': '10px',
+                                    opacity: .5,
+                                    color: '#fff',
+                                    fontSize: '16px'
+                                },
+                                message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                                baseZ: 9000,
+                            });
+                            this.submit();
+                        }
+                    });
+                });
+            @endforeach
+
 
         });
 

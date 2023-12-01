@@ -176,6 +176,11 @@
                             @endcan
                             @can('dokter')
                             <div class="row mb-5">
+                                
+                                <div class="col-md-12">
+                                    <label class="form-label fw-bold">Diagnosa</label>
+                                    <textarea name="diagnosa" rows="3" class="form-control" placeholder="..."></textarea>
+                                </div>
                                 <div class="col-md-12">
                                     <div id="icdx_repeater">
                                         <!--begin::Form group-->
@@ -229,10 +234,55 @@
                                         <!--end::Form group-->
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold">Tindakan / Prosedur</label>
+                                <textarea name="tindakan_prc" rows="3" class="form-control" placeholder="..."></textarea>
+                            </div>
+                            <div class="row mb-5">
                                 <div class="col-md-12">
-                                    <label class="form-label fw-bold">Diagnosa</label>
-
-                                    <textarea name="diagnosa" rows="3" class="form-control" placeholder="..."></textarea>
+                                    <div id="icd9_repeater">
+                                        <!--begin::Form group-->
+                                        <div class="form-group">
+                                            <div data-repeater-list="icd9">
+                                                <div data-repeater-item>
+                                                    <div class="form-group row mb-5">
+                                                        <div class="col-md-6">
+                                                            <label class="form-label">ICD 9</label>
+                                                            <select name="diagnosa_icdx" class="form-select"
+                                                                data-kt-repeater="select2icd9" data-placeholder="-Pilih-"
+                                                                required>
+                                                            </select>
+                                                        </div>
+                                                        
+                        
+                                                        <div class="col-md-4">
+                                                            <a href="javascript:;" data-repeater-delete
+                                                                class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                <i class="ki-duotone ki-trash fs-5"><span
+                                                                        class="path1"></span><span
+                                                                        class="path2"></span><span
+                                                                        class="path3"></span><span
+                                                                        class="path4"></span><span
+                                                                        class="path5"></span></i>
+                                                                Hapus
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--end::Form group-->
+                        
+                                        <!--begin::Form group-->
+                                        <div class="form-group mt-5">
+                                            <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
+                                                <i class="ki-duotone ki-plus fs-3"></i>
+                                                Tambah ICD 9
+                                            </a>
+                                        </div>
+                                        <!--end::Form group-->
+                                    </div>
                                 </div>
                             </div>
                             @endcan
@@ -854,6 +904,74 @@
                     $('[data-kt-repeater="select2radiologi"]').select2();
                 }
             });
+
+            $('#icd9_repeater').repeater({
+                    initEmpty: true,
+
+                    show: function() {
+                        $(this).slideDown();
+
+                        $(this).find('[data-kt-repeater="select2icd9"]').select2({
+                            ajax: {
+                                url: 'https://new-simrs.rsausulaiman.com/auth/listprosedur2',
+                                dataType: 'json',
+                                delay: 250,
+                                data: function(params) {
+
+                                    return {
+                                        q: params.term, // search term
+                                    };
+                                },
+                                processResults: function(data) {
+                                    return {
+                                        results: data.map(function(user) {
+                                            return {
+                                                id: user.id,
+                                                text: user.text
+                                            };
+                                        })
+                                    };
+                                },
+                                cache: true
+                            },
+                            minimumInputLength: 1,
+                            placeholder: 'Search for a user...'
+                        });
+                    },
+
+                    hide: function(deleteElement) {
+                        $(this).slideUp(deleteElement);
+                    },
+
+                    ready: function() {
+                        $('[data-kt-repeater="select2icd9"]').select2({
+                            ajax: {
+                                url: 'https://new-simrs.rsausulaiman.com/auth/listprosedur2',
+                                dataType: 'json',
+                                delay: 250,
+                                data: function(params) {
+
+                                    return {
+                                        q: params.term, // search term
+                                    };
+                                },
+                                processResults: function(data) {
+                                    return {
+                                        results: data.map(function(user) {
+                                            return {
+                                                id: user.id,
+                                                text: user.text
+                                            };
+                                        })
+                                    };
+                                },
+                                cache: true
+                            },
+                            minimumInputLength: 1,
+                            placeholder: 'Search for a user...'
+                        });
+                    }
+                });
 
             $('#lab_repeater').repeater({
                 initEmpty: true,

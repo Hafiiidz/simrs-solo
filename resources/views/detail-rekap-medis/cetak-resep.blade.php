@@ -9,7 +9,12 @@
     <div class="row">
         <table class="table">
             <tr class="border">
-                <td class="w-50" style="border: 1px solid black;"></td>
+                <td class="w-50" style="border: 1px solid black; text-align:center;">
+                    <br>
+                    <img width="100" src="data:image/png;base64, {!! base64_encode(file_get_contents(public_path('image/logosiswanto.png'))) !!} ">
+                    <br>
+                    RSAU DR SISWANTO <br>
+                    JL TENTARA PELAJAR NO 1, MALANGJIWAN, COLOMADU 0271779112</td>
                 <td class="w-75" style="border: 1px solid black;">
                     <div class="row p-1">
                         <div class="col-md-12">
@@ -87,6 +92,17 @@
                         @endforeach
                     @endforeach
                     </table>
+                </td>
+            </tr>
+            <tr>
+                <td class="p-2" style="border: 1px solid black;">
+                   
+                </td>
+                <td class="p-2" style="border: 1px solid black; font-size:14; text-align:center;">
+                    <p>Surakarta, {{ \Carbon\Carbon::now()->formatLocalized("%A, %d %B %Y"); }}</p>
+                    <p>DPJP</p>
+                    <img src="data:image/png;base64, {!! base64_encode($qr) !!} ">
+                    <p>{{ $rawat->dokter->nama_dokter }}</p>
                 </td>
             </tr>
         </table>

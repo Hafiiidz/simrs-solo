@@ -15,6 +15,7 @@ use App\Models\Rawat;
 use App\Models\TindakLanjut;
 use Illuminate\Support\Facades\DB;
 use PDF;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class DetailRekapMedisController extends Controller
 {
@@ -101,6 +102,8 @@ class DetailRekapMedisController extends Controller
         $rekap->laborat = json_encode($request->lab);
         $rekap->fisio = json_encode($request->fisio);
         $rekap->icdx = json_encode($request->icdx);
+        $rekap->prosedur = json_encode($request->tindakan_prc);
+        $rekap->icd9 = json_encode($request->icd9);
         $rekap->kategori_penyakit = $request->kategori_penyakit;
         $rekap->terapi = $request->terapi;
         $rekap->idrawat = $rekap_medis->idrawat;
@@ -207,7 +210,15 @@ class DetailRekapMedisController extends Controller
         $rkesehatan = json_decode($data->riwayat_kesehatan);
         $obat = Obat::with('satuan')->where('obat.idjenis', 1)->orderBy('obat.nama_obat', 'asc')->get();
         $tindak_lanjut = TindakLanjut::where('idrawat', $rawat->id)->first();
-        $pdf = PDF::loadview('detail-rekap-medis.cetak', compact('data', 'alergi', 'pfisik', 'rkesehatan', 'obat', 'rawat', 'tindak_lanjut'));
+        $qr = QrCode::size(150)
+        ->backgroundColor(255, 255, 255)
+        ->color(0, 0, 0)
+        ->margin(1)
+        ->generate(
+            '"'.$rawat->dokter->nama_dokter.'"',
+        );
+        // return $qr;
+        $pdf = PDF::loadview('detail-rekap-medis.cetak', compact('data', 'alergi', 'pfisik', 'rkesehatan', 'obat', 'rawat', 'tindak_lanjut', 'qr'));
         return $pdf->stream();
         // return $pdf->download('rekap-medis.pdf');
         // return view('detail-rekap-medis.cetak');
@@ -221,8 +232,14 @@ class DetailRekapMedisController extends Controller
         $pfisik = json_decode($data->pemeriksaan_fisik);
         $rkesehatan = json_decode($data->riwayat_kesehatan);
         $obat = Obat::with('satuan')->where('obat.idjenis', 1)->orderBy('obat.nama_obat', 'asc')->get();
-
-        $pdf = PDF::loadview('detail-rekap-medis.cetak-resep', compact('data', 'alergi', 'pfisik', 'rkesehatan', 'obat', 'rawat'));
+        $qr = QrCode::size(150)
+        ->backgroundColor(255, 255, 255)
+        ->color(0, 0, 0)
+        ->margin(1)
+        ->generate(
+            '"'.$rawat->dokter->nama_dokter.'"',
+        );
+        $pdf = PDF::loadview('detail-rekap-medis.cetak-resep', compact('data', 'alergi', 'pfisik', 'rkesehatan', 'obat', 'rawat', 'qr'));
         return $pdf->stream();
         // return $pdf->download('rekap-medis.pdf');
         // return view('detail-rekap-medis.cetak');

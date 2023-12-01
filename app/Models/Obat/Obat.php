@@ -23,6 +23,6 @@ class Obat extends Model
      */
     public function satuan(): HasOne
     {
-        return $this->hasOne(satuan::class, 'id', 'idsatuan');
+        return $this->hasOne(Satuan::class, 'id', 'idsatuan');
     }
 }

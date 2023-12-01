@@ -18,9 +18,36 @@ use App\Models\Rawat;
 use App\Models\SoapRajalTindakan;
 use App\Models\TindakLanjut;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\View;
 
 class RekapMedisController extends Controller
 {
+    public function get_hasil_lab($id){
+        $hasil = LabHasil::find($id);
+        $detail = DB::table('laboratorium_hasildetail')->where('id',$id)->first();
+        $lab_form = DB::table('lab_hasil')->where('idlayanan',$detail->id)->get();
+        return View::make('rekap-medis.hasil-lab',compact('hasil','detail','lab_form'));
+    }
+    public function get_hasil_rad($id){
+        $hasil = RadiologiHasil::find($id);
+        $detail = DB::table('radiologi_hasildetail')->where('id',$id)->first();
+        $tindakan = DB::table('radiologi_tindakan')->where('id',$detail->idtindakan)->first();
+        $foto = DB::table('radiologi_hasilfoto')->where('idhasil',$id)->get();
+        return View::make('rekap-medis.hasil-radiologi',compact('hasil','detail','foto','tindakan'));
+    }
+    public function get_hasil($id){
+        $resume_medis = RekapMedis::where('id',$id)->first();
+        $resume_detail = DetailRekapMedis::where('idrekapmedis',$resume_medis->id)->first();
+        $obat = Obat::with('satuan')->orderBy('obat.nama_obat', 'asc')->get();
+        $tindak_lanjut = TindakLanjut::where('idrawat', $resume_medis->idrawat)->first();
+        $radiologi = DB::table('radiologi_tindakan')->get();
+        $lab = DB::table('laboratorium_pemeriksaan')->get();
+        $fisio = DB::table('tarif')->where('idkategori',8)->get();
+        $rawat = Rawat::find($resume_medis->idrawat);
+        $pemeriksaan_lab = LabHasil::where('idrawat', $resume_medis->idrawat)->get();
+        $pemeriksaan_radiologi = RadiologiHasil::where('idrawat', $resume_medis->idrawat)->get();
+        return View::make('rekap-medis.hasil-history',compact('resume_medis','resume_detail','obat','tindak_lanjut','radiologi','lab','fisio','rawat','pemeriksaan_lab','pemeriksaan_radiologi'));
+    }
     public function selesai_poli(Request $request , $id){
         $rekap_medis = RekapMedis::where('id',$id)->first();
         $detail = DetailRekapMedis::where('idrekapmedis',$rekap_medis->id)->first();
@@ -113,7 +140,7 @@ class RekapMedisController extends Controller
         }
         $pasien = Pasien::with('alamat')->where('no_rm', $rawat->no_rm)->first();
         if (request()->ajax()) {
-            $rekap = RekapMedis::with('kategori')->where('idpasien', $pasien->id);
+            $rekap = RekapMedis::with('kategori')->where('idrawat','!=',$rawat->id)->where('idpasien', $pasien->id);
 
             return DataTables::of($rekap)
                 ->addColumn('kategori', function (RekapMedis $rekap) {
@@ -141,9 +168,102 @@ class RekapMedisController extends Controller
         $pemeriksaan_lab = LabHasil::where('idrawat', $id_rawat)->get();
         $pemeriksaan_radiologi = RadiologiHasil::where('idrawat', $id_rawat)->get();
 
-        return view('rekap-medis.poliklinik', compact('pasien', 'rawat', 'resume_medis', 'resume_detail', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'soap_tindakan','fisio','pemeriksaan_lab','pemeriksaan_radiologi'));
+        $riwayat_berobat = RekapMedis::where('idpasien', $pasien->id)->where('idrawat','!=',$id_rawat)->get();
+        // dd($riwayat_berobat);
+        return view('rekap-medis.poliklinik', compact('pasien', 'rawat', 'resume_medis', 'resume_detail', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'soap_tindakan','fisio','pemeriksaan_lab','pemeriksaan_radiologi','riwayat_berobat'));
     }
 
+    public function copy_data(Request $request,$id){
+        $rawat = Rawat::find($id);
+        // dd($rawat);
+        $rekap_medis = RekapMedis::where('idrawat',$id)->first();
+        // dd($rekap_medis);
+        $data_rekap = DetailRekapMedis::where('idrekapmedis',$request->idrekap)->first();
+        // return $data_rekap;
+        if($rekap_medis){
+            $detail_resume = DetailRekapMedis::where('idrekapmedis',$rekap_medis->id)->first();
+            if($detail_resume){
+                $detail_resume->idrawat = $rawat->id;
+                $detail_resume->diagnosa = $data_rekap->diagnosa;
+                // $detail_resume->anamnesa = $data_rekap->data_rekap;
+                // $detail_resume->obat_yang_dikonsumsi = $data_rekap->obat_yang_dikonsumsi;
+                // $detail_resume->alergi = $data_rekap->alergi;
+                // $detail_resume->pasien_sedang = $data_rekap->pasien_sedang;
+                // $detail_resume->pemeriksaan_fisik = $data_rekap->pemeriksaan_fisik;
+                // $detail_resume->riwayat_kesehatan = $data_rekap->riwayat_kesehatan;
+                $detail_resume->rencana_pemeriksaan = $data_rekap->rencana_pemeriksaan;
+                $detail_resume->terapi = $data_rekap->terapi;
+                $detail_resume->terapi_obat = $data_rekap->terapi_obat;
+                $detail_resume->kategori_penyakit = $data_rekap->kategori_penyakit;
+                // $detail_resume->triase = $data_rekap->triase;
+                $detail_resume->radiologi = $data_rekap->radiologi;
+                $detail_resume->laborat = $data_rekap->laborat;
+                $detail_resume->icdx = $data_rekap->icdx;
+                $detail_resume->tindakan = $data_rekap->tindakan;
+                $detail_resume->anamnesa_dokter = $data_rekap->anamnesa_dokter;
+                $detail_resume->fisio = $data_rekap->fisio;
+                $detail_resume->prosedur = $data_rekap->prosedur;
+                $detail_resume->icd9 = $data_rekap->icd9;
+                $detail_resume->save();
+            }else{
+                $detail_resume = new DetailRekapMedis;
+                $detail_resume->diagnosa = $data_rekap->diagnosa;
+                $detail_resume->anamnesa = $data_rekap->data_rekap;
+                $detail_resume->obat_yang_dikonsumsi = $data_rekap->obat_yang_dikonsumsi;
+                $detail_resume->alergi = $data_rekap->alergi;
+                $detail_resume->pasien_sedang = $data_rekap->pasien_sedang;
+                $detail_resume->pemeriksaan_fisik = $data_rekap->pemeriksaan_fisik;
+                $detail_resume->riwayat_kesehatan = $data_rekap->riwayat_kesehatan;
+                $detail_resume->rencana_pemeriksaan = $data_rekap->rencana_pemeriksaan;
+                $detail_resume->terapi = $data_rekap->terapi;
+                $detail_resume->terapi_obat = $data_rekap->terapi_obat;
+                $detail_resume->kategori_penyakit = $data_rekap->kategori_penyakit;
+                $detail_resume->triase = $data_rekap->triase;
+                $detail_resume->radiologi = $data_rekap->radiologi;
+                $detail_resume->laborat = $data_rekap->laborat;
+                $detail_resume->icdx = $data_rekap->icdx;
+                $detail_resume->tindakan = $data_rekap->tindakan;
+                $detail_resume->anamnesa_dokter = $data_rekap->anamnesa_dokter;
+                $detail_resume->fisio = $data_rekap->fisio;
+                $detail_resume->prosedur = $data_rekap->prosedur;
+                $detail_resume->icd9 = $data_rekap->icd9;
+                $detail_resume->save();
+            }
+        }else{
+            $resume = new RekapMedis;
+            $resume->idrawat = $rawat->id;
+            $resume->idkategori = 1;
+            $resume->idrawat = $rawat->id;
+            $resume->idpasien = $rawat->pasien->id;
+            $resume->save();
+
+            $detail_resume = new DetailRekapMedis;
+            $detail_resume->idrekapmedis = $resume->id;
+            $detail_resume->idrawat = $rawat->id;
+            $detail_resume->diagnosa = $data_rekap->diagnosa;
+            $detail_resume->anamnesa = $data_rekap->data_rekap;
+            $detail_resume->obat_yang_dikonsumsi = $data_rekap->obat_yang_dikonsumsi;
+            $detail_resume->alergi = $data_rekap->alergi;
+            $detail_resume->pasien_sedang = $data_rekap->pasien_sedang;
+            $detail_resume->pemeriksaan_fisik = $data_rekap->pemeriksaan_fisik;
+            $detail_resume->riwayat_kesehatan = $data_rekap->riwayat_kesehatan;
+            $detail_resume->rencana_pemeriksaan = $data_rekap->rencana_pemeriksaan;
+            $detail_resume->terapi = $data_rekap->terapi;
+            $detail_resume->terapi_obat = $data_rekap->terapi_obat;
+            $detail_resume->kategori_penyakit = $data_rekap->kategori_penyakit;
+            $detail_resume->triase = $data_rekap->triase;
+            $detail_resume->radiologi = $data_rekap->radiologi;
+            $detail_resume->laborat = $data_rekap->laborat;
+            $detail_resume->icdx = $data_rekap->icdx;
+            $detail_resume->tindakan = $data_rekap->tindakan;
+            $detail_resume->anamnesa_dokter = $data_rekap->anamnesa_dokter;
+            $detail_resume->fisio = $data_rekap->fisio;
+            $detail_resume->prosedur = $data_rekap->prosedur;
+            $detail_resume->icd9 = $data_rekap->icd9;
+            $detail_resume->save();
+        }
+        return redirect()->back()->with('berhasil','Data Berhasil Disalin');
+    }
     public function index($id_pasien)
     {
         $pasien = Pasien::with('alamat')->find($id_pasien);
