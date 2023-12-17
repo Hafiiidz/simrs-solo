@@ -356,38 +356,38 @@
                                                         </td>
                                                         <td width=200>
                                                             @if ($resume_medis)
-                                                            <form action="{{ route('post.copy-data', $rawat->id) }}"
-                                                                method="post" id='formCopy{{ $rb->id }}'>
-                                                                @csrf
-                                                                <input type="hidden" name='idrekap'
-                                                                    value="{{ $rb->id }}" name=""
-                                                                    id="">
-                                                                <button type="button"
-                                                                    onclick="modalHasil({{ $rb->id }})"
-                                                                    class="btn btn-success btn-sm">Lihat</button>
-                                                                @can('dokter')
-                                                                    @if ($resume_medis->dokter != 1)
-                                                                        <button class="btn btn-warning btn-sm">Copy</button>
-                                                                    @endif
-                                                                @endcan
-                                                            </form>
+                                                                <form action="{{ route('post.copy-data', $rawat->id) }}"
+                                                                    method="post" id='formCopy{{ $rb->id }}'>
+                                                                    @csrf
+                                                                    <input type="hidden" name='idrekap'
+                                                                        value="{{ $rb->id }}" name=""
+                                                                        id="">
+                                                                    <button type="button"
+                                                                        onclick="modalHasil({{ $rb->id }})"
+                                                                        class="btn btn-success btn-sm">Lihat</button>
+                                                                    @can('dokter')
+                                                                        @if ($resume_medis->dokter != 1)
+                                                                            <button
+                                                                                class="btn btn-warning btn-sm">Copy</button>
+                                                                        @endif
+                                                                    @endcan
+                                                                </form>
                                                             @else
-                                                            <form action="{{ route('post.copy-data', $rawat->id) }}"
-                                                                method="post" id='formCopy{{ $rb->id }}'>
-                                                                @csrf
-                                                                <input type="hidden" name='idrekap'
-                                                                    value="{{ $rb->id }}" name=""
-                                                                    id="">
-                                                                <button type="button"
-                                                                    onclick="modalHasil({{ $rb->id }})"
-                                                                    class="btn btn-success btn-sm">Lihat</button>
-                                                                @can('dokter')
-                                                                    
+                                                                <form action="{{ route('post.copy-data', $rawat->id) }}"
+                                                                    method="post" id='formCopy{{ $rb->id }}'>
+                                                                    @csrf
+                                                                    <input type="hidden" name='idrekap'
+                                                                        value="{{ $rb->id }}" name=""
+                                                                        id="">
+                                                                    <button type="button"
+                                                                        onclick="modalHasil({{ $rb->id }})"
+                                                                        class="btn btn-success btn-sm">Lihat</button>
+                                                                    @can('dokter')
                                                                         <button class="btn btn-warning btn-sm">Copy</button>
-                                                                @endcan
-                                                            </form>
+                                                                    @endcan
+                                                                </form>
                                                             @endif
-                                                            
+
 
                                                         </td>
                                                     </tr>
@@ -457,22 +457,22 @@
                                                                     class="separator separator-dashed border-secondary mb-5">
                                                                 </div>
                                                                 <h5>ICD X</h5>
-                                                                <ul>
-                                                                    @foreach (json_decode($resume_detail->icdx) as $val)
+                                                                {{-- <ul>
+                                                                    @foreach (json_decode($resume_detail?->icdx) as $val)
                                                                         <li>{{ $val->diagnosa_icdx }}
                                                                             (<b>{{ $val->jenis_diagnosa == 'P' ? 'Primer' : 'Sekunder' }}</b>)
                                                                         </li>
                                                                     @endforeach
-                                                                </ul>
+                                                                </ul> --}}
                                                                 <div
                                                                     class="separator separator-dashed border-secondary mb-5">
                                                                 </div>
-                                                                <h5>ICD IX</h5>
+                                                                {{-- <h5>ICD IX</h5>
                                                                 <ul>
-                                                                    @foreach (json_decode($resume_detail->icd9) as $val)
+                                                                    @foreach (json_decode($resume_detail?->icd9) as $val)
                                                                         <li>{{ $val->diagnosa_icdx }}</li>
                                                                     @endforeach
-                                                                </ul>
+                                                                </ul> --}}
                                                             </td>
                                                             <td width=300>{{ $resume_detail?->anamnesa_dokter }}</td>
                                                             <td>
@@ -896,7 +896,8 @@
                                                             <ol>
                                                                 @foreach ($pemeriksaan_lab_detail as $plb)
                                                                     <li>
-                                                                        <a href="#" onclick="modalHasilLab({{ $plb->id }})">{{ $plb->nama_pemeriksaan }}</a>
+                                                                        <a href="#"
+                                                                            onclick="modalHasilLab({{ $plb->id }})">{{ $plb->nama_pemeriksaan }}</a>
                                                                     </li>
                                                                 @endforeach
                                                             </ol>
@@ -939,7 +940,8 @@
                                                                             ->first();
                                                                     @endphp
                                                                     <li>
-                                                                        <a href="#" onclick="modalHasilRad({{ $pld->id }})">{{ $tindakan->nama_tindakan }}</a>
+                                                                        <a href="#"
+                                                                            onclick="modalHasilRad({{ $pld->id }})">{{ $tindakan->nama_tindakan }}</a>
                                                                     </li>
                                                                 @endforeach
                                                             </ol>
@@ -1033,7 +1035,7 @@
         </div>
     </div>
 
-    
+
 @endsection
 @section('js')
     <script src="{{ asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
@@ -1049,6 +1051,7 @@
                 $("#modal_lihat").modal('show');
             });
         }
+
         function modalHasilRad(id) {
             // alert(id)
             url = "{{ route('get-hasil-rad', '') }}" + "/" + id;
@@ -1058,6 +1061,7 @@
                 $("#modal_lihat").modal('show');
             });
         }
+
         function modalHasil(id) {
             url = "{{ route('get-hasil', '') }}" + "/" + id;
             $("#modal-hasil").empty();

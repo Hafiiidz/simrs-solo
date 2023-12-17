@@ -172,7 +172,7 @@
                                 </div>
                             </div>
                             <div class="separator separator-dashed border-secondary mb-5"></div>
-                            @can('dokter')
+                            @if(auth()->user()->idpriv === 7)
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Diagnosa</label>
@@ -286,9 +286,9 @@
                                             <!--begin::Form group-->
                                             <div class="form-group">
                                                 <div data-repeater-list="icd9">
-                                                    @if ($rekap->icdx != 'null')
+                                                    @if ($rekap->icd9 != 'null')
                                                         {{-- {{ dd($rekap->laborat) }} --}}
-                                                        @foreach (json_decode($rekap->icdx) as $val)
+                                                        @foreach (json_decode($rekap->icd9) as $val)
                                                         <div data-repeater-item>
                                                             <div class="form-group row mb-5">
                                                                 <div class="col-md-6">
@@ -359,7 +359,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            @endcan
+                            @endif
                             <!--begin::Underline-->
                             <span class="d-inline-block position-relative mb-7">
                                 <!--begin::Label-->
@@ -374,24 +374,24 @@
                                 <!--end::Line-->
                             </span>
                             <!--end::Underline-->
-                            @can('dokter')
+                            @if(auth()->user()->idpriv === 7)
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Anamnesa</label>
                                         <textarea name="anamnesa_dokter" rows="3" class="form-control" placeholder="">{{ $rekap->anamnesa_dokter }}</textarea>
                                     </div>
                                 </div>
-                            @endcan
-                            @can('perawat')
+                            @endif
+                            @if(auth()->user()->idpriv >= 14)
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Anamnesa</label>
                                         <textarea name="anamnesa" rows="3" class="form-control" placeholder="Alasan Masuk Rumah Sakit">{{ $rekap->anamnesa }}</textarea>
                                     </div>
                                 </div>
-                            @endcan
+                            @endif
 
-                            @can('perawat')
+                            @if(auth()->user()->idpriv >= 14)
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Obat Yang Dikonsumsi</label>
@@ -657,9 +657,9 @@
                                         </div>
                                     </div>
                                 </div>
-                            @endcan
+                            @endif
                             <!--begin::Underline-->
-                            @can('dokter')
+                            @if(auth()->user()->idpriv === 7)
                                 <span class="d-inline-block position-relative mb-7">
                                     <!--begin::Label-->
                                     <span class="d-inline-block mb-2 fs-4 fw-bold">
@@ -1082,7 +1082,7 @@
                                             placeholder="Baik Obat, Prosedur, Operasi, Rehabilitasi dan Diet">{{ $rekap->terapi }}</textarea>
                                     </div>
                                 </div>
-                            @endcan
+                            @endif
                     </div>
                     <!--end::Body-->
                     <div class="card-footer">
@@ -1156,6 +1156,73 @@
                 }
             });
 
+            $('#icd9_repeater').repeater({
+                initEmpty: true,
+
+                show: function() {
+                    $(this).slideDown();
+
+                    $(this).find('[data-kt-repeater="select2icd9"]').select2({
+                        ajax: {
+                            url: 'https://new-simrs.rsausulaiman.com/auth/listprosedur2',
+                            dataType: 'json',
+                            delay: 250,
+                            data: function(params) {
+
+                                return {
+                                    q: params.term, // search term
+                                };
+                            },
+                            processResults: function(data) {
+                                return {
+                                    results: data.map(function(user) {
+                                        return {
+                                            id: user.id,
+                                            text: user.text
+                                        };
+                                    })
+                                };
+                            },
+                            cache: true
+                        },
+                        minimumInputLength: 1,
+                        placeholder: 'Search for a user...'
+                    });
+                },
+
+                hide: function(deleteElement) {
+                    $(this).slideUp(deleteElement);
+                },
+
+                ready: function() {
+                    $('[data-kt-repeater="select2icd9"]').select2({
+                        ajax: {
+                            url: 'https://new-simrs.rsausulaiman.com/auth/listprosedur2',
+                            dataType: 'json',
+                            delay: 250,
+                            data: function(params) {
+
+                                return {
+                                    q: params.term, // search term
+                                };
+                            },
+                            processResults: function(data) {
+                                return {
+                                    results: data.map(function(user) {
+                                        return {
+                                            id: user.id,
+                                            text: user.text
+                                        };
+                                    })
+                                };
+                            },
+                            cache: true
+                        },
+                        minimumInputLength: 1,
+                        placeholder: 'Search for a user...'
+                    });
+                }
+            });
 
             $('#kt_docs_repeater_basic').repeater({
                 initEmpty: {{ $rekap->terapi_obat == 'null' ? 'true' : 'false' }},

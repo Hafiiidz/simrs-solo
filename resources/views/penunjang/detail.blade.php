@@ -516,11 +516,162 @@
                                     <div class="card-header">
                                         <h5 class="card-title">Permintaan Pemeriksaan {{ $jenis }}</h5>
                                     </div>
+                                    <div class="card-body">
+                                        <form id='frmLab' action="{{ route('penunjang.fisio-post', $penunjang->id) }}"
+                                            method="post">
+                                            @csrf
+                                            <div class="form-group row mb-3">
+                                                <label class="col-sm-3 col-form-label text-start">Dokter / Petugas</label>
+                                                <div class="col-sm-4">
+                                                    <select name="dokter_pemeriksa" required class="form-select"
+                                                        id="">
+                                                        <option value="">-- Dokter --</option>
+                                                        @foreach ($dokter as $dr)
+                                                            <option value="{{ $dr->id }}">{{ $dr->nama_dokter }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input class="form-control form-control-solid" readonly required
+                                                        name='petugas' value="{{ auth()->user()->detail->nama }}"
+                                                        placeholder="Petugas" />
+                                                </div>
+                                            </div>
+                                            <div class="separator separator-dashed border-secondary mb-5"></div>
+                                            <h5>Permintaan Pemeriksaan</h5>
+                                            <div class="row mb-5">
+                                                <!--begin::Repeater-->
+                                                <div id="fisio_repeater">
+                                                    <!--begin::Form group-->
+                                                    <div class="form-group">
+                                                        <div data-repeater-list="fisio">
+                                                            @if ($penunjang->pemeriksaan_penunjang != 'null')
+                                                                {{-- {{ dd($rekap->laborat) }} --}}
+                                                                @foreach (json_decode($penunjang->pemeriksaan_penunjang) as $val)
+                                                                    <div data-repeater-item>
+                                                                        <div class="form-group row mb-5">
+                                                                            <div class="col-md-6">
+                                                                                <label class="form-label">Fisio Terapi</label>
+                                                                                <select name="tindakan_fisio" class="form-select"
+                                                                                    data-kt-repeater="select2fisio"
+                                                                                    data-placeholder="-Pilih-" required>
+                                                                                    <option></option>
+                                                                                    @foreach ($fisio as $f)
+                                                                                        <option value="{{ $f->id }}"
+                                                                                            {{ $val->tindakan_fisio == $f->id ? 'selected' : '' }}>
+                                                                                            {{ $f->nama_tarif }}</option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
+            
+                                                                            <div class="col-md-4">
+                                                                                <a href="javascript:;" data-repeater-delete
+                                                                                    class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                                    <i class="ki-duotone ki-trash fs-5"><span
+                                                                                            class="path1"></span><span
+                                                                                            class="path2"></span><span
+                                                                                            class="path3"></span><span
+                                                                                            class="path4"></span><span
+                                                                                            class="path5"></span></i>
+                                                                                    Hapus
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
+                                                            @else
+                                                                <div data-repeater-item>
+                                                                    <div class="form-group row mb-5">
+                                                                        <div class="col-md-6">
+                                                                            <label class="form-label">Fisio Terapi</label>
+                                                                            <select name="tindakan_fisio" class="form-select"
+                                                                                data-kt-repeater="select2fisio" data-placeholder="-Pilih-"
+                                                                                required>
+                                                                                <option></option>
+                                                                                @foreach ($fisio as $fisio)
+                                                                                    <option value="{{ $fisio->id }}">
+                                                                                        {{ $fisio->nama_tarif }}</option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </div>
+            
+                                                                        <div class="col-md-4">
+                                                                            <a href="javascript:;" data-repeater-delete
+                                                                                class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                                <i class="ki-duotone ki-trash fs-5"><span
+                                                                                        class="path1"></span><span
+                                                                                        class="path2"></span><span
+                                                                                        class="path3"></span><span
+                                                                                        class="path4"></span><span
+                                                                                        class="path5"></span></i>
+                                                                                Hapus
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+            
+                                                        </div>
+                                                    </div>
+                                                    <!--end::Form group-->
+            
+                                                    <!--begin::Form group-->
+                                                    <div class="form-group mt-5">
+                                                        <a href="javascript:;" data-repeater-create class="btn btn-light-info">
+                                                            <i class="ki-duotone ki-plus fs-3"></i>
+                                                            Tambah Fisio
+                                                        </a>
+                                                    </div>
+                                                    <!--end::Form group-->
+                                                </div>
+                                                <!--end::Repeater-->
+                                            </div>
+                                            <button class="btn btn-success mt-5" type="submit">Kerjakan</button>
+                                        </form>
+                                        
+                                    </div>
                                 </div>
                             @endif
                             <div class="card mb-5">
                                 <div class="card-header">
-                                    <h5 class="card-title">Histori Pemeriksaan {{ $jenis }}</h5>
+                                    <h5 class="card-title">List Pemeriksaan {{ $jenis }}</h5>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Nama Pemeriksaan</th>
+                                                <th>Status</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($pemeriksaan_fisio as $pf)
+                                            @php
+                                                $tindakan = DB::table('tarif')
+                                                    ->where('id', $pf->idtindakan)
+                                                    ->first();
+                                            @endphp
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $tindakan->nama_tarif }}</td>
+                                                    <td>{{ $pf->status < 2 ? 'Hasil Belum di input' : 'Hasil sudah terinput' }} </td>
+                                                    <td>
+                                                        @if ($pf->status < 2)
+                                                            <a href="{{ route('penunjang.input-hasil-fisio', [$pf->id, $pf->idtindakan]) }}"
+                                                                class="btn btn-primary btn-sm">Input Hasil</a>
+                                                        @else
+                                                            <a href="{{ route('penunjang.input-hasil-fisio', [$pf->id, $pf->idtindakan]) }}"
+                                                                class="btn btn-success btn-sm">Lihat Hasil</a>
+                                                        @endif
+
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         @endif
@@ -645,6 +796,55 @@
                     });
                 });
             @elseif ($jenis == 'Fisio')
+            $('#fisio_repeater').repeater({
+                initEmpty: false,
+
+                show: function() {
+                    $(this).slideDown();
+
+                    $(this).find('[data-kt-repeater="select2fisio"]').select2();
+                },
+
+                hide: function(deleteElement) {
+                    $(this).slideUp(deleteElement);
+                },
+
+                ready: function() {
+                    $('[data-kt-repeater="select2fisio"]').select2();
+                }
+            });
+            $("#frmLab").on("submit", function(event) {
+                    event.preventDefault();
+                    var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                    Swal.fire({
+                        title: 'Simpan Data',
+                        text: "Apakah Anda yakin akan mengerjakan pemeriksaan ini ? ",
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, Simpan Data',
+                        cancelButtonText: 'Tidak'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.blockUI({
+                                css: {
+                                    border: 'none',
+                                    padding: '15px',
+                                    backgroundColor: '#000',
+                                    '-webkit-border-radius': '10px',
+                                    '-moz-border-radius': '10px',
+                                    opacity: .5,
+                                    color: '#fff',
+                                    fontSize: '16px'
+                                },
+                                message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                                baseZ: 9000,
+                            });
+                            this.submit();
+                        }
+                    });
+                });
             @endif
             $("#formPermintaanobat").on("submit", function(event) {
                 event.preventDefault();

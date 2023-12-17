@@ -17,7 +17,7 @@ class UserController extends Controller
 
         if(Auth::guard('web')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect('/index');
+            return redirect('/dashboard');
         }
 
         return redirect()->back();

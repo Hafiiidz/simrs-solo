@@ -181,12 +181,7 @@
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
                                                 data-bs-toggle="tab" href="#kt_tab_pane_3" aria-selected="false"
-                                                role="tab" tabindex="-1">Pemberian Obat Injeksi</a>
-                                        </li>
-                                        <li class="nav-item" role="presentation">
-                                            <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
-                                                data-bs-toggle="tab" href="#kt_tab_pane_4" aria-selected="false"
-                                                role="tab" tabindex="-1">Pemberian Obat Non Injeksi</a>
+                                                role="tab" tabindex="-1">CCPT </a>
                                         </li>
                                     </ul>
                                 </div>

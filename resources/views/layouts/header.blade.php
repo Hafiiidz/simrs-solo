@@ -21,6 +21,7 @@
             <div class="app-navbar-item ms-1 ms-md-3" id="kt_header_user_menu_toggle">
                 <!--begin::Menu wrapper-->
                 <div class="cursor-pointer symbol symbol-circle symbol-35px symbol-md-45px" data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
+                    <span class="fw-bold me-3"> {{ auth()->user()->detail->nama }} </span>
                     <img src="{{ asset('assets/media/avatars/blank.png') }}" alt="user" />
                 </div>
                 <!--begin::User account menu-->
