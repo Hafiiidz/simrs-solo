@@ -172,7 +172,7 @@
                                 </div>
                             </div>
                             <div class="separator separator-dashed border-secondary mb-5"></div>
-                            @if(auth()->user()->idpriv === 7)
+                            @if(auth()->user()->idpriv == 7)
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Diagnosa</label>
@@ -293,10 +293,10 @@
                                                             <div class="form-group row mb-5">
                                                                 <div class="col-md-6">
                                                                     <label class="form-label">ICD 9</label>
-                                                                    <select name="diagnosa_icdx" class="form-select"
+                                                                    <select name="diagnosa_icd9" class="form-select"
                                                                         data-kt-repeater="select2icd9" data-placeholder="-Pilih-"
                                                                         required>
-                                                                        <option value="{{ $val->diagnosa_icdx }}">{{ $val->diagnosa_icdx }}</option>
+                                                                        <option value="{{ $val->diagnosa_icd9 }}">{{ $val->diagnosa_icd9 }}</option>
                                                                     </select>
                                                                 </div>
                                                                 
@@ -321,7 +321,7 @@
                                                         <div class="form-group row mb-5">
                                                             <div class="col-md-6">
                                                                 <label class="form-label">ICD 9</label>
-                                                                <select name="diagnosa_icdx" class="form-select"
+                                                                <select name="diagnosa_icd9" class="form-select"
                                                                     data-kt-repeater="select2icd9" data-placeholder="-Pilih-"
                                                                     required>
                                                                 </select>
@@ -374,7 +374,7 @@
                                 <!--end::Line-->
                             </span>
                             <!--end::Underline-->
-                            @if(auth()->user()->idpriv === 7)
+                            @if(auth()->user()->idpriv == 7)
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Anamnesa</label>
@@ -659,7 +659,7 @@
                                 </div>
                             @endif
                             <!--begin::Underline-->
-                            @if(auth()->user()->idpriv === 7)
+                            @if(auth()->user()->idpriv == 7)
                                 <span class="d-inline-block position-relative mb-7">
                                     <!--begin::Label-->
                                     <span class="d-inline-block mb-2 fs-4 fw-bold">
@@ -1157,7 +1157,7 @@
             });
 
             $('#icd9_repeater').repeater({
-                initEmpty: true,
+                initEmpty: {{ $rekap->icd9 == 'null' ? 'true' : 'false' }},
 
                 show: function() {
                     $(this).slideDown();

@@ -102,7 +102,7 @@ class DetailRekapMedisController extends Controller
         $rekap->laborat = json_encode($request->lab);
         $rekap->fisio = json_encode($request->fisio);
         $rekap->icdx = json_encode($request->icdx);
-        $rekap->prosedur = json_encode($request->tindakan_prc);
+        $rekap->prosedur = $request->tindakan_prc;
         $rekap->icd9 = json_encode($request->icd9);
         $rekap->kategori_penyakit = $request->kategori_penyakit;
         $rekap->terapi = $request->terapi;
@@ -129,7 +129,7 @@ class DetailRekapMedisController extends Controller
 
     public function update(Request $request, $id)
     {
-        // return $request->all();
+        // return $request->tindakan_prc;
 
 
         $rekap = DetailRekapMedis::find($id);
@@ -157,12 +157,18 @@ class DetailRekapMedisController extends Controller
             } else {
                 $rekap->icdx = 'null';
             }
+            if ($request->icd9) {
+                $rekap->icd9 = json_encode($request->icd9);
+            } else {
+                $rekap->icd9 = 'null';
+            }
             if ($request->fisio) {
                 $rekap->fisio = json_encode($request->fisio);
             } else {
                 $rekap->fisio = 'null';
             }
             $rekap->terapi = $request->terapi;
+            $rekap->prosedur = $request->tindakan_prc;
 
         } elseif ($request->user()->can('perawat')) {
             $rekap->anamnesa = $request->anamnesa;

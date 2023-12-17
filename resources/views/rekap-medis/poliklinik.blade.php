@@ -457,22 +457,26 @@
                                                                     class="separator separator-dashed border-secondary mb-5">
                                                                 </div>
                                                                 <h5>ICD X</h5>
-                                                                {{-- <ul>
-                                                                    @foreach (json_decode($resume_detail?->icdx) as $val)
-                                                                        <li>{{ $val->diagnosa_icdx }}
-                                                                            (<b>{{ $val->jenis_diagnosa == 'P' ? 'Primer' : 'Sekunder' }}</b>)
-                                                                        </li>
-                                                                    @endforeach
-                                                                </ul> --}}
+                                                                @if ($resume_detail->icdx != 'null')
+                                                                    <ul>
+                                                                        @foreach (json_decode($resume_detail?->icdx) as $val)
+                                                                            <li>{{ $val->diagnosa_icdx }}
+                                                                                (<b>{{ $val->jenis_diagnosa == 'P' ? 'Primer' : 'Sekunder' }}</b>)
+                                                                            </li>
+                                                                        @endforeach
+                                                                    </ul>
+                                                                @endif
                                                                 <div
                                                                     class="separator separator-dashed border-secondary mb-5">
                                                                 </div>
-                                                                {{-- <h5>ICD IX</h5>
-                                                                <ul>
-                                                                    @foreach (json_decode($resume_detail?->icd9) as $val)
-                                                                        <li>{{ $val->diagnosa_icdx }}</li>
-                                                                    @endforeach
-                                                                </ul> --}}
+                                                                <h5>ICD IX</h5>
+                                                                @if ($resume_detail->icd9 != 'null')
+                                                                    <ul>
+                                                                        @foreach (json_decode($resume_detail?->icd9) as $val)
+                                                                            <li>{{ $val->diagnosa_icd9 }}</li>
+                                                                        @endforeach
+                                                                    </ul>
+                                                                @endif
                                                             </td>
                                                             <td width=300>{{ $resume_detail?->anamnesa_dokter }}</td>
                                                             <td>
@@ -960,8 +964,20 @@
                                         @csrf
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <label for="">Upload File</label>
-                                                <input type="file" class="form-control" name="file_penunjang_luar">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <label for="">Deskripsi File</label>
+                                                        <input type="text" class="form-control" name="keterangan_file">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <label for="">Upload File</label>
+                                                        <input type="file" class="form-control" name="file_penunjang_luar">
+                                                    </div>
+                                                </div>
+
+
                                             </div>
                                         </div>
                                         <button class="btn btn-primary btn-sm mt-10">Upload</button>

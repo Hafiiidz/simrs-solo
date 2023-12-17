@@ -161,7 +161,7 @@
                                     </div>
                                 @endif
                             @endif
-                            @if(auth()->user()->idpriv === 7)
+                            @if(auth()->user()->idpriv == 7)
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Kategori Penyakit</label>
@@ -174,7 +174,7 @@
                                     </div>
                                 </div>
                             @endif
-                            @if(auth()->user()->idpriv === 7)
+                            @if(auth()->user()->idpriv == 7)
                                 <div class="row mb-5">
 
                                     <div class="col-md-12">
@@ -249,7 +249,7 @@
                                                         <div class="form-group row mb-5">
                                                             <div class="col-md-6">
                                                                 <label class="form-label">ICD 9</label>
-                                                                <select name="diagnosa_icdx" class="form-select"
+                                                                <select name="diagnosa_icd9" class="form-select"
                                                                     data-kt-repeater="select2icd9" data-placeholder="-Pilih-"
                                                                     required>
                                                                 </select>
@@ -299,7 +299,7 @@
                                     class="d-inline-block position-absolute h-5px bottom-0 end-0 start-0 bg-success translate rounded"></span>
                                 <!--end::Line-->
                             </span>
-                            @if(auth()->user()->idpriv === 7)
+                            @if(auth()->user()->idpriv == 7)
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Anamnesa</label>
@@ -578,7 +578,7 @@
                                     </div>
                                 </div>
                             @endif
-                            @if(auth()->user()->idpriv === 7)
+                            @if(auth()->user()->idpriv == 7)
                                 <!--begin::Underline-->
                                 <span class="d-inline-block position-relative mb-7">
                                     <!--begin::Label-->
