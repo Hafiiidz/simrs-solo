@@ -636,24 +636,48 @@
                                                                         {{ $rkesehatan->riwayat_1 == 1 ? 'Ya' : 'Tidak' }}
                                                                     </td>
                                                                 </tr>
+                                                                @if ($rkesehatan->value_riwayat_1 != null)
+                                                                    <td class="fw-bold" colspan="2">
+                                                                        &nbsp;&nbsp;{{ $rkesehatan->value_riwayat_1 }}
+                                                                        <hr>
+                                                                    </td>
+                                                                @endif
                                                                 <tr>
                                                                     <td>&nbsp;&nbsp;Pernah dirawat</td>
                                                                     <td class="text-start">:
                                                                         {{ $rkesehatan->riwayat_2 == 1 ? 'Ya' : 'Tidak' }}
                                                                     </td>
                                                                 </tr>
+                                                                @if ($rkesehatan->value_riwayat_2 != null)
+                                                                    <td class="fw-bold" colspan="2">
+                                                                        &nbsp;&nbsp;{{ $rkesehatan->value_riwayat_2 }}
+                                                                        <hr>
+                                                                    </td>
+                                                                @endif
                                                                 <tr>
                                                                     <td>&nbsp;&nbsp;Pernah dioperasi</td>
                                                                     <td class="text-start">:
                                                                         {{ $rkesehatan->riwayat_3 == 1 ? 'Ya' : 'Tidak' }}
                                                                     </td>
                                                                 </tr>
+                                                                @if ($rkesehatan->value_riwayat_3 != null)
+                                                                    <td class="fw-bold" colspan="2">
+                                                                        &nbsp;&nbsp;{{ $rkesehatan->value_riwayat_3 }}
+                                                                        <hr>
+                                                                    </td>
+                                                                @endif
                                                                 <tr>
                                                                     <td>&nbsp;&nbsp;Dalam Pengobatan Khusus</td>
                                                                     <td class="text-start">:
                                                                         {{ $rkesehatan->riwayat_4 == 1 ? 'Ya' : 'Tidak' }}
                                                                     </td>
                                                                 </tr>
+                                                                @if ($rkesehatan->value_riwayat_4 != null)
+                                                                    <td class="fw-bold" colspan="2">
+                                                                        &nbsp;&nbsp;{{ $rkesehatan->value_riwayat_4 }}
+                                                                        <hr>
+                                                                    </td>
+                                                                @endif
                                                             </table>
                                                         </td>
                                                         <td>
@@ -960,20 +984,23 @@
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_6" role="tabpanel">
                                     <h5>Upload Hasil Pemerikasaan Penunjang Luar</h5>
-                                    <form action="" method="POST" enctype="multipart/form-data">
+                                    <form action="{{ route('post.upload-pengantar', $rawat->id) }}"
+                                        id='frmPengantarluar' method="POST" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <label for="">Deskripsi File</label>
-                                                        <input type="text" class="form-control" name="keterangan_file">
+                                                        <input type="text" required class="form-control"
+                                                            name="keterangan_file">
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <label for="">Upload File</label>
-                                                        <input type="file" class="form-control" name="file_penunjang_luar">
+                                                        <input type="file" required class="form-control"
+                                                            name="file_penunjang_luar">
                                                     </div>
                                                 </div>
 
@@ -1169,6 +1196,38 @@
                         allowClear: true,
                     });
                 }
+            });
+            $("#frmPengantarluar").on("submit", function(event) {
+                event.preventDefault();
+                var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                Swal.fire({
+                    title: 'Upload Pengantar',
+                    text: "Upload Pengantar?",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.blockUI({
+                            css: {
+                                border: 'none',
+                                padding: '15px',
+                                backgroundColor: '#000',
+                                '-webkit-border-radius': '10px',
+                                '-moz-border-radius': '10px',
+                                opacity: .5,
+                                color: '#fff',
+                                fontSize: '16px'
+                            },
+                            message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                            baseZ: 9000,
+                        });
+                        this.submit();
+                    }
+                });
             });
             $("#frmTindakLanjut").on("submit", function(event) {
                 event.preventDefault();

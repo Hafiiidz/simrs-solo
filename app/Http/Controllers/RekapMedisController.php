@@ -22,111 +22,115 @@ use Illuminate\Support\Facades\View;
 
 class RekapMedisController extends Controller
 {
-    public function get_hasil_lab($id){
+    public function get_hasil_lab($id)
+    {
         $hasil = LabHasil::find($id);
-        $detail = DB::table('laboratorium_hasildetail')->where('id',$id)->first();
-        $lab_form = DB::table('lab_hasil')->where('idlayanan',$detail->id)->get();
-        return View::make('rekap-medis.hasil-lab',compact('hasil','detail','lab_form'));
+        $detail = DB::table('laboratorium_hasildetail')->where('id', $id)->first();
+        $lab_form = DB::table('lab_hasil')->where('idlayanan', $detail->id)->get();
+        return View::make('rekap-medis.hasil-lab', compact('hasil', 'detail', 'lab_form'));
     }
-    public function get_hasil_rad($id){
+    public function get_hasil_rad($id)
+    {
         $hasil = RadiologiHasil::find($id);
-        $detail = DB::table('radiologi_hasildetail')->where('id',$id)->first();
-        $tindakan = DB::table('radiologi_tindakan')->where('id',$detail->idtindakan)->first();
-        $foto = DB::table('radiologi_hasilfoto')->where('idhasil',$id)->get();
-        return View::make('rekap-medis.hasil-radiologi',compact('hasil','detail','foto','tindakan'));
+        $detail = DB::table('radiologi_hasildetail')->where('id', $id)->first();
+        $tindakan = DB::table('radiologi_tindakan')->where('id', $detail->idtindakan)->first();
+        $foto = DB::table('radiologi_hasilfoto')->where('idhasil', $id)->get();
+        return View::make('rekap-medis.hasil-radiologi', compact('hasil', 'detail', 'foto', 'tindakan'));
     }
-    public function get_hasil($id){
-        $resume_medis = RekapMedis::where('id',$id)->first();
-        $resume_detail = DetailRekapMedis::where('idrekapmedis',$resume_medis->id)->first();
+    public function get_hasil($id)
+    {
+        $resume_medis = RekapMedis::where('id', $id)->first();
+        $resume_detail = DetailRekapMedis::where('idrekapmedis', $resume_medis->id)->first();
         $obat = Obat::with('satuan')->orderBy('obat.nama_obat', 'asc')->get();
         $tindak_lanjut = TindakLanjut::where('idrawat', $resume_medis->idrawat)->first();
         $radiologi = DB::table('radiologi_tindakan')->get();
         $lab = DB::table('laboratorium_pemeriksaan')->get();
-        $fisio = DB::table('tarif')->where('idkategori',8)->get();
+        $fisio = DB::table('tarif')->where('idkategori', 8)->get();
         $rawat = Rawat::find($resume_medis->idrawat);
         $pemeriksaan_lab = LabHasil::where('idrawat', $resume_medis->idrawat)->get();
         $pemeriksaan_radiologi = RadiologiHasil::where('idrawat', $resume_medis->idrawat)->get();
-        return View::make('rekap-medis.hasil-history',compact('resume_medis','resume_detail','obat','tindak_lanjut','radiologi','lab','fisio','rawat','pemeriksaan_lab','pemeriksaan_radiologi'));
+        return View::make('rekap-medis.hasil-history', compact('resume_medis', 'resume_detail', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'fisio', 'rawat', 'pemeriksaan_lab', 'pemeriksaan_radiologi'));
     }
-    public function selesai_poli(Request $request , $id){
-        $rekap_medis = RekapMedis::where('id',$id)->first();
-        $detail = DetailRekapMedis::where('idrekapmedis',$rekap_medis->id)->first();
-        if($request->jenis == 'perawat'){
+    public function selesai_poli(Request $request, $id)
+    {
+        $rekap_medis = RekapMedis::where('id', $id)->first();
+        $detail = DetailRekapMedis::where('idrekapmedis', $rekap_medis->id)->first();
+        if ($request->jenis == 'perawat') {
             $rekap_medis->perawat = 1;
-        }else{
+        } else {
             $rekap_medis->dokter = 1;
-            if($detail->terapi_obat != 'null' || $detail->terapi_obat != ''){
+            if ($detail->terapi_obat != 'null' || $detail->terapi_obat != '') {
                 DB::table('demo_antrian_resep')->insert([
-                    'idrawat'=>$rekap_medis->idrawat,
-                    'idbayar'=>$rekap_medis->rawat->idbayar,
-                    'status_antrian'=>'Antrian',
-                    'no_rm'=>$rekap_medis->rawat->no_rm,
-                    'idrekap'=>$rekap_medis->id,
-                    'obat'=>$detail->terapi_obat,
-                    'jenis_rawat'=>$rekap_medis->rawat->idjenisrawat,
-                    'created_at'=>now(),
-                    'updated_at'=>now(),
+                    'idrawat' => $rekap_medis->idrawat,
+                    'idbayar' => $rekap_medis->rawat->idbayar,
+                    'status_antrian' => 'Antrian',
+                    'no_rm' => $rekap_medis->rawat->no_rm,
+                    'idrekap' => $rekap_medis->id,
+                    'obat' => $detail->terapi_obat,
+                    'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
             }
 
-            if($detail->radiologi != 'null' || $detail->radiologi != ''){
+            if ($detail->radiologi != 'null' || $detail->radiologi != '') {
                 DB::table('demo_permintaan_penunjang')->insert([
-                    'idrawat'=>$rekap_medis->idrawat,
-                    'idbayar'=>$rekap_medis->rawat->idbayar,
-                    'status_pemeriksaan'=>'Antrian',
-                    'no_rm'=>$rekap_medis->rawat->no_rm,
-                    'pemeriksaan_penunjang'=>$detail->radiologi,
-                    'jenis_penunjang'=>'Radiologi',
-                    'peminta'=>now(),
-                    'created_at'=>now(),
-                    'updated_at'=>now(),
-                    'peminta'=>auth()->user()->id,
-                    'jenis_rawat'=>$rekap_medis->rawat->idjenisrawat,  
-                    'idrekap'=>$rekap_medis->id,                  
+                    'idrawat' => $rekap_medis->idrawat,
+                    'idbayar' => $rekap_medis->rawat->idbayar,
+                    'status_pemeriksaan' => 'Antrian',
+                    'no_rm' => $rekap_medis->rawat->no_rm,
+                    'pemeriksaan_penunjang' => $detail->radiologi,
+                    'jenis_penunjang' => 'Radiologi',
+                    'peminta' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'peminta' => auth()->user()->id,
+                    'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
+                    'idrekap' => $rekap_medis->id,
                 ]);
             }
-            if($detail->laborat != 'null' || $detail->laborat != ''){
+            if ($detail->laborat != 'null' || $detail->laborat != '') {
                 DB::table('demo_permintaan_penunjang')->insert([
-                    'idrawat'=>$rekap_medis->idrawat,
-                    'idbayar'=>$rekap_medis->rawat->idbayar,
-                    'status_pemeriksaan'=>'Antrian',
-                    'no_rm'=>$rekap_medis->rawat->no_rm,
-                    'pemeriksaan_penunjang'=>$detail->laborat,
-                    'jenis_penunjang'=>'Lab',
-                    'peminta'=>now(),
-                    'created_at'=>now(),
-                    'updated_at'=>now(),
-                    'peminta'=>auth()->user()->id,
-                    'jenis_rawat'=>$rekap_medis->rawat->idjenisrawat,  
-                    'idrekap'=>$rekap_medis->id,                  
+                    'idrawat' => $rekap_medis->idrawat,
+                    'idbayar' => $rekap_medis->rawat->idbayar,
+                    'status_pemeriksaan' => 'Antrian',
+                    'no_rm' => $rekap_medis->rawat->no_rm,
+                    'pemeriksaan_penunjang' => $detail->laborat,
+                    'jenis_penunjang' => 'Lab',
+                    'peminta' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'peminta' => auth()->user()->id,
+                    'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
+                    'idrekap' => $rekap_medis->id,
                 ]);
             }
-            if($detail->fisio != 'null' || $detail->fisio != ''){
+            if ($detail->fisio != 'null' || $detail->fisio != '') {
                 DB::table('demo_permintaan_penunjang')->insert([
-                    'idrawat'=>$rekap_medis->idrawat,
-                    'idbayar'=>$rekap_medis->rawat->idbayar,
-                    'status_pemeriksaan'=>'Antrian',
-                    'no_rm'=>$rekap_medis->rawat->no_rm,
-                    'pemeriksaan_penunjang'=>$detail->fisio,
-                    'jenis_penunjang'=>'Fisio',
-                    'peminta'=>now(),
-                    'created_at'=>now(),
-                    'updated_at'=>now(),
-                    'peminta'=>auth()->user()->id,
-                    'jenis_rawat'=>$rekap_medis->rawat->idjenisrawat,  
-                    'idrekap'=>$rekap_medis->id,                  
+                    'idrawat' => $rekap_medis->idrawat,
+                    'idbayar' => $rekap_medis->rawat->idbayar,
+                    'status_pemeriksaan' => 'Antrian',
+                    'no_rm' => $rekap_medis->rawat->no_rm,
+                    'pemeriksaan_penunjang' => $detail->fisio,
+                    'jenis_penunjang' => 'Fisio',
+                    'peminta' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'peminta' => auth()->user()->id,
+                    'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
+                    'idrekap' => $rekap_medis->id,
                 ]);
             }
         }
 
         $rekap_medis->save();
-        
-        if($rekap_medis->perawat == 1 && $rekap_medis->dokter == 1){
+
+        if ($rekap_medis->perawat == 1 && $rekap_medis->dokter == 1) {
             $rawat = Rawat::find($rekap_medis->idrawat);
             $rawat->status = 4;
             $rawat->save();
         }
-        return redirect()->back()->with('berhasil','Pasien Selesai Diperiksa');
+        return redirect()->back()->with('berhasil', 'Pasien Selesai Diperiksa');
     }
     public function index_poli($id_rawat)
     {
@@ -140,7 +144,7 @@ class RekapMedisController extends Controller
         }
         $pasien = Pasien::with('alamat')->where('no_rm', $rawat->no_rm)->first();
         if (request()->ajax()) {
-            $rekap = RekapMedis::with('kategori')->where('idrawat','!=',$rawat->id)->where('idpasien', $pasien->id);
+            $rekap = RekapMedis::with('kategori')->where('idrawat', '!=', $rawat->id)->where('idpasien', $pasien->id);
 
             return DataTables::of($rekap)
                 ->addColumn('kategori', function (RekapMedis $rekap) {
@@ -160,7 +164,7 @@ class RekapMedisController extends Controller
         $tindak_lanjut = TindakLanjut::where('idrawat', $id_rawat)->first();
         $radiologi = DB::table('radiologi_tindakan')->get();
         $lab = DB::table('laboratorium_pemeriksaan')->get();
-        $fisio = DB::table('tarif')->where('idkategori',8)->get();
+        $fisio = DB::table('tarif')->where('idkategori', 8)->get();
         $dokter = Dokter::get();
         $tarif = DB::table('tarif')->whereNull('idjenisrawat')->orWhere('idjenisrawat', $rawat->id_jenis_rawat)->whereNull('idpoli')->orWhereIn('idpoli', [auth()->user()->detail->idpoli])->get();
         $soap_tindakan = SoapRajalTindakan::where('idrawat', $id_rawat)->get();
@@ -168,21 +172,22 @@ class RekapMedisController extends Controller
         $pemeriksaan_lab = LabHasil::where('idrawat', $id_rawat)->get();
         $pemeriksaan_radiologi = RadiologiHasil::where('idrawat', $id_rawat)->get();
 
-        $riwayat_berobat = RekapMedis::where('idpasien', $pasien->id)->where('idrawat','!=',$id_rawat)->get();
+        $riwayat_berobat = RekapMedis::where('idpasien', $pasien->id)->where('idrawat', '!=', $id_rawat)->get();
         // dd($riwayat_berobat);
-        return view('rekap-medis.poliklinik', compact('pasien', 'rawat', 'resume_medis', 'resume_detail', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'soap_tindakan','fisio','pemeriksaan_lab','pemeriksaan_radiologi','riwayat_berobat'));
+        return view('rekap-medis.poliklinik', compact('pasien', 'rawat', 'resume_medis', 'resume_detail', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'soap_tindakan', 'fisio', 'pemeriksaan_lab', 'pemeriksaan_radiologi', 'riwayat_berobat'));
     }
 
-    public function copy_data(Request $request,$id){
+    public function copy_data(Request $request, $id)
+    {
         $rawat = Rawat::find($id);
         // dd($rawat);
-        $rekap_medis = RekapMedis::where('idrawat',$id)->first();
+        $rekap_medis = RekapMedis::where('idrawat', $id)->first();
         // dd($rekap_medis);
-        $data_rekap = DetailRekapMedis::where('idrekapmedis',$request->idrekap)->first();
+        $data_rekap = DetailRekapMedis::where('idrekapmedis', $request->idrekap)->first();
         // return $data_rekap;
-        if($rekap_medis){
-            $detail_resume = DetailRekapMedis::where('idrekapmedis',$rekap_medis->id)->first();
-            if($detail_resume){
+        if ($rekap_medis) {
+            $detail_resume = DetailRekapMedis::where('idrekapmedis', $rekap_medis->id)->first();
+            if ($detail_resume) {
                 $detail_resume->idrawat = $rawat->id;
                 $detail_resume->diagnosa = $data_rekap->diagnosa;
                 // $detail_resume->anamnesa = $data_rekap->data_rekap;
@@ -205,7 +210,7 @@ class RekapMedisController extends Controller
                 $detail_resume->prosedur = $data_rekap->prosedur;
                 $detail_resume->icd9 = $data_rekap->icd9;
                 $detail_resume->save();
-            }else{
+            } else {
                 $detail_resume = new DetailRekapMedis;
                 $detail_resume->diagnosa = $data_rekap->diagnosa;
                 $detail_resume->anamnesa = $data_rekap->data_rekap;
@@ -229,7 +234,7 @@ class RekapMedisController extends Controller
                 $detail_resume->icd9 = $data_rekap->icd9;
                 $detail_resume->save();
             }
-        }else{
+        } else {
             $resume = new RekapMedis;
             $resume->idrawat = $rawat->id;
             $resume->idkategori = 1;
@@ -262,7 +267,7 @@ class RekapMedisController extends Controller
             $detail_resume->icd9 = $data_rekap->icd9;
             $detail_resume->save();
         }
-        return redirect()->back()->with('berhasil','Data Berhasil Disalin');
+        return redirect()->back()->with('berhasil', 'Data Berhasil Disalin');
     }
     public function index($id_pasien)
     {
@@ -301,6 +306,28 @@ class RekapMedisController extends Controller
         return redirect()->back()->with('berhasil', 'Data Rekam Medis Berhasil Ditambahkan');
     }
 
+    public function upload_file_pengatar(Request $request, $id)
+    {
+        // return $request->all();
+        $foto = $request->file('file_penunjang_luar');
+        $fileName = time() . 'Pengantar_' . $id . '.' . $foto->extension();
+
+        $filenameWithExt = $foto->getClientOriginalName();
+        $extension = $foto->getClientOriginalExtension();
+        $filenameSimpan = time() . 'foto-rad' . '_' . $id . '_' . time() . '.' . $extension;
+
+        $foto->storeAs('public/' . 'file-penunjang-luar', $filenameSimpan);
+
+        DB::table('demo_rekap_medis_file_penunjang')->insert([
+            'id_rekap'=>$id,
+            'id_user'=>auth()->user()->id,
+            'created_at'=>now(),
+            'nama_file'=>$filenameSimpan,
+            'keterangan_file'=>$request->keterangan_file
+        ]);
+
+        return redirect()->back()->with('berhasil', 'File Pengantar Berhasil Diupload');
+    }
     public function input_resume_poli(Request $request)
     {
         $rawat = Rawat::find($request->idrawat);
@@ -321,21 +348,21 @@ class RekapMedisController extends Controller
         $triase = DB::table('soap_triase')->get();
         $data = RekapMedis::find($resume->id);
         $pasien = Pasien::with('alamat')->find($data->idpasien);
-        $obat = Obat::with('satuan')->where('nama_obat','!=','')->orderBy('obat.nama_obat', 'asc')->get();
+        $obat = Obat::with('satuan')->where('nama_obat', '!=', '')->orderBy('obat.nama_obat', 'asc')->get();
 
         $kategori = Kategori::find($data->idkategori);
         $kategori_diagnosa = DB::table('kategori_diagnosa')->get();
         $radiologi = DB::table('radiologi_tindakan')->get();
         $lab = DB::table('laboratorium_pemeriksaan')->get();
         $fisio = DB::table('tarif')->where('idkategori', 8)->get();
-        return view('detail-rekap-medis.create', compact('pasien', 'kategori', 'data', 'obat', 'kategori_diagnosa', 'radiologi', 'lab','rawat','triase','fisio'));
+        return view('detail-rekap-medis.create', compact('pasien', 'kategori', 'data', 'obat', 'kategori_diagnosa', 'radiologi', 'lab', 'rawat', 'triase', 'fisio'));
 
         // return redirect(route('detail-rekap-medis-show',$detail_resume->id))->with('berhasil','Data Resume Berhasil Ditambahkan');
     }
 
     public function input_tindakan(Request $request, $id)
     {
-        $rawat = RekapMedis::where('idrawat',$id)->first();
+        $rawat = RekapMedis::where('idrawat', $id)->first();
         $rawat->tindakan = json_encode($request->tindakan_repeater);
         $rawat->save();
         return redirect()->back()->with('berhasil', 'Data Tindakan Berhasil Ditambahkan');
@@ -371,10 +398,10 @@ class RekapMedisController extends Controller
         //                     ]);
         //                 }
         //             }
-                    
+
         //         }
         //     }
         // }
-        
+
     }
 }

@@ -149,7 +149,7 @@
                                     <div class="row mb-5">
                                         <div class="col-md-12">
                                             <label class="form-label fw-bold">Triase</label>
-                                            <select class="form-select" data-control="select2"
+                                            <select class="form-select" name="triase" data-control="select2"
                                                 data-placeholder="Select an option">
                                                 <option></option>
                                                 @foreach ($triase as $t)

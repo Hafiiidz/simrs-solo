@@ -513,7 +513,7 @@
                                                 <div class="col-md-4">
                                                     <label class="form-label">Berat Badan</label>
                                                     <div class="input-group mb-5">
-                                                        <input type="text" class="form-control" name="berat_badan"
+                                                        <input type="text" class="form-control" id='berat_badan_val' name="berat_badan"
                                                             value="{{ $pfisik->berat_badan }}" placeholder="...."
                                                             aria-label="...." aria-describedby="berat_badan" />
                                                         <span class="input-group-text" id="berat_badan">Kg</span>
@@ -522,7 +522,7 @@
                                                 <div class="col-md-4">
                                                     <label class="form-label">Tinggi Badan</label>
                                                     <div class="input-group mb-5">
-                                                        <input type="text" class="form-control" name="tinggi_badan"
+                                                        <input type="text" class="form-control" id='tinggi_badan_val' name="tinggi_badan"
                                                             value="{{ $pfisik->tinggi_badan }}" placeholder="...."
                                                             aria-label="....e" aria-describedby="tinggi_badan" />
                                                         <span class="input-group-text" id="tinggi_badan">Cm</span>
@@ -532,7 +532,7 @@
                                             <div class="row col-md-4">
                                                 <label class="form-label">BMI</label>
                                                 <div class="input-group mb-5">
-                                                    <input type="text" class="form-control" name="bmi"
+                                                    <input type="text" class="form-control" id='bmi_val' name="bmi"
                                                         value="{{ $pfisik->bmi }}" placeholder="...." aria-label="....e"
                                                         aria-describedby="bmi" />
                                                     <span class="input-group-text" id="bmi">Kg/M2</span>
@@ -551,7 +551,7 @@
                                                 <div class="col-md-4">
                                                     <label class="form-label">Riwayat penyakit yang lalu</label>
                                                 </div>
-                                                <div class="col-md-8">
+                                                <div class="col-md-2">
                                                     <div class="d-flex justify-content-start">
                                                         <div class="form-check form-check-custom form-check-solid">
                                                             <input class="form-check-input" type="radio" value="1"
@@ -572,13 +572,18 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="col-md-4">
+                                                    <input type="text" name="value_riwayat_1" value="{{ $rkesehatan->value_riwayat_1 }}" id="value_riwayat_1"
+                                                        class="form-control" placeholder="...." style="display: {{ $rkesehatan->riwayat_1 != 0 ? '' : 'none' }};">
+                                                </div>
                                             </div>
+                                           
                                             <div class="separator separator-dashed border-secondary mb-5"></div>
                                             <div class="row mb-5">
                                                 <div class="col-md-4">
                                                     <label class="form-label">Pernah dirawat</label>
                                                 </div>
-                                                <div class="col-md-8">
+                                                <div class="col-md-2">
                                                     <div class="d-flex justify-content-start">
                                                         <div class="form-check form-check-custom form-check-solid">
                                                             <input class="form-check-input" type="radio" value="1"
@@ -599,13 +604,17 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="col-md-4">
+                                                    <input type="text" name="value_riwayat_2" value="{{ $rkesehatan->value_riwayat_2 }}" id="value_riwayat_2"
+                                                        class="form-control" placeholder="...."  style="display: {{ $rkesehatan->riwayat_2 != 0 ? '' : 'none' }};">
+                                                </div>
                                             </div>
                                             <div class="separator separator-dashed border-secondary mb-5"></div>
                                             <div class="row mb-5">
                                                 <div class="col-md-4">
                                                     <label class="form-label">Pernah dioperasi</label>
                                                 </div>
-                                                <div class="col-md-8">
+                                                <div class="col-md-2">
                                                     <div class="d-flex justify-content-start">
                                                         <div class="form-check form-check-custom form-check-solid">
                                                             <input class="form-check-input" type="radio" value="1"
@@ -626,13 +635,17 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="col-md-4">
+                                                    <input type="text" name="value_riwayat_3" value="{{ $rkesehatan->value_riwayat_3 }}" id="value_riwayat_3"
+                                                        class="form-control" placeholder="...."  style="display: {{ $rkesehatan->riwayat_3 != 0 ? '' : 'none' }};">
+                                                </div>
                                             </div>
                                             <div class="separator separator-dashed border-secondary mb-5"></div>
                                             <div class="row mb-5">
                                                 <div class="col-md-4">
                                                     <label class="form-label">Dalam pengobatan khusus</label>
                                                 </div>
-                                                <div class="col-md-8">
+                                                <div class="col-md-2">
                                                     <div class="d-flex justify-content-start">
                                                         <div class="form-check form-check-custom form-check-solid">
                                                             <input class="form-check-input" type="radio" value="1"
@@ -652,6 +665,10 @@
                                                             </label>
                                                         </div>
                                                     </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="text" name="value_riwayat_4" value="{{ $rkesehatan->value_riwayat_4 }}" id="value_riwayat_4"
+                                                        class="form-control" placeholder="...." style="display: {{ $rkesehatan->riwayat_4 != 0 ? '' : 'none' }};">
                                                 </div>
                                             </div>
                                         </div>
@@ -1105,6 +1122,8 @@
         $(function() {
 
             alergi();
+            riwayat_kesehatan();
+            calculateBMI();
 
             $("#frm-data").on("submit", function(event) {
                 event.preventDefault();
@@ -1348,6 +1367,53 @@
 
         });
 
+        function calculateBMI() {
+            // alert($('#tinggi_badan').val())
+            // Ambil nilai tinggi dan berat badan dari input
+            var height = parseFloat($('#tinggi_badan_val').val()) || 0;
+            var weight = parseFloat($('#berat_badan_val').val()) || 0;
+
+            // Hitung BMI
+            var bmi = weight / ((height / 100) * (height / 100));
+            // alert(bmi)
+            // Tampilkan hasil BMI
+            $('#bmi_val').val(bmi.toFixed(2));
+        }
+
+        function riwayat_kesehatan() {
+            $('input[type=radio][name="riwayat_1"]').change(function() {
+                if ($(this).val() == '1') {
+                    $('#value_riwayat_1').show();
+                } else {
+                    $('#value_riwayat_1').val("");
+                    $('#value_riwayat_1').hide();
+                }
+            })
+            $('input[type=radio][name="riwayat_2"]').change(function() {
+                if ($(this).val() == '1') {
+                    $('#value_riwayat_2').show();
+                } else {
+                    $('#value_riwayat_2').val("");
+                    $('#value_riwayat_2').hide();
+                }
+            })
+            $('input[type=radio][name="riwayat_3"]').change(function() {
+                if ($(this).val() == '1') {
+                    $('#value_riwayat_3').show();
+                } else {
+                    $('#value_riwayat_3').val("");
+                    $('#value_riwayat_3').hide();
+                }
+            })
+            $('input[type=radio][name="riwayat_4"]').change(function() {
+                if ($(this).val() == '1') {
+                    $('#value_riwayat_4').show();
+                } else {
+                    $('#value_riwayat_4').val("");
+                    $('#value_riwayat_4').hide();
+                }
+            })
+        }
         function alergi() {
             $('#obat').change(function() {
                 if (this.checked) {

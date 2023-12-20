@@ -84,9 +84,14 @@ class DetailRekapMedisController extends Controller
             'riwayat_2' => $request->riwayat_2,
             'riwayat_3' => $request->riwayat_3,
             'riwayat_4' => $request->riwayat_4,
+            'value_riwayat_1' => $request->value_riwayat_1,
+            'value_riwayat_2' => $request->value_riwayat_2,
+            'value_riwayat_3' => $request->value_riwayat_3,
+            'value_riwayat_4' => $request->value_riwayat_4,
         ]);
         $rekap_medis = RekapMedis::find($id_rekapmedis);
         $rekap = new DetailRekapMedis;
+        $rekap->triase = $request->triase;
         $rekap->idrekapmedis = $id_rekapmedis;
         $rekap->diagnosa = $request->diagnosa;
         $rekap->anamnesa = $request->anamnesa;
@@ -129,7 +134,7 @@ class DetailRekapMedisController extends Controller
 
     public function update(Request $request, $id)
     {
-        // return $request->tindakan_prc;
+        // return $request->all();
 
 
         $rekap = DetailRekapMedis::find($id);
@@ -193,6 +198,10 @@ class DetailRekapMedisController extends Controller
                 'riwayat_2' => $request->riwayat_2,
                 'riwayat_3' => $request->riwayat_3,
                 'riwayat_4' => $request->riwayat_4,
+                'value_riwayat_1' => $request->value_riwayat_1,
+                'value_riwayat_2' => $request->value_riwayat_2,
+                'value_riwayat_3' => $request->value_riwayat_3,
+                'value_riwayat_4' => $request->value_riwayat_4,
             ]);
             $rekap->obat_yang_dikonsumsi = $request->obat_yang_dikonsumsi;
             $rekap->alergi = $alergi->toJson();
