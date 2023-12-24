@@ -67,18 +67,18 @@
                                     @csrf
 
                                     @if ($resume_medis->perawat != 1)
-                                        @can('perawat')
+                                        @if (auth()->user()->idpriv == 11)
                                             @csrf
                                             <input type="hidden" name="jenis" id="" value="perawat">
                                             <button class="btn btn-light-success btn-sm">Selesai</button>
-                                        @endcan
+                                        @endif
                                     @endif
 
                                     @if ($resume_medis->dokter != 1)
-                                        @can('dokter')
+                                        @if (auth()->user()->idpriv == 7)
                                             <input type="hidden" name="jenis" id="" value="dokter">
                                             <button class="btn btn-light-success btn-sm">Selesai</button>
-                                        @endcan
+                                        @endif
                                     @endif
                                 </form>
                             @endif
@@ -365,12 +365,12 @@
                                                                     <button type="button"
                                                                         onclick="modalHasil({{ $rb->id }})"
                                                                         class="btn btn-success btn-sm">Lihat</button>
-                                                                    @can('dokter')
+                                                                    @if (auth()->user()->idpriv == 7)
                                                                         @if ($resume_medis->dokter != 1)
                                                                             <button
                                                                                 class="btn btn-warning btn-sm">Copy</button>
                                                                         @endif
-                                                                    @endcan
+                                                                    @endif
                                                                 </form>
                                                             @else
                                                                 <form action="{{ route('post.copy-data', $rawat->id) }}"
@@ -382,9 +382,10 @@
                                                                     <button type="button"
                                                                         onclick="modalHasil({{ $rb->id }})"
                                                                         class="btn btn-success btn-sm">Lihat</button>
-                                                                    @can('dokter')
-                                                                        <button class="btn btn-warning btn-sm">Copy</button>
-                                                                    @endcan
+                                                                    @if (auth()->user()->idpriv == 7)
+                                                                        <button
+                                                                            class="btn btn-warning btn-sm">Copy</button>
+                                                                    @endif
                                                                 </form>
                                                             @endif
 
@@ -550,7 +551,7 @@
                                                                 @endif
                                                             </td>
                                                             <td>
-                                                                @can('dokter')
+                                                                @if (auth()->user()->idpriv == 7)
                                                                     @if ($resume_medis->dokter != 1)
                                                                         <a href="{{ route('detail-rekap-medis-show', $resume_detail->id) }}"
                                                                             class="btn btn-warning btn-sm">Edit</a>
@@ -560,7 +561,7 @@
                                                                         <a href="{{ route('resep-rekap-medis-cetak', $resume_detail->id) }}"
                                                                             class="btn btn-info btn-sm">Print Resep</a>
                                                                     @endif
-                                                                @endcan
+                                                                @endif
                                                             </td>
                                                         </tr>
                                                     @endif
@@ -695,12 +696,12 @@
                                                         </td>
                                                         <td>{{ $resume_detail->obat_yang_dikonsumsi }}</td>
                                                         <td>
-                                                            @can('perawat')
+                                                            @if (auth()->user()->idpriv == 11)
                                                                 @if ($resume_medis->perawat != 1)
                                                                     <a href="{{ route('detail-rekap-medis-show', $resume_detail->id) }}"
                                                                         class="btn btn-warning btn-sm">Edit</a>
                                                                 @endif
-                                                            @endcan
+                                                            @endif
                                                         </td>
                                                     @endif
                                                 </tbody>

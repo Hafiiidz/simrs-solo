@@ -12,7 +12,7 @@
                     <!--begin::Page title-->
                     <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
                         <!--begin::Title-->
-                        <h1 class="page-heading d-flex flex-column justify-content-center text-dark fw-bold fs-3 m-0">Ruangan {{ $ruangan->nama_ruangan }}</h1>
+                        <h1 class="page-heading d-flex flex-column justify-content-center text-dark fw-bold fs-3 m-0"></h1>
                         <!--end::Title-->
                         <!--begin::Breadcrumb-->
                         <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0">
@@ -27,7 +27,7 @@
                             </li>
                             <!--end::Item-->
                             <!--begin::Item-->
-                            <li class="breadcrumb-item text-muted">Rawat Inap Ruangan {{ $ruangan->nama_ruangan }}</li>
+                            <li class="breadcrumb-item text-muted">Rawat Inap </li>
                             <!--end::Item-->
                         </ul>
                         <!--end::Breadcrumb-->
@@ -45,9 +45,9 @@
             <div id="kt_app_content_container" class="app-container container-fluid">
                 <div class="card card-flush">
                     <div class="card-header">
-                        <h3 class="card-title">Pasien Ruangan {{ $ruangan->nama_ruangan  }}</h3>
+                        <h3 class="card-title">Pasien</h3>
                         <div class="card-toolbar">
-                            <a href="{{ route('index.rawat-inap') }}" class="btn btn-sm btn-secondary me-2">Kembali</a>
+                            {{-- <a href="{{ route('index.rawat-inap') }}" class="btn btn-sm btn-secondary me-2">Kembali</a> --}}
                         </div>
                     </div>
                     <div class="card-body">
@@ -60,6 +60,7 @@
                                     <th>Usia Pasien</th>
                                     <th>Tgl Masuk</th>
                                     <th>DPJP</th>
+                                    <th>Ruangan</th>
                                     <th>Penanggung</th>
                                     <th>Diagnosa Masuk</th>
                                     <th>Deatil</th>
@@ -129,6 +130,10 @@
                     {
                         data: 'dokter',
                         name: 'dokter'
+                    },
+                    {
+                        data: 'ruangan',
+                        name: 'ruangan'
                     },
                     {
                         data: 'bayar.bayar',

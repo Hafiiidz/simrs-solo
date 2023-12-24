@@ -195,6 +195,18 @@
                                                 data-bs-toggle="tab" href="#kt_tab_pane_1" aria-selected="true"
                                                 role="tab">Asesmen Awal</a>
                                         </li>
+                                        @if ($rawat->idpoli == 4)
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
+                                                    data-bs-toggle="tab" href="#kt_tab_pane_bidan" aria-selected="false"
+                                                    role="tab" tabindex="-1">Pengkajian Kebidanan</a>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
+                                                    data-bs-toggle="tab" href="#kt_tab_pane_partograf" aria-selected="false"
+                                                    role="tab" tabindex="-1">Partograf</a>
+                                            </li>
+                                        @endif 
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
                                                 data-bs-toggle="tab" href="#kt_tab_pane_2" aria-selected="false"
@@ -241,6 +253,15 @@
                                 </div>
                             </div>
                             <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade" id="kt_tab_pane_bidan" role="tabpanel">
+                                    <a class="btn btn-warning btn-sm mb-5"  href="{{ route('detail.rawat-inap.pengkajian-kebidanan',$rawat->id) }}">Pengkajian</a>
+                                    @include('rawat-inap.menu.bidan')
+                                </div>
+                                <div class="tab-pane fade" id="kt_tab_pane_partograf" role="tabpanel">
+                                    <button class="btn btn-warning btn-sm mb-5" data-bs-toggle="modal"
+                                        data-bs-target="#modal_cppt">Partograf</button>
+                                    @include('rawat-inap.menu.partograf')
+                                </div>
                                 <div class="tab-pane fade show active" id="kt_tab_pane_1" role="tabpanel">
                                     <h3>Asesmen Awal</h3>
                                     <div class="d-grid">

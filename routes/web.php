@@ -16,6 +16,7 @@ use App\Http\Controllers\RuanganBedController;
 use App\Http\Controllers\TindakLanjutController;
 use App\Http\Controllers\LaporanOperasiController;
 use App\Http\Controllers\GiziController;
+use Illuminate\Support\Facades\Hash;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,21 @@ use App\Http\Controllers\GiziController;
 Route::get('/', function () {
     return view('auth.login');
 })->name('login');
+Route::get('/chart', function () {
+    return view('chart.index');
+})->name('chart');
+
+
+Route::get('/signature/{consid}/{secretkey}/', function ($consid, $secretkey) {
+    date_default_timezone_set('UTC');
+    $tStamp = strval(time() - strtotime('1970-01-01 00:00:00'));
+    $signature = hash_hmac('sha256', $consid . "&" . $tStamp, $secretkey, true);
+    $encodedSignature = base64_encode($signature);
+    echo "X-cons-id:" . $consid . " \n";
+    echo "X-timestamp:" . $tStamp . "\n ";
+    echo "X-signature:" . $encodedSignature;
+    // return $encodedSignature;
+})->name('signature');
 
 //auth
 Route::post('/login', [UserController::class, 'login']);
@@ -46,16 +62,16 @@ Route::prefix('dashboard')->group(function () {
 });
 
 //Data Master
-Route::prefix('data-master')->group(function() {
+Route::prefix('data-master')->group(function () {
     //Ruangan
-    Route::prefix('/ruangan')->group(function() {
+    Route::prefix('/ruangan')->group(function () {
         Route::get('/', [RuanganController::class, 'index'])->name('index.ruangan');
         Route::post('/store', [RuanganController::class, 'store'])->name('store.ruangan');
-            //BED
-            Route::prefix('/bed')->group(function() {
-                Route::get('/{id_ruangan}', [RuanganBedController::class, 'index'])->name('index.ruangan-bed');
-                Route::post('/store', [RuanganBedController::class, 'store'])->name('store.ruangan-bed');
-                Route::post('/update', [RuanganBedController::class, 'update'])->name('update.ruangan-bed');
+        //BED
+        Route::prefix('/bed')->group(function () {
+            Route::get('/{id_ruangan}', [RuanganBedController::class, 'index'])->name('index.ruangan-bed');
+            Route::post('/store', [RuanganBedController::class, 'store'])->name('store.ruangan-bed');
+            Route::post('/update', [RuanganBedController::class, 'update'])->name('update.ruangan-bed');
         });
     });
 });
@@ -115,6 +131,7 @@ Route::prefix('/rawat-inap')->group(function () {
     Route::get('/', [RawatInapController::class, 'index'])->name('index.rawat-inap');
     Route::get('{id}/view', [RawatInapController::class, 'view'])->name('view.rawat-inap');
     Route::get('{id}/detail', [RawatInapController::class, 'detail'])->name('detail.rawat-inap');
+    Route::get('{id}/pengkajian-kebidanan', [RawatInapController::class, 'pengkajian_kebidanan'])->name('detail.rawat-inap.pengkajian-kebidanan');
     Route::post('{id}/ringkasan-masuk', [RawatInapController::class, 'postRingkasan'])->name('postRingkasanmasuk.rawat-inap');
     Route::post('{id}/order-obat', [RawatInapController::class, 'postOrderObat'])->name('postOrderObat.rawat-inap');
     Route::post('{id}/order-penunjang', [RawatInapController::class, 'postOrderPenunjang'])->name('postOrderPenunjang.rawat-inap');
@@ -157,11 +174,9 @@ Route::prefix('/pasien')->group(function () {
         Route::post('/store/evaluasi-gizi', [GiziController::class, 'storeEvaluasi'])->name('store.evaluasi-gizi');
         Route::post('/store/asuhan-gizi', [GiziController::class, 'storeAsuhan'])->name('store.asuhan-gizi');
     });
-
 })->middleware('auth');
 
 //Ajax
-Route::prefix('ajax')->group(function() {
+Route::prefix('ajax')->group(function () {
     Route::get('bed/edit', [RuanganBedController::class, 'edit'])->name('edit.ruangan-bed-ajax');
 });
-
