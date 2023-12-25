@@ -21,6 +21,7 @@ class TindakLanjutController extends Controller
     }
     public function post_tindak_lanjut(Request $request,$id){
         // return $request->all();
+        $rawat = Rawat::find($id);
         $tindak_lanjut = new TindakLanjut();
         $tindak_lanjut->idrawat = $id;
         $tindak_lanjut->idrekapmedis = $request->idrekapmedis;
@@ -31,8 +32,22 @@ class TindakLanjutController extends Controller
         $tindak_lanjut->tujuan_tindak_lanjut = $request->tujuan_rujuk;
         $tindak_lanjut->nomor = $tindak_lanjut->generateNomorOtomatis();
         $tindak_lanjut->save();
+        
+        if($rawat->idbayar == 2){
+            if($request->rencana_tindak_lanjut == 'Kontrol Kembali'){
+                #insert SKPD
+            }elseif($request->rencana_tindak_lanjut == 'Dirujuk'){
+                #insert rujukan
+            }elseif($request->rencana_tindak_lanjut == 'Dirawat'){
+                #insert SPRI rawat inap
+            }elseif($request->rencana_tindak_lanjut == 'Interm'){
+                #insert SKPD interm
+            }elseif ($request->rencana_tindak_lanjut == 'Prb') {
+                # insert prb
+            }
+        }
 
-        return redirect(route('rekam-medis-poli', $id))->with('success', 'Data berhasil disimpan');
+        return redirect(route('rekam-medis-poli', $id))->with('berhasil', 'Data berhasil disimpan');
     }
     public function aksi_tindak_lanjut($id)
     {

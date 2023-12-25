@@ -513,7 +513,7 @@
                                                 <div class="col-md-4">
                                                     <label class="form-label">Berat Badan</label>
                                                     <div class="input-group mb-5">
-                                                        <input type="text" class="form-control" id='berat_badan_val' name="berat_badan"
+                                                        <input type="text" class="form-control"  onkeyup="calculateBMI()"  id='berat_badan_val' name="berat_badan"
                                                             value="{{ $pfisik->berat_badan }}" placeholder="...."
                                                             aria-label="...." aria-describedby="berat_badan" />
                                                         <span class="input-group-text" id="berat_badan">Kg</span>
@@ -522,7 +522,7 @@
                                                 <div class="col-md-4">
                                                     <label class="form-label">Tinggi Badan</label>
                                                     <div class="input-group mb-5">
-                                                        <input type="text" class="form-control" id='tinggi_badan_val' name="tinggi_badan"
+                                                        <input type="text" class="form-control"  onkeyup="calculateBMI()"  id='tinggi_badan_val' name="tinggi_badan"
                                                             value="{{ $pfisik->tinggi_badan }}" placeholder="...."
                                                             aria-label="....e" aria-describedby="tinggi_badan" />
                                                         <span class="input-group-text" id="tinggi_badan">Cm</span>

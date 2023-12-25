@@ -59,7 +59,8 @@
                             <h5 class="card-title">Data Kategori Rekam Medis Pasien</h5>
                         </div>
                         <div class="card-toolbar">
-                            <a href="{{ route('rekam-medis-poli',$rawat->id ) }}" class="btn btn-sm btn-secondary">Kembali</a>
+                            <a href="{{ route('rekam-medis-poli', $rawat->id) }}"
+                                class="btn btn-sm btn-secondary">Kembali</a>
                         </div>
                     </div>
                     <!--begin::Body-->
@@ -140,20 +141,56 @@
                         </div>
                         <div class="separator separator-dashed border-secondary mb-5"></div>
                         <div class="rounded border p-5">
-                            <form action="{{ route('tindak-lanjut.post_tindak_lanjut',$rawat->id) }}" method="post" id='frmTindak'>
+                            <form action="{{ route('tindak-lanjut.post_tindak_lanjut', $rawat->id) }}" method="post"
+                                id='frmTindak'>
                                 @csrf
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Rencana Tindak Lanjut</label>
-                                        <select name="rencana_tindak_lanjut" class="form-select" id="rencana_tindak_lanjut"
-                                            arial-placeholder="Rencana Tindak Lanjut" required>
+                                        <select name="rencana_tindak_lanjut" data-control="select2"
+                                            data-placeholder="Select an option" class="form-select"
+                                            id="rencana_tindak_lanjut" arial-placeholder="Rencana Tindak Lanjut" required>
                                             <option value=""></option>
                                             <option value="Kontrol Kembali">Pasien Kontrol Kembali</option>
                                             <option value="Dirujuk">Pasien Dirujuk</option>
                                             <option value="Interm">Pasien Dirujuk Interm</option>
-                                            <option value="Prb">Pasien Dirujuk PRB</option>
+                                            @if ($rawat->idjenisrawat == 1)
+                                                <option value="Prb">Pasien Dirujuk PRB</option>
+                                            @endif
                                             <option value="Dirawat">Pasien Dirawat</option>
                                         </select>
+                                    </div>
+                                </div>
+                                <div id="rujukan" class="d-none">
+                                    <div class="row mb-5">
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold">Tgl.Rujukan</label>
+                                            <input type="date" placeholder="Pilih Tgl Rujukan" class="form-control"
+                                                name='tgl_kontrol' id='tgl_kontrol'>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-5">
+                                        <div class="col-md-12">
+                                            <label class="form-label fw-bold">Tujuan Rujuk</label>
+                                            <select disabled name="tujuan_rujuk" data-control="select2"
+                                                data-placeholder="Select an option" class="form-select" id="tujuan_rujuk"
+                                                arial-placeholder="Tujuan Rujuk">
+                                                <option value=""></option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-5">
+                                        <div class="col-md-12">
+                                            <label class="form-label fw-bold">Poli Rujuk</label>
+                                            <select disabled name="poli_rujuk" data-control="select2"
+                                                data-placeholder="Select an option" class="form-select" id="poli_rujuk"
+                                                arial-placeholder="Poli Rujuk">
+                                                {{-- @foreach ($poli as $p)
+                                                    <option value="{{ $p->id }}">{{ $p->poli }}</option>
+                                                @endforeach --}}
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                                 <div id="tindak_lanjut"></div>
@@ -183,13 +220,70 @@
     <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js"></script>
     <script>
+        //doc ready function
+
+        $(document).ready(function() {
+            $('#tujuan_rujuk').select2({
+                ajax: {
+                    url: '{{ route('list-faskes') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+
+                        return {
+                            q: params.term, // search term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: data.map(function(user) {
+                                return {
+                                    id: user.id,
+                                    text: user.nama
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 1,
+                placeholder: 'Search for a user...'
+            });
+
+            $('#tgl_kontrol').on('change', function() {
+                $('#tujuan_rujuk').prop('disabled', false);
+            });
+            $('#tujuan_rujuk').on('change', function() {
+                tgl = $('#tgl_kontrol').val();
+                kode_faskes = $('#tujuan_rujuk').val();
+                var url = '{{ route('spesialistik-faskes', [':b_id', ':p_no']) }}';
+                url = url.replace(':b_id', kode_faskes);
+                url = url.replace(':p_no', tgl);
+                $.get(url).done(function(data) {
+                    if (data != 0) {
+                        $("select#poli_rujuk").html(data);
+                    }
+
+                });
+                $('#poli_rujuk').prop('disabled', false);
+            });
+        });
         $('#rencana_tindak_lanjut').on('change', function() {
             aksi = $('#rencana_tindak_lanjut').val();
-            url = "{{ route('tindak-lanjut.aksi_tindak_lanjut', '') }}" + "/" + aksi;
-            $.get(url).done(function(data) {
-                $('#tindak_lanjut').html(data);
-            });
+            if (aksi == 'Dirujuk') {
+                $('#rujukan').removeClass('d-none');
+            } else if (aksi == 'Dirawat') {
+                $('#tindak_lanjut').html('');
+            } else {
+                $('#rujukan').addClass('d-none');
+            }
+            // url = "{{ route('tindak-lanjut.aksi_tindak_lanjut', '') }}" + "/" + aksi;
+            // $.get(url).done(function(data) {
+            //     $('#tindak_lanjut').html(data);
+            // });
         })
+
+
         $('#obat').change(function() {
             if (this.checked) {
                 $('#value_operasi').show();
@@ -223,36 +317,36 @@
         @endif
 
         $("#frmTindak").on("submit", function(event) {
-                event.preventDefault();
-                var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
-                Swal.fire({
-                    title: 'Simpan Data',
-                    text: "Apakah Anda yakin akan menyimpan data ini ?",
-                    icon: 'info',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, Simpan Data',
-                    cancelButtonText: 'Tidak'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.blockUI({
-                            css: {
-                                border: 'none',
-                                padding: '15px',
-                                backgroundColor: '#000',
-                                '-webkit-border-radius': '10px',
-                                '-moz-border-radius': '10px',
-                                opacity: .5,
-                                color: '#fff',
-                                fontSize: '16px'
-                            },
-                            message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
-                            baseZ: 9000,
-                        });
-                        this.submit();
-                    }
-                });
+            event.preventDefault();
+            var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+            Swal.fire({
+                title: 'Simpan Data',
+                text: "Apakah Anda yakin akan menyimpan data ini ?",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Simpan Data',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.blockUI({
+                        css: {
+                            border: 'none',
+                            padding: '15px',
+                            backgroundColor: '#000',
+                            '-webkit-border-radius': '10px',
+                            '-moz-border-radius': '10px',
+                            opacity: .5,
+                            color: '#fff',
+                            fontSize: '16px'
+                        },
+                        message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                        baseZ: 9000,
+                    });
+                    this.submit();
+                }
             });
+        });
     </script>
 @endsection

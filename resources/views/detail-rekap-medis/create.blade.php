@@ -691,7 +691,7 @@
                                     </div>
                                     <!--end::Repeater-->
                                 </div>
-                                <div class="row mb-5">
+                                {{-- <div class="row mb-5">
                                     <!--begin::Repeater-->
                                     <div id="fisio_repeater">
                                         <!--begin::Form group-->
@@ -739,7 +739,7 @@
                                         <!--end::Form group-->
                                     </div>
                                     <!--end::Repeater-->
-                                </div>
+                                </div> --}}
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <textarea name="rencana_pemeriksaan" rows="3" class="form-control"
@@ -1007,23 +1007,23 @@
                     $('[data-kt-repeater="select2lab"]').select2();
                 }
             });
-            $('#fisio_repeater').repeater({
-                initEmpty: true,
+            // $('#fisio_repeater').repeater({
+            //     initEmpty: true,
 
-                show: function() {
-                    $(this).slideDown();
+            //     show: function() {
+            //         $(this).slideDown();
 
-                    $(this).find('[data-kt-repeater="select2fisio"]').select2();
-                },
+            //         $(this).find('[data-kt-repeater="select2fisio"]').select2();
+            //     },
 
-                hide: function(deleteElement) {
-                    $(this).slideUp(deleteElement);
-                },
+            //     hide: function(deleteElement) {
+            //         $(this).slideUp(deleteElement);
+            //     },
 
-                ready: function() {
-                    $('[data-kt-repeater="select2fisio"]').select2();
-                }
-            });
+            //     ready: function() {
+            //         $('[data-kt-repeater="select2fisio"]').select2();
+            //     }
+            // });
 
             $('#icdx_repeater').repeater({
                 initEmpty: true,

@@ -31,6 +31,22 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
+
+    //vlciam dev
+    'url_vclaim_dev'=>env('URL_VCLAIM_DEV'),
+    'consid_vclaim_dev'=>env('CONS_ID_DEV'),
+    'secretkey_vclaim_dev'=>env('SECRET_KEY_DEV'),
+    'userkey_vclaim_dev'=>env('USER_KEY_VCLAIM_DEV'),
+    'userkey_antrol_dev'=>env('USER_KEY_ANTROL_DEV'),
+    'url_icare_dev'=>env('URL_ICARE_DEV'),
+
+    //vlcaim prod
+    'url_vclaim_prod'=>env('URL_VCLAIM_PROD'),
+    'consid_vclaim_prod'=>env('CONS_ID_PROD'),
+    'secretkey_vclaim_prod'=>env('SECRET_KEY_PROD'),
+    'userkey_vclaim_prod'=>env('USER_KEY_VCLAIM_PROD'),
+    'userkey_antrol_prod'=>env('USER_KEY_ANTROL_PROD'),
+    'url_icare_prod'=>env('URL_ICARE_PROD'),
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode

@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\VclaimHelper;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PasienController;
@@ -16,6 +17,8 @@ use App\Http\Controllers\RuanganBedController;
 use App\Http\Controllers\TindakLanjutController;
 use App\Http\Controllers\LaporanOperasiController;
 use App\Http\Controllers\GiziController;
+use GuzzleHttp\Psr7\Request;
+use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Hash;
 
 /*
@@ -29,9 +32,36 @@ use Illuminate\Support\Facades\Hash;
 |
 */
 
+Route::get('/faskes', function (HttpRequest $request) {
+    return VclaimHelper::getFaskes($request->q);
+})->name('list-faskes');
+
+
+Route::get('/sarana-faskes/{id}', function ($id) {
+    $sarana = VclaimHelper::getFaskesSarana($id);
+    foreach ($sarana['list'] as $key => $value) {
+        echo "<option value='" . $value['kodeSarana'] . "'>" . $value['namaSarana'] . "</option>";
+    }
+})->name('sarana-faskes');
+
+Route::get('/spesialistik-faskes/{id}/{tgl}', function ($id, $tgl) {
+    $sarana = VclaimHelper::getFaskesSpesialistik($id, $tgl);
+
+    if (isset($sarana['list'])) {
+        foreach ($sarana['list'] as $key => $value) {
+            if ($value['kapasitas'] < 1) {
+                echo "<option disabled value='" . $value['kodeSpesialis'] . "'>" . $value['namaSpesialis'] . " - Kapasitas = " . $value['kapasitas'] . "</option>";
+            } else {
+                echo "<option  value='" . $value['kodeSpesialis'] . "'>" . $value['namaSpesialis'] . " - Kapasitas = " . $value['kapasitas'] . "</option>";
+            }
+        }
+    }
+})->name('spesialistik-faskes');
 Route::get('/', function () {
     return view('auth.login');
 })->name('login');
+
+
 Route::get('/chart', function () {
     return view('chart.index');
 })->name('chart');

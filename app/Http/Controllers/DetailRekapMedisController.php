@@ -54,7 +54,7 @@ class DetailRekapMedisController extends Controller
         $data = RekapMedis::find($request->id_rekapmedis);
         $pasien = Pasien::with('alamat')->find($data->idpasien);
         $kategori = Kategori::find($data->idkategori);
-        $obat = Obat::with('satuan')->orderBy('obat.nama_obat', 'asc')->get();
+        $obat = Obat::with('satuan')->where('nama_obat', '!=', '')->orderBy('obat.nama_obat', 'asc')->get();
        
         // return view('detail-rekap-medis.create', compact('pasien', 'kategori', 'data', 'obat'));
     }
@@ -123,7 +123,7 @@ class DetailRekapMedisController extends Controller
         $alergi = json_decode($rekap->alergi);
         $pfisik = json_decode($rekap->pemeriksaan_fisik);
         $rkesehatan = json_decode($rekap->riwayat_kesehatan);
-        $obat = Obat::with('satuan')->where('obat.idjenis', 1)->orderBy('obat.nama_obat', 'asc')->get();
+        $obat = Obat::with('satuan')->where('nama_obat', '!=', '')->orderBy('obat.nama_obat', 'asc')->get();
         $kategori_diagnosa = DB::table('kategori_diagnosa')->get();
         $radiologi = DB::table('radiologi_tindakan')->get();
         $lab = DB::table('laboratorium_pemeriksaan')->get();

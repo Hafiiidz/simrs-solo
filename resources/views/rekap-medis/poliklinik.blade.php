@@ -67,7 +67,7 @@
                                     @csrf
 
                                     @if ($resume_medis->perawat != 1)
-                                        @if (auth()->user()->idpriv == 11)
+                                        @if (auth()->user()->idpriv >= 14)
                                             @csrf
                                             <input type="hidden" name="jenis" id="" value="perawat">
                                             <button class="btn btn-light-success btn-sm">Selesai</button>
@@ -583,7 +583,7 @@
                                                 </thead>
                                                 <tbody>
                                                     @if ($resume_detail)
-                                                        <td>{{ $resume_medis->anamnesa }}</td>
+                                                        <td>{{ $resume_detail->anamnesa }}</td>
                                                         <td>
                                                             <table>
                                                                 <tr>
@@ -696,7 +696,7 @@
                                                         </td>
                                                         <td>{{ $resume_detail->obat_yang_dikonsumsi }}</td>
                                                         <td>
-                                                            @if (auth()->user()->idpriv == 11)
+                                                            @if (auth()->user()->idpriv >= 14)
                                                                 @if ($resume_medis->perawat != 1)
                                                                     <a href="{{ route('detail-rekap-medis-show', $resume_detail->id) }}"
                                                                         class="btn btn-warning btn-sm">Edit</a>

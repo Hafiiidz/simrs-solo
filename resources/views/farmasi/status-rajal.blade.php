@@ -164,7 +164,7 @@
                             </div>
                             <!--begin::Body-->
                             <div class="card-body p-lg-15">
-                                @if ($antrian->status_antrian == 'Antrian')
+                                @if ($antrian?->status_antrian == 'Antrian')
                                 <h4>Permintaan Resep</h4>
                                 <h6>Dokter : {{ $rawat->dokter->nama_dokter }}</h6>
                                 <form action="{{ route('farmasi.post-resep',$antrian->id) }}" id='formPermintaanobat' method="post">
