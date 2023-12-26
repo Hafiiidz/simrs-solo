@@ -205,100 +205,104 @@
                         <div class="tab-content" id="myTabContent">
                             <div class="tab-pane fade show active" id="kt_tab_pane_1" role="tabpanel">
                                 <div class="rounded border p-5">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <label for="" class="form-label">
-                                                1. Apakah pasien mengalami penurunan berat badan yang tidak direncanakan / tidak diinginkan dalam 6 bulan terakhir ?
-                                            </label>
-                                            <div class="mt-5" style="margin-left: 20px;">
-                                                <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
-                                                    <input class="form-check-input" type="radio" value="0" name="parameter_1" checked/>
-                                                    <label class="form-check-label">
-                                                        Tidak ada penurunan berat badan
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="mt-5" style="margin-left: 20px;">
-                                                <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
-                                                    <input class="form-check-input" type="radio" value="2" name="parameter_1"/>
-                                                    <label class="form-check-label">
-                                                        Tidak yakin / tidak tahu / terasa baju lebih longgar
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="mt-5" style="margin-left: 20px;">
-                                                <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
-                                                    <input class="form-check-input" type="radio" value="Ya" name="parameter_1"/>
-                                                    <label class="form-check-label">
-                                                        Jika ya, berapa penurunan berat badan tersebut
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div id="frm-ya" class="mt-5" style="margin-left: 40px; display: none;">
+                                    <form action="{{ route('store.skrining-gizi') }}" method="POST" autocomplete="off">
+                                        @csrf
+                                        <input type="hidden" name="idrawat" value="{{ $rawat->id }}">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label for="" class="form-label">
+                                                    1. Apakah pasien mengalami penurunan berat badan yang tidak direncanakan / tidak diinginkan dalam 6 bulan terakhir ?
+                                                </label>
                                                 <div class="mt-5" style="margin-left: 20px;">
                                                     <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
-                                                        <input class="form-check-input" type="radio" value="1" name="ya"/>
+                                                        <input class="form-check-input" type="radio" value="1" name="parameter_1" {{ ($skrining) ? ((json_decode($skrining?->skrining)->parameter_1 == 1) ? 'checked' : '') : '' }}/>
                                                         <label class="form-check-label">
-                                                            1 – 5 kg
+                                                            Tidak ada penurunan berat badan
                                                         </label>
                                                     </div>
                                                 </div>
                                                 <div class="mt-5" style="margin-left: 20px;">
                                                     <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
-                                                        <input class="form-check-input" type="radio" value="2" name="ya"/>
+                                                        <input class="form-check-input" type="radio" value="2" name="parameter_1" {{ ($skrining) ? ((json_decode($skrining?->skrining)->parameter_1 == 2) ? 'checked' : '') : '' }}/>
                                                         <label class="form-check-label">
-                                                            6 – 10 kg
+                                                            Tidak yakin / tidak tahu / terasa baju lebih longgar
                                                         </label>
                                                     </div>
                                                 </div>
                                                 <div class="mt-5" style="margin-left: 20px;">
                                                     <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
-                                                        <input class="form-check-input" type="radio" value="3" name="ya"/>
+                                                        <input class="form-check-input" type="radio" value="3" name="parameter_1" {{ ($skrining) ? ((json_decode($skrining?->skrining)->parameter_1 == 3) ? 'checked' : '') : '' }}/>
                                                         <label class="form-check-label">
-                                                            11 – 15 kg
+                                                            Jika ya, berapa penurunan berat badan tersebut
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div id="frm-ya" class="mt-5" style="margin-left: 40px; display: none;">
+                                                    <div class="mt-5" style="margin-left: 20px;">
+                                                        <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                            <input class="form-check-input" type="radio" value="1" name="ya" {{ ($skrining) ? ((json_decode($skrining?->skrining)->ya == 1) ? 'checked' : '') : '' }}/>
+                                                            <label class="form-check-label">
+                                                                1 – 5 kg
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mt-5" style="margin-left: 20px;">
+                                                        <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                            <input class="form-check-input" type="radio" value="2" name="ya" {{ ($skrining) ? ((json_decode($skrining?->skrining)->ya == 2) ? 'checked' : '') : '' }}/>
+                                                            <label class="form-check-label">
+                                                                6 – 10 kg
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mt-5" style="margin-left: 20px;">
+                                                        <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                            <input class="form-check-input" type="radio" value="3" name="ya" {{ ($skrining) ? ((json_decode($skrining?->skrining)->ya == 3) ? 'checked' : '') : '' }}/>
+                                                            <label class="form-check-label">
+                                                                11 – 15 kg
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mt-5" style="margin-left: 20px;">
+                                                        <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                            <input class="form-check-input" type="radio" value="4" name="ya" {{ ($skrining) ? ((json_decode($skrining?->skrining)->ya == 4) ? 'checked' : '') : '' }}/>
+                                                            <label class="form-check-label">
+                                                                >15 kg
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-5 mb-5">
+                                            <div class="col-md-12">
+                                                <label for="" class="form-label">
+                                                    2. Apakah asupan makan berkurang karena tidak nafsu makan ?
+                                                </label>
+                                                <div class="mt-5" style="margin-left: 20px;">
+                                                    <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                        <input class="form-check-input" type="radio" value="1" name="parameter_2" {{ ($skrining) ? ((json_decode($skrining?->skrining)->parameter_2== 1) ? 'checked' : '') : '' }}/>
+                                                        <label class="form-check-label">
+                                                            Tidak
                                                         </label>
                                                     </div>
                                                 </div>
                                                 <div class="mt-5" style="margin-left: 20px;">
                                                     <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
-                                                        <input class="form-check-input" type="radio" value="4" name="ya"/>
+                                                        <input class="form-check-input" type="radio" value="2" name="parameter_2" {{ ($skrining) ? ((json_decode($skrining?->skrining)->parameter_2 == 2) ? 'checked' : '') : '' }}/>
                                                         <label class="form-check-label">
-                                                            >15 kg
+                                                            Ya
                                                         </label>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row mt-5 mb-5">
-                                        <div class="col-md-12">
-                                            <label for="" class="form-label">
-                                                2. Apakah asupan makan berkurang karena tidak nafsu makan ?
-                                            </label>
-                                            <div class="mt-5" style="margin-left: 20px;">
-                                                <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
-                                                    <input class="form-check-input" type="radio" value="0" name="parameter_2" checked/>
-                                                    <label class="form-check-label">
-                                                        Tidak
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="mt-5" style="margin-left: 20px;">
-                                                <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
-                                                    <input class="form-check-input" type="radio" value="1" name="parameter_2"/>
-                                                    <label class="form-check-label">
-                                                        Ya
-                                                    </label>
-                                                </div>
+                                        <hr>
+                                        <div class="row mt-5">
+                                            <div class="col-md-12">
+                                                <button type="submit" class="btn btn-primary">Simpan</button>
                                             </div>
                                         </div>
-                                    </div>
-                                    <hr>
-                                    <div class="row mt-5">
-                                        <div class="col-md-12">
-                                            <button class="btn btn-primary">Simpan</button>
-                                        </div>
-                                    </div>
+                                    </form>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="kt_tab_pane_2" role="tabpanel">
@@ -627,7 +631,7 @@
                             <div class="tab-pane fade" id="kt_tab_pane_4" role="tabpanel">
                                 <button class="btn btn-warning btn-sm mb-5" data-bs-toggle="modal"
                                 data-bs-target="#modal_cppt">Tambah CPPT</button>
-                            @include('rawat-inap.menu.cppt')
+                                @include('rawat-inap.menu.cppt')
                             </div>
                         </div>
                     </div>
@@ -697,7 +701,9 @@
             </div>
 
             <div class="modal-body">
-                <form action="">
+                <form action="{{ route('store.cppt-gizi') }}" method="POST" autocomplete="off">
+                    @csrf
+                    <input type="hidden" name="idrawat" value="{{ $rawat->id }}">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="row">
@@ -705,7 +711,7 @@
                                     <label for=""> Profesi (PPA) </label>
                                 </div>
                                 <div class="col-md-8">
-                                    <select name="" class="form-select" id="">
+                                    <select name="profesi" class="form-select" id="profesi">
                                         <option value="Gizi">Gizi</option>
                                     </select>
                                 </div>
@@ -719,7 +725,7 @@
                             </div>
                             <div class="col-md-2 text-center">A</div>
                             <div class="col-md-6">
-                                <textarea name="" class="form-control" id=""></textarea>
+                                <textarea name="cppt_a" class="form-control" id=""></textarea>
                             </div>
                         </div>
                         <div class="row mt-5">
@@ -727,7 +733,7 @@
                             </div>
                             <div class="col-md-2 text-center">D</div>
                             <div class="col-md-6">
-                                <textarea name="" class="form-control" id=""></textarea>
+                                <textarea name="cppt_d" class="form-control" id=""></textarea>
                             </div>
                         </div>
                         <div class="row mt-5">
@@ -735,7 +741,7 @@
                             </div>
                             <div class="col-md-2 text-center">I</div>
                             <div class="col-md-6">
-                                <textarea name="" class="form-control" id=""></textarea>
+                                <textarea name="cppt_i" class="form-control" id=""></textarea>
                             </div>
                         </div>
                         <div class="row mt-5">
@@ -743,7 +749,7 @@
                             </div>
                             <div class="col-md-2 text-center">M</div>
                             <div class="col-md-6">
-                                <textarea name="" class="form-control" id=""></textarea>
+                                <textarea name="cppt_m" class="form-control" id=""></textarea>
                             </div>
                         </div>
                         <div class="row mt-5">
@@ -751,16 +757,16 @@
                             </div>
                             <div class="col-md-2 text-center">E</div>
                             <div class="col-md-6">
-                                <textarea name="" class="form-control" id=""></textarea>
+                                <textarea name="cppt_e" class="form-control" id=""></textarea>
                             </div>
                         </div>
                     </div>
-                </form>
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Simpan</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+                </form>
             </div>
         </div>
     </div>
@@ -772,6 +778,13 @@
 </script>
 <script>
     $(function(){
+
+        var skrining_ya = '{{ ($skrining) ? json_decode($skrining?->skrining)->parameter_1 : '' }}';
+        if(skrining_ya == 3){
+            $('#frm-ya').show('Fadeout');
+        }else{
+            $('#frm-ya').hide('Fadein');
+        }
 
         $("#frm-data").on( "submit", function(event) {
             event.preventDefault();
@@ -819,7 +832,7 @@
         });
 
         $('input[type=radio][name=parameter_1]').change(function() {
-            if (this.value == 'Ya') {
+            if (this.value == 3) {
                 $('#frm-ya').show('Fadeout');
             }
             else{

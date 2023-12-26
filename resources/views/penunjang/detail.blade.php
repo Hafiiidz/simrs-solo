@@ -417,7 +417,7 @@
                                                                                         name='catatan'
                                                                                         placeholder="Catatan" />
                                                                                 </div>
-        
+
                                                                                 <div class="col-md-2">
                                                                                     <a href="javascript:;" data-repeater-delete
                                                                                         class="btn btn-sm btn-light-danger mt-3 mt-md-8">
@@ -434,11 +434,11 @@
                                                                         </div>
                                                                     @endforeach
                                                                 </div>
-        
-        
+
+
                                                             </div>
                                                             <!--end::Form group-->
-        
+
                                                             <!--begin::Form group-->
                                                             <div class="form-group mt-5">
                                                                 <a href="javascript:;" data-repeater-create
@@ -454,7 +454,7 @@
                                             </div>
                                             <button class="btn btn-success mt-5" type="submit">Kerjakan</button>
                                         </form>
-                                        
+
                                     </div>
                                 </div>
                             @endif
@@ -499,6 +499,8 @@
                                                                 @else
                                                                     <a href="{{ route('penunjang.input-hasil-radiologi', [$pld->id, $pld->idtindakan]) }}"
                                                                         class="btn btn-success btn-sm">Lihat Hasil</a>
+                                                                    <a href="{{ route('penunjang.cetak-radiologi', $pld->id) }}"
+                                                                        class="btn btn-info btn-sm" target="_blank">Print</a>
                                                                 @endif
 
                                                             </td>
@@ -564,7 +566,7 @@
                                                                                     @endforeach
                                                                                 </select>
                                                                             </div>
-            
+
                                                                             <div class="col-md-4">
                                                                                 <a href="javascript:;" data-repeater-delete
                                                                                     class="btn btn-sm btn-light-danger mt-3 mt-md-8">
@@ -595,7 +597,7 @@
                                                                                 @endforeach
                                                                             </select>
                                                                         </div>
-            
+
                                                                         <div class="col-md-4">
                                                                             <a href="javascript:;" data-repeater-delete
                                                                                 class="btn btn-sm btn-light-danger mt-3 mt-md-8">
@@ -611,11 +613,11 @@
                                                                     </div>
                                                                 </div>
                                                             @endif
-            
+
                                                         </div>
                                                     </div>
                                                     <!--end::Form group-->
-            
+
                                                     <!--begin::Form group-->
                                                     <div class="form-group mt-5">
                                                         <a href="javascript:;" data-repeater-create class="btn btn-light-info">
@@ -629,7 +631,7 @@
                                             </div>
                                             <button class="btn btn-success mt-5" type="submit">Kerjakan</button>
                                         </form>
-                                        
+
                                     </div>
                                 </div>
                             @endif

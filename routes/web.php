@@ -142,6 +142,7 @@ Route::prefix('/penunjang')->group(function () {
     Route::post('/post-rad/{id}', [PenunjangController::class, 'kerjakan_rad'])->middleware('auth')->name('penunjang.rad-post');
     Route::post('/post-fisio/{id}', [PenunjangController::class, 'kerjakan_fisio'])->middleware('auth')->name('penunjang.fisio-post');
     Route::post('/post-foto/{id}', [PenunjangController::class, 'post_foto_rad'])->middleware('auth')->name('penunjang.rad-post-foto');
+    Route::get('/cetak-radiologi/{id}', [PenunjangController::class, 'cetakRadiologi'])->middleware('auth')->name('penunjang.cetak-radiologi');
 });
 Route::prefix('/farmasi')->group(function () {
     Route::get('/antrian', [FarmasiController::class, 'antrian_resep'])->middleware('auth')->name('farmasi.antrian-resep');
@@ -152,6 +153,9 @@ Route::prefix('/farmasi')->group(function () {
     Route::get('/list-obat', [FarmasiController::class, 'list_obat'])->middleware('auth')->name('farmasi.list-obat');
     Route::post('/post-resep/{id}', [FarmasiController::class, 'post_resep'])->middleware('auth')->name('farmasi.post-resep');
     Route::post('/post-pemberian/{id}', [FarmasiController::class, 'post_pemberian'])->middleware('auth')->name('farmasi.post-pemberian');
+    Route::get('/update-resep', [FarmasiController::class, 'updateResep'])->middleware('auth')->name('farmasi.update-resep');
+    Route::get('/cetak-resep/{id}', [FarmasiController::class, 'cetakResep'])->middleware('auth')->name('farmasi.cetak-resep');
+    Route::get('/cetak-tiket/{id}', [FarmasiController::class, 'cetakTiket'])->middleware('auth')->name('farmasi.cetak-tiket');
 });
 Route::prefix('/rawat-jalan')->group(function () {
     Route::get('/poli', [PoliklinikController::class, 'index'])->middleware('auth')->name('poliklinik');
@@ -215,6 +219,7 @@ Route::prefix('/pasien')->group(function () {
         Route::get('{id}/edit', [LaporanOperasiController::class, 'edit'])->name('edit.operasi');
         Route::post('{id}/update', [LaporanOperasiController::class, 'update'])->name('update.operasi');
         Route::post('{id}/update-status', [LaporanOperasiController::class, 'updateStatus'])->name('update-status.operasi');
+        Route::get('{id}/cetak-laporan', [LaporanOperasiController::class, 'cetakLaporan'])->name('cetak-laporan.operasi');
     });
 
     //gizi
@@ -223,6 +228,8 @@ Route::prefix('/pasien')->group(function () {
         Route::get('{id}/show', [GiziController::class, 'show'])->name('show.gizi');
         Route::post('/store/evaluasi-gizi', [GiziController::class, 'storeEvaluasi'])->name('store.evaluasi-gizi');
         Route::post('/store/asuhan-gizi', [GiziController::class, 'storeAsuhan'])->name('store.asuhan-gizi');
+        Route::post('/store/cppt-gizi', [GiziController::class, 'storeCppt'])->name('store.cppt-gizi');
+        Route::post('/store/skrining-gizi', [GiziController::class, 'storeSkrining'])->name('store.skrining-gizi');
     });
 })->middleware('auth');
 

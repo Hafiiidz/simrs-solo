@@ -169,6 +169,7 @@
                                 <h6>Dokter : {{ $rawat->dokter->nama_dokter }}</h6>
                                 <form action="{{ route('farmasi.post-resep',$antrian->id) }}" id='formPermintaanobat' method="post">
                                     @csrf
+                                    <input type="hidden" name="idantrian" id="" value="{{ $antrian->id }}">
                                     <div class="rounded border p-5">
                                         <div class="row mb-5">
                                             <!--begin::Repeater-->
@@ -189,7 +190,7 @@
                                                                                 @foreach ($obat as $item)
                                                                                     <option value="{{ $item->id }}"
                                                                                         {{ $val->obat == $item->id ? 'selected' : '' }}>
-                                                                                        {{ $item->nama_obat }} - {{ $item->stok_apotek  }} (Rp. {{ $item->harga_jual }}) 
+                                                                                        {{ $item->nama_obat }} - {{ $item->stok_apotek  }} (Rp. {{ $item->harga_jual }})
                                                                                          / {{ $item->satuan->satuan }}</option>
                                                                                 @endforeach
                                                                             </select>
@@ -212,7 +213,7 @@
                                                                                 value={{ $val->jumlah_obat }}
                                                                                 name="jumlah_obat"
                                                                                 class="form-control form-control-solid mb-5 mb-md-0"
-                                                                                min="0" readonly required>
+                                                                                min="0" required>
                                                                         </div>
                                                                         <div class="col-md-1">
                                                                             <label class="form-label">Pemberian</label>
@@ -288,7 +289,7 @@
                                                                     </div>
                                                                     <div class="col-md-2">
                                                                         <label class="form-label">Jenis Obat</label>
-                                                                        <select name="" id=""
+                                                                        <select name="jenis_obat" id=""
                                                                             class="form-select" required>
                                                                             <option value="">- Jenis Obat -</option>
                                                                             <option value="1">Pribadi</option>
@@ -312,11 +313,11 @@
                                                                 </div>
                                                             </div>
                                                         @endif
-    
+
                                                     </div>
                                                 </div>
                                                 <!--end::Form group-->
-    
+
                                                 <!--begin::Form group-->
                                                 <div class="form-group mt-5">
                                                     <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
@@ -325,6 +326,17 @@
                                                     </a>
                                                 </div>
                                                 <!--end::Form group-->
+                                                <div class="row mt-5">
+                                                    <div class="col-md-2">
+                                                        <label class="form-label">Total Resep</label>
+                                                        <input type="text" name="total_resep" id="total_resep" class="form-control form-control-solid" readonly>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label class="form-label">&nbsp;</label>
+                                                        <br>
+                                                        <button type="button" class="btn btn-primary" id="btn-resep">Update Resep</button>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <!--end::Repeater-->
                                         </div>
@@ -341,6 +353,7 @@
                                             <th>Tgl</th>
                                             <th>Obat</th>
                                             <th>Total Resep</th>
+                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -357,15 +370,19 @@
                                                         @foreach ($obat_detail as $od)
                                                         <li>{{ $od->nama_obat }} ({{ $od->qty }})</li>
                                                         @endforeach
-                                                    </ol>                                                    
+                                                    </ol>
                                                 </td>
                                                 <td>{{ $r->total_harga }}</td>
+                                                <td>
+                                                    <a href="{{ route('farmasi.cetak-resep', $r->id) }}" class="btn btn-info btn-sm" target="_blank">Print</a>
+                                                    <a href="{{ route('farmasi.cetak-tiket', $r->id) }}" class="btn btn-info btn-sm" target="_blank">Print Tiket</a>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
-                                
-                                
+
+
                             </div>
                             <!--end::Body-->
                         </div>
@@ -436,6 +453,18 @@
                 });
             });
         })
+
+        $( "#btn-resep" ).on( "click", function() {
+            var formData = $("#formPermintaanobat").serialize();
+            $.ajax({
+                type: "GET",
+                url: '{{route('farmasi.update-resep')}}',
+                data: formData,
+                success: function(response){
+                    $('#total_resep').val('Rp.' + response.total);
+                }
+            });
+        } );
 
         @if ($message = session('gagal'))
             Swal.fire({

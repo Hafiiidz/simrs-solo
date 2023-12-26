@@ -173,7 +173,7 @@
                                             <!--begin::Form group-->
                                             <div class="form-group">
                                                 <div data-repeater-list="dokter_bedah">
-                                                    @if ($data->dokter_bedah != 'null')
+                                                    @if ($data->dokter_bedah)
                                                         @foreach (json_decode($data->dokter_bedah) as $val)
                                                             <div data-repeater-item>
                                                                 <div class="form-group row mb-5">
@@ -225,7 +225,7 @@
                                             <!--begin::Form group-->
                                             <div class="form-group">
                                                 <div data-repeater-list="perawat_bedah">
-                                                    @if ($data->perawat_bedah != 'null')
+                                                    @if ($data->perawat_bedah)
                                                         @foreach (json_decode($data->perawat_bedah) as $val)
                                                             <div data-repeater-item>
                                                                 <div class="form-group row mb-5">
@@ -277,7 +277,7 @@
                                             <!--begin::Form group-->
                                             <div class="form-group">
                                                 <div data-repeater-list="asisten">
-                                                    @if ($data->asisten != 'null')
+                                                    @if ($data->asisten)
                                                         @foreach (json_decode($data->asisten) as $val)
                                                             <div data-repeater-item>
                                                                 <div class="form-group row mb-5">
@@ -340,9 +340,19 @@
                                         <option></option>
                                         <option value="Kecil" {{ ($data->jenis_operasi == 'Kecil') ? 'selected' : '' }}>Kecil</option>
                                         <option value="Sedang" {{ ($data->jenis_operasi == 'Sedang') ? 'selected' : '' }}>Sedang</option>
-                                        <option value="Bersih" {{ ($data->jenis_operasi == 'Bersih') ? 'selected' : '' }}>Bersih</option>
                                         <option value="Besar" {{ ($data->jenis_operasi == 'Besar') ? 'selected' : '' }}>Besar</option>
                                         <option value="Khusus" {{ ($data->jenis_operasi == 'Khusus') ? 'selected' : '' }}>Khusus</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-5">
+                                <div class="col-md-12">
+                                    <select name="detail_operasi" class="form-select" data-control="select2" data-placeholder="Pilih">
+                                        <option></option>
+                                        <option value="Bersih" {{ ($data->detail_operasi == 'Bersih') ? 'selected' : '' }}>Bersih</option>
+                                        <option value="Bersih Terkontaminasi" {{ ($data->detail_operasi == 'Bersih Terkontaminasi') ? 'selected' : '' }}>Bersih Terkontaminasi</option>
+                                        <option value="Terkontaminasi" {{ ($data->detail_operasi == 'Terkontaminasi') ? 'selected' : '' }}>Terkontaminasi</option>
+                                        <option value="Kotor / Terinfeksi" {{ ($data->detail_operasi == 'Kotor / Terinfeksi') ? 'selected' : '' }}>Kotor / Terinfeksi</option>
                                     </select>
                                 </div>
                             </div>
@@ -356,13 +366,21 @@
                             </div>
                             <div class="row mt-5">
                                 <div class="row">
+                                    <div class="col-md-12">
+                                        <label for="" class="form-label">Desinfektan Kulit</label>
+                                        <input type="text" name="desinfektan_kulit" class="form-control" placeholder="Masukan Desinfektan Kulit" value="{{ $data->desinfektan_kulit }}" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-5">
+                                <div class="row">
                                     <div class="col-md-4">
                                         <!--begin::Repeater-->
                                         <div id="tindakan_bedah">
                                             <!--begin::Form group-->
                                             <div class="form-group">
                                                 <div data-repeater-list="tindakan_bedah">
-                                                    @if ($data->tindakan_bedah != 'null')
+                                                    @if ($data->tindakan_bedah)
                                                         @foreach (json_decode($data->tindakan_bedah) as $val)
                                                             <div data-repeater-item>
                                                                 <div class="form-group row mb-5">
@@ -416,17 +434,29 @@
                                         <!--end::Repeater-->
                                     </div>
                                     <div class="col-md-4">
+                                        <label class="form-label">Indikasi Operasi</label>
+                                        <textarea name="indikasi_operasi" rows="3" class="form-control">{{ $data->indikasi_operasi }}</textarea>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Posisi</label>
+                                        <textarea name="posisi" rows="3" class="form-control">{{ $data->posisi }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-5">
+                                <div class="row">
+                                    <div class="col-md-4">
                                         <!--begin::Repeater-->
                                         <div id="ahli_anastesi">
                                             <!--begin::Form group-->
                                             <div class="form-group">
                                                 <div data-repeater-list="ahli_anastesi">
-                                                @if ($data->ahli_anastesi != 'null')
+                                                @if ($data->ahli_anastesi)
                                                     @foreach (json_decode($data->ahli_anastesi) as $val)
                                                         <div data-repeater-item>
                                                             <div class="form-group row mb-5">
                                                                 <div class="col-md-10">
-                                                                    <label class="form-label">Ahli Anastesi</label>
+                                                                    <label class="form-label">Dokter Anestesi</label>
                                                                     <input type="text" name="ahli_anastesi" class="form-control mb-2 mb-md-0" placeholder="Masukan Nama" value="{{ $val->ahli_anastesi }}" />
                                                                 </div>
                                                                 <div class="col-md-2">
@@ -441,7 +471,7 @@
                                                     <div data-repeater-item>
                                                         <div class="form-group row mb-5">
                                                             <div class="col-md-10">
-                                                                <label class="form-label">Ahli Anastesi</label>
+                                                                <label class="form-label">Dokter Anestesi</label>
                                                                 <input type="text" name="ahli_anastesi" class="form-control mb-2 mb-md-0" placeholder="Masukan Nama" />
                                                             </div>
                                                             <div class="col-md-2">
@@ -460,7 +490,59 @@
                                             <div class="form-group mt-5">
                                                 <a href="javascript:;" data-repeater-create class="btn btn-sm btn-light-primary">
                                                     <i class="ki-duotone ki-plus fs-3"></i>
-                                                    Tambah Ahli Anastesi
+                                                    Tambah Ahli Anestesi
+                                                </a>
+                                            </div>
+                                            <!--end::Form group-->
+                                        </div>
+                                        <!--end::Repeater-->
+                                    </div>
+                                    <div class="col-md-4">
+                                        <!--begin::Repeater-->
+                                        <div id="penata_anastesi">
+                                            <!--begin::Form group-->
+                                            <div class="form-group">
+                                                <div data-repeater-list="penata_anastesi">
+                                                    @if ($data->penata_anastesi)
+                                                        @foreach (json_decode($data->penata_anastesi) as $val)
+                                                            <div data-repeater-item>
+                                                                <div class="form-group row mb-5">
+                                                                    <div class="col-md-10">
+                                                                        <label class="form-label">Penata Anestesi</label>
+                                                                        <input type="text" name="penata_anastesi" class="form-control mb-2 mb-md-0" placeholder="Masukan Nama" value="{{ $val->penata_anastesi }}" />
+                                                                    </div>
+                                                                    <div class="col-md-2">
+                                                                        <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                            <i class="ki-duotone ki-trash fs-5"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    @else
+                                                        <div data-repeater-item>
+                                                            <div class="form-group row mb-5">
+                                                                <div class="col-md-10">
+                                                                    <label class="form-label">Penata Anestesi</label>
+                                                                    <input type="text" name="penata_anastesi" class="form-control mb-2 mb-md-0" placeholder="Masukan Nama" />
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                        <i class="ki-duotone ki-trash fs-5"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <!--end::Form group-->
+
+                                            <!--begin::Form group-->
+                                            <div class="form-group mt-5">
+                                                <a href="javascript:;" data-repeater-create class="btn btn-sm btn-light-primary">
+                                                    <i class="ki-duotone ki-plus fs-3"></i>
+                                                    Tambah Penata Anestesi
                                                 </a>
                                             </div>
                                             <!--end::Form group-->
@@ -473,12 +555,12 @@
                                             <!--begin::Form group-->
                                             <div class="form-group">
                                                 <div data-repeater-list="obat_anastesi">
-                                                    @if ($data->obat_anastesi != 'null')
+                                                    @if ($data->obat_anastesi)
                                                         @foreach (json_decode($data->obat_anastesi) as $val)
                                                             <div data-repeater-item>
                                                                 <div class="form-group row mb-5">
                                                                     <div class="col-md-10">
-                                                                        <label class="form-label">Obat Anastesi</label>
+                                                                        <label class="form-label">Obat Anestesi</label>
                                                                         <input type="text" name="obat_anastesi" class="form-control mb-2 mb-md-0" placeholder="Masukan Nama" value="{{ $val->obat_anastesi }}" />
                                                                     </div>
                                                                     <div class="col-md-2">
@@ -493,7 +575,7 @@
                                                         <div data-repeater-item>
                                                             <div class="form-group row mb-5">
                                                                 <div class="col-md-10">
-                                                                    <label class="form-label">Obat Anastesi</label>
+                                                                    <label class="form-label">Obat Anestesi</label>
                                                                     <input type="text" name="obat_anastesi" class="form-control mb-2 mb-md-0" placeholder="Masukan Nama" />
                                                                 </div>
                                                                 <div class="col-md-2">
@@ -512,7 +594,7 @@
                                             <div class="form-group mt-5">
                                                 <a href="javascript:;" data-repeater-create class="btn btn-sm btn-light-primary">
                                                     <i class="ki-duotone ki-plus fs-3"></i>
-                                                    Tambah Obat Anastesi
+                                                    Tambah Obat Anestesi
                                                 </a>
                                             </div>
                                             <!--end::Form group-->
@@ -522,10 +604,50 @@
                                 </div>
                             </div>
                             <div class="row mt-5">
+                                <div class="col-md-2">
+                                    <label for="" class="form-label">
+                                        Jaringan/Kultur
+                                    </label>
+                                    <div class="mt-5" style="margin-left: 20px;">
+                                        <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                            <input class="form-check-input" type="radio" value="1" name="jaringan_kultur" {{ ($data->jaringan) ? ((json_decode($data?->jaringan)->jaringan_kultur == 1) ? 'checked' : '') : '' }}/>
+                                            <label class="form-check-label">
+                                                Ya
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="mt-5" style="margin-left: 20px;">
+                                        <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                            <input class="form-check-input" type="radio" value="2" name="jaringan_kultur" {{ ($data->jaringan) ? ((json_decode($data?->jaringan)->jaringan_kultur == 2) ? 'checked' : '') : '' }}/>
+                                            <label class="form-check-label">
+                                                Tidak
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="frm-jaringan" class="col-md-6" style="display: none">
+                                    <label for="" class="form-label">Macam Jaringan</label>
+                                    <textarea name="macam_jaringan" rows="3" class="form-control">{{ json_decode($data?->jaringan)->macam_jaringan }}</textarea>
+                                </div>
+                            </div>
+                            <div class="row mt-5">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label class="form-label">Implant</label>
+                                        <textarea name="implant" rows="3" class="form-control">{{ $data->implant }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-5">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <label for="" class="form-label">Jumlah Pendarahan</label>
-                                        <input type="text" name="jumlah_pendarahan" id="jumlah_pendarahan" class="form-control" placeholder="Masukan Jumlah Pendarahan" value="{{ $data->jumlah_pendarahan }}">
+                                        <label class="form-label">Jenis Anestesi</label>
+                                        <select name="jenis_anastesi" class="form-select" data-control="select2" data-placeholder="Pilih Jenis anestesi">
+                                            <option></option>
+                                            <option value="Umum" {{ ($data?->jenis_anastesi == 'Umum') ? 'selected' : '' }}>Umum</option>
+                                            <option value="Spinal" {{ ($data?->jenis_anastesi == 'Spinal') ? 'selected' : '' }}>Spinal</option>
+                                            <option value="Lokal" {{ ($data?->jenis_anastesi == 'Lokal') ? 'selected' : '' }}>Lokal</option>
+                                        </select>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="" class="form-label">Kamar Operasi</label>
@@ -535,9 +657,33 @@
                             </div>
                             <div class="row mt-5">
                                 <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="" class="form-label">Komplikasi</label>
+                                        <input type="text" name="komplikasi" id="komplikasi" class="form-control" placeholder="Masukan Komplikasi" value="{{ $data->komplikasi }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="" class="form-label">Jumlah Kehilangan Pendarahan</label>
+                                        <input type="text" name="jumlah_pendarahan" id="jumlah_pendarahan" class="form-control" placeholder="Masukan Jumlah Pendarahan" value="{{ $data->jumlah_pendarahan }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="" class="form-label">Jumlah Darah Masuk</label>
+                                        <input type="text" name="jumlah_darah_masuk" id="jumlah_darah_masuk" class="form-control" placeholder="Masukan Jumlah Pendarahan" value="{{ $data?->jumlah_darah_masuk }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-5">
+                                <div class="row">
                                     <div class="col-md-12">
                                         <label for="" class="form-label">Uraian Pembedahan</label>
                                         <textarea name="uraian_pembedahan" id="uraian_pembedahan" rows="5" class="form-control" placeholder="Masukan Uraian Pembedahan">{{ $data->uraian_pembedahan }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-5">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label for="" class="form-label">Instruksi Post Operasi</label>
+                                        <textarea name="instruksi_post_operasi" id="instruksi_post_operasi" rows="5" class="form-control" placeholder="Masukan Instruksi Post Operasi">{{ $data?->instruksi_post_operasi }}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -815,7 +961,57 @@
                 $(this).slideUp(deleteElement);
             }
         });
+
+        $('#penata_anastesi').repeater({
+            initEmpty: false,
+
+            show: function () {
+                $(this).slideDown();
+            },
+
+            hide: function (deleteElement) {
+                $(this).slideUp(deleteElement);
+            }
+        });
+
+        var jaringan = '{{ ($data->jaringan) ? json_decode($data?->jaringan)->jaringan_kultur : '' }}';
+
+        if(jaringan == 1){
+            $('#frm-jaringan').show('Fadeout');
+        }else{
+            $('#frm-jaringan').hide('Fadein');
+        }
     });
+
+
+    $( "#selesai_jam" ).on( "change", function() {
+            // Get the input values
+            var startTime = document.getElementById('mulai_jam').value;
+            var endTime = document.getElementById('selesai_jam').value;
+
+            // Parse the input values to create Date objects
+            var startDateTime = new Date('2023-01-01 ' + startTime); // Use a common date for parsing time
+            var endDateTime = new Date('2023-01-01 ' + endTime);     // Use a common date for parsing time
+
+            // Calculate the time difference in milliseconds
+            var timeDiff = endDateTime - startDateTime;
+
+            // Convert the time difference to hours and minutes
+            var hours = Math.floor(timeDiff / (1000 * 60 * 60));
+            var minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+
+            // Display the result
+            $('#lama_operasi').val(hours + ' Jam ' + minutes + ' menit');
+    } );
+
+    $('input[type=radio][name=jaringan_kultur]').change(function() {
+            if (this.value == 1) {
+                $('#frm-jaringan').show('Fadeout');
+            }
+            else{
+                $('#frm-jaringan').hide('Fadein');
+            }
+        });
 
     @if ($message = session('gagal'))
         Swal.fire({
