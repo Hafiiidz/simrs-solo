@@ -19,6 +19,31 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class DetailRekapMedisController extends Controller
 {
+    public function post_sbar(Request $request,$id){
+        $cek_sbar = DB::table('demo_sbar')->where('idrawat',$id)->first();
+        if($cek_sbar){
+            $sbar = DB::table('demo_sbar')->where('idrawat',$id)->update([
+                'situation' => $request->situation,
+                'background' => $request->background,
+                'assesmen' => $request->assesment,
+                'rekomendation' => $request->recomendation,
+                'intruksi' => $request->intruksi,
+                'updated_at'=>now(),
+            ]);
+        }else{
+            DB::table('demo_sbar')->insert([
+                'situation' => $request->situation,
+                'background' => $request->background,
+                'assesmen' => $request->assesment,
+                'rekomendation' => $request->recomendation,
+                'intruksi' => $request->intruksi,
+                'updated_at'=>now(),
+                'idrawat'=>$id
+            ]);
+
+        }
+        return redirect()->route('rekam-medis-poli', $id)->with('berhasil', 'Data Rekam Medis Pasien Berhasil Di Simpan!');
+    }
     public function index($id_rekapmedis)
     {
         $data = RekapMedis::find($id_rekapmedis);

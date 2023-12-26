@@ -189,6 +189,10 @@ Route::prefix('/rawat-inap')->group(function () {
     Route::post('{id}/pemeriksaan-fisik', [RawatInapController::class, 'postPemeriksaanFisik'])->name('postPemeriksaanFisik.rawat-inap');
     Route::post('{id}/order-obat', [RawatInapController::class, 'postOrderObat'])->name('postOrderObat.rawat-inap');
     Route::post('{id}/order-penunjang', [RawatInapController::class, 'postOrderPenunjang'])->name('postOrderPenunjang.rawat-inap');
+    Route::post('{id}/post-cppt', [RawatInapController::class, 'post_cppt'])->name('post_cppt.rawat-inap');
+    Route::post('{id}/post-implementasi', [RawatInapController::class, 'post_implementasi'])->name('post_implementasi.rawat-inap');    
+    Route::post('{id}/post-diagnosa-akhir', [RawatInapController::class, 'post_diagnosa_akhir'])->name('post-diagnosa-akhir.rawat-inap');
+    Route::post('{id}/post-tindakan', [RawatInapController::class, 'post_tindakan'])->name('post_tindakan.rawat-inap');
 });
 Route::prefix('/pasien')->group(function () {
     Route::get('/', [PasienController::class, 'index'])->name('pasien.index');
@@ -206,6 +210,7 @@ Route::prefix('/pasien')->group(function () {
             Route::post('/{id_rekapmedis}/store', [DetailRekapMedisController::class, 'store'])->name('detail-rekap-medis-store');
             Route::get('/show/{id}', [DetailRekapMedisController::class, 'show'])->name('detail-rekap-medis-show');
             Route::post('/{id_pasien}/update', [DetailRekapMedisController::class, 'update'])->name('detail-rekap-medis-update');
+            Route::post('/{id}/post-sbar', [DetailRekapMedisController::class, 'post_sbar'])->name('detail-rekap-medis.post_sbar');
             Route::get('/cetak/{id}', [DetailRekapMedisController::class, 'cetak'])->name('detail-rekap-medis-cetak');
             Route::get('/cetak-resep/{id}', [DetailRekapMedisController::class, 'cetak_resep'])->name('resep-rekap-medis-cetak');
         });

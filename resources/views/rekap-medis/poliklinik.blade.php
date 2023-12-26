@@ -796,8 +796,8 @@
                                                             @csrf
                                                             <input type="hidden" name="id" id="id"
                                                                 value="{{ $tindak_lanjut->id }}">
-                                                            <a href="{{ route('tindak-lanjut.edit_tindak_lanjut', $tindak_lanjut->id) }}"
-                                                                class="btn btn-info btn-sm">Edit</a>
+                                                            <a
+                                                                href="{{ route('tindak-lanjut.edit_tindak_lanjut', $tindak_lanjut->id) }}"class="btn btn-info btn-sm">Edit</a>
                                                             <button class="btn btn-danger btn-sm">Hapus</button>
                                                         </form>
 
@@ -805,6 +805,10 @@
                                                 </tr>
                                             </tbody>
                                         </table>
+
+                                        @if ($tindak_lanjut->tindak_lanjut == 'Dirawat')
+                                            <button data-bs-toggle="modal" data-bs-target="#modal-sbar" class="btn btn-warning">SBAR</button>
+                                        @endif
                                     @endif
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_4" role="tabpanel">
@@ -1141,35 +1145,45 @@
     </div>
 
     <!-- Modal -->
-    {{-- <div class="modal fade" id="tambah-rekap" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+    <div class="modal fade" id="modal-sbar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered  modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Tambah Rekam Medis</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">SBAR</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <form id="frm-data" action="{{ route('rekap-medis-store') }}" method="POST" autocomplete="off">
-                        @csrf
-                        <div class="row">
-                            <label class="form-label">Kategori</label>
-                            <input type="hidden" name="id_pasien" value="{{ $pasien->id }}">
-                            <select class="form-select" name="kategori" data-control="select2"
-                                data-placeholder="Pilih Kategori" data-dropdown-parent="#tambah-rekap" required>
-                                <option></option>
-                                @foreach ($kategori as $val)
-                                    <option value="{{ $val->id }}">{{ $val->nama }}</option>
-                                @endforeach
-                            </select>
+                <form id="frm-data" action="{{ route('detail-rekap-medis.post_sbar',$rawat->id) }}" method="POST" autocomplete="off">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row mb-5">
+                            <label class="form-label">Situation</label>
+                            <textarea name="situation" class="form-control" required id="" rows=4></textarea>
                         </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Tambah</button>
-                    </form>
-                </div>
+                        <div class="row mb-5">
+                            <label class="form-label">Background</label>
+                            <textarea name="background" class="form-control" required id="" rows=4></textarea>
+                        </div>
+                        <div class="row mb-5">
+                            <label class="form-label">Assesment</label>
+                            <textarea name="assesment" class="form-control" required id="" rows=4></textarea>
+                        </div>
+                        <div class="row mb-5">
+                            <label class="form-label">Recomendation</label>
+                            <textarea name="recomendation" class="form-control" required id="" rows=4></textarea>
+                        </div>
+                        <div class="row mb-5">
+                            <label class="form-label">Intruksi / Anjuran</label>
+                            <textarea name="intruksi" class="form-control" required id="" rows=4></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Simpan</button>
+
+                    </div>
+                </form>
             </div>
         </div>
-    </div> --}}
+    </div>
     <div class="modal fade" tabindex="-1" id="modal_lihat">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -1298,6 +1312,38 @@
                         allowClear: true,
                     });
                 }
+            });
+            $("#frm-data").on("submit", function(event) {
+                event.preventDefault();
+                var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                Swal.fire({
+                    title: 'Simpan SBAR',
+                    text: "Yakin Menyimpan Data SBAR",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.blockUI({
+                            css: {
+                                border: 'none',
+                                padding: '15px',
+                                backgroundColor: '#000',
+                                '-webkit-border-radius': '10px',
+                                '-moz-border-radius': '10px',
+                                opacity: .5,
+                                color: '#fff',
+                                fontSize: '16px'
+                            },
+                            message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                            baseZ: 9000,
+                        });
+                        this.submit();
+                    }
+                });
             });
             $("#frmPengantarluar").on("submit", function(event) {
                 event.preventDefault();

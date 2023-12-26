@@ -61,7 +61,8 @@
                         <div class="card-toolbar">
                             <a href="{{ route('view.rawat-inap', $rawat->idruangan) }}"
                                 class="btn me-3 btn-sm btn-secondary">Kembali</a>
-                            <button class="btn btn-sm btn-success">Pulang</button>
+                            <button data-bs-toggle="modal" data-bs-target="#modal_pulang"
+                                class="btn btn-sm btn-success">Pulang</button>
                         </div>
                     </div>
                     <!--begin::Body-->
@@ -240,13 +241,13 @@
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
                                                 data-bs-toggle="tab" href="#kt_tab_pane_8" aria-selected="false"
-                                                role="tab" tabindex="-1">Diganosa</a>
+                                                role="tab" tabindex="-1">Diganosa Akhir</a>
                                         </li>
-                                        <li class="nav-item" role="presentation">
+                                        {{-- <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
                                                 data-bs-toggle="tab" href="#kt_tab_pane_9" aria-selected="false"
                                                 role="tab" tabindex="-1">Pindah Ruangan</a>
-                                        </li>
+                                        </li> --}}
 
 
                                     </ul>
@@ -300,12 +301,12 @@
                                 <div class="tab-pane fade" id="kt_tab_pane_2" role="tabpanel">
                                     <button class="btn btn-warning btn-sm mb-5" data-bs-toggle="modal"
                                         data-bs-target="#modal_cppt">Tambah CPPT</button>
-                                    {{-- @include('rawat-inap.menu.cppt') --}}
+                                    @include('rawat-inap.menu.cppt-ranap')
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_3" role="tabpanel">
                                     <button class="btn btn-info btn-sm mb-5" data-bs-toggle="modal"
                                         data-bs-target="#modal_implementasi">Tambah Implementasi</button>
-                                    {{-- @include('rawat-inap.menu.cppt') --}}
+                                    @include('rawat-inap.menu.implementasi')
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_4" role="tabpanel">
                                     <button class="btn btn-info btn-sm mb-5" data-bs-toggle="modal"
@@ -314,7 +315,8 @@
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_5" role="tabpanel">
                                     <button class="btn btn-info btn-sm mb-5" data-bs-toggle="modal"
-                                        data-bs-target="#modal_beri_obat">Tambah Pemberian Obat</button>
+                                        data-bs-target="#kt_modal_1">Tambah
+                                        Pemberian Obat</button>
 
                                     <button class="btn btn-success btn-sm mb-5" data-bs-toggle="modal"
                                         data-bs-target="#modal_obat">Order Obat</button>
@@ -334,7 +336,10 @@
                                     @include('rawat-inap.menu.operasi')
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_8" role="tabpanel">
-                                    Diagnosa
+                                    <h3>Diagnosa Akhir</h3>
+                                    {{-- separator --}}
+                                    <div class="separator separator-dashed border-secondary mb-5"></div>
+                                    @include('rawat-inap.menu.diagnosa-akhir')
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_9" role="tabpanel">
                                     Pindah Ruangan
@@ -365,9 +370,9 @@
                         </div>
                         <!--end::Close-->
                     </div>
-
-                    <div class="modal-body">
-                        <form action="">
+                    <form action="{{ route('post_cppt.rawat-inap', $rawat->id) }}" id="frmCppt" method="post">
+                        <div class="modal-body">
+                            @csrf
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="row">
@@ -375,7 +380,7 @@
                                             <label for=""> Profesi (PPA) </label>
                                         </div>
                                         <div class="col-md-8">
-                                            <select name="" class="form-select" id="">
+                                            <select name="profesi" class="form-select" id="">
                                                 <option value="">-- Profesi (PPA) -- </option>
                                                 <option value="Dokter">Dokter</option>
                                                 <option value="Perawat">Perawat</option>
@@ -394,7 +399,7 @@
                                     </div>
                                     <div class="col-md-2 text-center">S</div>
                                     <div class="col-md-6">
-                                        <textarea name="" class="form-control" id=""></textarea>
+                                        <textarea name="subjektif" class="form-control" id=""></textarea>
                                     </div>
                                 </div>
                                 <div class="row mt-5">
@@ -402,7 +407,7 @@
                                     </div>
                                     <div class="col-md-2 text-center">O</div>
                                     <div class="col-md-6">
-                                        <textarea name="" class="form-control" id=""></textarea>
+                                        <textarea name="objektif" class="form-control" id=""></textarea>
                                     </div>
                                 </div>
                                 <div class="row mt-5">
@@ -410,7 +415,7 @@
                                     </div>
                                     <div class="col-md-2 text-center">A</div>
                                     <div class="col-md-6">
-                                        <textarea name="" class="form-control" id=""></textarea>
+                                        <textarea name="asesmen" class="form-control" id=""></textarea>
                                     </div>
                                 </div>
                                 <div class="row mt-5">
@@ -418,17 +423,18 @@
                                     </div>
                                     <div class="col-md-2 text-center">P</div>
                                     <div class="col-md-6">
-                                        <textarea name="" class="form-control" id=""></textarea>
+                                        <textarea name="plan" class="form-control" id=""></textarea>
                                     </div>
                                 </div>
                             </div>
-                        </form>
-                    </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Simpan</button>
-                    </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -447,9 +453,11 @@
                         </div>
                         <!--end::Close-->
                     </div>
+                    <form action="{{ route('post_implementasi.rawat-inap', $rawat->id) }}" id='frmImplementasi'
+                        method="post">
+                        @csrf
+                        <div class="modal-body">
 
-                    <div class="modal-body">
-                        <form action="">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="row">
@@ -457,7 +465,8 @@
                                             <label for="">Jam</label>
                                         </div>
                                         <div class="col-md-8">
-                                            <input type="time" name="" class="form-control" id="">
+                                            <input type="time" value="{{ date('H:i') }}" name="jam"
+                                                class="form-control" id="">
                                         </div>
                                     </div>
                                 </div>
@@ -467,19 +476,20 @@
                                             <label for="">Implementasi Keperawatan</label>
                                         </div>
                                         <div class="col-md-8">
-                                            <textarea name="" class="form-control" id=""></textarea>
+                                            <textarea name="implementasi" dt-auto class="form-control" id=""></textarea>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                        </form>
-                    </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Simpan</button>
-                    </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -497,9 +507,10 @@
                         </div>
                         <!--end::Close-->
                     </div>
+                    <form action="{{ route('post_tindakan.rawat-inap', $rawat->id) }}" id='frmTindakan' method="POST">
+                        <div class="modal-body">
 
-                    <div class="modal-body">
-                        <form action="">
+                            @csrf
                             <div class="row">
                                 <div class="col-md-12">
                                     <div id="kt_tindakan_repeater">
@@ -564,13 +575,14 @@
                                     </div>
                                 </div>
                             </div>
-                        </form>
-                    </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Simpan</button>
-                    </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -808,17 +820,57 @@
                         </div>
                         <!--end::Close-->
                     </div>
+                    <form action="">
+                        <div class="modal-body">
 
-                    <div class="modal-body">
-                        <form action="">
+                            <div class="mb-5">
+                                <label for="" class="form-label">Tanggal dan Jam Pulang</label>
+                                <input class="form-control" name='tgl_pulang' required placeholder="Pick date & time"
+                                    id="kt_datepicker_3" />
+                            </div>
+                            <div class="mb-5">
+                                <label for="" class="form-label">Prognosa</label>
+                                <textarea class="form-control" required name="prognosa" id="" rows=3></textarea>
+                            </div>
+                            <div class="mb-5">
+                                <label for="" class="form-label">Anjuran</label>
+                                <textarea class="form-control" required name="anjuran" id="" rows=3></textarea>
+                            </div>
+                            <div class="mb-5">
+                                <label for="" class="form-label">Terapi</label>
+                                <textarea class="form-control" required name="terapi" id="" rows=3></textarea>
+                            </div>
+                            <div class="mb-5">
+                                <label for="" class="form-label">Kondisi Pulang</label>
+                                <select name="kondisi_pulang" required class="form-select" id="">
+                                    <option value=""></option>
+                                    @foreach ($data_pulang as $dp)
+                                        <option value="{{ $dp->id }}">{{ $dp->pulang }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-5">
+                                <label for="" class="form-label">Tanggal Kontrol</label>
+                                <input type="date" required name='tgl_kontrol' class="form-control"
+                                    placeholder="Tgl Kontrol">
+                            </div>
+                            <div class="mb-5">
+                                <label for="" class="form-label">Poli Tujuan</label>
+                                <select required name="poli_tujuan" class="form-select" id="">
+                                    <option value=""></option>
+                                    @foreach ($poli as $p)
+                                        <option value="{{ $p->id }}">{{ $p->poli }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
 
-                        </form>
-                    </div>
+                        </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Simpan</button>
-                    </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Simpan</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -864,11 +916,226 @@
                 </div>
             </div>
         </div>
+
+
+
+        <div class="modal fade" tabindex="-1" id="kt_modal_1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Tambah Pemberian Obat</h3>
+
+                        <!--begin::Close-->
+                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span
+                                    class="path2"></span></i>
+                        </div>
+                        <!--end::Close-->
+                    </div>
+                    <form action="{{ route('farmasi.post-pemberian', $rawat->id) }}" method="post" id='fromPemberian'>
+                        @csrf
+                        <div class="modal-body">
+                            <div class="form-group row mb-3">
+                                <label class="col-sm-3 col-form-label text-start">Jenis Pemberian</label>
+                                <div class="col-sm-4">
+                                    <select name="jenis_pemberian" required class="form-select" id="">
+                                        <option value=""></option>
+                                        <option value="Non Injeksi">Non Injeksi</option>
+                                        <option value="Injeksi">Injeksi</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <input class="form-control" required name='tgl' placeholder="Tanggal"
+                                        id="kt_datepicker_1" />
+                                </div>
+                            </div>
+                            <div class="form-group row mb-3">
+                                <!--begin::Repeater-->
+                                <div id="kt_docs_repeater_nested">
+                                    <!--begin::Form group-->
+                                    <div class="form-group">
+                                        <div data-repeater-list="pemberian_obat">
+                                            <div data-repeater-item>
+                                                <div class="form-group row mb-5">
+                                                    <div class="col-md-3">
+                                                        <label class="form-label">Nama Obat</label>
+                                                        <input type="text" name='nama_obat' required
+                                                            class="form-control form-control-sm mb-2 mb-md-0"
+                                                            placeholder="Nama Obat" />
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <label class="form-label">Qty</label>
+                                                        <input type="text" name='jumlah_obat' required
+                                                            class="form-control form-control-sm mb-2 mb-md-0"
+                                                            placeholder="Qty Obat" />
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="inner-repeater">
+                                                            <div data-repeater-list="obat_obatan" class="mb-5">
+                                                                <div data-repeater-item>
+                                                                    <label class="form-label">Jam / Initial</label>
+                                                                    <div class="input-group pb-3">
+                                                                        <input type="time" name='jam' required
+                                                                            class="form-control form-control-sm"
+                                                                            placeholder="Jam" />
+                                                                        <input type="text" name='initial' required
+                                                                            class="form-control form-control-sm"
+                                                                            placeholder="Initial" />
+                                                                        <button
+                                                                            class="border border-secondary btn btn-icon btn-flex  btn-sm btn-light-danger"
+                                                                            data-repeater-delete type="button">
+                                                                            <i class="ki-duotone ki-trash fs-5"><span
+                                                                                    class="path1"></span><span
+                                                                                    class="path2"></span><span
+                                                                                    class="path3"></span><span
+                                                                                    class="path4"></span><span
+                                                                                    class="path5"></span></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <button class="btn btn-sm btn-flex btn-light-primary"
+                                                                data-repeater-create type="button">
+                                                                <i class="ki-duotone ki-plus fs-5"></i>
+                                                                Tambah Jam
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <label class="form-label">Rute</label>
+                                                        <select name="rute" class="form-select" id="">
+                                                            <option value=""></option>
+                                                            <option value="Oral">Oral</option>
+                                                            <option value="Intravena">Intravena</option>
+                                                            <option value="Sublingual">Sublingual</option>
+                                                            <option value="Nasal">Nasal</option>
+                                                            <option value="Injeksi">Injeksi</option>
+                                                        </select>
+                                                        {{-- <input type="text" name='rute'
+                                                            class="form-control form-control-sm mb-2 mb-md-0"
+                                                            placeholder="Rute" required /> --}}
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <label class="form-label">Signa</label>
+                                                        <input type="text" name='signa'
+                                                            class="form-control form-control-sm mb-2 mb-md-0"
+                                                            placeholder="Signa" required />
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <a href="javascript:;" data-repeater-delete
+                                                            class="btn btn-sm btn-flex btn-light-danger mt-3 mt-md-9">
+                                                            <i class="ki-duotone ki-trash fs-5"><span
+                                                                    class="path1"></span><span
+                                                                    class="path2"></span><span
+                                                                    class="path3"></span><span
+                                                                    class="path4"></span><span class="path5"></span></i>
+                                                            Delete Row
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--end::Form group-->
+
+                                    <!--begin::Form group-->
+                                    <div class="form-group">
+                                        <a href="javascript:;" data-repeater-create
+                                            class="btn btn-flex btn-light-primary">
+                                            <i class="ki-duotone ki-plus fs-3"></i>
+                                            Tambah Pemberian
+                                        </a>
+                                    </div>
+                                    <!--end::Form group-->
+                                </div>
+                                <!--end::Repeater-->
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
     @endsection
     @section('js')
         <script src="{{ asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
         <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js"></script>
+        <script>
+            $("#kt_datepicker_1").flatpickr();
+            $("#kt_datepicker_2").flatpickr();
+            $("#kt_datepicker_3").flatpickr({
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+            });
+            $(function() {
+
+
+                $("#fromPemberian").on("submit", function(event) {
+                    event.preventDefault();
+                    var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                    Swal.fire({
+                        title: 'Simpan Data?',
+                        text: "Simpan Data?",
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya',
+                        cancelButtonText: 'Tidak'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.blockUI({
+                                css: {
+                                    border: 'none',
+                                    padding: '15px',
+                                    backgroundColor: '#000',
+                                    '-webkit-border-radius': '10px',
+                                    '-moz-border-radius': '10px',
+                                    opacity: .5,
+                                    color: '#fff',
+                                    fontSize: '16px'
+                                },
+                                message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                                baseZ: 9000,
+                            });
+                            this.submit();
+                        }
+                    });
+                });
+
+                $('#kt_docs_repeater_nested').repeater({
+                    initEmpty: false,
+                    repeaters: [{
+                        selector: '.inner-repeater',
+                        show: function() {
+                            $(this).slideDown();
+                        },
+
+                        hide: function(deleteElement) {
+                            $(this).slideUp(deleteElement);
+                        }
+                    }],
+
+                    show: function() {
+                        $(this).slideDown();
+                    },
+
+                    hide: function(deleteElement) {
+                        $(this).slideUp(deleteElement);
+                    }
+                });
+
+
+
+            });
+        </script>
         <script>
             $(function() {
                 $("#tbl-rekap").DataTable({
@@ -915,6 +1182,134 @@
                     ]
                 });
 
+                $("#frmDiagnosaAkhir").on("submit", function(event) {
+                    event.preventDefault();
+                    var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                    Swal.fire({
+                        title: 'Simpan Data',
+                        text: "Apakah Anda yakin akan menyimpan data Diagnosa Akhir ?",
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, Simpan Data',
+                        cancelButtonText: 'Tidak'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.blockUI({
+                                css: {
+                                    border: 'none',
+                                    padding: '15px',
+                                    backgroundColor: '#000',
+                                    '-webkit-border-radius': '10px',
+                                    '-moz-border-radius': '10px',
+                                    opacity: .5,
+                                    color: '#fff',
+                                    fontSize: '16px'
+                                },
+                                message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                                baseZ: 9000,
+                            });
+                            this.submit();
+                        }
+                    });
+                });
+                $("#frmImplementasi").on("submit", function(event) {
+                    event.preventDefault();
+                    var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                    Swal.fire({
+                        title: 'Simpan Data',
+                        text: "Apakah Anda yakin akan menyimpan data Implementasi ?",
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, Simpan Data',
+                        cancelButtonText: 'Tidak'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.blockUI({
+                                css: {
+                                    border: 'none',
+                                    padding: '15px',
+                                    backgroundColor: '#000',
+                                    '-webkit-border-radius': '10px',
+                                    '-moz-border-radius': '10px',
+                                    opacity: .5,
+                                    color: '#fff',
+                                    fontSize: '16px'
+                                },
+                                message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                                baseZ: 9000,
+                            });
+                            this.submit();
+                        }
+                    });
+                });
+                $("#frmCppt").on("submit", function(event) {
+                    event.preventDefault();
+                    var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                    Swal.fire({
+                        title: 'Simpan Data',
+                        text: "Apakah Anda yakin akan menyimpan data CPPT ?",
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, Simpan Data',
+                        cancelButtonText: 'Tidak'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.blockUI({
+                                css: {
+                                    border: 'none',
+                                    padding: '15px',
+                                    backgroundColor: '#000',
+                                    '-webkit-border-radius': '10px',
+                                    '-moz-border-radius': '10px',
+                                    opacity: .5,
+                                    color: '#fff',
+                                    fontSize: '16px'
+                                },
+                                message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                                baseZ: 9000,
+                            });
+                            this.submit();
+                        }
+                    });
+                });
+                $("#frmTindakan").on("submit", function(event) {
+                    event.preventDefault();
+                    var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                    Swal.fire({
+                        title: 'Simpan Data',
+                        text: "Apakah Anda yakin akan menyimpan data Tindakan ?",
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, Simpan Data',
+                        cancelButtonText: 'Tidak'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.blockUI({
+                                css: {
+                                    border: 'none',
+                                    padding: '15px',
+                                    backgroundColor: '#000',
+                                    '-webkit-border-radius': '10px',
+                                    '-moz-border-radius': '10px',
+                                    opacity: .5,
+                                    color: '#fff',
+                                    fontSize: '16px'
+                                },
+                                message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                                baseZ: 9000,
+                            });
+                            this.submit();
+                        }
+                    });
+                });
                 $("#frmpemeriksaan_fisik").on("submit", function(event) {
                     event.preventDefault();
                     var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
@@ -1053,7 +1448,7 @@
 
                         $(this).find('[data-kt-repeater="select22"]').select2({
                             allowClear: true,
-                            dropdownParent: $('#modal_obat')
+                            dropdownParent: $('#modal_tindakan')
                         });
                     },
 
@@ -1064,7 +1459,7 @@
                     ready: function() {
                         $('[data-kt-repeater="select22"]').select2({
                             allowClear: true,
-                            dropdownParent: $('#modal_obat')
+                            dropdownParent: $('#modal_tindakan')
                         });
                     }
                 });
@@ -1131,7 +1526,7 @@
 
                 $('#icdx_repeater').repeater({
                     @if (isset($ringakasan_pasien_masuk))
-                        @if ($ringakasan_pasien_masuk->icd10!= null)
+                        @if ($ringakasan_pasien_masuk->icd10 != null)
                             initEmpty: false,
                         @else
                             initEmpty: true,
@@ -1358,6 +1753,142 @@
                     altInput: true,
                     altFormat: "d-m-Y",
                     dateFormat: "Y-m-d"
+                });
+
+                //DX Akhir
+                $('#dx_akhir_repeater').repeater({
+                    initEmpty: false,
+                    show: function() {
+                        $(this).slideDown();
+
+                        $(this).find('[data-kt-repeater="select_dx_akhir"]').select2({
+                            ajax: {
+                                url: 'https://new-simrs.rsausulaiman.com/auth/listdiagnosa2',
+                                dataType: 'json',
+                                delay: 250,
+                                data: function(params) {
+
+                                    return {
+                                        q: params.term, // search term
+                                    };
+                                },
+                                processResults: function(data) {
+                                    return {
+                                        results: data.result.map(function(user) {
+                                            return {
+                                                id: user.id,
+                                                text: user.text
+                                            };
+                                        })
+                                    };
+                                },
+                                cache: true
+                            },
+                            minimumInputLength: 1,
+                            placeholder: 'Search for a user...'
+                        });
+                    },
+
+                    hide: function(deleteElement) {
+                        $(this).slideUp(deleteElement);
+                    },
+
+                    ready: function() {
+                        $('[data-kt-repeater="select_dx_akhir"]').select2({
+                            ajax: {
+                                url: 'https://new-simrs.rsausulaiman.com/auth/listdiagnosa2',
+                                dataType: 'json',
+                                delay: 250,
+                                data: function(params) {
+
+                                    return {
+                                        q: params.term, // search term
+                                    };
+                                },
+                                processResults: function(data) {
+                                    return {
+                                        results: data.result.map(function(user) {
+                                            return {
+                                                id: user.id,
+                                                text: user.text
+                                            };
+                                        })
+                                    };
+                                },
+                                cache: true
+                            },
+                            minimumInputLength: 1,
+                            placeholder: 'Search for a user...'
+                        });
+                    }
+                });
+
+                $('#icd9_repeater_akhir').repeater({
+                    initEmpty: false,
+
+                    show: function() {
+                        $(this).slideDown();
+
+                        $(this).find('[data-kt-repeater="select2_icd9_akhir"]').select2({
+                            ajax: {
+                                url: 'https://new-simrs.rsausulaiman.com/auth/listprosedur2',
+                                dataType: 'json',
+                                delay: 250,
+                                data: function(params) {
+
+                                    return {
+                                        q: params.term, // search term
+                                    };
+                                },
+                                processResults: function(data) {
+                                    return {
+                                        results: data.map(function(user) {
+                                            return {
+                                                id: user.id,
+                                                text: user.text
+                                            };
+                                        })
+                                    };
+                                },
+                                cache: true
+                            },
+                            minimumInputLength: 1,
+                            placeholder: 'Search for a user...'
+                        });
+                    },
+
+                    hide: function(deleteElement) {
+                        $(this).slideUp(deleteElement);
+                    },
+
+                    ready: function() {
+                        $('[data-kt-repeater="select2_icd9_akhir"]').select2({
+                            ajax: {
+                                url: 'https://new-simrs.rsausulaiman.com/auth/listprosedur2',
+                                dataType: 'json',
+                                delay: 250,
+                                data: function(params) {
+
+                                    return {
+                                        q: params.term, // search term
+                                    };
+                                },
+                                processResults: function(data) {
+                                    return {
+                                        results: data.map(function(user) {
+                                            return {
+                                                id: user.id,
+                                                text: user.text
+                                            };
+                                        })
+                                    };
+                                },
+                                cache: true
+                            },
+                            minimumInputLength: 1,
+                            placeholder: 'Search for a user...'
+                        });
+                    }
                 });
 
             });

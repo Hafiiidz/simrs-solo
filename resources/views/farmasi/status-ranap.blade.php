@@ -160,8 +160,7 @@
                                 </div>
                                 <div class="card-toolbar">
                                     <a href="{{ route('farmasi.antrian-resep') }}" class="btn btn-warning me-3">Kembali</a>
-                                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#kt_modal_1">Tambah
-                                        Pemberian Obat</button>
+                                    
                                 </div>
                             </div>
                             <!--begin::Body-->
@@ -479,6 +478,7 @@
                                                         </tr>
                                                         <tr>
                                                             <th>No</th>
+                                                            <th>Jenis Obat</th>
                                                             <th>Nama Obat</th>
                                                             <th>Qty</th>
                                                             <th>Rute</th>
@@ -488,6 +488,7 @@
                                                         @foreach (json_decode($po->pemberian_obat) as $val)
                                                             <tr>
                                                                 <td>{{ $loop->iteration }}</td>
+                                                                <td>{{ $po->jenis }}</td>
                                                                 <td>{{ $val->nama_obat }}</td>
                                                                 <td>{{ $val->jumlah_obat }}</td>
                                                                 <td>{{ $val->rute }}</td>
@@ -688,6 +689,14 @@
                                                 </div>
                                                 <div class="col-md-2">
                                                     <label class="form-label">Rute</label>
+                                                    <select name="rute" class="form-select" id="">
+                                                        <option value=""></option>
+                                                        <option value="Oral">Oral</option>
+                                                        <option value="Intravena">Intravena</option>
+                                                        <option value="Sublingual">Sublingual</option>
+                                                        <option value="Nasal">Nasal</option>
+                                                        <option value="Injeksi">Injeksi</option>
+                                                    </select>
                                                     <input type="text" name='rute'
                                                         class="form-control form-control-sm mb-2 mb-md-0"
                                                         placeholder="Rute" required />

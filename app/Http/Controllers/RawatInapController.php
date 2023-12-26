@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\Operasi\LaporanOperasi;
+use App\Models\Poli;
 
 class RawatInapController extends Controller
 {
@@ -103,24 +104,124 @@ class RawatInapController extends Controller
             'rawat' => $rawat
         ], compact('pasien'));
     }
+
+    public function post_diagnosa_akhir(Request $request,$id){
+        // return $request->all();
+        $cek_diagnosa_akhir = DB::table('demo_ranap_dx')->where('idrawat',$id)->first();
+        if($cek_diagnosa_akhir){
+            DB::table('demo_ranap_dx')->where('idrawat',$id)->update([
+                'icd10'=>json_encode($request->icdx),
+                'icd9'=>json_encode($request->icd9),
+                'updated_at'=>now(),
+            ]);
+        }else{
+            DB::table('demo_ranap_dx')->insert([
+                'idrawat'=>$id,
+                'icd10'=>json_encode($request->icdx),
+                'icd9'=>json_encode($request->icd9),
+                'created_at'=>now(),
+                'updated_at'=>now(),
+            ]);
+        }
+
+        return redirect()->back()->with('berhasil','Data Berhasil Di Simpan');
+    }
+    public function post_tindakan(Request $request,$id){
+        $rawat = Rawat::find($id);
+        foreach($request->tindakan_repeater as $tindakan){
+            if($tindakan['dokter'] == null){
+                $profesi = 'Perawat';
+            }else{
+                $profesi = 'Dokter';
+            }
+            $cek_tindakan = DB::table('demo_trx_tindakan')->where('idrawat',$rawat->id)->where('idtindakan',$tindakan['tindakan'])->first();
+            if($cek_tindakan){
+                DB::table('demo_trx_tindakan')->where('idrawat',$rawat->id)->where('idtindakan',$tindakan['tindakan'])->update([
+                    'jumlah'=>$cek_tindakan->jumlah + $tindakan['jumlah'],
+                    'profesi'=>$profesi,
+                    'updated_at'=>now(),
+                ]);
+                
+            }else{
+                 #insert demo_trx_tindakan
+                DB::table('demo_trx_tindakan')->insert([
+                    'idrawat'=>$rawat->id,
+                    'idtindakan'=>$tindakan['tindakan'],
+                    'iddokter'=>$tindakan['dokter'],
+                    'jumlah'=>$tindakan['jumlah'],
+                    'profesi'=>$profesi,
+                    'created_at'=>now(),
+                    'updated_at'=>now(),
+                ]);
+            }
+           
+           
+        }
+
+        return redirect()->back()->with('berhasil','Data Berhasil Di Simpan');
+    }
+
+    public function post_implementasi(Request $request,$id){
+        $rawat = Rawat::find($id);
+        DB::table('rawat_implementasi')->insert([
+            'tgl'=>date('Y-m-d'),
+            'jam'=>$request->jam,
+            'implementasi'=>$request->implementasi,
+            'no_rm'=>$rawat->no_rm,
+            'idrawat'=>$rawat->id,       
+            'idpetugas'=>auth()->user()->id,
+            'idruangan'=>$rawat->idruangan
+        ]);
+
+        return redirect()->back()->with('berhasil','Data Berhasil Di Simpan');
+    }
+
+    public function post_cppt(Request $request,$id){
+        $rawat = Rawat::find($id);
+        DB::table('rawat_cppt')->insert([
+            'tgl'=>date('Y-m-d'),
+            'jam'=>date('H:i:s'),
+            'subjektif'=>$request->subjektif,
+            'objektif'=>$request->objektif,
+            'asesmen'=>$request->asesmen,
+            'plan'=>$request->plan,
+            'no_rm'=>$rawat->no_rm,
+            'idrawat'=>$rawat->id,            
+            'profesi'=>$request->profesi,
+            'idpetugas'=>auth()->user()->id,
+            'idruangan'=>$rawat->idruangan
+        ]);
+
+        return redirect()->back()->with('berhasil','Data Berhasil Di Simpan');
+    }
+
     public function detail($id)
     {
         $rawat = Rawat::with('pasien', 'bayar')->where('id', $id)->first();
+        $poli = Poli::get();
         $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
         $ringakasan_pasien_masuk = DB::table('demo_ringkasan_masuk')->where('idrawat', $rawat->id)->first();
-
-        $obat = Obat::with('satuan')->where('obat.idjenis', 1)->orderBy('obat.nama_obat', 'asc')->get();
+        $data_pulang = DB::table('data_pulang')->get();
+        $obat = Obat::with('satuan')->orderBy('obat.nama_obat', 'asc')->get();
         $tindak_lanjut = TindakLanjut::where('idrawat', $rawat->idrawat)->first();
         $radiologi = DB::table('radiologi_tindakan')->get();
         $lab = DB::table('laboratorium_pemeriksaan')->get();
         $dokter = Dokter::get();
-        $tarif = DB::table('tarif')->whereNull('idjenisrawat')->orWhere('idjenisrawat', $rawat->id_jenis_rawat)->whereNull('idpoli')->orWhereIn('idkelas', [$rawat->idkelas])->get();
-
+        $tarif = DB::table('tarif')->where('idjenisrawat', 2)->where('idkelas', $rawat->idkelas)->where('idruangan', $rawat->idruangan)->get();
+        // dd($tarif);
+        $order_obat = DB::table('demo_antrian_resep')->where('idrawat', $id)->get();
+        
         $data_operasi = LaporanOperasi::where('idrawat', $rawat->id)->get();
+        $pemberian_obat = DB::table('demo_pemberian_obat_inap')->where('idrawat', $id)->get();
+        $diagnosa_akhir = DB::table('demo_ranap_dx')->where('idrawat',$rawat->id)->first();
+        $cppt = DB::table('rawat_cppt')->where('idrawat', $id)->get();
+        $implamentasi = DB::table('rawat_implementasi')->where('idrawat', $id)->get();
+        $list_tindakan = DB::table('demo_trx_tindakan')->where('idrawat', $id)->get();
+        $penunjang = DB::table('demo_permintaan_penunjang')->where('idrawat', $id)->get();
 
         return view('rawat-inap.detail', [
             'rawat' => $rawat
-        ], compact('pasien', 'ringakasan_pasien_masuk', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'data_operasi'));
+        ], compact('pasien', 'ringakasan_pasien_masuk', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'data_operasi','pemberian_obat','order_obat','cppt','implamentasi','list_tindakan','penunjang','diagnosa_akhir','data_pulang','poli'));
     }
     public function postOrderPenunjang(Request $request, $id)
     {

@@ -34,7 +34,7 @@ class FarmasiController extends Controller
         $total_obat = 0;
         foreach($request->terapi_obat as $val){
             $obat = Obat::find($val['obat']);
-            $total_obat += $obat->harga_jual * $val['jumlah_obat'];
+            $total_obat += $obat->harga_jual * $val['pemberian_obat'];
         }
 
         $antrian = AntrianFarmasi::find($request->idantrian);
