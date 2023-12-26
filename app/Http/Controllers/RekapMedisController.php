@@ -106,20 +106,33 @@ class RekapMedisController extends Controller
                 ]);
             }
             if ($detail->fisio != 'null' || $detail->fisio != '') {
-                DB::table('demo_permintaan_penunjang')->insert([
+                DB::table('demo_terapi_fisio')->insert([
+                    'idrekap' => $rekap_medis->id,
                     'idrawat' => $rekap_medis->idrawat,
                     'idbayar' => $rekap_medis->rawat->idbayar,
-                    'status_pemeriksaan' => 'Antrian',
                     'no_rm' => $rekap_medis->rawat->no_rm,
-                    'pemeriksaan_penunjang' => $detail->fisio,
-                    'jenis_penunjang' => 'Fisio',
-                    'peminta' => now(),
+                    'terapi' => $detail->fisio,
+                    'iddokter'=>$rekap_medis->rawat->iddokter,
                     'created_at' => now(),
                     'updated_at' => now(),
-                    'peminta' => auth()->user()->id,
-                    'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
-                    'idrekap' => $rekap_medis->id,
+                    'limit_program'=>8,
                 ]);
+                // DB::table('demo_permintaan_penunjang')->insert([
+                //     'idrawat' => $rekap_medis->idrawat,
+                //     'idbayar' => $rekap_medis->rawat->idbayar,
+                //     'status_pemeriksaan' => 'Antrian',
+                //     'no_rm' => $rekap_medis->rawat->no_rm,
+                //     'pemeriksaan_penunjang' => $detail->fisio,
+                //     'jenis_penunjang' => 'Fisio',
+                //     'peminta' => now(),
+                //     'created_at' => now(),
+                //     'updated_at' => now(),
+                //     'peminta' => auth()->user()->id,
+                //     'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
+                //     'idrekap' => $rekap_medis->id,
+                // ]);
+
+
             }
         }
 
@@ -171,10 +184,10 @@ class RekapMedisController extends Controller
 
         $pemeriksaan_lab = LabHasil::where('idrawat', $id_rawat)->get();
         $pemeriksaan_radiologi = RadiologiHasil::where('idrawat', $id_rawat)->get();
-
+        $pemeriksaan_luar = DB::table('demo_rekap_medis_file_penunjang')->where('id_rekap', $id_rawat)->get();
         $riwayat_berobat = RekapMedis::where('idpasien', $pasien->id)->where('idrawat', '!=', $id_rawat)->get();
         // dd($riwayat_berobat);
-        return view('rekap-medis.poliklinik', compact('pasien', 'rawat', 'resume_medis', 'resume_detail', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'soap_tindakan', 'fisio', 'pemeriksaan_lab', 'pemeriksaan_radiologi', 'riwayat_berobat'));
+        return view('rekap-medis.poliklinik', compact('pasien', 'rawat', 'resume_medis', 'resume_detail', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'soap_tindakan', 'fisio', 'pemeriksaan_lab', 'pemeriksaan_radiologi', 'riwayat_berobat', 'pemeriksaan_luar'));
     }
 
     public function copy_data(Request $request, $id)
@@ -306,6 +319,16 @@ class RekapMedisController extends Controller
         return redirect()->back()->with('berhasil', 'Data Rekam Medis Berhasil Ditambahkan');
     }
 
+    public function delete_file_pengatar(Request $request)
+    {
+        $file = DB::table('demo_rekap_medis_file_penunjang')->where('id', $request->id)->first();
+        $path = public_path('storage/file-penunjang-luar/' . $file->nama_file);
+        if (file_exists($path)) {
+            unlink($path);
+        }
+        DB::table('demo_rekap_medis_file_penunjang')->where('id', $request->id)->delete();
+        return redirect()->back()->with('berhasil', 'File Berhasil Dihapus');
+    }
     public function upload_file_pengatar(Request $request, $id)
     {
         // return $request->all();
@@ -319,11 +342,11 @@ class RekapMedisController extends Controller
         $foto->storeAs('public/' . 'file-penunjang-luar', $filenameSimpan);
 
         DB::table('demo_rekap_medis_file_penunjang')->insert([
-            'id_rekap'=>$id,
-            'id_user'=>auth()->user()->id,
-            'created_at'=>now(),
-            'nama_file'=>$filenameSimpan,
-            'keterangan_file'=>$request->keterangan_file
+            'id_rekap' => $id,
+            'id_user' => auth()->user()->id,
+            'created_at' => now(),
+            'nama_file' => $filenameSimpan,
+            'keterangan_file' => $request->keterangan_file
         ]);
 
         return redirect()->back()->with('berhasil', 'File Pengantar Berhasil Diupload');

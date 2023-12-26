@@ -175,8 +175,8 @@
                                 </div>
                             @endif
                             @if(auth()->user()->idpriv == 7)
+                           
                                 <div class="row mb-5">
-
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Diagnosa</label>
                                         <textarea name="diagnosa" rows="3" class="form-control" placeholder="..."></textarea>
@@ -306,7 +306,91 @@
                                         <textarea name="anamnesa_dokter" rows="3" class="form-control" placeholder="Anamnesa Dokter"></textarea>
                                     </div>
                                 </div>
+                                @if($rawat->idpoli == 12)
+                            <div class="row mb-5">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-bold">Pemeriksaan Fisik</label>
+                                    <textarea name="pemeriksaan_fisik" rows="3" class="form-control" placeholder="Pemeriksaan Fisik"></textarea>
+                                </div>
+                            </div>
+                            <div class="row mb-5">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-bold">Pemeriksaan Uji Fungsi</label>
+                                    <textarea name="pemeriksaan_uji_fungsi" rows="3" class="form-control" placeholder="Pemeriksaan Uji Fungsi"></textarea>
+                                </div>
+                            </div>
+                            <div class="row mb-5">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-bold">Tata Laksanan KFR (ICD ) CM </label>
+                                    <textarea name="tata_laksana" rows="3" class="form-control" placeholder="Tata Laksana"></textarea>
+                                </div>
+                            </div>
+                            <div class="row mb-5">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-bold">Anjuran</label>
+                                    <textarea name="anjuran" rows="3" class="form-control" placeholder="Anjuran"></textarea>
+                                </div>
+                            </div>
+                            <div class="row mb-5">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-bold">Evaluasi</label>
+                                    <textarea name="evaluasi" rows="3" class="form-control" placeholder="Evaluasi"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="row mb-5">
+                                <!--begin::Repeater-->
+                                <div id="fisio_repeater">
+                                    <!--begin::Form group-->
+                                    <div class="form-group">
+                                        <div data-repeater-list="fisio">
+                                            <div data-repeater-item>
+                                                <div class="form-group row mb-5">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Permintaan Terapi</label>
+                                                        <input type="text" name='tindakan_fisio' class="form-control" required>
+                                                        {{-- <select name="tindakan_fisio" class="form-select"
+                                                            data-kt-repeater="select2fisio" data-placeholder="-Pilih-"
+                                                            required>
+                                                            <option></option>
+                                                            @foreach ($fisio as $fisio)
+                                                                <option value="{{ $fisio->id }}">
+                                                                    {{ $fisio->nama_tarif }}</option>
+                                                            @endforeach
+                                                        </select> --}}
+                                                    </div>
+
+                                                    <div class="col-md-4">
+                                                        <a href="javascript:;" data-repeater-delete
+                                                            class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                            <i class="ki-duotone ki-trash fs-5"><span
+                                                                    class="path1"></span><span
+                                                                    class="path2"></span><span
+                                                                    class="path3"></span><span
+                                                                    class="path4"></span><span class="path5"></span></i>
+                                                            Hapus
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--end::Form group-->
+
+                                    <!--begin::Form group-->
+                                    <div class="form-group mt-5">
+                                        <a href="javascript:;" data-repeater-create class="btn btn-light-info">
+                                            <i class="ki-duotone ki-plus fs-3"></i>
+                                            Tambah Terapi Fisio
+                                        </a>
+                                    </div>
+                                    <!--end::Form group-->
+                                </div>
+                                <!--end::Repeater-->
+                            </div>
                             @endif
+                            @endif
+                            
                             <!--end::Underline-->
                             @if(auth()->user()->idpriv >= 14)
                                 <div class="row mb-5">
@@ -691,55 +775,9 @@
                                     </div>
                                     <!--end::Repeater-->
                                 </div>
-                                {{-- <div class="row mb-5">
-                                    <!--begin::Repeater-->
-                                    <div id="fisio_repeater">
-                                        <!--begin::Form group-->
-                                        <div class="form-group">
-                                            <div data-repeater-list="fisio">
-                                                <div data-repeater-item>
-                                                    <div class="form-group row mb-5">
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">Fisio Terapi</label>
-                                                            <select name="tindakan_fisio" class="form-select"
-                                                                data-kt-repeater="select2fisio" data-placeholder="-Pilih-"
-                                                                required>
-                                                                <option></option>
-                                                                @foreach ($fisio as $fisio)
-                                                                    <option value="{{ $fisio->id }}">
-                                                                        {{ $fisio->nama_tarif }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-
-                                                        <div class="col-md-4">
-                                                            <a href="javascript:;" data-repeater-delete
-                                                                class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                <i class="ki-duotone ki-trash fs-5"><span
-                                                                        class="path1"></span><span
-                                                                        class="path2"></span><span
-                                                                        class="path3"></span><span
-                                                                        class="path4"></span><span class="path5"></span></i>
-                                                                Hapus
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--end::Form group-->
-
-                                        <!--begin::Form group-->
-                                        <div class="form-group mt-5">
-                                            <a href="javascript:;" data-repeater-create class="btn btn-light-info">
-                                                <i class="ki-duotone ki-plus fs-3"></i>
-                                                Tambah Fisio
-                                            </a>
-                                        </div>
-                                        <!--end::Form group-->
-                                    </div>
-                                    <!--end::Repeater-->
-                                </div> --}}
+                                @if($rawat->idpoli == 12)
+                                
+                                @endif
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <textarea name="rencana_pemeriksaan" rows="3" class="form-control"
@@ -1007,24 +1045,25 @@
                     $('[data-kt-repeater="select2lab"]').select2();
                 }
             });
-            // $('#fisio_repeater').repeater({
-            //     initEmpty: true,
+            @if($rawat->idpoli == 12)
+            $('#fisio_repeater').repeater({
+                initEmpty: true,
 
-            //     show: function() {
-            //         $(this).slideDown();
+                show: function() {
+                    $(this).slideDown();
 
-            //         $(this).find('[data-kt-repeater="select2fisio"]').select2();
-            //     },
+                    $(this).find('[data-kt-repeater="select2fisio"]').select2();
+                },
 
-            //     hide: function(deleteElement) {
-            //         $(this).slideUp(deleteElement);
-            //     },
+                hide: function(deleteElement) {
+                    $(this).slideUp(deleteElement);
+                },
 
-            //     ready: function() {
-            //         $('[data-kt-repeater="select2fisio"]').select2();
-            //     }
-            // });
-
+                ready: function() {
+                    $('[data-kt-repeater="select2fisio"]').select2();
+                }
+            });
+            @endif
             $('#icdx_repeater').repeater({
                 initEmpty: true,
 

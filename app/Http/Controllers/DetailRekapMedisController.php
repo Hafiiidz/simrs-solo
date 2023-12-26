@@ -89,8 +89,24 @@ class DetailRekapMedisController extends Controller
             'value_riwayat_3' => $request->value_riwayat_3,
             'value_riwayat_4' => $request->value_riwayat_4,
         ]);
+
+
+
         $rekap_medis = RekapMedis::find($id_rekapmedis);
         $rekap = new DetailRekapMedis;
+        $rawat = Rawat::find($rekap_medis->idrawat);
+        if($rawat->idpoli == 12){
+            $pemeriksaan_fisio = new Collection([
+                'pemeriksaan_fisik' => $request->pemeriksaan_fisik,
+                'pemeriksaan_uji_fungsi' => $request->pemeriksaan_uji_fungsi,
+                'tata_laksana' => $request->tata_laksana,
+                'anjuran' => $request->anjuran,
+                'evaluasi' => $request->evaluasi,
+            ]);
+            $rekap->pemeriksaan_fisio = $pemeriksaan_fisio->toJson();
+        }
+
+        
         $rekap->triase = $request->triase;
         $rekap->idrekapmedis = $id_rekapmedis;
         $rekap->diagnosa = $request->diagnosa;
@@ -123,13 +139,15 @@ class DetailRekapMedisController extends Controller
         $alergi = json_decode($rekap->alergi);
         $pfisik = json_decode($rekap->pemeriksaan_fisik);
         $rkesehatan = json_decode($rekap->riwayat_kesehatan);
+        $pemeriksaan_fisio  = json_decode($rekap->pemeriksaan_fisio);
         $obat = Obat::with('satuan')->where('nama_obat', '!=', '')->orderBy('obat.nama_obat', 'asc')->get();
         $kategori_diagnosa = DB::table('kategori_diagnosa')->get();
         $radiologi = DB::table('radiologi_tindakan')->get();
         $lab = DB::table('laboratorium_pemeriksaan')->get();
         $fisio = DB::table('tarif')->where('idkategori',8)->get();
+        $rawat = Rawat::find($rekap->idrawat);
         // dd($lab);
-        return view('detail-rekap-medis.show', compact('rekap', 'alergi', 'pfisik', 'rkesehatan', 'obat', 'kategori_diagnosa', 'radiologi', 'lab', 'fisio'));
+        return view('detail-rekap-medis.show', compact('rekap', 'alergi', 'pfisik', 'rkesehatan', 'obat', 'kategori_diagnosa', 'radiologi', 'lab', 'fisio','rawat','pemeriksaan_fisio'));
     }
 
     public function update(Request $request, $id)
@@ -138,6 +156,7 @@ class DetailRekapMedisController extends Controller
 
 
         $rekap = DetailRekapMedis::find($id);
+        $rawat = Rawat::find($rekap->idrawat);
         if ($request->user()->can('dokter')) {
             $rekap->diagnosa = $request->diagnosa;
             $rekap->anamnesa_dokter = $request->anamnesa_dokter;
@@ -174,7 +193,16 @@ class DetailRekapMedisController extends Controller
             }
             $rekap->terapi = $request->terapi;
             $rekap->prosedur = $request->tindakan_prc;
-
+            if($rawat->idpoli == 12){
+                $pemeriksaan_fisio = new Collection([
+                    'pemeriksaan_fisik' => $request->pemeriksaan_fisik,
+                    'pemeriksaan_uji_fungsi' => $request->pemeriksaan_uji_fungsi,
+                    'tata_laksana' => $request->tata_laksana,
+                    'anjuran' => $request->anjuran,
+                    'evaluasi' => $request->evaluasi,
+                ]);
+                $rekap->pemeriksaan_fisio = $pemeriksaan_fisio->toJson();
+            }
         } elseif ($request->user()->can('perawat')) {
             $rekap->anamnesa = $request->anamnesa;
             $alergi = new Collection([
@@ -203,6 +231,9 @@ class DetailRekapMedisController extends Controller
                 'value_riwayat_3' => $request->value_riwayat_3,
                 'value_riwayat_4' => $request->value_riwayat_4,
             ]);
+
+
+
             $rekap->obat_yang_dikonsumsi = $request->obat_yang_dikonsumsi;
             $rekap->alergi = $alergi->toJson();
             $rekap->pasien_sedang = $request->pasien_sedang;

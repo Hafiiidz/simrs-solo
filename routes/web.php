@@ -9,6 +9,7 @@ use App\Http\Controllers\RekapMedisController;
 use App\Http\Controllers\DetailRekapMedisController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FarmasiController;
+use App\Http\Controllers\FisioTerapiController;
 use App\Http\Controllers\PenunjangController;
 use App\Http\Controllers\PoliklinikController;
 use App\Http\Controllers\RawatInapController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\RuanganBedController;
 use App\Http\Controllers\TindakLanjutController;
 use App\Http\Controllers\LaporanOperasiController;
 use App\Http\Controllers\GiziController;
+use App\Http\Controllers\LaboratoriumController;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Hash;
@@ -111,7 +113,20 @@ Route::prefix('/laporan')->group(function () {
     Route::get('/', [LaporanController::class, 'index']);
 });
 
+//lab
+Route::prefix('/laboratorium')->group(function () {
+    Route::get('/list-pemeriksaan', [LaboratoriumController::class, 'index'])->middleware('auth')->name('laboratorium.list-pemeriksaan');
+    Route::get('/list-pasien', [LaboratoriumController::class, 'pasien'])->middleware('auth')->name('laboratorium.list-pasien');
+    Route::get('/view-hasil', [LaboratoriumController::class, 'hasil'])->middleware('auth')->name('laboratorium.view-hasil');
+    Route::get('/view-hasil-pasien', [LaboratoriumController::class, 'hasilPasien'])->middleware('auth')->name('laboratorium.view-hasil-pasien');
+});
+//fisio
+Route::prefix('/fisio')->group(function () {
+    Route::get('/', [FisioTerapiController::class, 'index'])->middleware('auth')->name('fisio.index');
+});
+
 //pasien
+
 Route::prefix('/penunjang')->group(function () {
     Route::get('/antrian/{jenis}', [PenunjangController::class, 'antrian'])->middleware('auth')->name('penunjang.antrian');
     Route::get('/detail-penunjang/{id}/{jenis}', [PenunjangController::class, 'detail_penunjang'])->middleware('auth')->name('penunjang.detail');
@@ -144,7 +159,10 @@ Route::prefix('/rawat-jalan')->group(function () {
     Route::prefix('/tindak-lanjut')->group(function () {
         Route::post('/', [TindakLanjutController::class, 'index'])->name('tindak-lanjut.index');
         Route::get('/aksi-tindak-lanjut/{id}', [TindakLanjutController::class, 'aksi_tindak_lanjut'])->name('tindak-lanjut.aksi_tindak_lanjut');
+        Route::get('/edit-tindak-lanjut/{id}', [TindakLanjutController::class, 'edit_tindak_lanjut'])->name('tindak-lanjut.edit_tindak_lanjut');
         Route::post('/post-tindak-lanjut/{id}', [TindakLanjutController::class, 'post_tindak_lanjut'])->name('tindak-lanjut.post_tindak_lanjut');
+        Route::post('/hapus-tindak-lanjut', [TindakLanjutController::class, 'hapus_tindak_lanjut'])->name('tindak-lanjut.hapus_tindak_lanjut');
+        Route::post('/edit-tindak-lanjut/{id}', [TindakLanjutController::class, 'post_edit_tindak_lanjut'])->name('tindak-lanjut.post_edit_tindak_lanjut');
     });
     Route::prefix('/rekam-medis')->group(function () {
         Route::get('/{id_pasien}/show', [RekapMedisController::class, 'index_poli'])->name('rekam-medis-poli');
@@ -155,6 +173,7 @@ Route::prefix('/rawat-jalan')->group(function () {
         Route::post('/post-tindakan/{id}', [RekapMedisController::class, 'input_tindakan'])->name('post.tindakan');
         Route::post('/post-copy/{id}', [RekapMedisController::class, 'copy_data'])->name('post.copy-data');
         Route::post('/post-upload-pengantar/{id}', [RekapMedisController::class, 'upload_file_pengatar'])->name('post.upload-pengantar');
+        Route::post('/post-delete-pengantar', [RekapMedisController::class, 'delete_file_pengatar'])->name('post.delete-pengantar');
     });
 });
 Route::prefix('/rawat-inap')->group(function () {
@@ -163,6 +182,7 @@ Route::prefix('/rawat-inap')->group(function () {
     Route::get('{id}/detail', [RawatInapController::class, 'detail'])->name('detail.rawat-inap');
     Route::get('{id}/pengkajian-kebidanan', [RawatInapController::class, 'pengkajian_kebidanan'])->name('detail.rawat-inap.pengkajian-kebidanan');
     Route::post('{id}/ringkasan-masuk', [RawatInapController::class, 'postRingkasan'])->name('postRingkasanmasuk.rawat-inap');
+    Route::post('{id}/pemeriksaan-fisik', [RawatInapController::class, 'postPemeriksaanFisik'])->name('postPemeriksaanFisik.rawat-inap');
     Route::post('{id}/order-obat', [RawatInapController::class, 'postOrderObat'])->name('postOrderObat.rawat-inap');
     Route::post('{id}/order-penunjang', [RawatInapController::class, 'postOrderPenunjang'])->name('postOrderPenunjang.rawat-inap');
 });

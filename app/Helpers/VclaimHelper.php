@@ -254,7 +254,7 @@ class VclaimHelper
                 $data =[];
                 foreach($data_response['faskes'] as $faskes){
                     $data[] = [
-                        'id'=>$faskes['kode'],
+                        'id'=>$faskes['kode'].'-'.$faskes['nama'],
                         'nama'=>$faskes['nama'],
                     ];
                 }

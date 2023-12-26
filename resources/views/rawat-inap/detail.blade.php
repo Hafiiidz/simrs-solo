@@ -203,10 +203,10 @@
                                             </li>
                                             <li class="nav-item" role="presentation">
                                                 <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
-                                                    data-bs-toggle="tab" href="#kt_tab_pane_partograf" aria-selected="false"
-                                                    role="tab" tabindex="-1">Partograf</a>
+                                                    data-bs-toggle="tab" href="#kt_tab_pane_partograf"
+                                                    aria-selected="false" role="tab" tabindex="-1">Partograf</a>
                                             </li>
-                                        @endif 
+                                        @endif
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
                                                 data-bs-toggle="tab" href="#kt_tab_pane_2" aria-selected="false"
@@ -254,7 +254,8 @@
                             </div>
                             <div class="tab-content" id="myTabContent">
                                 <div class="tab-pane fade" id="kt_tab_pane_bidan" role="tabpanel">
-                                    <a class="btn btn-warning btn-sm mb-5"  href="{{ route('detail.rawat-inap.pengkajian-kebidanan',$rawat->id) }}">Pengkajian</a>
+                                    <a class="btn btn-warning btn-sm mb-5"
+                                        href="{{ route('detail.rawat-inap.pengkajian-kebidanan', $rawat->id) }}">Pengkajian</a>
                                     @include('rawat-inap.menu.bidan')
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_partograf" role="tabpanel">
@@ -327,9 +328,9 @@
                                         data-bs-target="#modal_penunjang">Tambah Penunjang</button>
                                     @include('rawat-inap.menu.penunjang')
                                 </div>
-                                <div class="tab-pane fade" id="kt_tab_pane_7" role="tabpanel" >
+                                <div class="tab-pane fade" id="kt_tab_pane_7" role="tabpanel">
                                     <button class="btn btn-danger btn-sm mb-5" data-bs-toggle="modal"
-                                    data-bs-target="#modal_operasi">Tambah Operasi</button>
+                                        data-bs-target="#modal_operasi">Tambah Operasi</button>
                                     @include('rawat-inap.menu.operasi')
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_8" role="tabpanel">
@@ -679,7 +680,8 @@
                         </div>
                         <!--end::Close-->
                     </div>
-                    <form id='frmpenunjang' action="{{ route('postOrderPenunjang.rawat-inap', $rawat->id) }}" method="post">
+                    <form id='frmpenunjang' action="{{ route('postOrderPenunjang.rawat-inap', $rawat->id) }}"
+                        method="post">
                         <div class="modal-body">
 
                             @csrf
@@ -841,13 +843,15 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <label for="" class="form-label required">Tanggal Operasi</label>
-                                    <input class="form-control" placeholder="Pilih Tanggal Operasi" id="tgl_operasi" name="tgl_operasi" required/>
+                                    <input class="form-control" placeholder="Pilih Tanggal Operasi" id="tgl_operasi"
+                                        name="tgl_operasi" required />
                                 </div>
                             </div>
                             <div class="row mt-5">
                                 <div class="col-md-12">
                                     <label for="" class="form-label required">Diagnosis Prabedah</label>
-                                    <textarea name="diagnosis_prabedah" id="diagnosis_prabedah" rows="3" class="form-control" placeholder="Masukan Diagnosis" required></textarea>
+                                    <textarea name="diagnosis_prabedah" id="diagnosis_prabedah" rows="3" class="form-control"
+                                        placeholder="Masukan Diagnosis" required></textarea>
                                 </div>
                             </div>
                     </div>
@@ -856,7 +860,7 @@
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
-                        </form>
+                    </form>
                 </div>
             </div>
         </div>
@@ -911,6 +915,38 @@
                     ]
                 });
 
+                $("#frmpemeriksaan_fisik").on("submit", function(event) {
+                    event.preventDefault();
+                    var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                    Swal.fire({
+                        title: 'Simpan Data',
+                        text: "Apakah Anda yakin akan menyimpan data pemeriksaan fisik ?",
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, Simpan Data',
+                        cancelButtonText: 'Tidak'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.blockUI({
+                                css: {
+                                    border: 'none',
+                                    padding: '15px',
+                                    backgroundColor: '#000',
+                                    '-webkit-border-radius': '10px',
+                                    '-moz-border-radius': '10px',
+                                    opacity: .5,
+                                    color: '#fff',
+                                    fontSize: '16px'
+                                },
+                                message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                                baseZ: 9000,
+                            });
+                            this.submit();
+                        }
+                    });
+                });
                 $("#frm_pengkajian").on("submit", function(event) {
                     event.preventDefault();
                     var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
@@ -1094,8 +1130,15 @@
                 });
 
                 $('#icdx_repeater').repeater({
-                    initEmpty: true,
-
+                    @if (isset($ringakasan_pasien_masuk))
+                        @if ($ringakasan_pasien_masuk->icd10!= null)
+                            initEmpty: false,
+                        @else
+                            initEmpty: true,
+                        @endif
+                    @else
+                        initEmpty: true,
+                    @endif
                     show: function() {
                         $(this).slideDown();
 
@@ -1161,7 +1204,15 @@
                     }
                 });
                 $('#icdx_repeater_sekunder').repeater({
-                    initEmpty: true,
+                    @if (isset($ringakasan_pasien_masuk))
+                        @if ($ringakasan_pasien_masuk->icd10_sekunder != null)
+                            initEmpty: false,
+                        @else
+                            initEmpty: true,
+                        @endif
+                    @else
+                        initEmpty: true,
+                    @endif
 
                     show: function() {
                         $(this).slideDown();
@@ -1228,7 +1279,15 @@
                     }
                 });
                 $('#icd9_repeater').repeater({
-                    initEmpty: true,
+                    @if (isset($ringakasan_pasien_masuk))
+                        @if ($ringakasan_pasien_masuk->icd9 != null)
+                            initEmpty: false,
+                        @else
+                            initEmpty: true,
+                        @endif
+                    @else
+                        initEmpty: true,
+                    @endif
 
                     show: function() {
                         $(this).slideDown();

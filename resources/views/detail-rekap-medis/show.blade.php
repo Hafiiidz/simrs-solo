@@ -172,7 +172,7 @@
                                 </div>
                             </div>
                             <div class="separator separator-dashed border-secondary mb-5"></div>
-                            @if(auth()->user()->idpriv == 7)
+                            @if (auth()->user()->idpriv == 7)
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Diagnosa</label>
@@ -195,16 +195,21 @@
                                                                         <select name="diagnosa_icdx" class="form-select"
                                                                             data-kt-repeater="select22"
                                                                             data-placeholder="-Pilih-" required>
-                                                                            <option value="{{ $val->diagnosa_icdx }}">{{ $val->diagnosa_icdx }}</option>
+                                                                            <option value="{{ $val->diagnosa_icdx }}">
+                                                                                {{ $val->diagnosa_icdx }}</option>
                                                                         </select>
                                                                     </div>
                                                                     <div class="col-md-2">
                                                                         <label class="form-label">Jenis Diagnosa</label>
                                                                         <div class="input-group mb-5">
-                                                                            <select name="jenis_diagnosa" class="form-select"
-                                                                                id="">
-                                                                                <option {{ $val->jenis_diagnosa == 'P' ? 'selected':'' }} value="P">Primer</option>
-                                                                                <option {{ $val->jenis_diagnosa == 'S' ? 'selected':'' }} value="S">Sekunder</option>
+                                                                            <select name="jenis_diagnosa"
+                                                                                class="form-select" id="">
+                                                                                <option
+                                                                                    {{ $val->jenis_diagnosa == 'P' ? 'selected' : '' }}
+                                                                                    value="P">Primer</option>
+                                                                                <option
+                                                                                    {{ $val->jenis_diagnosa == 'S' ? 'selected' : '' }}
+                                                                                    value="S">Sekunder</option>
                                                                             </select>
                                                                         </div>
                                                                     </div>
@@ -230,8 +235,8 @@
                                                                 <div class="col-md-6">
                                                                     <label class="form-label">ICD X</label>
                                                                     <select name="diagnosa_icdx" class="form-select"
-                                                                        data-kt-repeater="select22" data-placeholder="-Pilih-"
-                                                                        required>
+                                                                        data-kt-repeater="select22"
+                                                                        data-placeholder="-Pilih-" required>
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-md-2">
@@ -289,18 +294,46 @@
                                                     @if ($rekap->icd9 != 'null')
                                                         {{-- {{ dd($rekap->laborat) }} --}}
                                                         @foreach (json_decode($rekap->icd9) as $val)
+                                                            <div data-repeater-item>
+                                                                <div class="form-group row mb-5">
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label">ICD 9</label>
+                                                                        <select name="diagnosa_icd9" class="form-select"
+                                                                            data-kt-repeater="select2icd9"
+                                                                            data-placeholder="-Pilih-" required>
+                                                                            <option value="{{ $val->diagnosa_icd9 }}">
+                                                                                {{ $val->diagnosa_icd9 }}</option>
+                                                                        </select>
+                                                                    </div>
+
+
+                                                                    <div class="col-md-4">
+                                                                        <a href="javascript:;" data-repeater-delete
+                                                                            class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                            <i class="ki-duotone ki-trash fs-5"><span
+                                                                                    class="path1"></span><span
+                                                                                    class="path2"></span><span
+                                                                                    class="path3"></span><span
+                                                                                    class="path4"></span><span
+                                                                                    class="path5"></span></i>
+                                                                            Hapus
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    @else
                                                         <div data-repeater-item>
                                                             <div class="form-group row mb-5">
                                                                 <div class="col-md-6">
                                                                     <label class="form-label">ICD 9</label>
                                                                     <select name="diagnosa_icd9" class="form-select"
-                                                                        data-kt-repeater="select2icd9" data-placeholder="-Pilih-"
-                                                                        required>
-                                                                        <option value="{{ $val->diagnosa_icd9 }}">{{ $val->diagnosa_icd9 }}</option>
+                                                                        data-kt-repeater="select2icd9"
+                                                                        data-placeholder="-Pilih-" required>
                                                                     </select>
                                                                 </div>
-                                                                
-                                
+
+
                                                                 <div class="col-md-4">
                                                                     <a href="javascript:;" data-repeater-delete
                                                                         class="btn btn-sm btn-light-danger mt-3 mt-md-8">
@@ -315,39 +348,12 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        @endforeach
-                                                    @else
-                                                    <div data-repeater-item>
-                                                        <div class="form-group row mb-5">
-                                                            <div class="col-md-6">
-                                                                <label class="form-label">ICD 9</label>
-                                                                <select name="diagnosa_icd9" class="form-select"
-                                                                    data-kt-repeater="select2icd9" data-placeholder="-Pilih-"
-                                                                    required>
-                                                                </select>
-                                                            </div>
-                                                            
-                            
-                                                            <div class="col-md-4">
-                                                                <a href="javascript:;" data-repeater-delete
-                                                                    class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                    <i class="ki-duotone ki-trash fs-5"><span
-                                                                            class="path1"></span><span
-                                                                            class="path2"></span><span
-                                                                            class="path3"></span><span
-                                                                            class="path4"></span><span
-                                                                            class="path5"></span></i>
-                                                                    Hapus
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
                                                     @endif
-                                                    
+
                                                 </div>
                                             </div>
                                             <!--end::Form group-->
-                            
+
                                             <!--begin::Form group-->
                                             <div class="form-group mt-5">
                                                 <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
@@ -374,15 +380,137 @@
                                 <!--end::Line-->
                             </span>
                             <!--end::Underline-->
-                            @if(auth()->user()->idpriv == 7)
+                            @if (auth()->user()->idpriv == 7)
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Anamnesa</label>
                                         <textarea name="anamnesa_dokter" rows="3" class="form-control" placeholder="">{{ $rekap->anamnesa_dokter }}</textarea>
                                     </div>
                                 </div>
+                                @if ($rawat->idpoli == 12)
+                                    <div class="row mb-5">
+                                        <div class="col-md-12">
+                                            <label class="form-label fw-bold">Pemeriksaan Fisik</label>
+                                            <textarea name="pemeriksaan_fisik" rows="3" class="form-control" placeholder="Pemeriksaan Fisik">{{ $pemeriksaan_fisio->pemeriksaan_fisik }}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-5">
+                                        <div class="col-md-12">
+                                            <label class="form-label fw-bold">Pemeriksaan Uji Fungsi</label>
+                                            <textarea name="pemeriksaan_uji_fungsi" rows="3" class="form-control" placeholder="Pemeriksaan Uji Fungsi">{{ $pemeriksaan_fisio->pemeriksaan_uji_fungsi }}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-5">
+                                        <div class="col-md-12">
+                                            <label class="form-label fw-bold">Tata Laksanan KFR (ICD ) CM </label>
+                                            <textarea name="tata_laksana" rows="3" class="form-control" placeholder="Tata Laksana">{{ $pemeriksaan_fisio->tata_laksana }}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-5">
+                                        <div class="col-md-12">
+                                            <label class="form-label fw-bold">Anjuran</label>
+                                            <textarea name="anjuran" rows="3" class="form-control" placeholder="Anjuran">{{ $pemeriksaan_fisio->anjuran }}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-5">
+                                        <div class="col-md-12">
+                                            <label class="form-label fw-bold">Evaluasi</label>
+                                            <textarea name="evaluasi" rows="3" class="form-control" placeholder="Evaluasi">{{ $pemeriksaan_fisio->evaluasi }}</textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-5">
+                                        <!--begin::Repeater-->
+                                        <div id="fisio_repeater">
+                                            <!--begin::Form group-->
+                                            <div class="form-group">
+                                                <div data-repeater-list="fisio">
+                                                    @if ($rekap->fisio != 'null')
+                                                        {{-- {{ dd($rekap->laborat) }} --}}
+                                                        @foreach (json_decode($rekap->fisio) as $val)
+                                                            <div data-repeater-item>
+                                                                <div class="form-group row mb-5">
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label">Fisio Terapi</label>
+                                                                        <input type="text" name="tindakan_fisio" class="form-control" value="{{ $val->tindakan_fisio  }}" id="">
+                                                                        {{-- <select name="tindakan_fisio" class="form-select"
+                                                                            data-kt-repeater="select2fisio"
+                                                                            data-placeholder="-Pilih-" required>
+                                                                            <option></option>
+                                                                            @foreach ($fisio as $f)
+                                                                                <option value="{{ $f->id }}"
+                                                                                    {{ $val->tindakan_fisio == $f->id ? 'selected' : '' }}>
+                                                                                    {{ $f->nama_tarif }}</option>
+                                                                            @endforeach
+                                                                        </select> --}}
+                                                                    </div>
+
+                                                                    <div class="col-md-4">
+                                                                        <a href="javascript:;" data-repeater-delete
+                                                                            class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                            <i class="ki-duotone ki-trash fs-5"><span
+                                                                                    class="path1"></span><span
+                                                                                    class="path2"></span><span
+                                                                                    class="path3"></span><span
+                                                                                    class="path4"></span><span
+                                                                                    class="path5"></span></i>
+                                                                            Hapus
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    @else
+                                                        <div data-repeater-item>
+                                                            <div class="form-group row mb-5">
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label">Fisio Terapi</label>
+                                                                    <input type="text" name="tindakan_fisio" class="form-control" value="" id="">
+                                                                    {{-- <select name="tindakan_fisio" class="form-select"
+                                                                        data-kt-repeater="select2fisio"
+                                                                        data-placeholder="-Pilih-" required>
+                                                                        <option></option>
+                                                                        @foreach ($fisio as $fisio)
+                                                                            <option value="{{ $fisio->id }}">
+                                                                                {{ $fisio->nama_tarif }}</option>
+                                                                        @endforeach
+                                                                    </select> --}}
+                                                                </div>
+
+                                                                <div class="col-md-4">
+                                                                    <a href="javascript:;" data-repeater-delete
+                                                                        class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                        <i class="ki-duotone ki-trash fs-5"><span
+                                                                                class="path1"></span><span
+                                                                                class="path2"></span><span
+                                                                                class="path3"></span><span
+                                                                                class="path4"></span><span
+                                                                                class="path5"></span></i>
+                                                                        Hapus
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @endif
+
+                                                </div>
+                                            </div>
+                                            <!--end::Form group-->
+
+                                            <!--begin::Form group-->
+                                            <div class="form-group mt-5">
+                                                <a href="javascript:;" data-repeater-create class="btn btn-light-info">
+                                                    <i class="ki-duotone ki-plus fs-3"></i>
+                                                    Tambah Fisio
+                                                </a>
+                                            </div>
+                                            <!--end::Form group-->
+                                        </div>
+                                        <!--end::Repeater-->
+                                    </div>
+                                @endif
                             @endif
-                            @if(auth()->user()->idpriv >= 14)
+                            @if (auth()->user()->idpriv >= 14)
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Anamnesa</label>
@@ -391,7 +519,7 @@
                                 </div>
                             @endif
 
-                            @if(auth()->user()->idpriv >= 14)
+                            @if (auth()->user()->idpriv >= 14)
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Obat Yang Dikonsumsi</label>
@@ -425,7 +553,8 @@
                                                 <div class="col-md-2">
                                                     <div class="form-check">
                                                         <input class="form-check-input" type="checkbox" value="makanan"
-                                                            id="makanan" {{ $alergi->value_makanan ? 'checked' : '' }} />
+                                                            id="makanan"
+                                                            {{ $alergi->value_makanan ? 'checked' : '' }} />
                                                         <label class="form-check-label" for="makanan">
                                                             Makanan
                                                         </label>
@@ -461,8 +590,8 @@
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Pasien Sedang</label>
-                                        <input name="pasien_sedang" rows="3" class="form-control" placeholder="...."
-                                            value="{{ $rekap->pasien_sedang }}">
+                                        <input name="pasien_sedang" rows="3" class="form-control"
+                                            placeholder="...." value="{{ $rekap->pasien_sedang }}">
                                     </div>
                                 </div>
                                 <div class="row mb-5 p-lg-5">
@@ -485,8 +614,8 @@
                                                     <label class="form-label">Nadi</label>
                                                     <div class="input-group mb-5">
                                                         <input type="text" class="form-control" name="nadi"
-                                                            value="{{ $pfisik->nadi }}" placeholder="...." aria-label="...."
-                                                            aria-describedby="nadi" />
+                                                            value="{{ $pfisik->nadi }}" placeholder="...."
+                                                            aria-label="...." aria-describedby="nadi" />
                                                         <span class="input-group-text" id="nadi">x/Menit</span>
                                                     </div>
                                                 </div>
@@ -505,26 +634,30 @@
                                                     <label class="form-label">Suhu</label>
                                                     <div class="input-group mb-5">
                                                         <input type="text" class="form-control" name="suhu"
-                                                            value="{{ $pfisik->suhu }}" placeholder="...." aria-label="...."
-                                                            aria-describedby="suhu" />
+                                                            value="{{ $pfisik->suhu }}" placeholder="...."
+                                                            aria-label="...." aria-describedby="suhu" />
                                                         <span class="input-group-text" id="suhu">Derajat</span>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label class="form-label">Berat Badan</label>
                                                     <div class="input-group mb-5">
-                                                        <input type="text" class="form-control"  onkeyup="calculateBMI()"  id='berat_badan_val' name="berat_badan"
-                                                            value="{{ $pfisik->berat_badan }}" placeholder="...."
-                                                            aria-label="...." aria-describedby="berat_badan" />
+                                                        <input type="text" class="form-control"
+                                                            onkeyup="calculateBMI()" id='berat_badan_val'
+                                                            name="berat_badan" value="{{ $pfisik->berat_badan }}"
+                                                            placeholder="...." aria-label="...."
+                                                            aria-describedby="berat_badan" />
                                                         <span class="input-group-text" id="berat_badan">Kg</span>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label class="form-label">Tinggi Badan</label>
                                                     <div class="input-group mb-5">
-                                                        <input type="text" class="form-control"  onkeyup="calculateBMI()"  id='tinggi_badan_val' name="tinggi_badan"
-                                                            value="{{ $pfisik->tinggi_badan }}" placeholder="...."
-                                                            aria-label="....e" aria-describedby="tinggi_badan" />
+                                                        <input type="text" class="form-control"
+                                                            onkeyup="calculateBMI()" id='tinggi_badan_val'
+                                                            name="tinggi_badan" value="{{ $pfisik->tinggi_badan }}"
+                                                            placeholder="...." aria-label="....e"
+                                                            aria-describedby="tinggi_badan" />
                                                         <span class="input-group-text" id="tinggi_badan">Cm</span>
                                                     </div>
                                                 </div>
@@ -532,9 +665,9 @@
                                             <div class="row col-md-4">
                                                 <label class="form-label">BMI</label>
                                                 <div class="input-group mb-5">
-                                                    <input type="text" class="form-control" id='bmi_val' name="bmi"
-                                                        value="{{ $pfisik->bmi }}" placeholder="...." aria-label="....e"
-                                                        aria-describedby="bmi" />
+                                                    <input type="text" class="form-control" id='bmi_val'
+                                                        name="bmi" value="{{ $pfisik->bmi }}" placeholder="...."
+                                                        aria-label="....e" aria-describedby="bmi" />
                                                     <span class="input-group-text" id="bmi">Kg/M2</span>
                                                 </div>
                                             </div>
@@ -573,11 +706,13 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <input type="text" name="value_riwayat_1" value="{{ $rkesehatan->value_riwayat_1 }}" id="value_riwayat_1"
-                                                        class="form-control" placeholder="...." style="display: {{ $rkesehatan->riwayat_1 != 0 ? '' : 'none' }};">
+                                                    <input type="text" name="value_riwayat_1"
+                                                        value="{{ $rkesehatan->value_riwayat_1 }}" id="value_riwayat_1"
+                                                        class="form-control" placeholder="...."
+                                                        style="display: {{ $rkesehatan->riwayat_1 != 0 ? '' : 'none' }};">
                                                 </div>
                                             </div>
-                                           
+
                                             <div class="separator separator-dashed border-secondary mb-5"></div>
                                             <div class="row mb-5">
                                                 <div class="col-md-4">
@@ -605,8 +740,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <input type="text" name="value_riwayat_2" value="{{ $rkesehatan->value_riwayat_2 }}" id="value_riwayat_2"
-                                                        class="form-control" placeholder="...."  style="display: {{ $rkesehatan->riwayat_2 != 0 ? '' : 'none' }};">
+                                                    <input type="text" name="value_riwayat_2"
+                                                        value="{{ $rkesehatan->value_riwayat_2 }}" id="value_riwayat_2"
+                                                        class="form-control" placeholder="...."
+                                                        style="display: {{ $rkesehatan->riwayat_2 != 0 ? '' : 'none' }};">
                                                 </div>
                                             </div>
                                             <div class="separator separator-dashed border-secondary mb-5"></div>
@@ -636,8 +773,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <input type="text" name="value_riwayat_3" value="{{ $rkesehatan->value_riwayat_3 }}" id="value_riwayat_3"
-                                                        class="form-control" placeholder="...."  style="display: {{ $rkesehatan->riwayat_3 != 0 ? '' : 'none' }};">
+                                                    <input type="text" name="value_riwayat_3"
+                                                        value="{{ $rkesehatan->value_riwayat_3 }}" id="value_riwayat_3"
+                                                        class="form-control" placeholder="...."
+                                                        style="display: {{ $rkesehatan->riwayat_3 != 0 ? '' : 'none' }};">
                                                 </div>
                                             </div>
                                             <div class="separator separator-dashed border-secondary mb-5"></div>
@@ -667,8 +806,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <input type="text" name="value_riwayat_4" value="{{ $rkesehatan->value_riwayat_4 }}" id="value_riwayat_4"
-                                                        class="form-control" placeholder="...." style="display: {{ $rkesehatan->riwayat_4 != 0 ? '' : 'none' }};">
+                                                    <input type="text" name="value_riwayat_4"
+                                                        value="{{ $rkesehatan->value_riwayat_4 }}" id="value_riwayat_4"
+                                                        class="form-control" placeholder="...."
+                                                        style="display: {{ $rkesehatan->riwayat_4 != 0 ? '' : 'none' }};">
                                                 </div>
                                             </div>
                                         </div>
@@ -676,7 +817,7 @@
                                 </div>
                             @endif
                             <!--begin::Underline-->
-                            @if(auth()->user()->idpriv == 7)
+                            @if (auth()->user()->idpriv == 7)
                                 <span class="d-inline-block position-relative mb-7">
                                     <!--begin::Label-->
                                     <span class="d-inline-block mb-2 fs-4 fw-bold">
@@ -866,95 +1007,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="row mb-5">
-                                    <!--begin::Repeater-->
-                                    <div id="fisio_repeater">
-                                        <!--begin::Form group-->
-                                        <div class="form-group">
-                                            <div data-repeater-list="fisio">
-                                                @if ($rekap->fisio != 'null')
-                                                    {{-- {{ dd($rekap->laborat) }} --}}
-                                                    @foreach (json_decode($rekap->fisio) as $val)
-                                                        <div data-repeater-item>
-                                                            <div class="form-group row mb-5">
-                                                                <div class="col-md-6">
-                                                                    <label class="form-label">Fisio Terapi</label>
-                                                                    <select name="tindakan_fisio" class="form-select"
-                                                                        data-kt-repeater="select2fisio"
-                                                                        data-placeholder="-Pilih-" required>
-                                                                        <option></option>
-                                                                        @foreach ($fisio as $f)
-                                                                            <option value="{{ $f->id }}"
-                                                                                {{ $val->tindakan_fisio == $f->id ? 'selected' : '' }}>
-                                                                                {{ $f->nama_tarif }}</option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-
-                                                                <div class="col-md-4">
-                                                                    <a href="javascript:;" data-repeater-delete
-                                                                        class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                        <i class="ki-duotone ki-trash fs-5"><span
-                                                                                class="path1"></span><span
-                                                                                class="path2"></span><span
-                                                                                class="path3"></span><span
-                                                                                class="path4"></span><span
-                                                                                class="path5"></span></i>
-                                                                        Hapus
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    @endforeach
-                                                @else
-                                                    <div data-repeater-item>
-                                                        <div class="form-group row mb-5">
-                                                            <div class="col-md-6">
-                                                                <label class="form-label">Fisio Terapi</label>
-                                                                <select name="tindakan_fisio" class="form-select"
-                                                                    data-kt-repeater="select2fisio" data-placeholder="-Pilih-"
-                                                                    required>
-                                                                    <option></option>
-                                                                    @foreach ($fisio as $fisio)
-                                                                        <option value="{{ $fisio->id }}">
-                                                                            {{ $fisio->nama_tarif }}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-
-                                                            <div class="col-md-4">
-                                                                <a href="javascript:;" data-repeater-delete
-                                                                    class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                    <i class="ki-duotone ki-trash fs-5"><span
-                                                                            class="path1"></span><span
-                                                                            class="path2"></span><span
-                                                                            class="path3"></span><span
-                                                                            class="path4"></span><span
-                                                                            class="path5"></span></i>
-                                                                    Hapus
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endif
-
-                                            </div>
-                                        </div>
-                                        <!--end::Form group-->
-
-                                        <!--begin::Form group-->
-                                        <div class="form-group mt-5">
-                                            <a href="javascript:;" data-repeater-create class="btn btn-light-info">
-                                                <i class="ki-duotone ki-plus fs-3"></i>
-                                                Tambah Fisio
-                                            </a>
-                                        </div>
-                                        <!--end::Form group-->
-                                    </div>
-                                    <!--end::Repeater-->
-                                </div>
-
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <textarea name="rencana_pemeriksaan" rows="3" class="form-control"
@@ -988,7 +1040,8 @@
                                                                 <div class="col-md-6">
                                                                     <label class="form-label">Obat</label>
                                                                     <select name="obat" class="form-select"
-                                                                        data-kt-repeater="select2" data-placeholder="-Pilih-">
+                                                                        data-kt-repeater="select2"
+                                                                        data-placeholder="-Pilih-">
                                                                         <option></option>
                                                                         @foreach ($obat as $item)
                                                                             <option value="{{ $item->id }}"
@@ -1014,7 +1067,8 @@
                                                                     <label class="form-label">Jumlah Obat</label>
                                                                     <input type="number" name="jumlah_obat"
                                                                         value="{{ $val->jumlah_obat }}"
-                                                                        class="form-control mb-5 mb-md-0" min="0" />
+                                                                        class="form-control mb-5 mb-md-0"
+                                                                        min="0" />
                                                                 </div>
                                                                 <div class="col-md-4">
                                                                     <a href="javascript:;" data-repeater-delete
@@ -1042,7 +1096,8 @@
                                                                     <option></option>
                                                                     @foreach ($obat as $val)
                                                                         <option value="{{ $val->id }}">
-                                                                            {{ $val->nama_obat }} - {{ $val->satuan->satuan }}
+                                                                            {{ $val->nama_obat }} -
+                                                                            {{ $val->satuan->satuan }}
                                                                         </option>
                                                                     @endforeach
                                                                 </select>
@@ -1050,11 +1105,13 @@
                                                             <div class="col-md-2">
                                                                 <label class="form-label">Signa</label>
                                                                 <div class="input-group mb-5">
-                                                                    <input type="text" class="form-control" name='signa1'
-                                                                        placeholder="...." aria-label="Username">
+                                                                    <input type="text" class="form-control"
+                                                                        name='signa1' placeholder="...."
+                                                                        aria-label="Username">
                                                                     <span class="input-group-text">X</span>
-                                                                    <input type="text" class="form-control" name='signa2'
-                                                                        placeholder="...." aria-label="Server">
+                                                                    <input type="text" class="form-control"
+                                                                        name='signa2' placeholder="...."
+                                                                        aria-label="Server">
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-2">
@@ -1157,23 +1214,25 @@
                     }
                 });
             });
-            $('#fisio_repeater').repeater({
-                initEmpty: {{ $rekap->fisio == 'null' ? 'true' : 'false' }},
+            @if ($rawat->idpoli == 12)
+                $('#fisio_repeater').repeater({
+                    initEmpty: {{ $rekap->fisio == 'null' ? 'true' : 'false' }},
 
-                show: function() {
-                    $(this).slideDown();
+                    show: function() {
+                        $(this).slideDown();
 
-                    $(this).find('[data-kt-repeater="select2fisio"]').select2();
-                },
+                        $(this).find('[data-kt-repeater="select2fisio"]').select2();
+                    },
 
-                hide: function(deleteElement) {
-                    $(this).slideUp(deleteElement);
-                },
+                    hide: function(deleteElement) {
+                        $(this).slideUp(deleteElement);
+                    },
 
-                ready: function() {
-                    $('[data-kt-repeater="select2fisio"]').select2();
-                }
-            });
+                    ready: function() {
+                        $('[data-kt-repeater="select2fisio"]').select2();
+                    }
+                });
+            @endif
 
             $('#icd9_repeater').repeater({
                 initEmpty: {{ $rekap->icd9 == 'null' ? 'true' : 'false' }},
@@ -1414,6 +1473,7 @@
                 }
             })
         }
+
         function alergi() {
             $('#obat').change(function() {
                 if (this.checked) {

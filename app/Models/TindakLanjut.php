@@ -18,6 +18,14 @@ class TindakLanjut extends Model
     {
         return $this->hasOne(Rawat::class, 'id', 'idrawat');
     }
+    public function dokter(): HasOne
+    {
+        return $this->hasOne(Dokter::class, 'id', 'iddokter');
+    }
+    public function poli(): HasOne
+    {
+        return $this->hasOne(Poli::class, 'kode', 'poli_rujuk');
+    }
     public function rekap(): HasOne
     {
         return $this->hasOne(RekapMedis::class, 'id', 'idrekapmedis');
@@ -36,5 +44,28 @@ class TindakLanjut extends Model
             $no_spp = 1;
         }
         return $no_spp;
+    }
+
+    public function bulanRomawi($bulan) {
+        $romawi = [
+            1 => 'I',
+            2 => 'II',
+            3 => 'III',
+            4 => 'IV',
+            5 => 'V',
+            6 => 'VI',
+            7 => 'VII',
+            8 => 'VIII',
+            9 => 'IX',
+            10 => 'X',
+            11 => 'XI',
+            12 => 'XII',
+        ];
+    
+        if (isset($romawi[$bulan])) {
+            return $romawi[$bulan];
+        } else {
+            return 'Bulan tidak valid';
+        }
     }
 }

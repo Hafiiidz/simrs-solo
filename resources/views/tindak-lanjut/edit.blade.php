@@ -141,7 +141,7 @@
                         </div>
                         <div class="separator separator-dashed border-secondary mb-5"></div>
                         <div class="rounded border p-5">
-                            <form action="{{ route('tindak-lanjut.post_tindak_lanjut', $rawat->id) }}" method="post"
+                            <form action="{{ route('tindak-lanjut.post_edit_tindak_lanjut', $tindak_lanjut->id) }}" method="post"
                                 id='frmTindak'>
                                 @csrf
                                 <div class="row mb-5">
@@ -151,21 +151,111 @@
                                             data-placeholder="Select an option" class="form-select"
                                             id="rencana_tindak_lanjut" arial-placeholder="Rencana Tindak Lanjut" required>
                                             <option value=""></option>
-                                            <option value="Kontrol Kembali">Pasien Kontrol Kembali</option>
-                                            <option value="Dirujuk">Pasien Dirujuk</option>
-                                            <option value="Interm">Pasien Dirujuk Interm</option>
+                                            <option {{ $tindak_lanjut->tindak_lanjut == 'Kontrol Kembali' ? 'selected' : '' }}
+                                                value="Kontrol Kembali">Pasien Kontrol Kembali</option>
+                                            <option {{ $tindak_lanjut->tindak_lanjut == 'Dirujuk' ? 'selected' : '' }}
+                                                value="Dirujuk">Pasien Dirujuk</option>
+                                            <option {{ $tindak_lanjut->tindak_lanjut == 'Interm' ? 'selected' : '' }}
+                                                value="Interm">Pasien Dirujuk Interm</option>
                                             @if ($rawat->idjenisrawat == 1)
-                                                {{-- <option value="Prb">Pasien Dirujuk PRB</option> --}}
+                                                <option {{ $tindak_lanjut->tindak_lanjut == 'Prb' ? 'selected' : '' }}
+                                                    value="Prb">Pasien Dirujuk PRB</option>
                                             @endif
-                                            <option value="Dirawat">Pasien Dirawat</option>
+                                            <option {{ $tindak_lanjut->tindak_lanjut == 'Dirawat' ? 'selected' : '' }}
+                                                value="Dirawat">Pasien Dirawat</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div id="interm" class="d-none">
+                                {{-- Rujukan --}}
+                                <div id="rujukan" class="{{ $tindak_lanjut->tindak_lanjut == 'Dirujuk' ? '' : 'd-none' }}">
+                                    <div class="row mb-5">
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold">Tgl.Rujukan</label>
+                                            <input type="date" value="{{ $tindak_lanjut->tgl_tindak_lanjut }}"
+                                                placeholder="Pilih Tgl Rujukan" class="form-control" name='tgl_kontrol'
+                                                id='tgl_kontrol'>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-5">
+                                        <div class="col-md-12">
+                                            <label class="form-label fw-bold">Tujuan Rujuk</label>
+                                            <select {{ $tindak_lanjut->tindak_lanjut == 'Dirujuk' ? '' : 'disabled' }}
+                                                name="tujuan_rujuk" data-control="select2"
+                                                data-placeholder="Select an option" class="form-select" id="tujuan_rujuk"
+                                                arial-placeholder="Tujuan Rujuk">
+                                                @if ($tindak_lanjut->tindak_lanjut == 'Dirujuk')
+                                                    <option value="{{ $tindak_lanjut->tujuan_tindak_lanjut }}">
+                                                        {{ $tindak_lanjut->tujuan_tindak_lanjut }}</option>
+                                                @endif
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-5">
+                                        <div class="col-md-12">
+                                            <label class="form-label fw-bold">Poli Rujuk</label>
+                                            <select {{ $tindak_lanjut->tindak_lanjut == 'Dirujuk' ? '' : 'disabled' }}
+                                                name="poli_rujuk" data-control="select2"
+                                                data-placeholder="Select an option" class="form-select" id="poli_rujuk"
+                                                arial-placeholder="Poli Rujuk">
+                                                @if ($tindak_lanjut->tindak_lanjut == 'Dirujuk')
+                                                    @foreach ($poli['list'] as $p)
+                                                        <option value="{{ $p['kodeSpesialis'] }}">
+                                                            {{ $p['namaSpesialis'] }} - {{ $p['kapasitas'] }}</option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- End Rujukan --}}
+
+                                {{-- Rawat --}}
+                                <div id="rawat" class="{{ $tindak_lanjut->tindak_lanjut == 'Dirawat' ? '' : 'd-none' }}">
+                                    <div class="row mb-5">
+                                        <div class="col-md-12">
+                                            <label class="form-label fw-bold">DPJP</label>
+                                            <select name="iddokter" class="form-select" id="" data-control="select2"
+                                            data-placeholder="Select an option" class="form-select" id="dpjp"
+                                                arial-placeholder="Rencana Tindak Lanjut">
+                                                <option value=""></option>
+                                                @foreach ($dokter as $d)
+                                                    <option {{ $d->id == $tindak_lanjut->iddokter ? 'selected':'' }} value="{{ $d->id }}">{{ $d->nama_dokter }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-5">
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold">Tgl.Rencana Rawat</label>
+                                            <input type="date" value="{{ $tindak_lanjut->tgl_tindak_lanjut }}"  class="form-control" name='tgl_kontrol'
+                                                id='tgl_kontrol'>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-5">
+                                        <div class="col-md-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" {{ $tindak_lanjut->operasi == 1 ? 'checked':'' }} type="checkbox" name='operasi' value="1"
+                                                    id="obat" />
+                                                <label class="form-check-label" for="obat">
+                                                    Operasi
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input type="text" name="value_operasi" value="{{ $tindak_lanjut->tindakan_operasi }}" id="value_operasi"
+                                                class="form-control" placeholder="...." style="display: {{ $tindak_lanjut->operasi != 1 ? 'none':'' }} ;">
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- End Rawat --}}
+                                {{-- Interem --}}
+                                <div id="interm"  class="{{ $tindak_lanjut->tindak_lanjut == 'Interm' ? '' : 'd-none' }}">
                                     <div class="row mb-5">
                                         <div class="col-md-3">
                                             <label class="form-label fw-bold">Tgl.Rujuk</label>
-                                            <input type="date" class="form-control" name='tgl_kontrol_intem'
+                                            <input type="date" value="{{ $tindak_lanjut->tgl_tindak_lanjut }}" class="form-control" name='tgl_kontrol'
                                                 id='tgl_kontrol'>
                                         </div>
                                     </div>
@@ -176,91 +266,21 @@
                                                 data-placeholder="Select an option" class="form-select" id="poli_rujuk_interm"
                                                 arial-placeholder="Poli Rujuk">
                                                 <option value=""></option>
-                                                @foreach ($poli as $p)
-                                                    <option value="{{ $p->kode }}">{{ $p->poli }}</option>
+                                                @foreach ($poli_interm as $p)
+                                                    <option {{ $tindak_lanjut->poli_rujuk == $p->kode ?'selected':'' }} value="{{ $p->kode }}">{{ $p->poli }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
                                 </div>
-                                <div id="rujukan" class="d-none">
-                                    <div class="row mb-5">
-                                        <div class="col-md-3">
-                                            <label class="form-label fw-bold">Tgl.Rujukan</label>
-                                            <input type="date" placeholder="Pilih Tgl Rujukan" class="form-control"
-                                                name='tgl_kontrol' id='tgl_kontrol_rujuk'>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-5">
-                                        <div class="col-md-12">
-                                            <label class="form-label fw-bold">Tujuan Rujuk</label>
-                                            <select disabled name="tujuan_rujuk" data-control="select2"
-                                                data-placeholder="Select an option" class="form-select" id="tujuan_rujuk"
-                                                arial-placeholder="Tujuan Rujuk">
-                                                <option value=""></option>
-
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-5">
-                                        <div class="col-md-12">
-                                            <label class="form-label fw-bold">Poli Rujuk</label>
-                                            <select disabled name="poli_rujuk" data-control="select2"
-                                                data-placeholder="Select an option" class="form-select" id="poli_rujuk"
-                                                arial-placeholder="Poli Rujuk">
-                                                {{-- @foreach ($poli as $p)
-                                                    <option value="{{ $p->id }}">{{ $p->poli }}</option>
-                                                @endforeach --}}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div id="rawat" class="d-none">
-                                    <div class="row mb-5">
-                                        <div class="col-md-12">
-                                            <label class="form-label fw-bold">DPJP</label>
-                                            <select name="iddokter" class="form-select" id=""
-                                                data-control="select2" data-placeholder="Select an option"
-                                                class="form-select" id="dpjp"
-                                                arial-placeholder="Rencana Tindak Lanjut">
-                                                <option value=""></option>
-                                                @foreach ($dokter as $d)
-                                                    <option value="{{ $d->id }}">{{ $d->nama_dokter }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-5">
-                                        <div class="col-md-3">
-                                            <label class="form-label fw-bold">Tgl.Rencana Rawat</label>
-                                            <input type="date" class="form-control" name='tgl_rawat'
-                                                id='tgl_kontrol'>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-5">
-                                        <div class="col-md-2">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="operasi"
-                                                    id="obat" />
-                                                <label class="form-check-label" for="obat">
-                                                    Operasi
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-10">
-                                            <input type="text" name="value_operasi" id="value_operasi"
-                                                class="form-control" placeholder="...." style="display: none;">
-                                        </div>
-                                    </div>
-                                </div>
+                                {{-- End Interem --}}
                                 <div id="tindak_lanjut"></div>
 
 
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Catatan</label>
-                                        <textarea name="catatan" rows="3" class="form-control" placeholder="Catatan"></textarea>
+                                        <textarea name="catatan" rows="3" class="form-control" placeholder="Catatan">{{ $tindak_lanjut->catatan }}</textarea>
                                     </div>
                                 </div>
                                 <button class="btn btn-primary">Simpan</button>

@@ -253,6 +253,44 @@
                         <b style="text-transform:uppercase">Rencana Tindak Lanjut</b>
                     </td>
                 </tr>
+                @if ($tindak_lanjut->tindak_lanjut == 'Dirawat')
+                <tr>
+                    <td colspan="2" style="border: 1px solid black;">
+                        <table>
+                            <tr>
+                                <td colspan="3">Pasien {{ $tindak_lanjut->tindak_lanjut }}</td>
+                            </tr>                            
+                            <tr>
+                                <td>DPJP</td>
+                                <td>:</td>
+                                <td>{{ $tindak_lanjut->dokter->nama_dokter }}</td>
+                            </tr>
+                            <tr>
+                                <td>No SPRI</td>
+                                <td>:</td>
+                                <td>SPRI/{{ $tindak_lanjut->nomor }}/{{ $tindak_lanjut->bulanRomawi(date('n',strtotime($tindak_lanjut->tgl_tindak_lanjut))) }}/{{  date('Y',strtotime($tindak_lanjut->tgl_tindak_lanjut)) }}</td>
+                            </tr>
+                            <tr>
+                                <td>Tanggal Rencana Rawat</td>
+                                <td>:</td>
+                                <td>{{ $tindak_lanjut->tgl_tindak_lanjut }}</td>
+                            </tr>
+                            @if ($tindak_lanjut->operasi == 1)
+                                <tr>
+                                    <td>Tindakan Operasi</td>
+                                    <td>:</td>
+                                    <td>{{ $tindak_lanjut->tindakan_operasi }}</td>
+                                </tr>
+                            @endif
+                            <tr>
+                                <td>Catatan</td>
+                                <td>:</td>
+                                <td>{{ $tindak_lanjut->catatan }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                @elseif($tindak_lanjut->tindak_lanjut == 'Dirujuk')
                 <tr>
                     <td colspan="2" style="border: 1px solid black;">
                         <table>
@@ -260,9 +298,19 @@
                                 <td colspan="3">Pasien {{ $tindak_lanjut->tindak_lanjut }}</td>
                             </tr>
                             <tr>
-                                <td>Dokter</td>
+                                <td>Tujuan Rujuk</td>
                                 <td>:</td>
-                                <td>{{ $tindak_lanjut->rawat->dokter->nama_dokter }}</td>
+                                <td>{{ $tindak_lanjut->tujuan_tindak_lanjut }}</td>
+                            </tr>
+                            <tr>
+                                <td>Poli Rujukan</td>
+                                <td>:</td>
+                                <td>{{ $tindak_lanjut->poli->poli }} ({{ $tindak_lanjut->poli_rujuk }})</td>
+                            </tr>
+                            <tr>
+                                <td>No Rujukan</td>
+                                <td>:</td>
+                                <td>RUJUKAN/{{ $tindak_lanjut->nomor }}/{{ $tindak_lanjut->bulanRomawi(date('n',strtotime($tindak_lanjut->tgl_tindak_lanjut))) }}/{{  date('Y',strtotime($tindak_lanjut->tgl_tindak_lanjut)) }}</td>
                             </tr>
                             <tr>
                                 <td>Tanggal</td>
@@ -277,6 +325,38 @@
                         </table>
                     </td>
                 </tr>
+                @elseif($tindak_lanjut->tindak_lanjut == 'Kontrol Kembali')
+                    <tr>
+                        <td colspan="2" style="border: 1px solid black;">
+                            <table>
+                                <tr>
+                                    <td colspan="3">Pasien {{ $tindak_lanjut->tindak_lanjut }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Dokter</td>
+                                    <td>:</td>
+                                    <td>{{ $tindak_lanjut->rawat->dokter->nama_dokter }}</td>
+                                </tr>
+                                <tr>
+                                    <td>No SKPD</td>
+                                    <td>:</td>
+                                    <td>SKPD/{{ $tindak_lanjut->nomor }}/{{ date('m',strtotime($tindak_lanjut->tgl_tindak_lanjut)) }}/{{ date('Y',strtotime($tindak_lanjut->tgl_tindak_lanjut)) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Tanggal</td>
+                                    <td>:</td>
+                                    <td>{{ $tindak_lanjut->tgl_tindak_lanjut }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Catatan</td>
+                                    <td>:</td>
+                                    <td>{{ $tindak_lanjut->catatan }}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                @elseif($tindak_lanjut->tindak_lanjut == 'Interm')
+                @endif
             @endif
             <tr>
                 <td class="p-2" style="border: 1px solid black;">

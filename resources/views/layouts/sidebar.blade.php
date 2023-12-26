@@ -100,12 +100,26 @@
                                 <!--begin:Menu item-->
                                 <div class="menu-item">
                                     <!--begin:Menu link-->
-                                    <a class="menu-link {{ Request::is('farmasi') || Request::is('farmasi/') ? 'active' : '' }}"
+                                    <a class="menu-link {{ Request::is('laboratorium') || Request::is('laboratorium/') ? 'active' : '' }}"
                                         href="{{ route('penunjang.antrian', 'Lab') }}">
                                         <span class="menu-bullet">
                                             <span class="bullet bullet-dot"></span>
                                         </span>
                                         <span class="menu-title">Antrian Lab</span>
+                                    </a>
+                                    <a class="menu-link {{ Request::is('laboratorium') || Request::is('laboratorium/') ? 'active' : '' }}"
+                                        href="{{ route('laboratorium.list-pemeriksaan') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Pemeriksaan Lab</span>
+                                    </a>
+                                    <a class="menu-link {{ Request::is('laboratorium') || Request::is('laboratorium/') ? 'active' : '' }}"
+                                        href="{{ route('laboratorium.list-pasien', 'Lab') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">List Pasien</span>
                                     </a>
                                 </div>
                                 <!--end:Menu item-->
@@ -120,11 +134,11 @@
                                 <div class="menu-item">
                                     <!--begin:Menu link-->
                                     <a class="menu-link {{ Request::is('farmasi') || Request::is('farmasi/') ? 'active' : '' }}"
-                                        href="{{ route('penunjang.antrian', 'Fisio') }}">
+                                        href="{{ route('fisio.index') }}">
                                         <span class="menu-bullet">
                                             <span class="bullet bullet-dot"></span>
                                         </span>
-                                        <span class="menu-title">Antrian Fisio</span>
+                                        <span class="menu-title">Fisio Terapi</span>
                                     </a>
                                 </div>
                                 <!--end:Menu item-->

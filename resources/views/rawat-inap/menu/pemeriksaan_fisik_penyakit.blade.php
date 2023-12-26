@@ -1,4 +1,4 @@
-<form action="" id='frmpemeriksaan_fisik' class="mt-5" method="post">
+<form action="{{ route('postPemeriksaanFisik.rawat-inap',$rawat->id) }}" id='frmpemeriksaan_fisik' class="mt-5" method="post">
     @csrf
     <span class="d-inline-block position-relative mb-7">
         <!--begin::Label-->

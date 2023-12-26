@@ -450,6 +450,7 @@
                                                             $alergi = json_decode($resume_detail->alergi);
                                                             $pfisik = json_decode($resume_detail->pemeriksaan_fisik);
                                                             $rkesehatan = json_decode($resume_detail->riwayat_kesehatan);
+
                                                         @endphp
                                                         <tr>
                                                             <td width=300>
@@ -479,7 +480,47 @@
                                                                     </ul>
                                                                 @endif
                                                             </td>
-                                                            <td width=300>{{ $resume_detail?->anamnesa_dokter }}</td>
+                                                            <td width=400>
+                                                                {{ $resume_detail?->anamnesa_dokter }}
+                                                                @if ($rawat->idpoli == 12)
+                                                                    @php
+                                                                        $pemeriksaan_fisio = json_decode($resume_detail->pemeriksaan_fisio);
+                                                                    @endphp
+                                                                    <hr>
+                                                                    <table>
+                                                                        <tr>
+                                                                            <td>&nbsp;&nbsp;Pemeriksaan Fisik</td>
+                                                                            <td class="text-start">:
+                                                                                {{ $pemeriksaan_fisio->pemeriksaan_fisik ? $pemeriksaan_fisio->pemeriksaan_fisik : '-' }}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>&nbsp;&nbsp;Pemeriksaan Uji Fungsi</td>
+                                                                            <td class="text-start">:
+                                                                                {{ $pemeriksaan_fisio->pemeriksaan_uji_fungsi ? $pemeriksaan_fisio->pemeriksaan_uji_fungsi : '-' }}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>&nbsp;&nbsp;Tata Laksana</td>
+                                                                            <td class="text-start">:
+                                                                                {{ $pemeriksaan_fisio->tata_laksana ? $pemeriksaan_fisio->tata_laksana : '-' }}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>&nbsp;&nbsp;Anjuran</td>
+                                                                            <td class="text-start">:
+                                                                                {{ $pemeriksaan_fisio->anjuran ? $pemeriksaan_fisio->anjuran : '-' }}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>&nbsp;&nbsp;evaluasi</td>
+                                                                            <td class="text-start">:
+                                                                                {{ $pemeriksaan_fisio->evaluasi ? $pemeriksaan_fisio->evaluasi : '-' }}
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                @endif
+                                                            </td>
                                                             <td>
                                                                 {{ $resume_detail?->rencana_pemeriksaan }}
                                                                 @if ($resume_detail->radiologi != 'null')
@@ -519,11 +560,12 @@
                                                                     <h5>Fisio</h5>
                                                                     <ul>
                                                                         @foreach (json_decode($resume_detail->fisio) as $val)
-                                                                            @foreach ($fisio as $item)
+                                                                            <li>{{ $val->tindakan_fisio }}</li>
+                                                                            {{-- @foreach ($fisio as $item)
                                                                                 @if ($val->tindakan_fisio == $item->id)
                                                                                     <li>{{ $item->nama_tarif }}</li>
                                                                                 @endif
-                                                                            @endforeach
+                                                                            @endforeach --}}
                                                                         @endforeach
                                                                     </ul>
                                                                 @endif
@@ -726,15 +768,40 @@
                                             <thead class="border">
                                                 <tr class="fw-bold fs-6 text-gray-800 px-7">
                                                     <th>Tindak Lanjut</th>
+                                                    <th>Tujuan Lanjut</th>
+                                                    <th>Poli Tujuan</th>
                                                     <th>Tgl Tindak Lanjut</th>
-                                                    <th>Dokter</th>
+                                                    <th>Aksi</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td>{{ $tindak_lanjut->tindak_lanjut }}</td>
+                                                    <td>{{ $tindak_lanjut->tindak_lanjut }}
+                                                        @if ($tindak_lanjut->tindak_lanjut == 'Dirawat')
+                                                            <br>DPJP : {{ $tindak_lanjut->dokter->nama_dokter }}
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if ($tindak_lanjut->operasi == 1)
+                                                            Operasi : {{ $tindak_lanjut->tindakan_operasi }}
+                                                        @endif
+                                                        {{ $tindak_lanjut->tujuan_tindak_lanjut }}
+                                                    </td>
+                                                    <td>{{ $tindak_lanjut->poli_rujuk }}</td>
                                                     <td>{{ $tindak_lanjut->tgl_tindak_lanjut }}</td>
-                                                    <td>{{ $tindak_lanjut->rawat->dokter->nama_dokter }}</td>
+                                                    <td>
+
+                                                        <form action="{{ route('tindak-lanjut.hapus_tindak_lanjut') }}"
+                                                            method="post" id='hps-tindak-lanjut'>
+                                                            @csrf
+                                                            <input type="hidden" name="id" id="id"
+                                                                value="{{ $tindak_lanjut->id }}">
+                                                            <a href="{{ route('tindak-lanjut.edit_tindak_lanjut', $tindak_lanjut->id) }}"
+                                                                class="btn btn-info btn-sm">Edit</a>
+                                                            <button class="btn btn-danger btn-sm">Hapus</button>
+                                                        </form>
+
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1000,8 +1067,8 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <label for="">Upload File</label>
-                                                        <input type="file" required class="form-control"
-                                                            name="file_penunjang_luar">
+                                                        <input type="file" accept=".pdf,.jpeg,.jpg,.png" required
+                                                            class="form-control" name="file_penunjang_luar">
                                                     </div>
                                                 </div>
 
@@ -1010,6 +1077,40 @@
                                         </div>
                                         <button class="btn btn-primary btn-sm mt-10">Upload</button>
                                     </form>
+                                    @if (count($pemeriksaan_luar) > 0)
+                                        <div class="separator separator-dashed border-secondary mt-5 mb-5"></div>
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>File </th>
+                                                    <th>Keterangan </th>
+                                                    <th>Aksi </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($pemeriksaan_luar as $pl)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>
+                                                            <a target="_blnk"
+                                                                href="{{ asset('storage/file-penunjang-luar/' . $pl->nama_file) }}">{{ $pl->nama_file }}</a>
+                                                        </td>
+                                                        <td>{{ $pl->keterangan_file }}</td>
+                                                        <td>
+                                                            <form action="{{ route('post.delete-pengantar') }}"
+                                                                method="post" id='frmDeletefile'>
+                                                                @csrf
+                                                                <input type="hidden" name="id" id="id"
+                                                                    value="{{ $pl->id }}">
+                                                                <button class="btn btn-sm btn-danger">Hapus</button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -1394,6 +1495,71 @@
             @endforeach
 
 
+        });
+
+        $("#hps-tindak-lanjut").on("submit", function(event) {
+            event.preventDefault();
+            var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+            Swal.fire({
+                title: 'Hapus Data',
+                text: "Apakah Anda yakin akan hapus data ini ?",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Hapus Data',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.blockUI({
+                        css: {
+                            border: 'none',
+                            padding: '15px',
+                            backgroundColor: '#000',
+                            '-webkit-border-radius': '10px',
+                            '-moz-border-radius': '10px',
+                            opacity: .5,
+                            color: '#fff',
+                            fontSize: '16px'
+                        },
+                        message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                        baseZ: 9000,
+                    });
+                    this.submit();
+                }
+            });
+        });
+        $("#frmDeletefile").on("submit", function(event) {
+            event.preventDefault();
+            var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+            Swal.fire({
+                title: 'Hapus File',
+                text: "Apakah Anda yakin akan hapus file ini ?",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Hapus File',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.blockUI({
+                        css: {
+                            border: 'none',
+                            padding: '15px',
+                            backgroundColor: '#000',
+                            '-webkit-border-radius': '10px',
+                            '-moz-border-radius': '10px',
+                            opacity: .5,
+                            color: '#fff',
+                            fontSize: '16px'
+                        },
+                        message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                        baseZ: 9000,
+                    });
+                    this.submit();
+                }
+            });
         });
 
         @if ($message = session('gagal'))
