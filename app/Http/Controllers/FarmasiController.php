@@ -11,6 +11,7 @@ use App\Models\RekapMedis\RekapMedis;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use PDF;
 
 class FarmasiController extends Controller
 {
@@ -26,6 +27,24 @@ class FarmasiController extends Controller
         // $resep_ranap_bpjs = AntrianFarmasi::with('pasien','rawat')->where('jenis_rawat',2)->where('idbayar',2)->where('status_antrian','Antrian')->get();
         $transaksi_bayar = DB::table('transaksi_bayar')->orderBy('urutan', 'asc')->get();
         return view('farmasi.antrian-resep', compact('resep_rajal', 'resep_ugd', 'resep_ranap', 'transaksi_bayar'));
+    }
+
+    public function updateResep(Request $request)
+    {
+        $total_obat = 0;
+        foreach($request->terapi_obat as $val){
+            $obat = Obat::find($val['obat']);
+            $total_obat += $obat->harga_jual * $val['jumlah_obat'];
+        }
+
+        $antrian = AntrianFarmasi::find($request->idantrian);
+        $antrian->obat = json_encode($request->terapi_obat);
+        $antrian->save();
+
+        return response()->json([
+            'status' => 'true',
+            'total' => $total_obat
+        ]);
     }
 
     public function post_resep(Request $request, $id)
@@ -168,5 +187,32 @@ class FarmasiController extends Controller
                 ->make(true);
         }
         return view('farmasi.list-pasien-rawat');
+    }
+
+    public function cetakResep($id)
+    {
+        $resep = ObatTransaksi::where('id', $id)->first();
+        $rawat = Rawat::find($resep->idrawat);
+        $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
+        $detail_resep = DB::table('obat_transaksi_detail')->where('idtrx',$resep->id)->get();
+
+        $pdf = PDF::loadview('farmasi.cetak.resep', compact('resep', 'rawat', 'pasien','detail_resep'));
+        $customPaper = array(0,0,323.15,790.866);
+        $pdf->setPaper($customPaper);
+        return $pdf->stream();
+    }
+
+    public function cetakTiket($id)
+    {
+        $resep = ObatTransaksi::where('id', $id)->first();
+        $rawat = Rawat::find($resep->idrawat);
+        $pasien = Pasien::select('pasien.*','pasien_alamat.alamat')
+            ->leftJoin('pasien_alamat','pasien.id','=','pasien_alamat.idpasien')->where('pasien.no_rm', $rawat->no_rm)->first();
+        $detail_resep = DB::table('obat_transaksi_detail')->where('idtrx',$resep->id)->get();
+
+        $pdf = PDF::loadview('farmasi.cetak.tiket', compact('resep', 'rawat', 'pasien','detail_resep'));
+        $customPaper = array(0,0,170.079,198.425);
+        $pdf->setPaper($customPaper);
+        return $pdf->stream();
     }
 }

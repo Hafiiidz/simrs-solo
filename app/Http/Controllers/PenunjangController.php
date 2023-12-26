@@ -9,6 +9,7 @@ use App\Models\RadiologiHasil;
 use App\Models\Rawat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PDF;
 
 class PenunjangController extends Controller
 {
@@ -226,7 +227,7 @@ class PenunjangController extends Controller
     }
     public function input_hasil_fisio($id, $idpemeriksaan){
         $pemeriksaan = DB::table('tindakan_fisio')->where('id', $id)->first();
-        
+
         $rawat = Rawat::find($pemeriksaan->idrawat);
         $tindakan = DB::table('tarif')->where('id', $pemeriksaan->idtindakan)->first();
         return view('penunjang.input-hasil-fisio', compact('pemeriksaan', 'rawat', 'tindakan'));
@@ -273,5 +274,15 @@ class PenunjangController extends Controller
         // $filePath = $file->storeAs('uploads-rad', $fileName, 'public');
 
         return redirect()->back()->with('berhasil', 'Berhasil Update Hasil Pemeriksaan');
+    }
+
+    public function cetakRadiologi($id)
+    {
+        $pemeriksaan = DB::table('radiologi_hasildetail')->where('id', $id)->first();
+        $rawat = Rawat::find($pemeriksaan->idrawat);
+
+        $pdf = PDF::loadview('penunjang.cetak.radiologi', compact('pemeriksaan', 'rawat'));
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->stream();
     }
 }

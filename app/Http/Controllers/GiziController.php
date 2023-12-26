@@ -10,6 +10,8 @@ use App\Models\Rawat;
 use App\Models\Pasien\Pasien;
 use App\Models\Gizi\EvaluasiGizi;
 use App\Models\Gizi\AsuhanGizi;
+use App\Models\Gizi\CpptGizi;
+use App\Models\Gizi\SkriningGizi;
 use Auth;
 
 class GiziController extends Controller
@@ -39,7 +41,9 @@ class GiziController extends Controller
         $pasien = Pasien::where('no_rm',$rawat->no_rm)->first();
         $evaluasi = EvaluasiGizi::with('user','user.detail')->where('idrawat', $id)->get();
         $asuhan = AsuhanGizi::where('idrawat', $id)->first();
-        return view('gizi.show', compact('rawat','pasien','evaluasi','asuhan'));
+        $cppt = CpptGizi::with('user','user.detail')->where('idrawat', $id)->get();
+        $skrining = SkriningGizi::where('idrawat', $id)->first();
+        return view('gizi.show', compact('rawat','pasien','evaluasi','asuhan','cppt','skrining'));
     }
 
     public function storeEvaluasi(Request $request)
@@ -82,6 +86,21 @@ class GiziController extends Controller
         $data = AsuhanGizi::where('idrawat', $request->idrawat)->first();
 
         if($data){
+
+            $data->idrawat = $request->idrawat;
+            $data->tanggal = $request->tanggal;
+            $data->diagnosis_medis = $request->diagnosis_medis;
+            $data->antropometri = $antropometri;
+            $data->biokimia = $request->biokimia;
+            $data->klinik = $request->klinik;
+            $data->riwayat_gizi = $request->riwayat_gizi;
+            $data->alergi_makanan = $alergi_makanan;
+            $data->pola_makan = $request->pola_makan;
+            $data->riwayat_personal = $request->riwayat_personal;
+            $data->diagnosa_gizi = $request->diagnosa_gizi;
+            $data->intervensi_gizi = $intervensi_gizi;
+            $data->save();
+
             return redirect()->back()->with('berhasil','Data Asuhan Gizi Berhasil Di Ubah!');
         }
 
@@ -101,5 +120,50 @@ class GiziController extends Controller
         $data->save();
 
         return redirect()->back()->with('berhasil','Data Asuhan Gizi Berhasil Di Simpan!');
+    }
+
+    public function storeCppt(Request $request)
+    {
+        $hasil = new Collection([
+            'a' => $request->cppt_a,
+            'd' => $request->cppt_d,
+            'i' => $request->cppt_i,
+            'm' => $request->cppt_m,
+            'e' => $request->cppt_e
+        ]);
+
+        $data = new CpptGizi;
+        $data->idrawat = $request->idrawat;
+        $data->idpetugas = auth()->user()->id;
+        $data->tanggal = date('Y-m-d H:i:s');
+        $data->profesi = $request->profesi;
+        $data->hasil = $hasil;
+        $data->save();
+
+        return redirect()->back()->with('berhasil','Data CPPT Berhasil Di Simpan!');
+    }
+
+    public function storeSkrining(Request $request)
+    {
+        $skrining = new Collection([
+            'parameter_1' => $request->parameter_1,
+            'parameter_2' => $request->parameter_2,
+            'ya' => ($request->parameter_1 == 3) ? $request->ya : ''
+        ]);
+
+        $data = SkriningGizi::where('idrawat', $request->idrawat)->first();
+
+        if($data){
+            $data->skrining = $skrining;
+            $data->save();
+            return redirect()->back()->with('berhasil','Data CPPT Berhasil Di Ubah!');
+        }
+
+        $data = new SkriningGizi;
+        $data->idrawat = $request->idrawat;
+        $data->skrining = $skrining;
+        $data->save();
+
+        return redirect()->back()->with('berhasil','Data CPPT Berhasil Di Simpan!');
     }
 }

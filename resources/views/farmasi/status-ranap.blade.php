@@ -255,7 +255,7 @@
                                                                                             class="form-label">Qty</label>
                                                                                         <input type="number"
                                                                                             value={{ $val->jumlah_obat }}
-                                                                                            name="jumlah_obat" readonly
+                                                                                            name="jumlah_obat"
                                                                                             class="form-control form-control-solid mb-5 mb-md-0"
                                                                                             min="0" required>
                                                                                     </div>
@@ -402,6 +402,17 @@
                                                                 </a>
                                                             </div>
                                                             <!--end::Form group-->
+                                                            <div class="row mt-5">
+                                                                <div class="col-md-2">
+                                                                    <label class="form-label">Total Resep</label>
+                                                                    <input type="text" name="total_resep" id="total_resep" class="form-control form-control-solid" readonly>
+                                                                </div>
+                                                                <div class="col">
+                                                                    <label class="form-label">&nbsp;</label>
+                                                                    <br>
+                                                                    <button type="button" class="btn btn-primary" id="btn-resep">Update Resep</button>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                         <!--end::Repeater-->
                                                     </div>
@@ -411,7 +422,7 @@
                                             <div class="separator separator-dashed border-secondary mt-5 mb-5"></div>
                                         @endif
                                             @endif
-                                            
+
                                             <table class="table table-bordered mt-10">
                                                 <thead>
                                                     <tr>
@@ -420,6 +431,7 @@
                                                         <th>Tgl</th>
                                                         <th>Obat</th>
                                                         <th>Total Resep</th>
+                                                        <th>Aksi</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -442,6 +454,10 @@
                                                                 </ol>
                                                             </td>
                                                             <td>{{ $r->total_harga }}</td>
+                                                            <td>
+                                                                <a href="{{ route('farmasi.cetak-resep', $r->id) }}" class="btn btn-info btn-sm" target="_blank">Print</a>
+                                                                <a href="{{ route('farmasi.cetak-tiket', $r->id) }}" class="btn btn-info btn-sm" target="_blank">Print Tiket</a>
+                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -855,5 +871,17 @@
                 });
             @endif
         });
+
+        $( "#btn-resep" ).on( "click", function() {
+            var formData = $("#formPermintaanobat").serialize();
+            $.ajax({
+                type: "GET",
+                url: '{{route('farmasi.update-resep')}}',
+                data: formData,
+                success: function(response){
+                    $('#total_resep').val('Rp.' + response.total);
+                }
+            });
+        } );
     </script>
 @endsection

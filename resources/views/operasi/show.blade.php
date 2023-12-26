@@ -171,7 +171,7 @@
                                             <!--begin::Form group-->
                                             <div class="form-group">
                                                 <div data-repeater-list="dokter_bedah">
-                                                    @if ($data->dokter_bedah != 'null')
+                                                    @if ($data->dokter_bedah)
                                                         @foreach (json_decode($data->dokter_bedah) as $val)
                                                             <div data-repeater-item>
                                                                 <div class="form-group row mb-5">
@@ -204,7 +204,7 @@
                                             <!--begin::Form group-->
                                             <div class="form-group">
                                                 <div data-repeater-list="perawat_bedah">
-                                                    @if ($data->perawat_bedah != 'null')
+                                                    @if ($data->perawat_bedah)
                                                         @foreach (json_decode($data->perawat_bedah) as $val)
                                                             <div data-repeater-item>
                                                                 <div class="form-group row mb-5">
@@ -237,7 +237,7 @@
                                             <!--begin::Form group-->
                                             <div class="form-group">
                                                 <div data-repeater-list="asisten">
-                                                    @if ($data->asisten != 'null')
+                                                    @if ($data->asisten)
                                                         @foreach (json_decode($data->asisten) as $val)
                                                             <div data-repeater-item>
                                                                 <div class="form-group row mb-5">
@@ -303,7 +303,7 @@
                                             <!--begin::Form group-->
                                             <div class="form-group">
                                                 <div data-repeater-list="tindakan_bedah">
-                                                    @if ($data->tindakan_bedah != 'null')
+                                                    @if ($data->tindakan_bedah)
                                                         @foreach (json_decode($data->tindakan_bedah) as $val)
                                                             <div data-repeater-item>
                                                                 <div class="form-group row mb-5">
@@ -343,7 +343,7 @@
                                             <!--begin::Form group-->
                                             <div class="form-group">
                                                 <div data-repeater-list="ahli_anastesi">
-                                                @if ($data->ahli_anastesi != 'null')
+                                                @if ($data->ahli_anastesi)
                                                     @foreach (json_decode($data->ahli_anastesi) as $val)
                                                         <div data-repeater-item>
                                                             <div class="form-group row mb-5">
@@ -377,7 +377,7 @@
                                             <!--begin::Form group-->
                                             <div class="form-group">
                                                 <div data-repeater-list="obat_anastesi">
-                                                    @if ($data->obat_anastesi != 'null')
+                                                    @if ($data->obat_anastesi)
                                                         @foreach (json_decode($data->obat_anastesi) as $val)
                                                             <div data-repeater-item>
                                                                 <div class="form-group row mb-5">

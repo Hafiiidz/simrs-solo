@@ -206,7 +206,7 @@
                                                     data-bs-toggle="tab" href="#kt_tab_pane_partograf" aria-selected="false"
                                                     role="tab" tabindex="-1">Partograf</a>
                                             </li>
-                                        @endif 
+                                        @endif
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
                                                 data-bs-toggle="tab" href="#kt_tab_pane_2" aria-selected="false"
@@ -299,12 +299,12 @@
                                 <div class="tab-pane fade" id="kt_tab_pane_2" role="tabpanel">
                                     <button class="btn btn-warning btn-sm mb-5" data-bs-toggle="modal"
                                         data-bs-target="#modal_cppt">Tambah CPPT</button>
-                                    @include('rawat-inap.menu.cppt')
+                                    {{-- @include('rawat-inap.menu.cppt') --}}
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_3" role="tabpanel">
                                     <button class="btn btn-info btn-sm mb-5" data-bs-toggle="modal"
                                         data-bs-target="#modal_implementasi">Tambah Implementasi</button>
-                                    @include('rawat-inap.menu.cppt')
+                                    {{-- @include('rawat-inap.menu.cppt') --}}
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_4" role="tabpanel">
                                     <button class="btn btn-info btn-sm mb-5" data-bs-toggle="modal"
