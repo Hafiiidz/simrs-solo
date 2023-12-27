@@ -19,6 +19,7 @@ class RawatInapController extends Controller
 {
     public function index()
     {
+        // return auth()->user()->detail->idruangan;
         // if(request()->ajax())
         // {
         //     $query = DB::table('ruangan')
@@ -47,9 +48,9 @@ class RawatInapController extends Controller
                     ->where('iddokter', auth()->user()->detail->iddokter)
                     ->where('status', 2);
             } else {
-                $query = Rawat::with('pasien', 'bayar')
+                $query = Rawat::with('pasien', 'bayar' ,'ruangan')
                     ->where('idjenisrawat', 2)
-                    ->where('idruangan', auth()->user()->detail->idruangan)
+                    ->whereRelation('ruangan','unit_ruangan', auth()->user()->detail->idruangan)
                     ->where('status', 2);
             }
 
