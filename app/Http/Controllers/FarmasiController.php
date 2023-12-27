@@ -25,8 +25,12 @@ class FarmasiController extends Controller
 
         $resep_ranap = AntrianFarmasi::with('pasien', 'rawat')->where('jenis_rawat', 2)->where('status_antrian', 'Antrian')->get();
         // $resep_ranap_bpjs = AntrianFarmasi::with('pasien','rawat')->where('jenis_rawat',2)->where('idbayar',2)->where('status_antrian','Antrian')->get();
+
+        // $total_antrian = count($resep_rajal) + count($resep_ugd) + count($resep_ranap);
+        $total_antrian = count($resep_rajal) + count($resep_ugd) + count($resep_ranap);
+
         $transaksi_bayar = DB::table('transaksi_bayar')->orderBy('urutan', 'asc')->get();
-        return view('farmasi.antrian-resep', compact('resep_rajal', 'resep_ugd', 'resep_ranap', 'transaksi_bayar'));
+        return view('farmasi.antrian-resep', compact('resep_rajal', 'resep_ugd', 'resep_ranap', 'transaksi_bayar','total_antrian'));
     }
 
     public function updateResep(Request $request)
@@ -108,11 +112,12 @@ class FarmasiController extends Controller
         $antrian = AntrianFarmasi::where('idrawat', $id)->first();
         $obat = Obat::get();
         $transaksi_bayar = DB::table('transaksi_bayar')->orderBy('urutan', 'asc')->get();
-        $pemberian_obat = DB::table('demo_pemberian_obat_inap')->where('idrawat', $id)->where('jenis', 'Obat')->get();
+        $pemberian_obat = DB::table('demo_pemberian_obat_inap')->where('idrawat', $id)->get();
         $pemberian_obat_injeksi = DB::table('demo_pemberian_obat_inap')->where('idrawat', $id)->where('jenis', 'Injeksi')->get();
         $pemberian_obat_non_injeksi = DB::table('demo_pemberian_obat_inap')->where('idrawat', $id)->where('jenis', 'Non Injeksi')->get();
+        $cppt = DB::table('rawat_cppt')->where('profesi','Farmasi')->where('idrawat', $id)->get();
         $resep = ObatTransaksi::where('idrawat', $id)->get();
-        return view('farmasi.status-ranap', compact('rawat', 'pasien', 'antrian', 'obat', 'transaksi_bayar', 'resep', 'pemberian_obat', 'pemberian_obat_injeksi', 'pemberian_obat_non_injeksi'));
+        return view('farmasi.status-ranap', compact('rawat', 'pasien', 'antrian', 'obat', 'transaksi_bayar', 'resep', 'pemberian_obat', 'pemberian_obat_injeksi', 'pemberian_obat_non_injeksi', 'cppt'));
     }
     public function post_pemberian(Request $request, $id)
     {

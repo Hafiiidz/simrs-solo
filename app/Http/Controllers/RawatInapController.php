@@ -177,6 +177,7 @@ class RawatInapController extends Controller
     }
 
     public function post_cppt(Request $request,$id){
+        // return $request->all();
         $rawat = Rawat::find($id);
         DB::table('rawat_cppt')->insert([
             'tgl'=>date('Y-m-d'),
