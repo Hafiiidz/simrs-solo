@@ -182,7 +182,7 @@ class DetailRekapMedisController extends Controller
 
         $rekap = DetailRekapMedis::find($id);
         $rawat = Rawat::find($rekap->idrawat);
-        if ($request->user()->can('dokter')) {
+        if (auth()->user()->idpriv == 7) {
             $rekap->diagnosa = $request->diagnosa;
             $rekap->anamnesa_dokter = $request->anamnesa_dokter;
             $rekap->rencana_pemeriksaan = $request->rencana_pemeriksaan;
@@ -228,7 +228,7 @@ class DetailRekapMedisController extends Controller
                 ]);
                 $rekap->pemeriksaan_fisio = $pemeriksaan_fisio->toJson();
             }
-        } elseif ($request->user()->can('perawat')) {
+        } elseif (auth()->user()->idpriv >= 14) {
             $rekap->anamnesa = $request->anamnesa;
             $alergi = new Collection([
                 'value_obat' => $request->value_obat,
