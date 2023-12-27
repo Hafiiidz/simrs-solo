@@ -136,7 +136,7 @@
                 <!--begin::Form group-->
                 <div class="form-group">
                     @if (isset($diagnosa_akhir))
-                        @if ($diagnosa_akhir->icd9 != null)
+                        @if ($diagnosa_akhir->icd9 != 'null')
                             <div data-repeater-list="icd9">
                                 @foreach (json_decode($diagnosa_akhir->icd9) as $val)
                                     <div data-repeater-item>
