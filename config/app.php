@@ -47,6 +47,8 @@ return [
     'userkey_vclaim_prod'=>env('USER_KEY_VCLAIM_PROD'),
     'userkey_antrol_prod'=>env('USER_KEY_ANTROL_PROD'),
     'url_icare_prod'=>env('URL_ICARE_PROD'),
+
+    'url_simrs_lama'=>env('URL_SIMRS_LAMA'),
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode

@@ -162,6 +162,7 @@ Route::prefix('/farmasi')->group(function () {
     Route::post('/post-resep/{id}', [FarmasiController::class, 'post_resep'])->middleware('auth')->name('farmasi.post-resep');
     Route::post('/post-pemberian/{id}', [FarmasiController::class, 'post_pemberian'])->middleware('auth')->name('farmasi.post-pemberian');
     Route::get('/update-resep', [FarmasiController::class, 'updateResep'])->middleware('auth')->name('farmasi.update-resep');
+    Route::get('/cetak-resep-tempo/{id}', [FarmasiController::class, 'cetakResepTempo'])->middleware('auth')->name('farmasi.cetak-resep-tempo');
     Route::get('/cetak-resep/{id}', [FarmasiController::class, 'cetakResep'])->middleware('auth')->name('farmasi.cetak-resep');
     Route::get('/cetak-tiket/{id}', [FarmasiController::class, 'cetakTiket'])->middleware('auth')->name('farmasi.cetak-tiket');
 });

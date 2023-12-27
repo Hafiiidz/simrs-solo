@@ -341,6 +341,7 @@
                                             <!--end::Repeater-->
                                         </div>
                                     </div>
+                                    <a target="_blank"  class="btn btn-warning mt-10" href="{{ route('farmasi.cetak-resep-tempo',$antrian->id) }}">Print Resep</a>
                                     <button class="btn btn-success mt-10">Simpan Resep</button>
                                 </form>
                                 <div class="separator separator-dashed border-secondary mt-5 mb-5"></div>

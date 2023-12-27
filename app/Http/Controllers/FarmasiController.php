@@ -194,6 +194,17 @@ class FarmasiController extends Controller
         return view('farmasi.list-pasien-rawat');
     }
 
+    public function cetakResepTempo($id)
+    {
+        $resep = AntrianFarmasi::find($id);
+        $rawat = Rawat::find($resep->idrawat);
+        $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
+        $obat = Obat::get();
+        $pdf = PDF::loadview('farmasi.cetak.resep-tempo', compact('resep', 'rawat', 'pasien', 'obat'));
+        $customPaper = array(0,0,323.15,790.866);
+        $pdf->setPaper($customPaper);
+        return $pdf->stream();
+    }
     public function cetakResep($id)
     {
         $resep = ObatTransaksi::where('id', $id)->first();

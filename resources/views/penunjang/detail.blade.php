@@ -763,7 +763,7 @@
                            
                                 <div class="modal-body">
                                     <div class="mb-10">
-                                        <iframe src="http://localhost:8080/drsiswanto/dashboard/laboratorium/hasil-print?id={{ $pl->id }}" width="100%" height="600"></iframe>
+                                        <iframe src="{{ config('app.url_simrs_lama') }}/laboratorium/hasil-print?id={{ $pl->id }}" width="100%" height="600"></iframe>
                                     </div>
                                 </div>
 
@@ -792,7 +792,7 @@
                            
                                 <div class="modal-body">
                                     <div class="mb-10">
-                                        <iframe src="http://localhost:8080/drsiswanto/dashboard/laboratorium/kwitansi?id={{ $pl->id }}" width="100%" height="600"></iframe>
+                                        <iframe src="{{ config('app.url_simrs_lama') }}/laboratorium/kwitansi?id={{ $pl->id }}" width="100%" height="600"></iframe>
                                     </div>
                                 </div>
 
@@ -821,7 +821,7 @@
                            
                                 <div class="modal-body">
                                     <div class="mb-10">
-                                        <iframe src="http://localhost:8080/drsiswanto/dashboard/laboratorium/kwitansi-dua?id={{ $pl->id }}" width="100%" height="600"></iframe>
+                                        <iframe src="{{ config('app.url_simrs_lama') }}/laboratorium/kwitansi-dua?id={{ $pl->id }}" width="100%" height="600"></iframe>
                                     </div>
                                 </div>
 
