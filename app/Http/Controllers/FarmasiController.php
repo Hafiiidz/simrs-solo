@@ -42,7 +42,7 @@ class FarmasiController extends Controller
             $total_obat += $obat->harga_jual * $val['pemberian_obat'];
         }
 
-        return $request->all();
+        // return $request->all();
 
         $antrian = AntrianFarmasi::find($request->idantrian);
         $antrian->terapi_obat = $request->terapi_obat;
