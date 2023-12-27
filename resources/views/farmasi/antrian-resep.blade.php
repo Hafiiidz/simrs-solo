@@ -2,9 +2,11 @@
 @section('css')
 @endsection
 @section('content')
-    <audio autoplay>
-        <source src="{{ asset('assets/media/FGTP7RQ-notification.mp3') }}" type="audio/mp3">
-    </audio>
+    @if ($total_antrian > 0)
+        <audio autoplay>
+            <source src="{{ asset('assets/media/FGTP7RQ-notification.mp3') }}" type="audio/mp3">
+        </audio>
+    @endif
     <div id="playOnHover" class="d-flex flex-column flex-column-fluid">
         <!--begin::Toolbar-->
         <div id="kt_app_toolbar" class="app-toolbar pt-7 pt-lg-10">
