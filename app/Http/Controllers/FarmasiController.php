@@ -28,7 +28,7 @@ class FarmasiController extends Controller
 
         // $total_antrian = count($resep_rajal) + count($resep_ugd) + count($resep_ranap);
         $total_antrian = count($resep_rajal) + count($resep_ugd) + count($resep_ranap);
-
+        
         $transaksi_bayar = DB::table('transaksi_bayar')->orderBy('urutan', 'asc')->get();
         return view('farmasi.antrian-resep', compact('resep_rajal', 'resep_ugd', 'resep_ranap', 'transaksi_bayar','total_antrian'));
     }
@@ -72,7 +72,7 @@ class FarmasiController extends Controller
         $total_obat = 0;
         foreach ($request->terapi_obat as $to) {
             $obat = Obat::find($to['obat']);
-            $total_obat += $obat->harga_jual * $to['jumlah_obat'];
+            $total_obat += $obat->harga_jual * $to['pemberian_obat'];
             DB::table('obat_transaksi_detail')->insert([
                 'idtrx' => $obat_transaksi->id,
                 'nama_obat' => $obat->nama_obat,
@@ -80,7 +80,7 @@ class FarmasiController extends Controller
                 'qty' => $to['jenis_obat'],
                 'harga' => $obat->harga_jual,
                 'signa' => $to['signa1'] . 'x' . $to['signa2'],
-                'total' => $obat->harga_jual * $to['jumlah_obat'],
+                'total' => $obat->harga_jual * $to['pemberian_obat'],
                 'idbayar' => $to['jenis_obat'],
             ]);
         }
