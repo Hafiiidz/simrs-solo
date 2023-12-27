@@ -193,6 +193,7 @@ Route::prefix('/rawat-inap')->group(function () {
     Route::post('{id}/post-implementasi', [RawatInapController::class, 'post_implementasi'])->name('post_implementasi.rawat-inap');    
     Route::post('{id}/post-diagnosa-akhir', [RawatInapController::class, 'post_diagnosa_akhir'])->name('post-diagnosa-akhir.rawat-inap');
     Route::post('{id}/post-tindakan', [RawatInapController::class, 'post_tindakan'])->name('post_tindakan.rawat-inap');
+    Route::post('post-ranap-pulang', [RawatInapController::class, 'postRanap'])->name('post_pulang.rawat-inap');
 });
 Route::prefix('/pasien')->group(function () {
     Route::get('/', [PasienController::class, 'index'])->name('pasien.index');

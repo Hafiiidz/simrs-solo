@@ -820,7 +820,8 @@
                         </div>
                         <!--end::Close-->
                     </div>
-                    <form action="">
+                    <form action="{{ route('post_pulang.rawat-inap') }}" method="post" id="frmPulang">
+                        @csrf
                         <div class="modal-body">
 
                             <div class="mb-5">
@@ -868,7 +869,7 @@
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Simpan</button>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
                         </div>
                     </form>
                 </div>
@@ -1077,6 +1078,38 @@
             $(function() {
 
 
+                $("#frmPulang").on("submit", function(event) {
+                    event.preventDefault();
+                    var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                    Swal.fire({
+                        title: 'Simpan Data?',
+                        text: "Simpan Data?",
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya',
+                        cancelButtonText: 'Tidak'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.blockUI({
+                                css: {
+                                    border: 'none',
+                                    padding: '15px',
+                                    backgroundColor: '#000',
+                                    '-webkit-border-radius': '10px',
+                                    '-moz-border-radius': '10px',
+                                    opacity: .5,
+                                    color: '#fff',
+                                    fontSize: '16px'
+                                },
+                                message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                                baseZ: 9000,
+                            });
+                            this.submit();
+                        }
+                    });
+                });
                 $("#fromPemberian").on("submit", function(event) {
                     event.preventDefault();
                     var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));

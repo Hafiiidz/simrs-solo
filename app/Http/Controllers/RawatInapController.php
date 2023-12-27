@@ -17,6 +17,9 @@ use App\Models\Poli;
 
 class RawatInapController extends Controller
 {
+    public function postRanap(Request $request){
+        return redirect()->back()->with('berhasil','Data Berhasil Di Simpan');
+    }
     public function index()
     {
         // return auth()->user()->detail->idruangan;
