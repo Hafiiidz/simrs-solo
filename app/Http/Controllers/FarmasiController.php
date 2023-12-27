@@ -77,7 +77,7 @@ class FarmasiController extends Controller
                 'idtrx' => $obat_transaksi->id,
                 'nama_obat' => $obat->nama_obat,
                 'idobat' => $to['obat'],
-                'qty' => $to['jenis_obat'],
+                'qty' => $to['pemberian_obat'],
                 'harga' => $obat->harga_jual,
                 'signa' => $to['signa1'] . 'x' . $to['signa2'],
                 'total' => $obat->harga_jual * $to['pemberian_obat'],
