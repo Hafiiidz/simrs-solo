@@ -627,7 +627,7 @@
                                 </div>
                                 <div id="frm-jaringan" class="col-md-6" style="display: none">
                                     <label for="" class="form-label">Macam Jaringan</label>
-                                    <textarea name="macam_jaringan" rows="3" class="form-control">{{ json_decode($data?->jaringan)->macam_jaringan }}</textarea>
+                                    <textarea name="macam_jaringan" rows="3" class="form-control">{{ isset($data->jaringan) ? json_decode($data?->jaringan)->macam_jaringan:'' }}</textarea>
                                 </div>
                             </div>
                             <div class="row mt-5">

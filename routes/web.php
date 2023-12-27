@@ -119,10 +119,18 @@ Route::prefix('/laboratorium')->group(function () {
     Route::get('/list-pasien', [LaboratoriumController::class, 'pasien'])->middleware('auth')->name('laboratorium.list-pasien');
     Route::get('/view-hasil', [LaboratoriumController::class, 'hasil'])->middleware('auth')->name('laboratorium.view-hasil');
     Route::get('/view-hasil-pasien', [LaboratoriumController::class, 'hasilPasien'])->middleware('auth')->name('laboratorium.view-hasil-pasien');
+    Route::get('/hapus-pemeriksaan/{id}', [LaboratoriumController::class, 'hapus_pemeriksaan'])->middleware('auth')->name('laboratorium.hapus-pemeriksaan');
+    Route::post('/tambah-pemeriksaan/{id}', [LaboratoriumController::class, 'tambah_pemeriksaan'])->middleware('auth')->name('laboratorium.tambah-pemeriksaan');
+    Route::post('/tambah-pemeriksaan-lab/{id}', [LaboratoriumController::class, 'tambah_pemeriksaan_lab'])->middleware('auth')->name('laboratorium.tambah-pemeriksaan-lab');
+    Route::post('/edit-tgl-hasil/{id}', [LaboratoriumController::class, 'edit_tgl_hasil'])->middleware('auth')->name('laboratorium.edit-tgl');
+    Route::post('/hapus-hasil/{id}', [LaboratoriumController::class, 'hapus_hasil'])->middleware('auth')->name('laboratorium.hapus-hasil');
 });
 //fisio
 Route::prefix('/fisio')->group(function () {
     Route::get('/', [FisioTerapiController::class, 'index'])->middleware('auth')->name('fisio.index');
+    Route::get('/input-asesmen/{id}', [FisioTerapiController::class, 'input_asesmen'])->middleware('auth')->name('fisio.input-asesmen');
+    Route::get('/show-asesmen/{id}', [FisioTerapiController::class, 'show_asesmen'])->middleware('auth')->name('fisio.show-asesmen');
+    Route::post('/post-asesmen/{id}', [FisioTerapiController::class, 'post_asesmen'])->middleware('auth')->name('fisio.post-asesmen');
 });
 
 //pasien

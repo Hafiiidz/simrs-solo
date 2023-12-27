@@ -69,6 +69,7 @@
                                 <th>No RM</th>
                                 <th>Nama Pasien</th>
                                 <th>Usia Pasien</th>
+                                <th>Ruangan</th>
                                 <th>Opsi</th>
                             </tr>
                         </thead>
@@ -125,6 +126,7 @@
                 { data: 'no_rm', name: 'no_rm' },
                 { data: 'pasien.nama_pasien', name: 'pasien.nama_pasien' },
                 { data: 'pasien.usia_tahun', name: 'pasien.usia_tahun' },
+                { data: 'ruangan.nama_ruangan', name: 'ruangan.nama_ruangan' },
                 { data: 'opsi', name: 'opsi', orderable: false, searcheable: false },
             ]
         });

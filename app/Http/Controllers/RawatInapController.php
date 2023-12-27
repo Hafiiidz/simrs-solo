@@ -11,6 +11,7 @@ use App\Models\Pasien\Pasien;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Gizi\SkriningGizi;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\Operasi\LaporanOperasi;
 use App\Models\Poli;
@@ -215,7 +216,7 @@ class RawatInapController extends Controller
         $tarif = DB::table('tarif')->where('idjenisrawat', 2)->where('idkelas', $rawat->idkelas)->where('idruangan', $rawat->idruangan)->get();
         // dd($tarif);
         $order_obat = DB::table('demo_antrian_resep')->where('idrawat', $id)->get();
-        
+        $skrining = SkriningGizi::where('idrawat', $id)->first();
         $data_operasi = LaporanOperasi::where('idrawat', $rawat->id)->get();
         $pemberian_obat = DB::table('demo_pemberian_obat_inap')->where('idrawat', $id)->get();
         $diagnosa_akhir = DB::table('demo_ranap_dx')->where('idrawat',$rawat->id)->first();
@@ -226,7 +227,7 @@ class RawatInapController extends Controller
 
         return view('rawat-inap.detail', [
             'rawat' => $rawat
-        ], compact('pasien', 'ringakasan_pasien_masuk', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'data_operasi','pemberian_obat','order_obat','cppt','implamentasi','list_tindakan','penunjang','diagnosa_akhir','data_pulang','poli'));
+        ], compact('pasien', 'ringakasan_pasien_masuk', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'data_operasi','pemberian_obat','order_obat','cppt','implamentasi','list_tindakan','penunjang','diagnosa_akhir','data_pulang','poli','skrining'));
     }
     public function postOrderPenunjang(Request $request, $id)
     {

@@ -196,6 +196,11 @@
                                                 data-bs-toggle="tab" href="#kt_tab_pane_1" aria-selected="true"
                                                 role="tab">Asesmen Awal</a>
                                         </li>
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
+                                                data-bs-toggle="tab" href="#kt_tab_pane_10" aria-selected="false"
+                                                role="tab" tabindex="-1">Skrining Awal Gizi</a>
+                                        </li>
                                         @if ($rawat->idpoli == 4)
                                             <li class="nav-item" role="presentation">
                                                 <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
@@ -243,6 +248,7 @@
                                                 data-bs-toggle="tab" href="#kt_tab_pane_8" aria-selected="false"
                                                 role="tab" tabindex="-1">Diganosa Akhir</a>
                                         </li>
+                                       
                                         {{-- <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
                                                 data-bs-toggle="tab" href="#kt_tab_pane_9" aria-selected="false"
@@ -340,6 +346,108 @@
                                     {{-- separator --}}
                                     <div class="separator separator-dashed border-secondary mb-5"></div>
                                     @include('rawat-inap.menu.diagnosa-akhir')
+                                </div>
+                                <div class="tab-pane fade" id="kt_tab_pane_10" role="tabpanel">
+                                    <div class="rounded border p-5">
+                                        <form action="{{ route('store.skrining-gizi') }}" method="POST" autocomplete="off">
+                                            @csrf
+                                            <input type="hidden" name="idrawat" value="{{ $rawat->id }}">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label for="" class="form-label">
+                                                        1. Apakah pasien mengalami penurunan berat badan yang tidak direncanakan / tidak diinginkan dalam 6 bulan terakhir ?
+                                                    </label>
+                                                    <div class="mt-5" style="margin-left: 20px;">
+                                                        <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                            <input class="form-check-input" type="radio" value="1" name="parameter_1" {{ ($skrining) ? ((json_decode($skrining?->skrining)->parameter_1 == 1) ? 'checked' : '') : '' }}/>
+                                                            <label class="form-check-label">
+                                                                Tidak ada penurunan berat badan
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mt-5" style="margin-left: 20px;">
+                                                        <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                            <input class="form-check-input" type="radio" value="2" name="parameter_1" {{ ($skrining) ? ((json_decode($skrining?->skrining)->parameter_1 == 2) ? 'checked' : '') : '' }}/>
+                                                            <label class="form-check-label">
+                                                                Tidak yakin / tidak tahu / terasa baju lebih longgar
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mt-5" style="margin-left: 20px;">
+                                                        <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                            <input class="form-check-input" type="radio" value="3" name="parameter_1" {{ ($skrining) ? ((json_decode($skrining?->skrining)->parameter_1 == 3) ? 'checked' : '') : '' }}/>
+                                                            <label class="form-check-label">
+                                                                Jika ya, berapa penurunan berat badan tersebut
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div id="frm-ya" class="mt-5" style="margin-left: 40px; display: none;">
+                                                        <div class="mt-5" style="margin-left: 20px;">
+                                                            <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                                <input class="form-check-input" type="radio" value="1" name="ya" {{ ($skrining) ? ((json_decode($skrining?->skrining)->ya == 1) ? 'checked' : '') : '' }}/>
+                                                                <label class="form-check-label">
+                                                                    1 – 5 kg
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-5" style="margin-left: 20px;">
+                                                            <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                                <input class="form-check-input" type="radio" value="2" name="ya" {{ ($skrining) ? ((json_decode($skrining?->skrining)->ya == 2) ? 'checked' : '') : '' }}/>
+                                                                <label class="form-check-label">
+                                                                    6 – 10 kg
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-5" style="margin-left: 20px;">
+                                                            <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                                <input class="form-check-input" type="radio" value="3" name="ya" {{ ($skrining) ? ((json_decode($skrining?->skrining)->ya == 3) ? 'checked' : '') : '' }}/>
+                                                                <label class="form-check-label">
+                                                                    11 – 15 kg
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-5" style="margin-left: 20px;">
+                                                            <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                                <input class="form-check-input" type="radio" value="4" name="ya" {{ ($skrining) ? ((json_decode($skrining?->skrining)->ya == 4) ? 'checked' : '') : '' }}/>
+                                                                <label class="form-check-label">
+                                                                    >15 kg
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-5 mb-5">
+                                                <div class="col-md-12">
+                                                    <label for="" class="form-label">
+                                                        2. Apakah asupan makan berkurang karena tidak nafsu makan ?
+                                                    </label>
+                                                    <div class="mt-5" style="margin-left: 20px;">
+                                                        <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                            <input class="form-check-input" type="radio" value="1" name="parameter_2" {{ ($skrining) ? ((json_decode($skrining?->skrining)->parameter_2== 1) ? 'checked' : '') : '' }}/>
+                                                            <label class="form-check-label">
+                                                                Tidak
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mt-5" style="margin-left: 20px;">
+                                                        <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                            <input class="form-check-input" type="radio" value="2" name="parameter_2" {{ ($skrining) ? ((json_decode($skrining?->skrining)->parameter_2 == 2) ? 'checked' : '') : '' }}/>
+                                                            <label class="form-check-label">
+                                                                Ya
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="row mt-5">
+                                                <div class="col-md-12">
+                                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_9" role="tabpanel">
                                     Pindah Ruangan

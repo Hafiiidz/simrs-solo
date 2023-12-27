@@ -305,14 +305,51 @@
                             <div class="card mb-5">
                                 <div class="card-header">
                                     <h5 class="card-title">List Pemeriksaan {{ $jenis }}</h5>
+                                    @if (!$penunjang)
+                                    <div class="card-toolbar">
+                                        <form action="{{ route('laboratorium.tambah-pemeriksaan-lab',$rawat->id) }}" method="post" id='frmTambahpemeriksaan'>
+                                            @csrf
+                                            <button class="btn btn-light-warning">Tambah Pemeriksaan</button>
+                                        </form>
+                                        
+                                    </div>
+                                    @endif
                                 </div>
+
                                 <div class="card-body">
                                     @if (count($pemeriksaan_lab))
                                         @foreach ($pemeriksaan_lab as $pl)
                                             <table class="table table-bordered">
                                                 <thead>
                                                     <tr>
+                                                        <th colspan="3">
+                                                            <form action="{{ route('laboratorium.hapus-hasil',$pl->id) }}" method="post" id='frmHapusHasil'>
+                                                                @csrf
+                                                                <button type="button" data-bs-toggle="modal"
+                                                                data-bs-target="#print_hasil{{ $pl->id }}" class="btn btn-warning btn-sm">
+                                                                    <i class="fas fa-print"></i>
+                                                                </button>
+                                                                <button type="button" data-bs-toggle="modal"
+                                                                data-bs-target="#print_kwitasi{{ $pl->id }}"  class="btn btn-primary btn-sm">Kwitansi</button>
+                                                                <button type="button" data-bs-toggle="modal"
+                                                                data-bs-target="#print_kwitasi_kecil{{ $pl->id }}"  class="btn btn-info btn-sm">Kwitansi
+                                                                    Kecil</button>
+                                                                <button type="button" data-bs-toggle="modal"
+                                                                    data-bs-target="#modal_tambah_layanan_lab{{ $pl->id }}"
+                                                                    class="btn btn-secondary btn-sm">Tambah Layanan</button>
+                                                                <button type="button" data-bs-toggle="modal"
+                                                                    data-bs-target="#edit_tgl_hasil{{ $pl->id }}"
+                                                                    class="btn btn-light-success btn-sm">Edit
+                                                                    Tgl Hasil</button>
+                                                                <button class="btn btn-danger btn-sm">Hapus</button>
+                                                            </form>
+                                                            
+                                                        </th>
+
+                                                    </tr>
+                                                    <tr>
                                                         <th colspan="3">Tanggal Pemeriksaan : {{ $pl->tgl_hasil }}</th>
+
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -335,6 +372,8 @@
                                                                 @if ($pld->status < 2)
                                                                     <a href="{{ route('penunjang.input-hasil', [$pld->id, $pld->idpemeriksaan]) }}"
                                                                         class="btn btn-primary btn-sm">Input Hasil</a>
+                                                                    <a href="{{ route('laboratorium.hapus-pemeriksaan', $pld->id) }}"
+                                                                        class="btn btn-sm btn-danger">Hapus</a>
                                                                 @else
                                                                     <a href="{{ route('penunjang.lihat-hasil', [$pld->id, $pld->idpemeriksaan]) }}"
                                                                         class="btn btn-success btn-sm">Lihat Hasil</a>
@@ -390,16 +429,20 @@
                                                                         <div data-repeater-item>
                                                                             <div class="form-group row mb-5">
                                                                                 <div class="col-md-6">
-                                                                                    <label class="form-label">Tindakan Rad</label>
+                                                                                    <label class="form-label">Tindakan
+                                                                                        Rad</label>
                                                                                     <select name="tindakan_rad"
                                                                                         class="form-select"
                                                                                         data-kt-repeater="select2radiologi"
-                                                                                        data-placeholder="-Pilih-" required>
+                                                                                        data-placeholder="-Pilih-"
+                                                                                        required>
                                                                                         <option></option>
                                                                                         @foreach ($radiologi as $rad)
-                                                                                            <option value="{{ $rad->id }}"
+                                                                                            <option
+                                                                                                value="{{ $rad->id }}"
                                                                                                 {{ $val->tindakan_rad == $rad->id ? 'selected' : '' }}>
-                                                                                                {{ $rad->nama_tindakan }}</option>
+                                                                                                {{ $rad->nama_tindakan }}
+                                                                                            </option>
                                                                                         @endforeach
                                                                                     </select>
                                                                                 </div>
@@ -419,9 +462,11 @@
                                                                                 </div>
 
                                                                                 <div class="col-md-2">
-                                                                                    <a href="javascript:;" data-repeater-delete
+                                                                                    <a href="javascript:;"
+                                                                                        data-repeater-delete
                                                                                         class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                                        <i class="ki-duotone ki-trash fs-5"><span
+                                                                                        <i
+                                                                                            class="ki-duotone ki-trash fs-5"><span
                                                                                                 class="path1"></span><span
                                                                                                 class="path2"></span><span
                                                                                                 class="path3"></span><span
@@ -483,11 +528,11 @@
                                                             ->get();
                                                     @endphp
                                                     @foreach ($pemeriksaan_radio_detail as $pld)
-                                                    @php
-                                                        $tindakan = DB::table('radiologi_tindakan')
-                                                            ->where('id', $pld->idtindakan)
-                                                            ->first();
-                                                    @endphp
+                                                        @php
+                                                            $tindakan = DB::table('radiologi_tindakan')
+                                                                ->where('id', $pld->idtindakan)
+                                                                ->first();
+                                                        @endphp
                                                         <tr>
                                                             <td>{{ $tindakan->nama_tindakan }}</td>
                                                             <td>{{ $pld->status < 2 ? 'Hasil Belum di input' : 'Hasil sudah terinput' }}
@@ -500,7 +545,8 @@
                                                                     <a href="{{ route('penunjang.input-hasil-radiologi', [$pld->id, $pld->idtindakan]) }}"
                                                                         class="btn btn-success btn-sm">Lihat Hasil</a>
                                                                     <a href="{{ route('penunjang.cetak-radiologi', $pld->id) }}"
-                                                                        class="btn btn-info btn-sm" target="_blank">Print</a>
+                                                                        class="btn btn-info btn-sm"
+                                                                        target="_blank">Print</a>
                                                                 @endif
 
                                                             </td>
@@ -554,13 +600,16 @@
                                                                     <div data-repeater-item>
                                                                         <div class="form-group row mb-5">
                                                                             <div class="col-md-6">
-                                                                                <label class="form-label">Fisio Terapi</label>
-                                                                                <select name="tindakan_fisio" class="form-select"
+                                                                                <label class="form-label">Fisio
+                                                                                    Terapi</label>
+                                                                                <select name="tindakan_fisio"
+                                                                                    class="form-select"
                                                                                     data-kt-repeater="select2fisio"
                                                                                     data-placeholder="-Pilih-" required>
                                                                                     <option></option>
                                                                                     @foreach ($fisio as $f)
-                                                                                        <option value="{{ $f->id }}"
+                                                                                        <option
+                                                                                            value="{{ $f->id }}"
                                                                                             {{ $val->tindakan_fisio == $f->id ? 'selected' : '' }}>
                                                                                             {{ $f->nama_tarif }}</option>
                                                                                     @endforeach
@@ -587,9 +636,10 @@
                                                                     <div class="form-group row mb-5">
                                                                         <div class="col-md-6">
                                                                             <label class="form-label">Fisio Terapi</label>
-                                                                            <select name="tindakan_fisio" class="form-select"
-                                                                                data-kt-repeater="select2fisio" data-placeholder="-Pilih-"
-                                                                                required>
+                                                                            <select name="tindakan_fisio"
+                                                                                class="form-select"
+                                                                                data-kt-repeater="select2fisio"
+                                                                                data-placeholder="-Pilih-" required>
                                                                                 <option></option>
                                                                                 @foreach ($fisio as $fisio)
                                                                                     <option value="{{ $fisio->id }}">
@@ -620,7 +670,8 @@
 
                                                     <!--begin::Form group-->
                                                     <div class="form-group mt-5">
-                                                        <a href="javascript:;" data-repeater-create class="btn btn-light-info">
+                                                        <a href="javascript:;" data-repeater-create
+                                                            class="btn btn-light-info">
                                                             <i class="ki-duotone ki-plus fs-3"></i>
                                                             Tambah Fisio
                                                         </a>
@@ -640,6 +691,8 @@
                                     <h5 class="card-title">List Pemeriksaan {{ $jenis }}</h5>
                                 </div>
                                 <div class="card-body">
+                                    <a href="{{ route('fisio.input-asesmen', $rawat->id) }}"
+                                        class="btn btn-info btn-sm mb-5">Asesmen</a>
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
@@ -651,15 +704,16 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($pemeriksaan_fisio as $pf)
-                                            @php
-                                                $tindakan = DB::table('tarif')
-                                                    ->where('id', $pf->idtindakan)
-                                                    ->first();
-                                            @endphp
+                                                @php
+                                                    $tindakan = DB::table('tarif')
+                                                        ->where('id', $pf->idtindakan)
+                                                        ->first();
+                                                @endphp
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $tindakan->nama_tarif }}</td>
-                                                    <td>{{ $pf->status < 2 ? 'Hasil Belum di input' : 'Hasil sudah terinput' }} </td>
+                                                    <td>{{ $pf->status < 2 ? 'Hasil Belum di input' : 'Hasil sudah terinput' }}
+                                                    </td>
                                                     <td>
                                                         @if ($pf->status < 2)
                                                             <a href="{{ route('penunjang.input-hasil-fisio', [$pf->id, $pf->idtindakan]) }}"
@@ -688,6 +742,217 @@
         </div>
         <!--end::Content-->
     </div>
+    @if ($jenis == 'Lab')
+        @if (count($pemeriksaan_lab))
+            @foreach ($pemeriksaan_lab as $pl)
+                {{-- modal_print_hasil --}}
+                <div class="modal fade" tabindex="-1" id="print_hasil{{ $pl->id }}">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title">Print Hasil</h3>
+
+                                <!--begin::Close-->
+                                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                                    aria-label="Close">
+                                    <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span
+                                            class="path2"></span></i>
+                                </div>
+                                <!--end::Close-->
+                            </div>
+                           
+                                <div class="modal-body">
+                                    <div class="mb-10">
+                                        <iframe src="http://localhost:8080/drsiswanto/dashboard/laboratorium/hasil-print?id={{ $pl->id }}" width="100%" height="600"></iframe>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                </div>
+
+                        </div>
+                    </div>
+                </div>
+                {{-- modal kwitansi --}}
+                <div class="modal fade" tabindex="-1" id="print_kwitasi{{ $pl->id }}">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title">Print Kwitansi</h3>
+
+                                <!--begin::Close-->
+                                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                                    aria-label="Close">
+                                    <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span
+                                            class="path2"></span></i>
+                                </div>
+                                <!--end::Close-->
+                            </div>
+                           
+                                <div class="modal-body">
+                                    <div class="mb-10">
+                                        <iframe src="http://localhost:8080/drsiswanto/dashboard/laboratorium/kwitansi?id={{ $pl->id }}" width="100%" height="600"></iframe>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                </div>
+
+                        </div>
+                    </div>
+                </div>
+                {{-- modal kwitansi kecil --}}
+                <div class="modal fade" tabindex="-1" id="print_kwitasi_kecil{{ $pl->id }}">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title">Print Kwitansi Kecil</h3>
+
+                                <!--begin::Close-->
+                                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                                    aria-label="Close">
+                                    <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span
+                                            class="path2"></span></i>
+                                </div>
+                                <!--end::Close-->
+                            </div>
+                           
+                                <div class="modal-body">
+                                    <div class="mb-10">
+                                        <iframe src="http://localhost:8080/drsiswanto/dashboard/laboratorium/kwitansi-dua?id={{ $pl->id }}" width="100%" height="600"></iframe>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" tabindex="-1" id="edit_tgl_hasil{{ $pl->id }}">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title">Edit Tgl Hasil</h3>
+
+                                <!--begin::Close-->
+                                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                                    aria-label="Close">
+                                    <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span
+                                            class="path2"></span></i>
+                                </div>
+                                <!--end::Close-->
+                            </div>
+                            <form action="{{ route('laboratorium.edit-tgl', $pl->id) }}" method="POST" id='frmEditLab'>
+                                @csrf
+                                <div class="modal-body">
+                                    <div class="mb-10">
+                                        <label for="" class="form-label">Tgl Hasil</label>
+                                        <input class="form-control" value="{{ $pl->tgl_hasil }}" name="tgl_hasil"
+                                            placeholder="Pick a date" id="kt_datepicker_1" />
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                    <button class="btn btn-primary">Save changes</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal bg-body fade" tabindex="-1" id="modal_tambah_layanan_lab{{ $pl->id }}">
+                    <div class="modal-dialog modal-fullscreen">
+                        <div class="modal-content shadow-none">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Tambah Pemeriksaan Lab</h5>
+
+                                <!--begin::Close-->
+                                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                                    aria-label="Close">
+                                    <i class="ki-duotone ki-cross fs-2x"><span class="path1"></span><span
+                                            class="path2"></span></i>
+                                </div>
+                                <!--end::Close-->
+                            </div>
+                            <form action="{{ route('laboratorium.tambah-pemeriksaan', $pl->id) }}" id='frmTambahLab'
+                                method="POST">
+                                @csrf
+                                <div class="modal-body">
+                                    <h5>Permintaan Pemeriksaan</h5>
+                                    <div class="rounded border p-5">
+                                        <div class="row mb-5">
+                                            <div class="col-md-">
+                                                <div id="lab_repeater_tambah">
+                                                    <!--begin::Form group-->
+                                                    <div class="form-group">
+                                                        <div data-repeater-list="lab">
+                                                            <div data-repeater-item>
+                                                                <div class="form-group row mb-5">
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label">Tindakan
+                                                                            Lab</label>
+                                                                        <select name="tindakan_lab" class="form-select"
+                                                                            data-kt-repeater="select2lab_tambah"
+                                                                            data-placeholder="-Pilih-" required>
+                                                                            <option></option>
+                                                                            @foreach ($lab as $l)
+                                                                                <option value="{{ $l->id }}">
+                                                                                    {{ $l->nama_pemeriksaan }}
+                                                                                </option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <div class="col-md-4">
+                                                                        <a href="javascript:;" data-repeater-delete
+                                                                            class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                            <i class="ki-duotone ki-trash fs-5"><span
+                                                                                    class="path1"></span><span
+                                                                                    class="path2"></span><span
+                                                                                    class="path3"></span><span
+                                                                                    class="path4"></span><span
+                                                                                    class="path5"></span></i>
+                                                                            Hapus
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!--end::Form group-->
+
+                                                    <!--begin::Form group-->
+                                                    <div class="form-group mt-5">
+                                                        <a href="javascript:;" data-repeater-create
+                                                            class="btn btn-light-primary">
+                                                            <i class="ki-duotone ki-plus fs-3"></i>
+                                                            Tambah Lab
+                                                        </a>
+                                                    </div>
+                                                    <!--end::Form group-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                    <button type="" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        @endif
+
+    @endif
 @endsection
 @section('js')
     <script></script>
@@ -698,6 +963,30 @@
         $(function() {
 
             @if ($jenis == 'Lab')
+                $("#kt_datepicker_1").flatpickr({
+                    enableTime: true,
+                    dateFormat: "Y-m-d H:i",
+                });
+                $('#lab_repeater_tambah').repeater({
+                    initEmpty: false,
+
+                    show: function() {
+                        $(this).slideDown();
+
+                        $(this).find('[data-kt-repeater="select2lab_tambah"]').select2();
+                        dropdownParent: $('#modal_tambah_layanan_lab')
+                    },
+
+                    hide: function(deleteElement) {
+                        $(this).slideUp(deleteElement);
+                    },
+
+                    ready: function() {
+                        $('[data-kt-repeater="select2lab_tambah"]').select2();
+                        dropdownParent: $('#modal_tambah_layanan_lab')
+                    }
+                });
+
                 $('#lab_repeater').repeater({
                     initEmpty: false,
 
@@ -721,6 +1010,140 @@
                     Swal.fire({
                         title: 'Simpan Data',
                         text: "Apakah Anda yakin akan mengerjakan pemeriksaan ini ? ",
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, Simpan Data',
+                        cancelButtonText: 'Tidak'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.blockUI({
+                                css: {
+                                    border: 'none',
+                                    padding: '15px',
+                                    backgroundColor: '#000',
+                                    '-webkit-border-radius': '10px',
+                                    '-moz-border-radius': '10px',
+                                    opacity: .5,
+                                    color: '#fff',
+                                    fontSize: '16px'
+                                },
+                                message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                                baseZ: 9000,
+                            });
+                            this.submit();
+                        }
+                    });
+                });
+                $("#frmTambahpemeriksaan").on("submit", function(event) {
+                    event.preventDefault();
+                    var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                    Swal.fire({
+                        title: 'Simpan Data',
+                        text: "Apakah Anda yakin akan menambah pemeriksaan ? ",
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, Simpan Data',
+                        cancelButtonText: 'Tidak'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.blockUI({
+                                css: {
+                                    border: 'none',
+                                    padding: '15px',
+                                    backgroundColor: '#000',
+                                    '-webkit-border-radius': '10px',
+                                    '-moz-border-radius': '10px',
+                                    opacity: .5,
+                                    color: '#fff',
+                                    fontSize: '16px'
+                                },
+                                message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                                baseZ: 9000,
+                            });
+                            this.submit();
+                        }
+                    });
+                });
+                $("#frmHapusHasil").on("submit", function(event) {
+                    event.preventDefault();
+                    var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                    Swal.fire({
+                        title: 'Hapus Data',
+                        text: "Apakah Anda yakin akan hapus pemeriksaan ini ? ",
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, Simpan Data',
+                        cancelButtonText: 'Tidak'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.blockUI({
+                                css: {
+                                    border: 'none',
+                                    padding: '15px',
+                                    backgroundColor: '#000',
+                                    '-webkit-border-radius': '10px',
+                                    '-moz-border-radius': '10px',
+                                    opacity: .5,
+                                    color: '#fff',
+                                    fontSize: '16px'
+                                },
+                                message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                                baseZ: 9000,
+                            });
+                            this.submit();
+                        }
+                    });
+                });
+
+                @if (count($pemeriksaan_lab))
+                    @foreach ($pemeriksaan_lab as $pl)
+                        $("#frmEditLab").on("submit", function(event) {
+                            event.preventDefault();
+                            $('#edit_tgl_hasil{{ $pl->id }}').modal('hide');
+                            var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                            Swal.fire({
+                                title: 'Simpan Data',
+                                text: "Apakah Anda yakin akan Edit pemeriksaan ini ? ",
+                                icon: 'info',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Ya, Simpan Data',
+                                cancelButtonText: 'Tidak'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    $.blockUI({
+                                        css: {
+                                            border: 'none',
+                                            padding: '15px',
+                                            backgroundColor: '#000',
+                                            '-webkit-border-radius': '10px',
+                                            '-moz-border-radius': '10px',
+                                            opacity: .5,
+                                            color: '#fff',
+                                            fontSize: '16px'
+                                        },
+                                        message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                                        baseZ: 9000,
+                                    });
+                                    this.submit();
+                                }
+                            });
+                        });
+                    @endforeach
+                @endif
+                $("#frmTambahLab").on("submit", function(event) {
+                    event.preventDefault();
+                    var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                    Swal.fire({
+                        title: 'Simpan Data',
+                        text: "Apakah Anda yakin akan menambah pemeriksaan ini ? ",
                         icon: 'info',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
@@ -798,24 +1221,24 @@
                     });
                 });
             @elseif ($jenis == 'Fisio')
-            $('#fisio_repeater').repeater({
-                initEmpty: false,
+                $('#fisio_repeater').repeater({
+                    initEmpty: false,
 
-                show: function() {
-                    $(this).slideDown();
+                    show: function() {
+                        $(this).slideDown();
 
-                    $(this).find('[data-kt-repeater="select2fisio"]').select2();
-                },
+                        $(this).find('[data-kt-repeater="select2fisio"]').select2();
+                    },
 
-                hide: function(deleteElement) {
-                    $(this).slideUp(deleteElement);
-                },
+                    hide: function(deleteElement) {
+                        $(this).slideUp(deleteElement);
+                    },
 
-                ready: function() {
-                    $('[data-kt-repeater="select2fisio"]').select2();
-                }
-            });
-            $("#frmLab").on("submit", function(event) {
+                    ready: function() {
+                        $('[data-kt-repeater="select2fisio"]').select2();
+                    }
+                });
+                $("#frmLab").on("submit", function(event) {
                     event.preventDefault();
                     var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
                     Swal.fire({

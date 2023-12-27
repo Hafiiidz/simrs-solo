@@ -18,7 +18,7 @@ class GiziController extends Controller
 {
     public function index()
     {
-        $data = Rawat::with('pasien')->where('idjenisrawat', 2);
+        $data = Rawat::with('pasien','ruangan')->whereIn('idjenisrawat',[2])->orderBy('id','DESC');
 
         if (request()->ajax()) {
             return DataTables::eloquent($data)

@@ -63,6 +63,7 @@
                             <th>Poli</th>
                             <th>Jenis Rawat</th>
                             <th>Pemeriksaan</th>
+                            <th>Opsi</th>
                         </tr>
                     </thead>
                     <tbody class="border fs-8">
@@ -131,6 +132,10 @@
                     {
                         data: 'pemeriksaan',
                         name: 'pemeriksaan'
+                    },
+                    {
+                        data: 'opsi',
+                        name: 'opsi'
                     },
                 ]
             });

@@ -132,6 +132,7 @@ class PenunjangController extends Controller
         $hasil->idrawat = $permintaan->idrawat;
         $hasil->labid = 'LAB' . date('Ymd') . rand(1000000, 9999999);
         $hasil->tgl_hasil = date('Y-m-d H:i:s');
+        $hasil->tgl_permintaan = $permintaan->created_at;
         $hasil->iddokter = $request->dokter_pemeriksa;
         $hasil->idpetugas = auth()->user()->id;
         $hasil->status = 1;

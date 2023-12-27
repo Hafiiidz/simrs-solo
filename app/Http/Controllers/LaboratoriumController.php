@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Rawat;
+use App\Models\RekapMedis\RekapMedis;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
@@ -39,8 +41,12 @@ class LaboratoriumController extends Controller
                     $html .= '</ul>';
                     return $html;
                 })
+                ->addColumn('opsi', function ($query) {
+                    return '<a href="' . route('penunjang.detail',[ $query->idrawat,'Lab']) . '" class="btn btn-sm btn-success">Lihat</a>';
+                })
                 ->addIndexColumn()
-                ->rawColumns(['pemeriksaan'])
+
+                ->rawColumns(['pemeriksaan','opsi'])
                 ->make(true);
         }
 
@@ -78,7 +84,7 @@ class LaboratoriumController extends Controller
                 ->where('rawat_status.status', '!=', 5)->orderBy('rawat.tglmasuk', 'desc');
                 return DataTables::query($rawat)
                 ->addColumn('opsi', function ($rawat) {
-                    return '<a href="' . route('rekam-medis-poli', $rawat->id) . '" class="btn btn-sm btn-success">Lihat</a>';
+                    return '<a href="' . route('penunjang.detail',[ $rawat->id,'Lab']) . '" class="btn btn-sm btn-success">Lihat</a>';
                 })
                 ->rawColumns(['opsi'])
                 ->make(true);
@@ -97,5 +103,64 @@ class LaboratoriumController extends Controller
     public function hasilPasien()
     {
         return view('laboratorium.hasil-pasien');
+    }
+
+    public function tambah_pemeriksaan(Request $request,$id){
+        // return $request->all();
+        $lab_hasil = DB::table('laboratorium_hasildetail')->where('idhasil',$id)->first();
+        foreach($request->lab as $lab){
+            $cek_hasil = DB::table('laboratorium_hasildetail')->where('idhasil',$id)->where('idpemeriksaan',$lab['tindakan_lab'])->first();
+            if(!$cek_hasil){
+                $data_lab = DB::table('laboratorium_pemeriksaan')->where('id',$lab['tindakan_lab'])->first();
+                $data = [
+                    'idhasil'=>$id,
+                    'idpemeriksaan'=>$lab['tindakan_lab'],
+                    'nama_pemeriksaan'=>$data_lab->nama_pemeriksaan,
+                    'status'=>1,
+                    'idbayar'=>$lab_hasil->idbayar,
+                    'no_rm'=>$lab_hasil->no_rm,
+                    'kat_pasien'=>$lab_hasil->kat_pasien,
+                    'idpengantar'=>$lab_hasil->idpengantar,
+                ];
+                DB::table('laboratorium_hasildetail')->insert($data);
+            }
+        }
+
+        return redirect()->back()->with('berhasil','Berhasil menambahkan pemeriksaan');
+    }
+
+    public function tambah_pemeriksaan_lab(Request $request,$id){
+        $rawat = Rawat::find($id);
+        $rekap = RekapMedis::where('idrawat',$id)->first();
+        $data = [
+            'idrawat'=>$id,
+            'pemeriksaan_penunjang'=>'null',
+            'created_at'=>now(),
+            'updated_at'=>now(),
+            'status_pemeriksaan'=>'Antrian',
+            'jenis_penunjang'=>'Lab',
+            'peminta'=>$rawat->iddokter,
+            'idbayar'=>$rawat->idbayar,
+            'no_rm'=>$rawat->no_rm,
+            'jenis_rawat'=>$rawat->idjenisrawat,
+            'idrekap'=>$rekap?->id,
+        ];
+        #insert demo_permintaan_penunjang
+        $idpermintaan = DB::table('demo_permintaan_penunjang')->insert($data);
+        return redirect()->back()->with('berhasil','Berhasil menambahkan pemeriksaan');
+    }
+    public function edit_tgl_hasil(Request $request,$id){
+        DB::table('laboratorium_hasil')->where('id',$id)->update([
+            'tgl_hasil'=>$request->tgl_hasil,
+        ]);
+        return redirect()->back()->with('berhasil','Berhasil mengubah tanggal dan jam hasil');
+    }
+    public function hapus_hasil($id){
+        DB::table('laboratorium_hasil')->where('id',$id)->delete();
+        return redirect()->back()->with('berhasil','Berhasil menghapus hasil');
+    }
+    public function hapus_pemeriksaan($id){
+        DB::table('laboratorium_hasildetail')->where('id',$id)->delete();
+        return redirect()->back()->with('berhasil','Berhasil menghapus pemeriksaan');
     }
 }

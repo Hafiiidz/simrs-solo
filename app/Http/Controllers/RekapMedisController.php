@@ -106,31 +106,31 @@ class RekapMedisController extends Controller
                 ]);
             }
             if ($detail->fisio != 'null' || $detail->fisio != '') {
-                DB::table('demo_terapi_fisio')->insert([
-                    'idrekap' => $rekap_medis->id,
-                    'idrawat' => $rekap_medis->idrawat,
-                    'idbayar' => $rekap_medis->rawat->idbayar,
-                    'no_rm' => $rekap_medis->rawat->no_rm,
-                    'terapi' => $detail->fisio,
-                    'iddokter'=>$rekap_medis->rawat->iddokter,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                    'limit_program'=>8,
-                ]);
-                // DB::table('demo_permintaan_penunjang')->insert([
+                // DB::table('demo_terapi_fisio')->insert([
+                //     'idrekap' => $rekap_medis->id,
                 //     'idrawat' => $rekap_medis->idrawat,
                 //     'idbayar' => $rekap_medis->rawat->idbayar,
-                //     'status_pemeriksaan' => 'Antrian',
                 //     'no_rm' => $rekap_medis->rawat->no_rm,
-                //     'pemeriksaan_penunjang' => $detail->fisio,
-                //     'jenis_penunjang' => 'Fisio',
-                //     'peminta' => now(),
+                //     'terapi' => $detail->fisio,
+                //     'iddokter'=>$rekap_medis->rawat->iddokter,
                 //     'created_at' => now(),
                 //     'updated_at' => now(),
-                //     'peminta' => auth()->user()->id,
-                //     'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
-                //     'idrekap' => $rekap_medis->id,
+                //     'limit_program'=>8,
                 // ]);
+                DB::table('demo_permintaan_penunjang')->insert([
+                    'idrawat' => $rekap_medis->idrawat,
+                    'idbayar' => $rekap_medis->rawat->idbayar,
+                    'status_pemeriksaan' => 'Antrian',
+                    'no_rm' => $rekap_medis->rawat->no_rm,
+                    'pemeriksaan_penunjang' => $detail->fisio,
+                    'jenis_penunjang' => 'Fisio',
+                    'peminta' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'peminta' => auth()->user()->id,
+                    'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
+                    'idrekap' => $rekap_medis->id,
+                ]);
 
 
             }

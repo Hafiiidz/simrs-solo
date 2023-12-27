@@ -560,12 +560,12 @@
                                                                     <h5>Fisio</h5>
                                                                     <ul>
                                                                         @foreach (json_decode($resume_detail->fisio) as $val)
-                                                                            <li>{{ $val->tindakan_fisio }}</li>
-                                                                            {{-- @foreach ($fisio as $item)
+                                                                            {{-- <li>{{ $val->tindakan_fisio }}</li> --}}
+                                                                            @foreach ($fisio as $item)
                                                                                 @if ($val->tindakan_fisio == $item->id)
                                                                                     <li>{{ $item->nama_tarif }}</li>
                                                                                 @endif
-                                                                            @endforeach --}}
+                                                                            @endforeach
                                                                         @endforeach
                                                                     </ul>
                                                                 @endif

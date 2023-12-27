@@ -195,6 +195,7 @@
                                                     <form action="{{ route('farmasi.post-resep', $antrian->id) }}"
                                                         id='formPermintaanobat' method="post">
                                                         @csrf
+                                                        <input type="hidden" name="idantrian" id="" value="{{ $antrian->id }}">
                                                         <div class="rounded border p-5">
                                                             <div class="row mb-5">
                                                                 <!--begin::Repeater-->

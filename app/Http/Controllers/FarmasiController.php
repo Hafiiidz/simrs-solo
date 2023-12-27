@@ -35,14 +35,17 @@ class FarmasiController extends Controller
 
     public function updateResep(Request $request)
     {
+        // return json_encode($request->terapi_obat);
         $total_obat = 0;
         foreach($request->terapi_obat as $val){
             $obat = Obat::find($val['obat']);
             $total_obat += $obat->harga_jual * $val['pemberian_obat'];
         }
 
+        return $request->all();
+
         $antrian = AntrianFarmasi::find($request->idantrian);
-        $antrian->obat = json_encode($request->terapi_obat);
+        $antrian->terapi_obat = $request->terapi_obat;
         $antrian->save();
 
         return response()->json([

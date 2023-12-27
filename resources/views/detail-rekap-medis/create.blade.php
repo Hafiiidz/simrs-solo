@@ -348,8 +348,8 @@
                                                 <div class="form-group row mb-5">
                                                     <div class="col-md-6">
                                                         <label class="form-label">Permintaan Terapi</label>
-                                                        <input type="text" name='tindakan_fisio' class="form-control" required>
-                                                        {{-- <select name="tindakan_fisio" class="form-select"
+                                                        {{-- <input type="text" name='tindakan_fisio' class="form-control" required> --}}
+                                                        <select name="tindakan_fisio" class="form-select"
                                                             data-kt-repeater="select2fisio" data-placeholder="-Pilih-"
                                                             required>
                                                             <option></option>
@@ -357,7 +357,7 @@
                                                                 <option value="{{ $fisio->id }}">
                                                                     {{ $fisio->nama_tarif }}</option>
                                                             @endforeach
-                                                        </select> --}}
+                                                        </select>
                                                     </div>
 
                                                     <div class="col-md-4">
