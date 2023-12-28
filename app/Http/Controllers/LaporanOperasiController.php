@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Dokter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Yajra\DataTables\Facades\DataTables;
@@ -9,6 +10,7 @@ use App\Models\Operasi\LaporanOperasi;
 use App\Models\Rawat;
 use App\Models\Pasien\Pasien;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use PDF;
 
 class LaporanOperasiController extends Controller
@@ -61,12 +63,32 @@ class LaporanOperasiController extends Controller
 
         return view('operasi.show', compact('data'));
     }
-
+    public function post_tindakan_ok(Request $request,$id){
+        // return $request->all();
+        $rawat = Rawat::find($id);
+        $rawat_kunjungan = DB::table('rawat_kunjungan')->where('idkunjungan',$rawat?->idkunjungan)->first();
+        $transaksi = DB::table('transaksi')->where('idkunjungan',$rawat_kunjungan?->id)->first();
+        foreach($request->asisten as $tindakan){
+            $data = [
+                'idrawat'=>$id,
+                'no_rm'=>$rawat->no_rm,
+                'tgl'=>date('Y-m-d'),
+                'idtindakan'=>$tindakan['tindakan_bedah'],
+                'iddokter'=>$tindakan['dokter_tindakan'],
+                'idtrx'=>$transaksi->id,
+                'idbayar'=>$rawat->idbayar,
+                'keterangan_tindakan'=>$tindakan['keterangan']
+            ];
+            DB::table('operasi_tindakan')->insert($data);
+        }
+        return redirect()->back()->with('berhasil','Data Berhasil Disimpan!'); 
+    }
     public function edit($id)
     {
         $data = LaporanOperasi::with('rawat','rawat.pasien')->where('id', $id)->first();
-
-        return view('operasi.edit', compact('data'));
+        $dokter = Dokter::get();
+        
+        return view('operasi.edit', compact('data','dokter'));
     }
 
     public function update(Request $request, $id)

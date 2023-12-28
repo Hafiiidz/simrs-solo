@@ -115,7 +115,7 @@ class FarmasiController extends Controller
         $pemberian_obat = DB::table('demo_pemberian_obat_inap')->where('idrawat', $id)->get();
         $pemberian_obat_injeksi = DB::table('demo_pemberian_obat_inap')->where('idrawat', $id)->where('jenis', 'Injeksi')->get();
         $pemberian_obat_non_injeksi = DB::table('demo_pemberian_obat_inap')->where('idrawat', $id)->where('jenis', 'Non Injeksi')->get();
-        $cppt = DB::table('rawat_cppt')->where('profesi','Farmasi')->where('idrawat', $id)->get();
+        $cppt = DB::table('rawat_cppt')->where('idrawat', $id)->get();
         $resep = ObatTransaksi::where('idrawat', $id)->get();
         return view('farmasi.status-ranap', compact('rawat', 'pasien', 'antrian', 'obat', 'transaksi_bayar', 'resep', 'pemberian_obat', 'pemberian_obat_injeksi', 'pemberian_obat_non_injeksi', 'cppt'));
     }
