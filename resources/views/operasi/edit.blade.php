@@ -975,11 +975,43 @@
                                                 <button data-bs-toggle="modal" data-bs-target="#kt_modal_1"
                                                     class="btn btn-warning">Tindakan / Tarif Pembedahan</button>
                                             </div>
-                                            <hr>
+                                           
                                             <div class="col-md-12">
                                                 @if ($tindakan)
+                                                <br>
+                                                    <hr>
                                                     <table class="table table-bordered">
-
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Tindakan</th>
+                                                                <th>Keterangan</th>
+                                                                <th>Harga</th>
+                                                                <th>BHP</th>
+                                                                <th>Dokter</th>
+                                                                <th>Opsi</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach ($tindakan as $t)
+                                                                <tr>
+                                                                    <td>
+                                                                        @foreach ($tarif as $tr)
+                                                                            @if ($tr->id == $t->idtindakan)
+                                                                                {{ $tr->nama_tarif }}
+                                                                            @endif
+                                                                        @endforeach
+                                                                    </td>
+                                                                    <td>{{ $t->keterangan_tindakan }}</td>
+                                                                    <td>{{ number_format($t->harga_tindakan,2) }}</td>
+                                                                    <td>{{  number_format($t->harga_bhp,2) }}</td>
+                                                                    <td>{{ $t->nama_dokter }}</td>
+                                                                    <td>
+                                                                        <a href="{{ route('bhp.operasi',$t->id) }}" class="btn btn-info btn-sm">BHP</a>
+                                                                        <a href="" class="btn btn-danger btn-sm">Hapus</a>
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
                                                     </table>
                                                 @endif
                                             </div>

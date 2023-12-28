@@ -9,6 +9,7 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Models\Operasi\LaporanOperasi;
 use App\Models\Rawat;
 use App\Models\Pasien\Pasien;
+use App\Models\Tarif;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use PDF;
@@ -85,12 +86,51 @@ class LaporanOperasiController extends Controller
         }
         return redirect()->back()->with('berhasil','Data Berhasil Disimpan!'); 
     }
+    public function bhp($id){
+        $operasi_tindakan = DB::table('operasi_tindakan')->where('id',$id)->first();
+        $rawat = Rawat::find($operasi_tindakan->idrawat);
+        $bhp = DB::table('operasi_tindakan_bhp')->where('idoperasi',$operasi_tindakan->id)->get();
+        // dd($bhp);
+        return view('operasi.bhp',compact('operasi_tindakan','rawat','bhp'));
+    }
+
+    #create fungsi simpan bhp
+    public function post_bhp_ok(Request $request,$id){
+        $operasi_tindakan = DB::table('operasi_tindakan')->where('id',$id)->first();
+        // return $request->all();
+        foreach($request->bhp as $bhp){
+            $data = [
+                'idoperasi'=>$operasi_tindakan->id,
+                'idtindakan'=>$operasi_tindakan->idtindakan,
+                'iddokter'=>$operasi_tindakan->iddokter,
+                'nama_obat'=>$bhp['nama_obat'],
+                'jumlah'=>$bhp['jumlah'],
+                'satuan'=>$bhp['satuan_obat'],
+                'harga'=>$bhp['harga_obat'],
+                'status'=>1,
+                'tgl'=>date('Y-m-d')
+            ];
+            DB::table('operasi_tindakan_bhp')->insert($data);
+        }
+        return redirect()->back()->with('berhasil','Data Berhasil Disimpan!');
+    }
+
     public function edit($id)
     {
         $data = LaporanOperasi::with('rawat','rawat.pasien')->where('id', $id)->first();
         $dokter = Dokter::get();
-        $tindakan = DB::table('operasi_tindakan')->where('idrawat',$data->idrawat)->get();
-        return view('operasi.edit', compact('data','dokter','tindakan'));
+        $tarif = Tarif::get();
+        $tindakan = DB::table('operasi_tindakan')
+        ->join('rawat','rawat.id','=','operasi_tindakan.idrawat')
+        ->join('dokter','dokter.id','=','operasi_tindakan.iddokter')
+        ->select([
+            'operasi_tindakan.*',
+            'dokter.nama_dokter',
+        ])
+        ->where('operasi_tindakan.idrawat',$data->idrawat)->get();
+
+        // dd($tindakan);
+        return view('operasi.edit', compact('data','dokter','tindakan','tarif'));
     }
 
     public function update(Request $request, $id)

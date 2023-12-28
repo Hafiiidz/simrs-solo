@@ -229,12 +229,14 @@ Route::prefix('/pasien')->group(function () {
     //operasi
     Route::prefix('/operasi')->group(function () {
         Route::get('/', [LaporanOperasiController::class, 'index'])->name('index.operasi');
+        Route::get('/bhp/{id}', [LaporanOperasiController::class, 'bhp'])->name('bhp.operasi');
         Route::post('/store', [LaporanOperasiController::class, 'store'])->name('store.operasi');
         Route::get('{id}/show', [LaporanOperasiController::class, 'show'])->name('show.operasi');
         Route::get('{id}/edit', [LaporanOperasiController::class, 'edit'])->name('edit.operasi');
         Route::post('{id}/update', [LaporanOperasiController::class, 'update'])->name('update.operasi');
         Route::post('{id}/update-status', [LaporanOperasiController::class, 'updateStatus'])->name('update-status.operasi');
-        Route::post('{id}/post=tindakan', [LaporanOperasiController::class, 'post_tindakan_ok'])->name('post_tindakan_ok.operasi');
+        Route::post('{id}/post-tindakan', [LaporanOperasiController::class, 'post_tindakan_ok'])->name('post_tindakan_ok.operasi');
+        Route::post('{id}/post-bhp', [LaporanOperasiController::class, 'post_bhp_ok'])->name('post_bhp_ok.operasi');
         Route::get('{id}/cetak-laporan', [LaporanOperasiController::class, 'cetakLaporan'])->name('cetak-laporan.operasi');
     });
 
