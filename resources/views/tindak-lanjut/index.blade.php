@@ -311,11 +311,11 @@
                 placeholder: 'Search for a user...'
             });
 
-            $('#tgl_kontrol').on('change', function() {
+            $('#tgl_kontrol_rujuk').on('change', function() {
                 $('#tujuan_rujuk').prop('disabled', false);
             });
             $('#tujuan_rujuk').on('change', function() {
-                tgl = $('#tgl_kontrol').val();
+                tgl = $('#tgl_kontrol_rujuk').val();
                 kode_faskes = $('#tujuan_rujuk').val();
                 var langArray = kode_faskes.split('-');
                 var url = '{{ route('spesialistik-faskes', [':b_id', ':p_no']) }}';

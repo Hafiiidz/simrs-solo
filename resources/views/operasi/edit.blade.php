@@ -975,6 +975,14 @@
                                                 <button data-bs-toggle="modal" data-bs-target="#kt_modal_1"
                                                     class="btn btn-warning">Tindakan / Tarif Pembedahan</button>
                                             </div>
+                                            <hr>
+                                            <div class="col-md-12">
+                                                @if ($tindakan)
+                                                    <table class="table table-bordered">
+
+                                                    </table>
+                                                @endif
+                                            </div>
                                         </div>
 
                                         <div class="modal fade" tabindex="-1" id="kt_modal_1">

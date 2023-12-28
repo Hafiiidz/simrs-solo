@@ -69,6 +69,7 @@ class LaporanOperasiController extends Controller
         $rawat_kunjungan = DB::table('rawat_kunjungan')->where('idkunjungan',$rawat?->idkunjungan)->first();
         $transaksi = DB::table('transaksi')->where('idkunjungan',$rawat_kunjungan?->id)->first();
         foreach($request->asisten as $tindakan){
+            $tarif = DB::table('tarif')->where('id',$tindakan['tindakan_bedah'])->first();
             $data = [
                 'idrawat'=>$id,
                 'no_rm'=>$rawat->no_rm,
@@ -77,7 +78,8 @@ class LaporanOperasiController extends Controller
                 'iddokter'=>$tindakan['dokter_tindakan'],
                 'idtrx'=>$transaksi->id,
                 'idbayar'=>$rawat->idbayar,
-                'keterangan_tindakan'=>$tindakan['keterangan']
+                'keterangan_tindakan'=>$tindakan['keterangan'],
+                'harga_tindakan'=>$tarif->tarif,
             ];
             DB::table('operasi_tindakan')->insert($data);
         }
@@ -87,8 +89,8 @@ class LaporanOperasiController extends Controller
     {
         $data = LaporanOperasi::with('rawat','rawat.pasien')->where('id', $id)->first();
         $dokter = Dokter::get();
-        
-        return view('operasi.edit', compact('data','dokter'));
+        $tindakan = DB::table('operasi_tindakan')->where('idrawat',$data->idrawat)->get();
+        return view('operasi.edit', compact('data','dokter','tindakan'));
     }
 
     public function update(Request $request, $id)
