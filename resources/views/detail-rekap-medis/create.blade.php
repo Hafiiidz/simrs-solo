@@ -198,7 +198,7 @@
                                                             <div class="col-md-2">
                                                                 <label class="form-label">Jenis Diagnosa</label>
                                                                 <div class="input-group mb-5">
-                                                                    <select name="jenis_diagnosa" class="form-select"
+                                                                    <select name="jenis_diagnosa" required class="form-select"
                                                                         id="">
                                                                         <option value="P">Primer</option>
                                                                         <option value="S">Sekunder</option>

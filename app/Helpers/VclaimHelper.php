@@ -23,7 +23,7 @@ class VclaimHelper
             $this->secretKey = config('app.secretkey_vclaim_prod');
             $this->userKeyVclaim = config('app.userkey_vclaim_prod');
             $this->userKeyAntrol = config('app.userkey_antrol_prod');
-            $this->ssl = false;
+            $this->ssl = true;
             $this->url_icare = config('app.url_icare_prod');
         } else {
             $this->url = config('app.url_vclaim_dev');
@@ -239,14 +239,21 @@ class VclaimHelper
         }
     }
     public static function getFaskes($nama_faskes){
+        $helper = new VclaimHelper();
+        $token = $helper->getToken();
+        return $helper->url;
+        $response = Http::withHeaders($token['signature'])
+            ->withOptions(["verify" => false])
+            ->get($helper->url . '/referensi/faskes/rsau/2');
+        return $token;
         try {
             $helper = new VclaimHelper();
             $token = $helper->getToken();
 
             $response = Http::withHeaders($token['signature'])
-                ->withOptions(["verify" => $token['ssl']])
+                ->withOptions(["verify" => false])
                 ->get($helper->url . '/referensi/faskes/'.$nama_faskes.'/2');
-
+            // return $response;
             if ($response['metaData']['code'] == '200') {
                 $data_response = VclaimHelper::stringDecrypt($token['key'], $response['response']);
                 $data_response = VclaimHelper::decompress($data_response);
