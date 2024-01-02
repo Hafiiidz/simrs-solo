@@ -89,7 +89,7 @@ class PoliklinikController extends Controller
                 ->join('rawat_bayar', 'rawat_bayar.id', '=', 'rawat.idbayar')
                 ->join('rawat_status', 'rawat_status.id', '=', 'rawat.status')
                 ->Leftjoin('dokter', 'dokter.id', '=', 'rawat.iddokter')
-                ->Leftjoin('demo_rekap_medis as rekap_medis', 'rekap_medis.idrawat', '=', 'rawat.id')
+                ->Leftjoin('demo_rekap_medis as rekap_medis', 'rekap_medis.idrawat', '=', 'rawat.id');
                 // ->where('rawat.idpoli', auth()->user()->detail->idpoli);
             if (auth()->user()->detail->dokter == 1) {
                 $rawat->where('rawat.iddokter', auth()->user()->detail->iddokter)->orderBy('tglmasuk', 'desc');
