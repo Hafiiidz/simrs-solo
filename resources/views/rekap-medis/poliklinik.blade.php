@@ -325,7 +325,7 @@
                                                                 @if ($rekap_resume->terapi_obat != 'null')
                                                                     @foreach (json_decode($rekap_resume->terapi_obat) as $val)
                                                                         {{-- {{ dd($val['terapi_obat_racikan']) }} --}}
-                                                                        @foreach (json_decode($val['terapi_obat_racikan']) as $data_obat)
+                                                                        {{-- @foreach (json_decode($val->) as $data_obat)
                                                                             @foreach ($obat as $item)
                                                                                 @if ($val->obat == $item->id)
                                                                                     {{ $data_obat->nama_obat }}
@@ -335,7 +335,7 @@
                                                                                     <br>
                                                                                 @endif
                                                                             @endforeach
-                                                                        @endforeach
+                                                                        @endforeach --}}
                                                                     @endforeach
                                                                 @endif
                                                             @endif
