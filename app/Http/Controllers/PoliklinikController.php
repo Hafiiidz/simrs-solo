@@ -36,6 +36,8 @@ class PoliklinikController extends Controller
                 ->whereDate('rawat.tglmasuk', date('Y-m-d'));
             if (auth()->user()->detail->idruangan == 1) {
                 $rawat->where('rawat.idpoli', auth()->user()->detail->idpoli);
+            }else{
+                $rawat->where('rawat.idpoli','!=',1);
             }
             if (auth()->user()->detail->dokter == 1) {
                 $rawat->where('rawat.iddokter', auth()->user()->detail->iddokter)->orderBy('tglmasuk', 'desc');
@@ -96,6 +98,8 @@ class PoliklinikController extends Controller
             // ->where('rawat.idpoli', auth()->user()->detail->idpoli);
             if (auth()->user()->detail->idruangan == 1) {
                 $rawat->where('rawat.idpoli', auth()->user()->detail->idpoli);
+            }else{
+                $rawat->where('rawat.idpoli','!=',1);
             }
             if (auth()->user()->detail->dokter == 1) {
                 $rawat->where('rawat.iddokter', auth()->user()->detail->iddokter)->orderBy('tglmasuk', 'desc');
