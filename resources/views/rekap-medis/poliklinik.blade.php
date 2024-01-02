@@ -597,6 +597,7 @@
                                                                     @if ($resume_detail->terapi_obat != 'null')
                                                                         @foreach (json_decode($resume_detail->terapi_obat) as $val)
                                                                             {{-- {{ dd($val->terapi_obat_racikan) }} --}}
+                                                                            @if (isset($val->terapi_obat_racikan))
                                                                             <div class="card card-border mb-2">
                                                                                 <div class="card-body">
                                                                                     @foreach ($val->terapi_obat_racikan as $data_obat)
@@ -614,6 +615,8 @@
                                                                                     {{ isset($val->signa3) ? $val->signa3 : '' }})
                                                                                 </div>
                                                                             </div>
+                                                                            @endif
+                                                                            
                                                                         @endforeach
                                                                     @endif
                                                                 @endif
