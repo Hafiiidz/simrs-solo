@@ -71,7 +71,7 @@
                                         <div class="d-flex align-items-center">
                                             <!--begin::Icon-->
                                            
-                                           <span class="fs-2x fw-bold d-block text-gray-800 me-5 mb-2 lh-1 ">RJ - {{ $loop->iteration }}</span>
+                                           <span class="fs-2x fw-bold d-block text-gray-800 me-5 mb-2 lh-1 ">RJ - {{ $rr->no_antrian }}</span>
                                             <!--end::Icon-->
 
                                             <!--begin::Section-->
@@ -161,7 +161,7 @@
                                             <div class="d-flex align-items-center">
                                                 <!--begin::Icon-->
                                                
-                                               <span class="fs-2x fw-bold d-block text-gray-800 me-5 mb-2 lh-1 ">UGD - {{ $loop->iteration }}</span>
+                                               <span class="fs-2x fw-bold d-block text-gray-800 me-5 mb-2 lh-1 ">UGD - {{$rr->no_antrian}}</span>
                                                 <!--end::Icon-->
     
                                                 <!--begin::Section-->
@@ -213,7 +213,7 @@
                                             <div class="d-flex align-items-center">
                                                 <!--begin::Icon-->
                                                
-                                               <span class="fs-2x fw-bold d-block text-gray-800 me-5 mb-2 lh-1 ">RI - {{ $loop->iteration }}</span>
+                                               <span class="fs-2x fw-bold d-block text-gray-800 me-5 mb-2 lh-1 ">RI - {{ $rr->no_antrian }}</span>
                                                 <!--end::Icon-->
     
                                                 <!--begin::Section-->

@@ -165,88 +165,212 @@
                             <!--begin::Body-->
                             <div class="card-body p-lg-15">
                                 @if ($antrian?->status_antrian == 'Antrian')
-                                <h4>Permintaan Resep</h4>
-                                <h6>Dokter : {{ $rawat->dokter->nama_dokter }}</h6>
-                                @if($antrian->racikan != null || $antrian->racikan != 'null' || $antrian->racikan != '')
-                                <div class="alert alert-dismissible bg-success d-flex flex-column flex-sm-row w-100 p-5 mb-10">
-                                    <!--begin::Icon-->
-                                    <i class="ki-duotone ki-pencil fs-2hx text-light me-4 mb-5 mb-sm-0"><span class="path1"></span><span class="path2"></span></i>                    <!--end::Icon-->
-                
-                                    <!--begin::Content-->
-                                    <div class="d-flex flex-column text-light pe-0 pe-sm-10">
-                                        <h4 class="mb-2 text-light">Racikan Resep</h4>
-                                        <span>{{ $antrian->racikan }}</span>
-                                    </div>
-                                    <!--end::Content-->
-                
-                                    <!--begin::Close-->
-                                    <button type="button" class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto" data-bs-dismiss="alert">
-                                        <i class="ki-duotone ki-cross fs-2x text-light"><span class="path1"></span><span class="path2"></span></i>                    </button>
-                                    <!--end::Close-->
-                                </div>
-                                @endif 
-                                <form action="{{ route('farmasi.post-resep',$antrian->id) }}" id='formPermintaanobat' method="post">
-                                    @csrf
-                                    <input type="hidden" name="idantrian" id="" value="{{ $antrian->id }}">
-                                    <div class="rounded border p-5">
-                                        <div class="row mb-5">
-                                            <!--begin::Repeater-->
-                                            <div id="kt_docs_repeater_basic">
-                                                <!--begin::Form group-->
-                                                <div class="form-group">
-                                                    <div data-repeater-list="terapi_obat">
-                                                        @if ($antrian->obat != 'null')
-                                                            @foreach (json_decode($antrian->obat) as $val)
+                                    <h4>Permintaan Resep</h4>
+                                    <h6>Dokter : {{ $rawat->dokter->nama_dokter }}</h6>
+                                    @if ($antrian->racikan != null || $antrian->racikan != '')
+                                        <div
+                                            class="alert alert-dismissible bg-success d-flex flex-column flex-sm-row w-100 p-5 mb-10">
+                                            <!--begin::Icon-->
+                                            <i class="ki-duotone ki-pencil fs-2hx text-light me-4 mb-5 mb-sm-0"><span
+                                                    class="path1"></span><span class="path2"></span></i> <!--end::Icon-->
+
+                                            <!--begin::Content-->
+                                            <div class="d-flex flex-column text-light pe-0 pe-sm-10">
+                                                <h4 class="mb-2 text-light">Racikan Resep</h4>
+                                                <span>{{ $antrian->racikan }}</span>
+
+                                                <button data-bs-toggle="modal" data-bs-target="#kt_modal_1"
+                                                    class="btn btn-secondary mt-10 btn-sm">Racik</button>
+                                            </div>
+
+                                            <!--end::Content-->
+
+                                            <!--begin::Close-->
+                                            <button type="button"
+                                                class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto"
+                                                data-bs-dismiss="alert">
+                                                <i class="ki-duotone ki-cross fs-2x text-light"><span
+                                                        class="path1"></span><span class="path2"></span></i> </button>
+                                            <!--end::Close-->
+                                        </div>
+
+                                        <div class="modal fade" tabindex="-1" id="kt_modal_1">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h3 class="modal-title">Modal title</h3>
+
+                                                        <!--begin::Close-->
+                                                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2"
+                                                            data-bs-dismiss="modal" aria-label="Close">
+                                                            <i class="ki-duotone ki-cross fs-1"><span
+                                                                    class="path1"></span><span class="path2"></span></i>
+                                                        </div>
+                                                        <!--end::Close-->
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <p>Modal body text goes here.</p>
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-light"
+                                                            data-bs-dismiss="modal">Close</button>
+                                                        <button type="button" class="btn btn-primary">Save
+                                                            changes</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                    <form action="{{ route('farmasi.post-resep', $antrian->id) }}" id='formPermintaanobat'
+                                        method="post">
+                                        @csrf
+                                        <input type="hidden" name="idantrian" id=""
+                                            value="{{ $antrian->id }}">
+                                        <div class="rounded border p-5">
+                                            <div class="row mb-5">
+                                                <!--begin::Repeater-->
+                                                <div id="kt_docs_repeater_basic">
+                                                    <!--begin::Form group-->
+                                                    <div class="form-group">
+                                                        <div data-repeater-list="terapi_obat">
+                                                            @if ($antrian->obat != 'null')
+                                                                @foreach (json_decode($antrian->obat) as $val)
+                                                                    <div data-repeater-item>
+                                                                        <div class="form-group row mb-2">
+                                                                            <div class="col-md-6">
+                                                                                <label class="form-label">Obat</label>
+                                                                                <select name="obat" class="form-select"
+                                                                                    data-kt-repeater="select2"
+                                                                                    data-placeholder="-Pilih-">
+                                                                                    <option></option>
+                                                                                    @foreach ($obat as $item)
+                                                                                        <option
+                                                                                            value="{{ $item->id }}"
+                                                                                            {{ $val->obat == $item->id ? 'selected' : '' }}>
+                                                                                            {{ $item->nama_obat }} -
+                                                                                            {{ $item->stok_apotek }} (Rp.
+                                                                                            {{ $item->harga_jual }})
+                                                                                            / {{ $item->satuan->satuan }}
+                                                                                        </option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="col-md-2 fs-8">
+                                                                                <label class="form-label">Signa</label>
+                                                                                <div class="input-group mb-5">
+                                                                                    <input type="text"
+                                                                                        class="form-control"
+                                                                                        name='signa1'
+                                                                                        value="{{ $val->signa1 }}"
+                                                                                        placeholder="...."
+                                                                                        aria-label="Username">
+                                                                                    <span
+                                                                                        class="input-group-text fs-9">X</span>
+                                                                                    <input type="text"
+                                                                                        class="form-control"
+                                                                                        name='signa2'
+                                                                                        value="{{ $val->signa2 }}"
+                                                                                        placeholder="...."
+                                                                                        aria-label="Server">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-1">
+                                                                                <label class="form-label">Qty</label>
+                                                                                <input type="number"
+                                                                                    value={{ $val->jumlah_obat }}
+                                                                                    name="jumlah_obat"
+                                                                                    class="form-control form-control-solid mb-5 mb-md-0"
+                                                                                    min="0" required>
+                                                                            </div>
+                                                                            <div class="col-md-1">
+                                                                                <label class="form-label">Pemberian</label>
+                                                                                <input type="number"
+                                                                                    name="pemberian_obat"
+                                                                                    class="form-control mb-5 mb-md-0"
+                                                                                    min="0" required>
+                                                                            </div>
+                                                                            <div class="col-md-2">
+                                                                                <label class="form-label">Jenis
+                                                                                    Obat</label>
+                                                                                <select name="jenis_obat" id=""
+                                                                                    class="form-select" required>
+                                                                                    <option value="">- Jenis Obat -
+                                                                                    </option>
+                                                                                    @foreach ($transaksi_bayar as $tb)
+                                                                                        <option
+                                                                                            value="{{ $tb->id }}">
+                                                                                            {{ $tb->bayar }}</option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <a href="javascript:;" data-repeater-delete
+                                                                                    class="btn btn-sm btn-light-danger">
+                                                                                    <i class="ki-duotone ki-trash fs-5"><span
+                                                                                            class="path1"></span><span
+                                                                                            class="path2"></span><span
+                                                                                            class="path3"></span><span
+                                                                                            class="path4"></span><span
+                                                                                            class="path5"></span></i>
+                                                                                    Hapus
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
+                                                            @else
                                                                 <div data-repeater-item>
                                                                     <div class="form-group row mb-2">
-                                                                        <div class="col-md-6">
+                                                                        <div class="col-md-3">
                                                                             <label class="form-label">Obat</label>
                                                                             <select name="obat" class="form-select"
                                                                                 data-kt-repeater="select2"
-                                                                                data-placeholder="-Pilih-">
+                                                                                data-placeholder="-Pilih-" required>
                                                                                 <option></option>
-                                                                                @foreach ($obat as $item)
-                                                                                    <option value="{{ $item->id }}"
-                                                                                        {{ $val->obat == $item->id ? 'selected' : '' }}>
-                                                                                        {{ $item->nama_obat }} - {{ $item->stok_apotek  }} (Rp. {{ $item->harga_jual }})
-                                                                                         / {{ $item->satuan->satuan }}</option>
+                                                                                @foreach ($obat as $val)
+                                                                                    <option value="{{ $val->id }}">
+                                                                                        {{ $val->nama_obat }}
+                                                                                        - {{ $val->stok_apotek }}
+                                                                                        {{ $val->satuan->satuan }}</option>
                                                                                 @endforeach
                                                                             </select>
                                                                         </div>
-                                                                        <div class="col-md-2 fs-8">
+                                                                        <div class="col-md-2">
                                                                             <label class="form-label">Signa</label>
                                                                             <div class="input-group mb-5">
                                                                                 <input type="text" class="form-control"
-                                                                                    name='signa1' value="{{ $val->signa1 }}"
-                                                                                    placeholder="...." aria-label="Username">
-                                                                                <span class="input-group-text fs-9">X</span>
+                                                                                    name='signa1' placeholder="...."
+                                                                                    aria-label="Username">
+                                                                                <span class="input-group-text">X</span>
                                                                                 <input type="text" class="form-control"
-                                                                                    name='signa2' value="{{ $val->signa2 }}"
-                                                                                    placeholder="...." aria-label="Server">
+                                                                                    name='signa2' placeholder="...."
+                                                                                    aria-label="Server">
                                                                             </div>
                                                                         </div>
-                                                                        <div class="col-md-1">
-                                                                            <label class="form-label">Qty</label>
-                                                                            <input type="number"
-                                                                                value={{ $val->jumlah_obat }}
-                                                                                name="jumlah_obat"
+                                                                        <div class="col-md-2">
+                                                                            <label class="form-label">Jumlah Obat</label>
+                                                                            <input type="number" name="jumlah_obat"
                                                                                 class="form-control form-control-solid mb-5 mb-md-0"
-                                                                                min="0" required>
+                                                                                min="0" required readonly>
                                                                         </div>
-                                                                        <div class="col-md-1">
+                                                                        <div class="col-md-2">
                                                                             <label class="form-label">Pemberian</label>
                                                                             <input type="number" name="pemberian_obat"
-                                                                                class="form-control mb-5 mb-md-0" min="0"
-                                                                                required>
+                                                                                class="form-control mb-5 mb-md-0"
+                                                                                min="0" required>
                                                                         </div>
                                                                         <div class="col-md-2">
                                                                             <label class="form-label">Jenis Obat</label>
                                                                             <select name="jenis_obat" id=""
                                                                                 class="form-select" required>
-                                                                                <option value="">- Jenis Obat -</option>
-                                                                               @foreach ($transaksi_bayar as $tb)
-                                                                                   <option value="{{ $tb->id }}">{{ $tb->bayar }}</option>
-                                                                               @endforeach
+                                                                                <option value="">- Jenis Obat -
+                                                                                </option>
+                                                                                <option value="1">Pribadi</option>
+                                                                                <option value="2">BPJS</option>
+                                                                                <option value="3">Kronis</option>
+                                                                                <option value="4">Covid</option>
                                                                             </select>
                                                                         </div>
                                                                         <div class="col-md-4">
@@ -263,106 +387,43 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            @endforeach
-                                                        @else
-                                                            <div data-repeater-item>
-                                                                <div class="form-group row mb-2">
-                                                                    <div class="col-md-3">
-                                                                        <label class="form-label">Obat</label>
-                                                                        <select name="obat" class="form-select"
-                                                                            data-kt-repeater="select2"
-                                                                            data-placeholder="-Pilih-" required>
-                                                                            <option></option>
-                                                                            @foreach ($obat as $val)
-                                                                                <option value="{{ $val->id }}">
-                                                                                    {{ $val->nama_obat }}
-                                                                                    - {{ $val->stok_apotek }}
-                                                                                    {{ $val->satuan->satuan }}</option>
-                                                                            @endforeach
-                                                                        </select>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <label class="form-label">Signa</label>
-                                                                        <div class="input-group mb-5">
-                                                                            <input type="text" class="form-control"
-                                                                                name='signa1' placeholder="...."
-                                                                                aria-label="Username">
-                                                                            <span class="input-group-text">X</span>
-                                                                            <input type="text" class="form-control"
-                                                                                name='signa2' placeholder="...."
-                                                                                aria-label="Server">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <label class="form-label">Jumlah Obat</label>
-                                                                        <input type="number" name="jumlah_obat"
-                                                                            class="form-control form-control-solid mb-5 mb-md-0" min="0"
-                                                                            required readonly>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <label class="form-label">Pemberian</label>
-                                                                        <input type="number" name="pemberian_obat"
-                                                                            class="form-control mb-5 mb-md-0" min="0"
-                                                                            required>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <label class="form-label">Jenis Obat</label>
-                                                                        <select name="jenis_obat" id=""
-                                                                            class="form-select" required>
-                                                                            <option value="">- Jenis Obat -</option>
-                                                                            <option value="1">Pribadi</option>
-                                                                            <option value="2">BPJS</option>
-                                                                            <option value="3">Kronis</option>
-                                                                            <option value="4">Covid</option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <a href="javascript:;" data-repeater-delete
-                                                                            class="btn btn-sm btn-light-danger">
-                                                                            <i class="ki-duotone ki-trash fs-5"><span
-                                                                                    class="path1"></span><span
-                                                                                    class="path2"></span><span
-                                                                                    class="path3"></span><span
-                                                                                    class="path4"></span><span
-                                                                                    class="path5"></span></i>
-                                                                            Hapus
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        @endif
+                                                            @endif
 
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <!--end::Form group-->
+                                                    <!--end::Form group-->
 
-                                                <!--begin::Form group-->
-                                                <div class="form-group mt-5">
-                                                    <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
-                                                        <i class="ki-duotone ki-plus fs-3"></i>
-                                                        Tambah Obat
-                                                    </a>
-                                                </div>
-                                                <!--end::Form group-->
-                                                <div class="row mt-5">
-                                                    <div class="col-md-2">
-                                                        <label class="form-label">Total Resep</label>
-                                                        <input type="text" name="total_resep" id="total_resep" class="form-control form-control-solid" readonly>
+                                                    <!--begin::Form group-->
+                                                    <div class="form-group mt-5">
+                                                        <a href="javascript:;" data-repeater-create
+                                                            class="btn btn-light-primary">
+                                                            <i class="ki-duotone ki-plus fs-3"></i>
+                                                            Tambah Obat
+                                                        </a>
                                                     </div>
-                                                    <div class="col">
-                                                        <label class="form-label">&nbsp;</label>
-                                                        <br>
-                                                        <button type="button" class="btn btn-primary" id="btn-resep">Update Resep</button>
+                                                    <!--end::Form group-->
+                                                    <div class="row mt-5">
+                                                        <div class="col-md-2">
+                                                            <label class="form-label">Total Resep</label>
+                                                            <input type="text" name="total_resep" id="total_resep"
+                                                                class="form-control form-control-solid" readonly>
+                                                        </div>
+                                                        <div class="col">
+                                                            <label class="form-label">&nbsp;</label>
+                                                            <br>
+                                                            <button type="button" class="btn btn-primary"
+                                                                id="btn-resep">Update Resep</button>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                                <!--end::Repeater-->
                                             </div>
-                                            <!--end::Repeater-->
                                         </div>
-                                    </div>
-                                    <a target="_blank"  class="btn btn-warning mt-10" href="{{ route('farmasi.cetak-resep-tempo',$antrian->id) }}">Print Resep</a>
-                                    <button class="btn btn-success mt-10">Simpan Resep</button>
-                                </form>
-                                <div class="separator separator-dashed border-secondary mt-5 mb-5"></div>
+                                        <a target="_blank" class="btn btn-warning mt-10"
+                                            href="{{ route('farmasi.cetak-resep-tempo', $antrian->id) }}">Print Resep</a>
+                                        <button class="btn btn-success mt-10">Simpan Resep</button>
+                                    </form>
+                                    <div class="separator separator-dashed border-secondary mt-5 mb-5"></div>
                                 @endif
                                 <table class="table table-bordered mt-10">
                                     <thead>
@@ -383,18 +444,22 @@
                                                 <td>{{ $r->tgl }}</td>
                                                 <td>
                                                     @php
-                                                        $obat_detail = DB::table('obat_transaksi_detail')->where('idtrx',$r->id)->get();
+                                                        $obat_detail = DB::table('obat_transaksi_detail')
+                                                            ->where('idtrx', $r->id)
+                                                            ->get();
                                                     @endphp
                                                     <ol>
                                                         @foreach ($obat_detail as $od)
-                                                        <li>{{ $od->nama_obat }} ({{ $od->qty }})</li>
+                                                            <li>{{ $od->nama_obat }} ({{ $od->qty }})</li>
                                                         @endforeach
                                                     </ol>
                                                 </td>
                                                 <td>{{ $r->total_harga }}</td>
                                                 <td>
-                                                    <a href="{{ route('farmasi.cetak-resep', $r->id) }}" class="btn btn-info btn-sm" target="_blank">Print</a>
-                                                    <a href="{{ route('farmasi.cetak-tiket', $r->id) }}" class="btn btn-info btn-sm" target="_blank">Print Tiket</a>
+                                                    <a href="{{ route('farmasi.cetak-resep', $r->id) }}"
+                                                        class="btn btn-info btn-sm" target="_blank">Print</a>
+                                                    <a href="{{ route('farmasi.cetak-tiket', $r->id) }}"
+                                                        class="btn btn-info btn-sm" target="_blank">Print Tiket</a>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -419,7 +484,7 @@
     <script></script>
     <script src="{{ asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
     <script type="text/javascript"
-    src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js"></script>
+        src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js"></script>
     <script>
         $(function() {
             $('#kt_docs_repeater_basic').repeater({
@@ -473,17 +538,17 @@
             });
         })
 
-        $( "#btn-resep" ).on( "click", function() {
+        $("#btn-resep").on("click", function() {
             var formData = $("#formPermintaanobat").serialize();
             $.ajax({
                 type: "GET",
-                url: '{{route('farmasi.update-resep')}}',
+                url: '{{ route('farmasi.update-resep') }}',
                 data: formData,
-                success: function(response){
+                success: function(response) {
                     $('#total_resep').val('Rp.' + response.total);
                 }
             });
-        } );
+        });
 
         @if ($message = session('gagal'))
             Swal.fire({
