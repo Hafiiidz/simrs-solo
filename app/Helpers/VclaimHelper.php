@@ -17,7 +17,7 @@ class VclaimHelper
 
     public function __construct()
     {
-        if (config('app.env') == 'production') {
+        if (config('app.env') == 'local') {
             $this->url = config('app.url_vclaim_prod');
             $this->consId = config('app.consid_vclaim_prod');
             $this->secretKey = config('app.secretkey_vclaim_prod');
