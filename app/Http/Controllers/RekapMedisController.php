@@ -16,9 +16,11 @@ use App\Models\Pasien\Pasien;
 use App\Models\RadiologiHasil;
 use App\Models\Rawat;
 use App\Models\SoapRajalTindakan;
+use App\Models\Tarif;
 use App\Models\TindakLanjut;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
+use Termwind\Components\Raw;
 
 class RekapMedisController extends Controller
 {
@@ -54,16 +56,23 @@ class RekapMedisController extends Controller
     public function selesai_poli(Request $request, $id)
     {
         $rekap_medis = RekapMedis::where('id', $id)->first();
+        $rawat = Rawat::find($rekap_medis->idrawat);
+        $transaksi = DB::table('transaksi')->where('kode_kunjungan', $rawat->idkunjungan)->first();
+        // return $transaksi;
+        // return $rekap_medis;
         $detail = DetailRekapMedis::where('idrekapmedis', $rekap_medis->id)->first();
+
+
+
         if ($request->jenis == 'perawat') {
             $rekap_medis->perawat = 1;
         } else {
             $rekap_medis->dokter = 1;
             if ($detail->terapi_obat != 'null' || $detail->terapi_obat != '') {
-                $no_antrian = DB::table('demo_antrian_resep')->whereDate('created_at', Carbon::today())->where('jenis_rawat',$rekap_medis->idrawat)->count();
+                $no_antrian = DB::table('demo_antrian_resep')->whereDate('created_at', Carbon::today())->where('jenis_rawat', $rekap_medis->idrawat)->count();
                 DB::table('demo_antrian_resep')->insert([
                     'idrawat' => $rekap_medis->idrawat,
-                    'racikan'=>$detail->terapi,
+                    'racikan' => $detail->terapi,
                     'idbayar' => $rekap_medis->rawat->idbayar,
                     'status_antrian' => 'Antrian',
                     'no_rm' => $rekap_medis->rawat->no_rm,
@@ -134,8 +143,6 @@ class RekapMedisController extends Controller
                     'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
                     'idrekap' => $rekap_medis->id,
                 ]);
-
-
             }
         }
 
@@ -145,6 +152,29 @@ class RekapMedisController extends Controller
             $rawat = Rawat::find($rekap_medis->idrawat);
             $rawat->status = 4;
             $rawat->save();
+            if ($rekap_medis->tindakan != NULL || $rekap_medis->tindakan != 'null') {
+                $jumlah = 0;
+                // return $rekap_medis->tindakan;
+                foreach (json_decode($rekap_medis->tindakan) as $tindakan) {
+                    // $jumlah += 2;
+                    $tarif = Tarif::find($tindakan->tindakan);
+                    for ($x = 1; $x <= $tindakan->jumlah; $x++) {
+                        DB::table('transaksi_detail_rinci')->insert([
+                            'idbayar' => $rawat->idbayar,
+                            'iddokter' => $tindakan->dokter,
+                            'idpaket' => 0,
+                            'idjenis' => 0,
+                            'idrawat' => $rawat->id,
+                            'idtransaksi' => $transaksi->id,
+                            'idtarif' => $tindakan->tindakan,
+                            'tarif' => $tarif->tarif,
+                            'idtindakan' => $tarif->kat_tindakan,
+                            'tgl' => now(),
+                        ]);
+                    }
+                }
+                // return $jumlah;
+            }
         }
         return redirect()->back()->with('berhasil', 'Pasien Selesai Diperiksa');
     }

@@ -309,7 +309,7 @@
                                                         <td>{{ $rb->rawat->dokter->nama_dokter }}</td>
                                                         <td>
                                                             @if ($rekap_resume)
-                                                                @if ($rekap_resume->terapi_obat != 'null')
+                                                                {{-- @if ($rekap_resume->terapi_obat != 'null')
                                                                     @foreach (json_decode($rekap_resume->terapi_obat) as $val)
                                                                         @foreach ($obat as $item)
                                                                             @if ($val->obat == $item->id)
@@ -319,6 +319,22 @@
                                                                                 {{ $val->jumlah_obat }})
                                                                                 <br>
                                                                             @endif
+                                                                        @endforeach
+                                                                    @endforeach
+                                                                @endif --}}
+                                                                @if ($rekap_resume->terapi_obat != 'null')
+                                                                    @foreach (json_decode($rekap_resume->terapi_obat) as $val)
+                                                                        {{-- {{ dd($val['terapi_obat_racikan']) }} --}}
+                                                                        @foreach (json_decode($val['terapi_obat_racikan']) as $data_obat)
+                                                                            @foreach ($obat as $item)
+                                                                                @if ($val->obat == $item->id)
+                                                                                    {{ $data_obat->nama_obat }}
+                                                                                    ({{ $data_obat->signa1 }} x
+                                                                                    {{ $data_obat->signa2 }} |
+                                                                                    {{ $data_obat->jumlah_obat }})
+                                                                                    <br>
+                                                                                @endif
+                                                                            @endforeach
                                                                         @endforeach
                                                                     @endforeach
                                                                 @endif
@@ -480,7 +496,7 @@
                                                                     </ul>
                                                                 @endif
                                                             </td>
-                                                            <td width=400>
+                                                            <td width=300>
                                                                 {{ $resume_detail?->anamnesa_dokter }}
                                                                 @if ($rawat->idpoli == 12)
                                                                     @php
@@ -570,26 +586,36 @@
                                                                     </ul>
                                                                 @endif
                                                             </td>
-                                                            <td>
+                                                            <td width=200>
                                                                 {{ $resume_detail?->terapi }}
                                                                 <div
                                                                     class="separator separator-dashed border-secondary mb-5">
                                                                 </div>
                                                                 @if ($resume_detail->terapi_obat != 'null')
                                                                     <h5>Obat & Alkes</h5>
-                                                                    <ul>
+
+                                                                    @if ($resume_detail->terapi_obat != 'null')
                                                                         @foreach (json_decode($resume_detail->terapi_obat) as $val)
-                                                                            @foreach ($obat as $item)
-                                                                                @if ($val->obat == $item->id)
-                                                                                    <li>{{ $item->nama_obat }}
-                                                                                        ({{ $val->signa1 }} x
-                                                                                        {{ $val->signa2 }} |
-                                                                                        {{ $val->jumlah_obat }})
-                                                                                    </li>
-                                                                                @endif
-                                                                            @endforeach
+                                                                            {{-- {{ dd($val->terapi_obat_racikan) }} --}}
+                                                                            <div class="card card-border mb-2">
+                                                                                <div class="card-body">
+                                                                                    @foreach ($val->terapi_obat_racikan as $data_obat)
+                                                                                        @foreach ($obat as $item)
+                                                                                            @if ($data_obat->obat == $item->id)
+                                                                                                {{ $item->nama_obat }}
+                                                                                                {{ $data_obat->jumlah_obat }}
+                                                                                                {{ isset($data_obat->dosis_obat) ? $data_obat->dosis_obat : '' }}
+                                                                                                <br>
+                                                                                            @endif
+                                                                                        @endforeach
+                                                                                    @endforeach
+                                                                                    ({{ $val->signa1 }} -
+                                                                                    {{ $val->signa2 }} -
+                                                                                    {{ isset($val->signa3) ? $val->signa3 : '' }})
+                                                                                </div>
+                                                                            </div>
                                                                         @endforeach
-                                                                    </ul>
+                                                                    @endif
                                                                 @endif
                                                             </td>
                                                             <td>
@@ -807,23 +833,89 @@
                                         </table>
 
                                         @if ($tindak_lanjut->tindak_lanjut == 'Dirawat')
-                                            <button data-bs-toggle="modal" data-bs-target="#modal-sbar" class="btn btn-warning">SBAR</button>
+                                            <button data-bs-toggle="modal" data-bs-target="#modal-sbar"
+                                                class="btn btn-warning">SBAR</button>
                                         @endif
                                     @endif
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_4" role="tabpanel">
-                                    @if ($resume_medis)
-                                        <form action="{{ route('post.tindakan', $rawat->id) }}" method="post"
-                                            id=frmTindakan>
-                                            @csrf
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div id="kt_tindakan_repeater">
-                                                        <!--begin::Form group-->
-                                                        <div class="form-group">
-                                                            <div data-repeater-list="tindakan_repeater">
-                                                                @if ($resume_medis?->tindakan != null)
-                                                                    @foreach (json_decode($resume_medis->tindakan) as $st)
+                                    @if ($rawat->status == 4)
+                                    @else
+                                        @if ($resume_medis)
+                                            <form action="{{ route('post.tindakan', $rawat->id) }}" method="post"
+                                                id=frmTindakan>
+                                                @csrf
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div id="kt_tindakan_repeater">
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group">
+                                                                <div data-repeater-list="tindakan_repeater">
+                                                                    @if ($resume_medis?->tindakan != null)
+                                                                        @foreach (json_decode($resume_medis->tindakan) as $st)
+                                                                            <div data-repeater-item>
+                                                                                <div class="form-group row mb-5">
+                                                                                    <div class="col-md-4">
+                                                                                        <label
+                                                                                            class="form-label">Tindakan</label>
+                                                                                        <select name="tindakan"
+                                                                                            class="form-select"
+                                                                                            data-kt-repeater="select22"
+                                                                                            data-placeholder="-Pilih-"required>
+                                                                                            <option></option>
+                                                                                            @foreach ($tarif as $val)
+                                                                                                <option
+                                                                                                    value="{{ $val->id }}"
+                                                                                                    {{ $st->tindakan == $val->id ? 'selected' : '' }}>
+                                                                                                    {{ $val->nama_tarif }}
+                                                                                                </option>
+                                                                                            @endforeach
+                                                                                        </select>
+                                                                                    </div>
+                                                                                    <div class="col-md-4">
+                                                                                        <label
+                                                                                            class="form-label">Dokter</label>
+                                                                                        <select name="dokter"
+                                                                                            class="form-select"
+                                                                                            data-kt-repeater="select22"
+                                                                                            data-placeholder="-Pilih-">
+                                                                                            <option></option>
+                                                                                            @foreach ($dokter as $val)
+                                                                                                <option
+                                                                                                    value="{{ $val->id }}"
+                                                                                                    {{ $st->dokter == $val->id ? 'selected' : '' }}>
+                                                                                                    {{ $val->nama_dokter }}
+                                                                                                </option>
+                                                                                            @endforeach
+                                                                                        </select>
+                                                                                    </div>
+                                                                                    <div class="col-md-2">
+                                                                                        <label
+                                                                                            class="form-label">Jumlah</label>
+                                                                                        <input type="number"
+                                                                                            name="jumlah"
+                                                                                            class="form-control mb-5 mb-md-0"
+                                                                                            value="{{ $st->jumlah }}"
+                                                                                            min="0"required />
+                                                                                    </div>
+                                                                                    <div class="col-md-4">
+                                                                                        <a href="javascript:;"
+                                                                                            data-repeater-delete
+                                                                                            class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                                            <i
+                                                                                                class="ki-duotone ki-trash fs-5"><span
+                                                                                                    class="path1"></span><span
+                                                                                                    class="path2"></span><span
+                                                                                                    class="path3"></span><span
+                                                                                                    class="path4"></span><span
+                                                                                                    class="path5"></span></i>
+                                                                                            Hapus
+                                                                                        </a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        @endforeach
+                                                                    @else
                                                                         <div data-repeater-item>
                                                                             <div class="form-group row mb-5">
                                                                                 <div class="col-md-4">
@@ -836,8 +928,7 @@
                                                                                         <option></option>
                                                                                         @foreach ($tarif as $val)
                                                                                             <option
-                                                                                                value="{{ $val->id }}"
-                                                                                                {{ $st->tindakan == $val->id ? 'selected' : '' }}>
+                                                                                                value="{{ $val->id }}">
                                                                                                 {{ $val->nama_tarif }}
                                                                                             </option>
                                                                                         @endforeach
@@ -853,8 +944,8 @@
                                                                                         <option></option>
                                                                                         @foreach ($dokter as $val)
                                                                                             <option
-                                                                                                value="{{ $val->id }}"
-                                                                                                {{ $st->dokter == $val->id ? 'selected' : '' }}>
+                                                                                                {{ $rawat->iddokter == $val->id ? 'selected' : '' }}
+                                                                                                value="{{ $val->id }}">
                                                                                                 {{ $val->nama_dokter }}
                                                                                             </option>
                                                                                         @endforeach
@@ -865,7 +956,6 @@
                                                                                         class="form-label">Jumlah</label>
                                                                                     <input type="number" name="jumlah"
                                                                                         class="form-control mb-5 mb-md-0"
-                                                                                        value="{{ $st->jumlah }}"
                                                                                         min="0"required />
                                                                                 </div>
                                                                                 <div class="col-md-4">
@@ -884,86 +974,35 @@
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                    @endforeach
-                                                                @else
-                                                                    <div data-repeater-item>
-                                                                        <div class="form-group row mb-5">
-                                                                            <div class="col-md-4">
-                                                                                <label class="form-label">Tindakan</label>
-                                                                                <select name="tindakan"
-                                                                                    class="form-select"
-                                                                                    data-kt-repeater="select22"
-                                                                                    data-placeholder="-Pilih-"required>
-                                                                                    <option></option>
-                                                                                    @foreach ($tarif as $val)
-                                                                                        <option
-                                                                                            value="{{ $val->id }}">
-                                                                                            {{ $val->nama_tarif }}
-                                                                                        </option>
-                                                                                    @endforeach
-                                                                                </select>
-                                                                            </div>
-                                                                            <div class="col-md-4">
-                                                                                <label class="form-label">Dokter</label>
-                                                                                <select name="dokter" class="form-select"
-                                                                                    data-kt-repeater="select22"
-                                                                                    data-placeholder="-Pilih-">
-                                                                                    <option></option>
-                                                                                    @foreach ($dokter as $val)
-                                                                                        <option
-                                                                                            value="{{ $val->id }}">
-                                                                                            {{ $val->nama_dokter }}
-                                                                                        </option>
-                                                                                    @endforeach
-                                                                                </select>
-                                                                            </div>
-                                                                            <div class="col-md-2">
-                                                                                <label class="form-label">Jumlah</label>
-                                                                                <input type="number" name="jumlah"
-                                                                                    class="form-control mb-5 mb-md-0"
-                                                                                    min="0"required />
-                                                                            </div>
-                                                                            <div class="col-md-4">
-                                                                                <a href="javascript:;" data-repeater-delete
-                                                                                    class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                                    <i class="ki-duotone ki-trash fs-5"><span
-                                                                                            class="path1"></span><span
-                                                                                            class="path2"></span><span
-                                                                                            class="path3"></span><span
-                                                                                            class="path4"></span><span
-                                                                                            class="path5"></span></i>
-                                                                                    Hapus
-                                                                                </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                @endif
+                                                                    @endif
 
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <!--end::Form group-->
+                                                            <!--end::Form group-->
 
-                                                        <!--begin::Form group-->
-                                                        <div class="form-group mt-5">
-                                                            <a href="javascript:;" data-repeater-create
-                                                                class="btn btn-light-primary">
-                                                                <i class="ki-duotone ki-plus fs-3"></i>
-                                                                Tambah Tindakan
-                                                            </a>
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group mt-5">
+                                                                <a href="javascript:;" data-repeater-create
+                                                                    class="btn btn-light-primary">
+                                                                    <i class="ki-duotone ki-plus fs-3"></i>
+                                                                    Tambah Tindakan
+                                                                </a>
+                                                            </div>
+                                                            <!--end::Form group-->
                                                         </div>
-                                                        <!--end::Form group-->
                                                     </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="separator separator-dashed border-secondary mb-5 mt-5">
-                                            </div>
+                                                <div class="separator separator-dashed border-secondary mb-5 mt-5">
+                                                </div>
 
-                                            <button class="btn btn-info ">Simpan Tindakan</button>
-                                        </form>
-                                    @else
-                                        Silahkan Input Resume Medis Terlebih Dahulu
+                                                <button class="btn btn-info ">Simpan Tindakan</button>
+                                            </form>
+                                        @else
+                                            Silahkan Input Resume Medis Terlebih Dahulu
+                                        @endif
                                     @endif
+
 
 
 
@@ -1152,7 +1191,8 @@
                     <h5 class="modal-title" id="exampleModalLabel">SBAR</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="frm-data" action="{{ route('detail-rekap-medis.post_sbar',$rawat->id) }}" method="POST" autocomplete="off">
+                <form id="frm-data" action="{{ route('detail-rekap-medis.post_sbar', $rawat->id) }}" method="POST"
+                    autocomplete="off">
                     @csrf
                     <div class="modal-body">
                         <div class="row mb-5">
