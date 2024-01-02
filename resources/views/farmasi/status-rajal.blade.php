@@ -167,6 +167,24 @@
                                 @if ($antrian?->status_antrian == 'Antrian')
                                 <h4>Permintaan Resep</h4>
                                 <h6>Dokter : {{ $rawat->dokter->nama_dokter }}</h6>
+                                @if($antrian->racikan != null || $antrian->racikan != 'null' || $antrian->racikan != '')
+                                <div class="alert alert-dismissible bg-success d-flex flex-column flex-sm-row w-100 p-5 mb-10">
+                                    <!--begin::Icon-->
+                                    <i class="ki-duotone ki-pencil fs-2hx text-light me-4 mb-5 mb-sm-0"><span class="path1"></span><span class="path2"></span></i>                    <!--end::Icon-->
+                
+                                    <!--begin::Content-->
+                                    <div class="d-flex flex-column text-light pe-0 pe-sm-10">
+                                        <h4 class="mb-2 text-light">Racikan Resep</h4>
+                                        <span>{{ $antrian->racikan }}</span>
+                                    </div>
+                                    <!--end::Content-->
+                
+                                    <!--begin::Close-->
+                                    <button type="button" class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto" data-bs-dismiss="alert">
+                                        <i class="ki-duotone ki-cross fs-2x text-light"><span class="path1"></span><span class="path2"></span></i>                    </button>
+                                    <!--end::Close-->
+                                </div>
+                                @endif 
                                 <form action="{{ route('farmasi.post-resep',$antrian->id) }}" id='formPermintaanobat' method="post">
                                     @csrf
                                     <input type="hidden" name="idantrian" id="" value="{{ $antrian->id }}">

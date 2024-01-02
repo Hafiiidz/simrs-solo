@@ -176,7 +176,7 @@
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Diagnosa</label>
-                                        <textarea name="diagnosa" rows="3" class="form-control" placeholder="...">{{ $rekap->diagnosa }}</textarea>
+                                        <textarea name="diagnosa" data-kt-autosize="true" rows="3" class="form-control" placeholder="...">{{ $rekap->diagnosa }}</textarea>
                                     </div>
                                 </div>
                                 <div class="row mb-5">
@@ -283,7 +283,7 @@
                                 </div>
                                 <div class="col-md-12">
                                     <label class="form-label fw-bold">Tindakan / Prosedur</label>
-                                    <textarea name="tindakan_prc" rows="3" class="form-control" placeholder="...">{{ $rekap->prosedur }}</textarea>
+                                    <textarea data-kt-autosize="true" name="tindakan_prc" rows="3" class="form-control" placeholder="...">{{ $rekap->prosedur }}</textarea>
                                 </div>
                                 <div class="row mb-5">
                                     <div class="col-md-12">
@@ -384,38 +384,38 @@
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Anamnesa</label>
-                                        <textarea name="anamnesa_dokter" rows="3" class="form-control" placeholder="">{{ $rekap->anamnesa_dokter }}</textarea>
+                                        <textarea name="anamnesa_dokter" data-kt-autosize="true" rows="3" class="form-control" placeholder="">{{ $rekap->anamnesa_dokter }}</textarea>
                                     </div>
                                 </div>
                                 @if ($rawat->idpoli == 12)
                                     <div class="row mb-5">
                                         <div class="col-md-12">
                                             <label class="form-label fw-bold">Pemeriksaan Fisik</label>
-                                            <textarea name="pemeriksaan_fisik" rows="3" class="form-control" placeholder="Pemeriksaan Fisik">{{ $pemeriksaan_fisio->pemeriksaan_fisik }}</textarea>
+                                            <textarea data-kt-autosize="true" name="pemeriksaan_fisik" rows="3" class="form-control" placeholder="Pemeriksaan Fisik">{{ $pemeriksaan_fisio->pemeriksaan_fisik }}</textarea>
                                         </div>
                                     </div>
                                     <div class="row mb-5">
                                         <div class="col-md-12">
                                             <label class="form-label fw-bold">Pemeriksaan Uji Fungsi</label>
-                                            <textarea name="pemeriksaan_uji_fungsi" rows="3" class="form-control" placeholder="Pemeriksaan Uji Fungsi">{{ $pemeriksaan_fisio->pemeriksaan_uji_fungsi }}</textarea>
+                                            <textarea data-kt-autosize="true" name="pemeriksaan_uji_fungsi" rows="3" class="form-control" placeholder="Pemeriksaan Uji Fungsi">{{ $pemeriksaan_fisio->pemeriksaan_uji_fungsi }}</textarea>
                                         </div>
                                     </div>
                                     <div class="row mb-5">
                                         <div class="col-md-12">
                                             <label class="form-label fw-bold">Tata Laksanan KFR (ICD ) CM </label>
-                                            <textarea name="tata_laksana" rows="3" class="form-control" placeholder="Tata Laksana">{{ $pemeriksaan_fisio->tata_laksana }}</textarea>
+                                            <textarea data-kt-autosize="true" name="tata_laksana" rows="3" class="form-control" placeholder="Tata Laksana">{{ $pemeriksaan_fisio->tata_laksana }}</textarea>
                                         </div>
                                     </div>
                                     <div class="row mb-5">
                                         <div class="col-md-12">
                                             <label class="form-label fw-bold">Anjuran</label>
-                                            <textarea name="anjuran" rows="3" class="form-control" placeholder="Anjuran">{{ $pemeriksaan_fisio->anjuran }}</textarea>
+                                            <textarea data-kt-autosize="true" name="anjuran" rows="3" class="form-control" placeholder="Anjuran">{{ $pemeriksaan_fisio->anjuran }}</textarea>
                                         </div>
                                     </div>
                                     <div class="row mb-5">
                                         <div class="col-md-12">
                                             <label class="form-label fw-bold">Evaluasi</label>
-                                            <textarea name="evaluasi" rows="3" class="form-control" placeholder="Evaluasi">{{ $pemeriksaan_fisio->evaluasi }}</textarea>
+                                            <textarea data-kt-autosize="true" name="evaluasi" rows="3" class="form-control" placeholder="Evaluasi">{{ $pemeriksaan_fisio->evaluasi }}</textarea>
                                         </div>
                                     </div>
 
@@ -1152,8 +1152,8 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <textarea name="terapi" rows="3" class="form-control"
-                                            placeholder="Baik Obat, Prosedur, Operasi, Rehabilitasi dan Diet">{{ $rekap->terapi }}</textarea>
+                                        <textarea name="terapi" data-kt-autosize="true" rows="3" class="form-control"
+                                            placeholder="Baik Obat (Racikan), Prosedur, Operasi, Rehabilitasi dan Diet">{{ $rekap->terapi }}</textarea>
                                     </div>
                                 </div>
                             @endif

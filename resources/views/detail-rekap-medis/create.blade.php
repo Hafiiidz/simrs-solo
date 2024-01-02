@@ -863,7 +863,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <textarea name="terapi" rows="3" class="form-control" placeholder="Prosedur, Operasi, Rehabilitasi dan Diet"></textarea>
+                                        <textarea name="terapi" data-kt-autosize="true" rows="3" class="form-control" placeholder="Racikan Obat , Rehabilitasi dan Diet"></textarea>
                                     </div>
                                 </div>
                             @endif

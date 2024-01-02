@@ -60,12 +60,15 @@ class RekapMedisController extends Controller
         } else {
             $rekap_medis->dokter = 1;
             if ($detail->terapi_obat != 'null' || $detail->terapi_obat != '') {
+                $no_antrian = DB::table('demo_antrian_resep')->whereDate('created_at', Carbon::today())->where('jenis_rawat',$rekap_medis->idrawat)->count();
                 DB::table('demo_antrian_resep')->insert([
                     'idrawat' => $rekap_medis->idrawat,
+                    'racikan'=>$detail->terapi,
                     'idbayar' => $rekap_medis->rawat->idbayar,
                     'status_antrian' => 'Antrian',
                     'no_rm' => $rekap_medis->rawat->no_rm,
                     'idrekap' => $rekap_medis->id,
+                    'no_antrian' => $no_antrian + 1,
                     'obat' => $detail->terapi_obat,
                     'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
                     'created_at' => now(),
