@@ -23,7 +23,7 @@ class VclaimHelper
             $this->secretKey = config('app.secretkey_vclaim_prod');
             $this->userKeyVclaim = config('app.userkey_vclaim_prod');
             $this->userKeyAntrol = config('app.userkey_antrol_prod');
-            $this->ssl = true;
+            $this->ssl = false;
             $this->url_icare = config('app.url_icare_prod');
         } else {
             $this->url = config('app.url_vclaim_dev');
