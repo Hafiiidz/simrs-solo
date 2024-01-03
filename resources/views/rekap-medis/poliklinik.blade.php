@@ -848,6 +848,39 @@
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_4" role="tabpanel">
                                     @if ($rawat->status == 4)
+                                        @if ($resume_medis)
+                                            @if ($resume_medis?->tindakan != null)
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No</th>
+                                                        <th>Tindakan</th>
+                                                        <th>Dokter</th>
+                                                        <th>Jumlah</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (json_decode($resume_medis->tindakan) as $st)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>
+                                                            @foreach ($tarif as $val)
+                                                                {{  $val->nama_tarif }}
+                                                            @endforeach
+                                                        </td>
+                                                        <td>
+                                                            @foreach ($dokter as $val)
+                                                                {{  $val->nama_dokter }}
+                                                            @endforeach
+                                                        </td>
+                                                        <td>{{ $st->jumlah }}</td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                            
+                                            @endif
+                                        @endif
                                     @else
                                         @if ($resume_medis)
                                             <form action="{{ route('post.tindakan', $rawat->id) }}" method="post"
