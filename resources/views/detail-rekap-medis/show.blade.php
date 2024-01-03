@@ -202,7 +202,7 @@
                                                                     <div class="col-md-2">
                                                                         <label class="form-label">Jenis Diagnosa</label>
                                                                         <div class="input-group mb-5">
-                                                                            <select name="jenis_diagnosa"
+                                                                            <select name="jenis_diagnosa" required
                                                                                 class="form-select" id="">
                                                                                 <option
                                                                                     {{ $val->jenis_diagnosa == 'P' ? 'selected' : '' }}
