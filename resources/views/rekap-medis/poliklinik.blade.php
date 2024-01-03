@@ -805,9 +805,14 @@
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td>{{ $tindak_lanjut->tindak_lanjut }}
+                                                    <td> 
                                                         @if ($tindak_lanjut->tindak_lanjut == 'Dirawat')
+                                                        {{ $tindak_lanjut->tindak_lanjut }} :
                                                             <br>DPJP : {{ $tindak_lanjut->dokter->nama_dokter }}
+                                                        @elseif($tindak_lanjut->tindak_lanjut == 'Prb')
+                                                            Rujuk Balik {{ $tindak_lanjut->prb }}
+                                                        @else
+                                                        {{ $tindak_lanjut->tindak_lanjut }} :
                                                         @endif
                                                     </td>
                                                     <td>

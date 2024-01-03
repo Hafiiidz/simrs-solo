@@ -18,27 +18,44 @@ class FarmasiController extends Controller
     public function antrian_resep()
     {
         //     $resep_rajal_umum = AntrianFarmasi::with('pasien','rawat')->where('jenis_rawat',1)->where('idbayar',1)->where('status_antrian','Antrian')->get();
-        $resep_rajal = AntrianFarmasi::with('pasien', 'rawat')->whereDate('created_at',date('Y-m-d'))->where('jenis_rawat', 1)->where('status_antrian', 'Antrian')->orderby('id', 'asc')->get();
+        $resep_rajal = AntrianFarmasi::with('pasien', 'rawat')->whereDate('created_at', date('Y-m-d'))->where('jenis_rawat', 1)->where('status_antrian', 'Antrian')->orderby('id', 'asc')->get();
 
-        $resep_ugd = AntrianFarmasi::with('pasien', 'rawat')->whereDate('created_at',date('Y-m-d'))->where('jenis_rawat', 3)->where('status_antrian', 'Antrian')->get();
+        $resep_ugd = AntrianFarmasi::with('pasien', 'rawat')->whereDate('created_at', date('Y-m-d'))->where('jenis_rawat', 3)->where('status_antrian', 'Antrian')->get();
         // $resep_ugd_bpjs = AntrianFarmasi::with('pasien','rawat')->where('jenis_rawat',3)->where('idbayar',2)->where('status_antrian','Antrian')->get();
 
-        $resep_ranap = AntrianFarmasi::with('pasien', 'rawat')->whereDate('created_at',date('Y-m-d'))->where('jenis_rawat', 2)->where('status_antrian', 'Antrian')->get();
+        $resep_ranap = AntrianFarmasi::with('pasien', 'rawat')->whereDate('created_at', date('Y-m-d'))->where('jenis_rawat', 2)->where('status_antrian', 'Antrian')->get();
         // $resep_ranap_bpjs = AntrianFarmasi::with('pasien','rawat')->where('jenis_rawat',2)->where('idbayar',2)->where('status_antrian','Antrian')->get();
 
         // $total_antrian = count($resep_rajal) + count($resep_ugd) + count($resep_ranap);
         $total_antrian = count($resep_rajal) + count($resep_ugd) + count($resep_ranap);
-        
+
         $transaksi_bayar = DB::table('transaksi_bayar')->orderBy('urutan', 'asc')->get();
-        return view('farmasi.antrian-resep', compact('resep_rajal', 'resep_ugd', 'resep_ranap', 'transaksi_bayar','total_antrian'));
+        return view('farmasi.antrian-resep', compact('resep_rajal', 'resep_ugd', 'resep_ranap', 'transaksi_bayar', 'total_antrian'));
     }
 
     public function updateResep(Request $request)
     {
+        // return $request->all();
         $total_obat = 0;
-        foreach($request->terapi_obat as $val){
-            $obat = Obat::find($val['obat']);
-            $total_obat += $obat->harga_jual * $val['pemberian_obat'];
+        foreach ($request->terapi_obat as $val) {
+            if (isset($val['terapi_obat_racikan'])) {
+                foreach ($val['terapi_obat_racikan'] as $racik) {
+                    $obat = Obat::find($racik['obat']);
+                    if($request->jenis_obat == 2){
+                        $total_obat += $obat->harga_beli * $racik['pemberian_obat'];
+                    }else{
+                        $total_obat += $obat->harga_jual * $racik['pemberian_obat'];
+                    }
+                   
+                }
+            } else {
+                $obat = Obat::find($val['obat']);
+                if($request->jenis_obat == 2){
+                    $total_obat += $obat->harga_beli * $val['pemberian_obat'];
+                }else{
+                    $total_obat += $obat->harga_jual * $val['pemberian_obat'];
+                }
+            }
         }
 
         $antrian = AntrianFarmasi::find($request->idantrian);
@@ -109,7 +126,7 @@ class FarmasiController extends Controller
     {
         $rawat = Rawat::find($id);
         $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
-        $antrian = AntrianFarmasi::where('idrawat', $id)->where('status_antrian','Antrian')->first();
+        $antrian = AntrianFarmasi::where('idrawat', $id)->where('status_antrian', 'Antrian')->first();
 
         $obat = Obat::get();
         $transaksi_bayar = DB::table('transaksi_bayar')->orderBy('urutan', 'asc')->get();
@@ -195,6 +212,16 @@ class FarmasiController extends Controller
         return view('farmasi.list-pasien-rawat');
     }
 
+    public function cetakFakturTempo($id){
+        $resep = AntrianFarmasi::find($id);
+        $rawat = Rawat::find($resep->idrawat);
+        $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
+        $obat = Obat::get();
+        $pdf = PDF::loadview('farmasi.cetak.resep-tempo', compact('resep', 'rawat', 'pasien', 'obat'));
+        $customPaper = array(0, 0, 323.15, 790.866);
+        $pdf->setPaper($customPaper);
+        return $pdf->stream();
+    }
     public function cetakResepTempo($id)
     {
         $resep = AntrianFarmasi::find($id);
@@ -202,19 +229,22 @@ class FarmasiController extends Controller
         $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
         $obat = Obat::get();
         $pdf = PDF::loadview('farmasi.cetak.resep-tempo', compact('resep', 'rawat', 'pasien', 'obat'));
-        $customPaper = array(0,0,323.15,790.866);
+        $customPaper = array(0, 0, 323.15, 790.866);
         $pdf->setPaper($customPaper);
         return $pdf->stream();
+    }
+    public function cetakFaktur($id){
+
     }
     public function cetakResep($id)
     {
         $resep = ObatTransaksi::where('id', $id)->first();
         $rawat = Rawat::find($resep->idrawat);
         $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
-        $detail_resep = DB::table('obat_transaksi_detail')->where('idtrx',$resep->id)->get();
+        $detail_resep = DB::table('obat_transaksi_detail')->where('idtrx', $resep->id)->get();
 
-        $pdf = PDF::loadview('farmasi.cetak.resep', compact('resep', 'rawat', 'pasien','detail_resep'));
-        $customPaper = array(0,0,323.15,790.866);
+        $pdf = PDF::loadview('farmasi.cetak.resep', compact('resep', 'rawat', 'pasien', 'detail_resep'));
+        $customPaper = array(0, 0, 323.15, 790.866);
         $pdf->setPaper($customPaper);
         return $pdf->stream();
     }
@@ -223,12 +253,12 @@ class FarmasiController extends Controller
     {
         $resep = ObatTransaksi::where('id', $id)->first();
         $rawat = Rawat::find($resep->idrawat);
-        $pasien = Pasien::select('pasien.*','pasien_alamat.alamat')
-            ->leftJoin('pasien_alamat','pasien.id','=','pasien_alamat.idpasien')->where('pasien.no_rm', $rawat->no_rm)->first();
-        $detail_resep = DB::table('obat_transaksi_detail')->where('idtrx',$resep->id)->get();
+        $pasien = Pasien::select('pasien.*', 'pasien_alamat.alamat')
+            ->leftJoin('pasien_alamat', 'pasien.id', '=', 'pasien_alamat.idpasien')->where('pasien.no_rm', $rawat->no_rm)->first();
+        $detail_resep = DB::table('obat_transaksi_detail')->where('idtrx', $resep->id)->get();
 
-        $pdf = PDF::loadview('farmasi.cetak.tiket', compact('resep', 'rawat', 'pasien','detail_resep'));
-        $customPaper = array(0,0,170.079,198.425);
+        $pdf = PDF::loadview('farmasi.cetak.tiket', compact('resep', 'rawat', 'pasien', 'detail_resep'));
+        $customPaper = array(0, 0, 170.079, 198.425);
         $pdf->setPaper($customPaper);
         return $pdf->stream();
     }

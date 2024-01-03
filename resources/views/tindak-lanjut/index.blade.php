@@ -155,7 +155,7 @@
                                             <option value="Dirujuk">Pasien Dirujuk</option>
                                             <option value="Interm">Pasien Dirujuk Interm</option>
                                             @if ($rawat->idjenisrawat == 1)
-                                                {{-- <option value="Prb">Pasien Dirujuk PRB</option> --}}
+                                                <option value="Prb">Pasien Rujuk Balik</option>
                                             @endif
                                             <option value="Dirawat">Pasien Dirawat</option>
                                         </select>
@@ -172,9 +172,9 @@
                                     <div class="row mb-5">
                                         <div class="col-md-12">
                                             <label class="form-label fw-bold">Poli Rujuk</label>
-                                            <select  name="poli_rujuk" data-control="select2"
-                                                data-placeholder="Select an option" class="form-select" id="poli_rujuk_interm"
-                                                arial-placeholder="Poli Rujuk">
+                                            <select name="poli_rujuk" data-control="select2"
+                                                data-placeholder="Select an option" class="form-select"
+                                                id="poli_rujuk_interm" arial-placeholder="Poli Rujuk">
                                                 <option value=""></option>
                                                 @foreach ($poli as $p)
                                                     <option value="{{ $p->kode }}">{{ $p->poli }}</option>
@@ -251,6 +251,30 @@
                                         <div class="col-md-10">
                                             <input type="text" name="value_operasi" id="value_operasi"
                                                 class="form-control" placeholder="...." style="display: none;">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="prb" class="d-none">
+                                    <div class="row mb-5">
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold">Tgl.Kunjungan</label>
+                                            <input type="date" placeholder="Pilih Tgl Rujukan" class="form-control"
+                                                name='tgl_kontrol' id='tgl_kontrol_rujuk'>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-5">
+                                        <div class="col-md-12">
+                                            <label class="form-label fw-bold">Belum Dapat di kembalikan ke Fasilitas
+                                                Perujuk dengan alasan </label>
+                                            <textarea name="alasan" rows="3" class="form-control" placeholder=""></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-5">
+                                        <div class="col-md-12">
+                                            <label class="form-label fw-bold">Rencana Tindak Lanjut pada kunjungan
+                                                selanjutnya</label>
+                                            <textarea name="rencana_selanjutnya" rows="3" class="form-control" placeholder=""></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -344,10 +368,11 @@
                 $('#rujukan').addClass('d-none');
                 $('#rawat').addClass('d-none');
                 $('#interm').removeClass('d-none');
-            } else {
+            } else if (aksi == 'Prb') {
                 $('#rujukan').addClass('d-none');
                 $('#rawat').addClass('d-none');
                 $('#interm').addClass('d-none');
+                $('#prb').removeClass('d-none');
             }
 
             // $('#tgl_kontrol').val('');

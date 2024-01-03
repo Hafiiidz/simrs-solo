@@ -8,6 +8,7 @@ use App\Models\Pasien\Pasien;
 use App\Models\Poli;
 use App\Models\Rawat;
 use App\Models\TindakLanjut;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class TindakLanjutController extends Controller
@@ -54,6 +55,19 @@ class TindakLanjutController extends Controller
             $tindak_lanjut->tindakan_operasi = NULL;
             $tindak_lanjut->iddokter = NULL;
             $tindak_lanjut->tujuan_tindak_lanjut = "Rujuk Interm";
+        }elseif ($request->rencana_tindak_lanjut == 'Prb') {
+            $prb = new Collection([
+                'alasan' => $request->alasan,
+                'rencana_selanjutnya' => $request->rencana_selanjutnya,
+            ]);
+            $tindak_lanjut->poli_rujuk = $rawat->poli->kode;
+            $tindak_lanjut->tgl_tindak_lanjut = $request->tgl_kontrol;
+            $tindak_lanjut->operasi = NULL;
+            $tindak_lanjut->tindakan_operasi = NULL;
+            $tindak_lanjut->iddokter = NULL;
+            $tindak_lanjut->prb = $prb;
+            $tindak_lanjut->tujuan_tindak_lanjut = "Prb";
+
         }
         $tindak_lanjut->nomor = $tindak_lanjut->generateNomorOtomatis();
         $tindak_lanjut->save();

@@ -234,7 +234,7 @@
                             @foreach (json_decode($data->terapi_obat) as $val)
                                 {{-- {{ dd($val->terapi_obat_racikan) }} --}}
                                 <tr>
-                                    <td>
+                                    <td width='200'>
                                         (@foreach ($val->terapi_obat_racikan as $data_obat)
                                             @foreach ($obat as $item)
                                                 @if ($data_obat->obat == $item->id)
@@ -246,7 +246,7 @@
                                         <span class="text-end"> </span>
 
                                     </td>
-                                    <td>{{ $val->signa1 }} - {{ $val->signa2 }} - {{ $val->signa3 }}</td>
+                                    <td align="right">{{ $val->signa1 }} - {{ $val->signa2 }} - {{ $val->signa3 }}</td>
                                 </tr>
                             @endforeach
                             {{-- @foreach (json_decode($data->terapi_obat) as $val)
@@ -377,6 +377,69 @@
                         </td>
                     </tr>
                 @elseif($tindak_lanjut->tindak_lanjut == 'Interm')
+                @elseif($tindak_lanjut->tindak_lanjut == 'Prb')
+                @php
+                    $prb = json_decode($tindak_lanjut->prb);
+                @endphp
+                <tr>
+                    <td colspan="2" style="border: 1px solid black;">
+                        <table>
+                            <tr>
+                                <td colspan="3">Pasien Rujuk Balik</td>
+                            </tr>
+                            <tr>
+                                <td>Nomor </td>
+                                <td>:</td>
+                                <td>NO: {{ $tindak_lanjut->nomor }}/{{ date('m', strtotime($tindak_lanjut->tgl_tindak_lanjut)) }}/{{ date('Y', strtotime($tindak_lanjut->tgl_tindak_lanjut)) }}
+                                </td>
+                            </tr>
+                            {{-- <tr>
+                                <td>Diagnosa</td>
+                                <td>:</td>
+                                <td>
+                                    <p>{{ $data->diagnosa }}</p>
+
+                                    @if ($data->icdx != 'null')
+                                    <ul>
+                                        @foreach (json_decode($data->icdx) as $val)
+                                            <li>{{ $val->diagnosa_icdx }}
+                                                (<b>{{ $val->jenis_diagnosa == 'P' ? 'Primer' : 'Sekunder' }}</b>)
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                                </td>
+                            </tr> --}}
+                            <tr>
+                                <td>Tgl Surat Rujukan </td>
+                                <td>:</td>
+                                <td>{{ date('d F Y',strtotime($tindak_lanjut->created_at)) }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">Belum Dapat di kembalikan ke Fasilitas Perujuk dengan alasan</td>
+                            </tr>
+                            <tr style="border:1px solid;">
+                                <td colspan="3">{{ $prb->alasan }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">Rencana Tindak lanjut pada kunjungan selanjutnya</td>
+                            </tr>
+                            <tr style="border:1px solid; padding:10px;">
+                                <td colspan="3">{{ $prb->rencana_selanjutnya }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">Surat Keterangan ini digunakan untuk 1(satu) kali kunjungan dengan diagnosa diatas pada :</td>
+                            </tr>
+                            <tr>
+                                <td width=150>Tanggal</td>
+                                <td>:</td>
+                                <td>{{ date('d F Y',strtotime( $tindak_lanjut->tgl_tindak_lanjut ))}}</td>
+                            </tr>
+                            
+                        </table>
+                    </td>
+                </tr>
                 @endif
             @endif
             <tr>
