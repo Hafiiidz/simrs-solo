@@ -841,14 +841,8 @@
                                                                                 <label class="form-label">Jumlah</label>
                                                                                 <div class="input-group pb-3">
 
-                                                                                    <input type="number"
-                                                                                        name="jumlah_obat" step=".01"
-                                                                                        class="form-control mb-5 mb-md-0"
-                                                                                        min="0" required>
-                                                                                        <input type="text"
-                                                                                            name="dosis_obat" placeholder="dosis"
-                                                                                            class="form-control mb-5 mb-md-0"
-                                                                                            min="0" >
+                                                                                    <input type="text" name="jumlah_obat"  class="form-control mb-5 mb-md-0" min="0" required>
+                                                                                    <input type="text"  name="dosis_obat" placeholder="dosis" class="form-control mb-5 mb-md-0" min="0" >
                                                                                     <button
                                                                                         class="border border-secondary input-group-text btn btn-icon btn-flex btn-light-danger"
                                                                                         data-repeater-delete
