@@ -479,7 +479,7 @@
                                                                     <ul>
                                                                         @foreach (json_decode($resume_detail?->icdx) as $val)
                                                                             <li>{{ $val->diagnosa_icdx }}
-                                                                                (<b>{{ $val->jenis_diagnosa == 'P' ? 'Primer' : 'Sekunder' }}</b>)
+                                                                                (<b>{{ isset($val->jenis_diagnosa) == 'P' ? 'Primer' : 'Sekunder' }}</b>)
                                                                             </li>
                                                                         @endforeach
                                                                     </ul>
