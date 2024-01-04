@@ -865,12 +865,17 @@
                                                         <td>{{ $loop->iteration }}</td>
                                                         <td>
                                                             @foreach ($tarif as $val)
+                                                                @if ($st->tindakan == $val->id)
                                                                 {{  $val->nama_tarif }}
+                                                                @endif
+                                                               
                                                             @endforeach
                                                         </td>
                                                         <td>
                                                             @foreach ($dokter as $val)
+                                                                 @if ($st->dokter == $val->id)
                                                                 {{  $val->nama_dokter }}
+                                                                @endif
                                                             @endforeach
                                                         </td>
                                                         <td>{{ $st->jumlah }}</td>
