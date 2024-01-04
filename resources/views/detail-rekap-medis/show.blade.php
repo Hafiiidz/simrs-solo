@@ -244,7 +244,7 @@
                                                                     <div class="input-group mb-5">
                                                                         <select name="jenis_diagnosa" class="form-select"
                                                                             id="">
-                                                                            <option value="P">Primer</option>
+                                                                            <option value="P" selected>Primer</option>
                                                                             <option value="S">Sekunder</option>
                                                                         </select>
                                                                     </div>
