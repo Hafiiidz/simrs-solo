@@ -145,7 +145,7 @@
                             </div>
                             <div class="separator separator-dashed border-secondary mb-5"></div>
                             @if ($rawat->idjenisrawat == 3)
-                                @if (auth()->user()->idpriv >= 14)
+                            @if (auth()->user()->idpriv == 14 || auth()->user()->idpriv == 18)
                                     <div class="row mb-5">
                                         <div class="col-md-12">
                                             <label class="form-label fw-bold">Triase</label>
@@ -394,7 +394,7 @@
                             @endif
 
                             <!--end::Underline-->
-                            @if (auth()->user()->idpriv >= 14)
+                            @if (auth()->user()->idpriv == 14 || auth()->user()->idpriv == 18)
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Anamnesa</label>

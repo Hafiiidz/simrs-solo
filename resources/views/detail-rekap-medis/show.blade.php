@@ -702,7 +702,7 @@
                                 </div>
                             </div>
                             @endif
-                            @if (auth()->user()->idpriv == 14 || auth()->user()->idpriv == 18)
+                            @if (auth()->user()->idpriv == 14 || auth()->user()->idpriv == 18 || auth()->user()->idpriv == 29)
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Anamnesa</label>
@@ -711,7 +711,7 @@
                                 </div>
                             @endif
 
-                            @if (auth()->user()->idpriv == 14 || auth()->user()->idpriv == 18)
+                            @if (auth()->user()->idpriv == 14 || auth()->user()->idpriv == 18 || auth()->user()->idpriv == 29)
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Obat Yang Dikonsumsi</label>
