@@ -25,15 +25,18 @@ class PoliklinikController extends Controller
                     'rawat_status.status',
                     'rekap_medis.dokter',
                     'rekap_medis.perawat',
+                    'rekap_medis.bpjs',
                 ])
                 ->join('pasien', 'pasien.no_rm', '=', 'rawat.no_rm')
                 ->join('poli', 'poli.id', '=', 'rawat.idpoli')
                 ->join('rawat_bayar', 'rawat_bayar.id', '=', 'rawat.idbayar')
                 ->join('rawat_status', 'rawat_status.id', '=', 'rawat.status')
                 ->Leftjoin('dokter', 'dokter.id', '=', 'rawat.iddokter')
-                ->Leftjoin('demo_rekap_medis as rekap_medis', 'rekap_medis.idrawat', '=', 'rawat.id')
-                ->where('rawat.idpoli', auth()->user()->detail->idpoli)
+                ->Leftjoin('demo_rekap_medis as rekap_medis', 'rekap_medis.idrawat', '=', 'rawat.id')              
                 ->whereDate('rawat.tglmasuk', date('Y-m-d'));
+                if(auth()->user()->idpriv != 20){
+                    $rawat->where('rawat.idpoli', auth()->user()->detail->idpoli);
+                }   
             // if (auth()->user()->detail->idruangan == 1) {
             //     $rawat->where('rawat.idpoli', auth()->user()->detail->idpoli);
             // }else{
@@ -60,10 +63,16 @@ class PoliklinikController extends Controller
                     } else {
                         $color_dokter = 'danger';
                     }
+                    if($rawat->bpjs == 1){
+                        $color_bpjs = 'primary';
+                    }else{
+                        $color_bpjs = 'danger';
+                    }
                     $perawat = '<span class="badge badge-' . $color_perawat . '">Perawat</span>';
                     $dokter = '<span class="badge badge-' . $color_dokter . '">Dokter</span>';
+                    $bpjs = '<span class="badge badge-' . $color_bpjs . '">BPJS</span>';
 
-                    return $dokter . ' ' . $perawat;
+                    return $dokter . ' ' . $perawat.' '.$bpjs;
                 })
                 ->rawColumns(['opsi', 'status_pemeriksaan'])
                 ->make(true);
@@ -88,14 +97,18 @@ class PoliklinikController extends Controller
                     'rawat_status.status',
                     'rekap_medis.dokter',
                     'rekap_medis.perawat',
+                    'rekap_medis.bpjs',
                 ])
                 ->join('pasien', 'pasien.no_rm', '=', 'rawat.no_rm')
                 ->join('poli', 'poli.id', '=', 'rawat.idpoli')
                 ->join('rawat_bayar', 'rawat_bayar.id', '=', 'rawat.idbayar')
                 ->join('rawat_status', 'rawat_status.id', '=', 'rawat.status')
                 ->Leftjoin('dokter', 'dokter.id', '=', 'rawat.iddokter')
-                ->Leftjoin('demo_rekap_medis as rekap_medis', 'rekap_medis.idrawat', '=', 'rawat.id')
-                ->where('rawat.idpoli', auth()->user()->detail->idpoli);
+                ->Leftjoin('demo_rekap_medis as rekap_medis', 'rekap_medis.idrawat', '=', 'rawat.id');
+
+                if(auth()->user()->idpriv != 20){
+                    $rawat->where('rawat.idpoli', auth()->user()->detail->idpoli);
+                }   
             // if (auth()->user()->detail->idruangan == 1) {
             //     $rawat->where('rawat.idpoli', auth()->user()->detail->idpoli);
             // } else {
@@ -124,10 +137,16 @@ class PoliklinikController extends Controller
                     } else {
                         $color_dokter = 'danger';
                     }
+                    if($rawat->bpjs == 1){
+                        $color_bpjs = 'primary';
+                    }else{
+                        $color_bpjs = 'danger';
+                    }
                     $perawat = '<span class="badge badge-' . $color_perawat . '">Perawat</span>';
                     $dokter = '<span class="badge badge-' . $color_dokter . '">Dokter</span>';
+                    $bpjs = '<span class="badge badge-' . $color_bpjs . '">BPJS</span>';
 
-                    return $dokter . ' ' . $perawat;
+                    return $dokter . ' ' . $perawat.' '.$bpjs;
                 })
                 ->rawColumns(['opsi', 'status_pemeriksaan'])
                 ->make(true);

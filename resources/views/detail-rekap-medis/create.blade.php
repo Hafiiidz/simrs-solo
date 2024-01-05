@@ -182,7 +182,7 @@
                                         <label class="form-label fw-bold">Diagnosa</label>
                                         <textarea name="diagnosa" rows="3" class="form-control" placeholder="..."></textarea>
                                     </div>
-                                    <div class="col-md-12">
+                                    {{-- <div class="col-md-12">
                                         <div id="icdx_repeater">
                                             <!--begin::Form group-->
                                             <div class="form-group">
@@ -234,13 +234,13 @@
                                             </div>
                                             <!--end::Form group-->
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 <div class="col-md-12">
                                     <label class="form-label fw-bold">Tindakan / Prosedur</label>
                                     <textarea name="tindakan_prc" rows="3" class="form-control" placeholder="..."></textarea>
                                 </div>
-                                <div class="row mb-5">
+                                {{-- <div class="row mb-5">
                                     <div class="col-md-12">
                                         <div id="icd9_repeater">
                                             <!--begin::Form group-->
@@ -285,7 +285,7 @@
                                             <!--end::Form group-->
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                             @endif
                             <!--begin::Underline-->
                             <span class="d-inline-block position-relative mb-7">

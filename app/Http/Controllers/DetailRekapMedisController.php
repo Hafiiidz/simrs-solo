@@ -201,16 +201,16 @@ class DetailRekapMedisController extends Controller
             } else {
                 $rekap->laborat = 'null';
             }
-            if ($request->icdx) {
-                $rekap->icdx = json_encode($request->icdx);
-            } else {
-                $rekap->icdx = 'null';
-            }
-            if ($request->icd9) {
-                $rekap->icd9 = json_encode($request->icd9);
-            } else {
-                $rekap->icd9 = 'null';
-            }
+            // if ($request->icdx) {
+            //     $rekap->icdx = json_encode($request->icdx);
+            // } else {
+            //     $rekap->icdx = 'null';
+            // }
+            // if ($request->icd9) {
+            //     $rekap->icd9 = json_encode($request->icd9);
+            // } else {
+            //     $rekap->icd9 = 'null';
+            // }
             if ($request->fisio) {
                 $rekap->fisio = json_encode($request->fisio);
             } else {
@@ -228,7 +228,7 @@ class DetailRekapMedisController extends Controller
                 ]);
                 $rekap->pemeriksaan_fisio = $pemeriksaan_fisio->toJson();
             }
-        } elseif (auth()->user()->idpriv >= 14) {
+        } elseif (auth()->user()->idpriv == 14 || auth()->user()->idpriv == 18) {
             $rekap->anamnesa = $request->anamnesa;
             $alergi = new Collection([
                 'value_obat' => $request->value_obat,
@@ -264,6 +264,18 @@ class DetailRekapMedisController extends Controller
             $rekap->pasien_sedang = $request->pasien_sedang;
             $rekap->pemeriksaan_fisik = $pemeriksaan_fisik->toJson();
             $rekap->riwayat_kesehatan = $riwayat_kesehatan->toJson();
+        }else{
+            $rekap->diagnosa = $request->diagnosa;
+            if ($request->icdx) {
+                $rekap->icdx = json_encode($request->icdx);
+            } else {
+                $rekap->icdx = 'null';
+            }
+            if ($request->icd9) {
+                $rekap->icd9 = json_encode($request->icd9);
+            } else {
+                $rekap->icd9 = 'null';
+            }
         }
 
         $rekap->save();

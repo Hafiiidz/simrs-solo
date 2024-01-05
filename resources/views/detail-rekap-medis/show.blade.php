@@ -179,14 +179,13 @@
                                         <textarea name="diagnosa" data-kt-autosize="true" rows="3" class="form-control" placeholder="...">{{ $rekap->diagnosa }}</textarea>
                                     </div>
                                 </div>
-                                <div class="row mb-5">
+                                {{-- <div class="row mb-5">
                                     <div class="col-md-12">
                                         <div id="icdx_repeater">
                                             <!--begin::Form group-->
                                             <div class="form-group">
                                                 <div data-repeater-list="icdx">
                                                     @if ($rekap->icdx != 'null')
-                                                        {{-- {{ dd($rekap->laborat) }} --}}
                                                         @foreach (json_decode($rekap->icdx) as $val)
                                                             <div data-repeater-item>
                                                                 <div class="form-group row mb-5">
@@ -280,19 +279,18 @@
                                             <!--end::Form group-->
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="col-md-12">
                                     <label class="form-label fw-bold">Tindakan / Prosedur</label>
                                     <textarea data-kt-autosize="true" name="tindakan_prc" rows="3" class="form-control" placeholder="...">{{ $rekap->prosedur }}</textarea>
                                 </div>
-                                <div class="row mb-5">
+                                {{-- <div class="row mb-5">
                                     <div class="col-md-12">
                                         <div id="icd9_repeater">
                                             <!--begin::Form group-->
                                             <div class="form-group">
                                                 <div data-repeater-list="icd9">
                                                     @if ($rekap->icd9 != 'null')
-                                                        {{-- {{ dd($rekap->laborat) }} --}}
                                                         @foreach (json_decode($rekap->icd9) as $val)
                                                             <div data-repeater-item>
                                                                 <div class="form-group row mb-5">
@@ -364,7 +362,7 @@
                                             <!--end::Form group-->
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                             @endif
                             <!--begin::Underline-->
                             <span class="d-inline-block position-relative mb-7">
@@ -510,7 +508,201 @@
                                     </div>
                                 @endif
                             @endif
-                            @if (auth()->user()->idpriv >= 14)
+                            @if (auth()->user()->idpriv == 20)
+                            <div class="row mb-5">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-bold">Diagnosa</label>
+                                    <textarea name="diagnosa" data-kt-autosize="true" rows="3" class="form-control" placeholder="...">{{ $rekap->diagnosa }}</textarea>
+                                </div>
+                            </div>
+                            <div class="row mb-5">
+                                <div class="col-md-12">
+                                    <div id="icdx_repeater">
+                                        <!--begin::Form group-->
+                                        <div class="form-group">
+                                            <div data-repeater-list="icdx">
+                                                @if ($rekap->icdx != 'null')
+                                                    {{-- {{ dd($rekap->laborat) }} --}}
+                                                    @foreach (json_decode($rekap->icdx) as $val)
+                                                        <div data-repeater-item>
+                                                            <div class="form-group row mb-5">
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label">ICD X</label>
+                                                                    <select name="diagnosa_icdx" class="form-select"
+                                                                        data-kt-repeater="select22"
+                                                                        data-placeholder="-Pilih-" required>
+                                                                        <option value="{{ $val->diagnosa_icdx }}">
+                                                                            {{ $val->diagnosa_icdx }}</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <label class="form-label">Jenis Diagnosa</label>
+                                                                    <div class="input-group mb-5">
+                                                                        <select name="jenis_diagnosa" required
+                                                                            class="form-select" id="">
+                                                                            <option
+                                                                                {{ $val->jenis_diagnosa == 'P' ? 'selected' : '' }}
+                                                                                value="P">Primer</option>
+                                                                            <option
+                                                                                {{ $val->jenis_diagnosa == 'S' ? 'selected' : '' }}
+                                                                                value="S">Sekunder</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-4">
+                                                                    <a href="javascript:;" data-repeater-delete
+                                                                        class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                        <i class="ki-duotone ki-trash fs-5"><span
+                                                                                class="path1"></span><span
+                                                                                class="path2"></span><span
+                                                                                class="path3"></span><span
+                                                                                class="path4"></span><span
+                                                                                class="path5"></span></i>
+                                                                        Hapus
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                @else
+                                                    <div data-repeater-item>
+                                                        <div class="form-group row mb-5">
+                                                            <div class="col-md-6">
+                                                                <label class="form-label">ICD X</label>
+                                                                <select name="diagnosa_icdx" class="form-select"
+                                                                    data-kt-repeater="select22"
+                                                                    data-placeholder="-Pilih-" required>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <label class="form-label">Jenis Diagnosa</label>
+                                                                <div class="input-group mb-5">
+                                                                    <select name="jenis_diagnosa" class="form-select"
+                                                                        id="">
+                                                                        <option value="P" selected>Primer</option>
+                                                                        <option value="S">Sekunder</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <a href="javascript:;" data-repeater-delete
+                                                                    class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                    <i class="ki-duotone ki-trash fs-5"><span
+                                                                            class="path1"></span><span
+                                                                            class="path2"></span><span
+                                                                            class="path3"></span><span
+                                                                            class="path4"></span><span
+                                                                            class="path5"></span></i>
+                                                                    Hapus
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
+
+                                            </div>
+                                        </div>
+                                        <!--end::Form group-->
+
+                                        <!--begin::Form group-->
+                                        <div class="form-group mt-5">
+                                            <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
+                                                <i class="ki-duotone ki-plus fs-3"></i>
+                                                Tambah ICD X
+                                            </a>
+                                        </div>
+                                        <!--end::Form group-->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold">Tindakan / Prosedur</label>
+                                <textarea data-kt-autosize="true" name="tindakan_prc" rows="3" class="form-control" placeholder="...">{{ $rekap->prosedur }}</textarea>
+                            </div>
+                            <div class="row mb-5">
+                                <div class="col-md-12">
+                                    <div id="icd9_repeater">
+                                        <!--begin::Form group-->
+                                        <div class="form-group">
+                                            <div data-repeater-list="icd9">
+                                                @if ($rekap->icd9 != 'null')
+                                                    {{-- {{ dd($rekap->laborat) }} --}}
+                                                    @foreach (json_decode($rekap->icd9) as $val)
+                                                        <div data-repeater-item>
+                                                            <div class="form-group row mb-5">
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label">ICD 9</label>
+                                                                    <select name="diagnosa_icd9" class="form-select"
+                                                                        data-kt-repeater="select2icd9"
+                                                                        data-placeholder="-Pilih-" required>
+                                                                        <option value="{{ $val->diagnosa_icd9 }}">
+                                                                            {{ $val->diagnosa_icd9 }}</option>
+                                                                    </select>
+                                                                </div>
+
+
+                                                                <div class="col-md-4">
+                                                                    <a href="javascript:;" data-repeater-delete
+                                                                        class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                        <i class="ki-duotone ki-trash fs-5"><span
+                                                                                class="path1"></span><span
+                                                                                class="path2"></span><span
+                                                                                class="path3"></span><span
+                                                                                class="path4"></span><span
+                                                                                class="path5"></span></i>
+                                                                        Hapus
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                @else
+                                                    <div data-repeater-item>
+                                                        <div class="form-group row mb-5">
+                                                            <div class="col-md-6">
+                                                                <label class="form-label">ICD 9</label>
+                                                                <select name="diagnosa_icd9" class="form-select"
+                                                                    data-kt-repeater="select2icd9"
+                                                                    data-placeholder="-Pilih-" required>
+                                                                </select>
+                                                            </div>
+
+
+                                                            <div class="col-md-4">
+                                                                <a href="javascript:;" data-repeater-delete
+                                                                    class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                    <i class="ki-duotone ki-trash fs-5"><span
+                                                                            class="path1"></span><span
+                                                                            class="path2"></span><span
+                                                                            class="path3"></span><span
+                                                                            class="path4"></span><span
+                                                                            class="path5"></span></i>
+                                                                    Hapus
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
+
+                                            </div>
+                                        </div>
+                                        <!--end::Form group-->
+
+                                        <!--begin::Form group-->
+                                        <div class="form-group mt-5">
+                                            <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
+                                                <i class="ki-duotone ki-plus fs-3"></i>
+                                                Tambah ICD 9
+                                            </a>
+                                        </div>
+                                        <!--end::Form group-->
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+                            @if (auth()->user()->idpriv == 14 || auth()->user()->idpriv == 18)
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Anamnesa</label>
@@ -519,7 +711,7 @@
                                 </div>
                             @endif
 
-                            @if (auth()->user()->idpriv >= 14)
+                            @if (auth()->user()->idpriv == 14 || auth()->user()->idpriv == 18)
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Obat Yang Dikonsumsi</label>

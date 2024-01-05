@@ -67,9 +67,16 @@
                                     @csrf
 
                                     @if ($resume_medis->perawat != 1)
-                                        @if (auth()->user()->idpriv >= 14)
+                                        @if (auth()->user()->idpriv == 14 || auth()->user()->idpriv == 18)
                                             @csrf
                                             <input type="hidden" name="jenis" id="" value="perawat">
+                                            <button class="btn btn-light-success btn-sm">Selesai</button>
+                                        @endif
+                                    @endif
+
+                                    @if ($resume_medis->bpjs != 1)
+                                        @if (auth()->user()->idpriv == 20)
+                                            <input type="hidden" name="jenis" id="" value="bpjs">
                                             <button class="btn btn-light-success btn-sm">Selesai</button>
                                         @endif
                                     @endif
@@ -447,6 +454,11 @@
                                                 <a class="btn btn-primary btn-sm"
                                                     href="{{ route('detail-rekap-medis-cetak', $resume_detail->id) }}"
                                                     target="blank">Print</a>
+                                                    @if(auth()->user()->idpriv == 20)
+                                                    <a class="btn btn-light-success btn-sm"
+                                                    href="{{ route('detail-rekap-medis-show', $resume_detail->id) }}"
+                                                    >Edit</a>
+                                                    @endif
                                                 <div class="separator separator-dashed border-secondary mb-5 mt-5">
                                                 </div>
                                             @endif

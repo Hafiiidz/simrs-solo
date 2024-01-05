@@ -66,7 +66,10 @@ class RekapMedisController extends Controller
 
         if ($request->jenis == 'perawat') {
             $rekap_medis->perawat = 1;
-        } else {
+        }elseif($request->jenis == 'bpjs'){
+            $rekap_medis->bpjs = 1;
+        } 
+        else {
             $rekap_medis->dokter = 1;
             if ($detail->terapi_obat != 'null' || $detail->terapi_obat != '') {
                 $no_antrian = DB::table('demo_antrian_resep')->whereDate('created_at', Carbon::today())->where('jenis_rawat', $rekap_medis->idrawat)->count();
