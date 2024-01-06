@@ -21,6 +21,7 @@ class PoliklinikController extends Controller
                     'rawat.tglmasuk',
                     'poli.poli',
                     'dokter.nama_dokter',
+                    'dokter.kode_dpjp',
                     'rawat_bayar.bayar',
                     'rawat_status.status',
                     'rekap_medis.dokter',
@@ -43,7 +44,7 @@ class PoliklinikController extends Controller
             //     $rawat->where('rawat.idpoli','!=',1);
             // }
             if (auth()->user()->detail->dokter == 1) {
-                $rawat->where('rawat.iddokter', auth()->user()->detail->iddokter)->orderBy('tglmasuk', 'desc');
+                $rawat->where('dokter.kode_dpjp', auth()->user()->detail->dokter_detail->kode_dpjp)->orderBy('tglmasuk', 'desc');
             } else {
                 $rawat->orderBy('tglmasuk', 'desc');
             }
@@ -93,6 +94,7 @@ class PoliklinikController extends Controller
                     'rawat.tglmasuk',
                     'poli.poli',
                     'dokter.nama_dokter',
+                    'dokter.kode_dpjp',
                     'rawat_bayar.bayar',
                     'rawat_status.status',
                     'rekap_medis.dokter',
@@ -115,7 +117,7 @@ class PoliklinikController extends Controller
             //     $rawat->where('rawat.idpoli', '!=', 1);
             // }
             if (auth()->user()->detail->dokter == 1) {
-                $rawat->where('rawat.iddokter', auth()->user()->detail->iddokter)->orderBy('tglmasuk', 'desc');
+                $rawat->where('dokter.kode_dpjp', auth()->user()->detail->dokter_detail->kode_dpjp)->orderBy('tglmasuk', 'desc');
             } else {
                 $rawat->orderBy('tglmasuk', 'desc');
             }

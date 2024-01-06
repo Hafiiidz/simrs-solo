@@ -18,4 +18,9 @@ class UserDetail extends Model
     {
         return $this->hasMany(User::class);
     }
+    
+    public function dokter_detail()
+    {
+        return $this->hasOne(Dokter::class,'id','iddokter');
+    }
 }

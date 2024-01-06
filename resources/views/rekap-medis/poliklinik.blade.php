@@ -67,7 +67,7 @@
                                     @csrf
 
                                     @if ($resume_medis->perawat != 1)
-                                        @if (auth()->user()->idpriv == 14 || auth()->user()->idpriv == 18)
+                                        @if (auth()->user()->idpriv == 14 || auth()->user()->idpriv == 18 || auth()->user()->idpriv == 29)
                                             @csrf
                                             <input type="hidden" name="jenis" id="" value="perawat">
                                             <button class="btn btn-light-success btn-sm">Selesai</button>
