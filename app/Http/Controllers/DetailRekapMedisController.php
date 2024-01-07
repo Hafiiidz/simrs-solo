@@ -16,6 +16,7 @@ use App\Models\TindakLanjut;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Svg\Tag\Rect;
 
 class DetailRekapMedisController extends Controller
 {
@@ -84,6 +85,7 @@ class DetailRekapMedisController extends Controller
         // return view('detail-rekap-medis.create', compact('pasien', 'kategori', 'data', 'obat'));
     }
 
+    
     public function store(Request $request, $id_rekapmedis)
     {
 
@@ -327,4 +329,6 @@ class DetailRekapMedisController extends Controller
         // return $pdf->download('rekap-medis.pdf');
         // return view('detail-rekap-medis.cetak');
     }
+
+    
 }

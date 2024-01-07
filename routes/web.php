@@ -214,6 +214,9 @@ Route::prefix('/pasien')->group(function () {
         Route::get('/{id_pasien}/show', [RekapMedisController::class, 'index'])->name('rekap-medis-index');
         Route::post('/store}', [RekapMedisController::class, 'store'])->name('rekap-medis-store');
         Route::post('/selesai/{id}', [RekapMedisController::class, 'selesai_poli'])->name('rekap-medis-selesai');
+        Route::post('/post-racikan/{id}', [RekapMedisController::class, 'post_resep_racikan'])->name('rekap-medis.post_resep_racikan');
+        Route::post('/post-non-racikan/{id}', [RekapMedisController::class, 'post_resep_non_racikan'])->name('rekap-medis.post_resep_non_racikan');
+        Route::post('/post-delete-resep', [RekapMedisController::class, 'post_delete_resep'])->name('post.delete-resep');
         Route::prefix('/detail')->group(function () {
             Route::get('/{id_rekapmedis}/index', [DetailRekapMedisController::class, 'index'])->name('detail-rekap-medis-index');
             Route::get('/create', [DetailRekapMedisController::class, 'create'])->name('detail-rekap-medis-create');

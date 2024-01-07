@@ -708,6 +708,10 @@
                                                         </div>
 
                                                         <div class="col-md-4">
+                                                            <label class="form-label" for="">Klinis</label>
+                                                            <input type="text" name="klinis" required  class="form-control" id="">
+                                                        </div>
+                                                        <div class="col-md-2">
                                                             <a href="javascript:;" data-repeater-delete
                                                                 class="btn btn-sm btn-light-danger mt-3 mt-md-8">
                                                                 <i class="ki-duotone ki-trash fs-5"><span
@@ -809,8 +813,104 @@
                                 </span>
                                 <!--end::Underline-->
                                 <div class="row mb-5">
+                                    {{-- <table class="table table-bordered fs-9 gs-2 gy-2 gx-2" id="kt_docs_repeater_basic">
+                                        <thead class="text-center align-middle">
+                                            <tr>
+                                                <th rowspan="2">Nama Obat</th>
+                                                <th rowspan="2" width=100>Jumlah</th>
+                                                <th rowspan="2" width=100>Dosis</th>
+                                                <th rowspan="2" width=200>Takaran</th>
+                                                <th width=50 colspan="3">Signa</th>
+                                                <th rowspan="2" width=100>Diminum</th>
+                                                <th rowspan="2" width=100>Catatan</th>
+                                                <th rowspan="2">Aksi</th>
+                                            </tr>
+                                            <tr>
+                                                <th width=10>P</th>
+                                                <th width=10>S</th>
+                                                <th width=10>M</th>
+                                            </tr>
+                                    
+                                        </thead>
+                                        <tbody data-repeater-list="terapi_obat" class="align-middle">
+                                            <tr data-repeater-item>
+                                                <td>
+                                                    <select name="obat" multiple="multiple" class="form-select form-select-sm" data-kt-repeater="select2"
+                                                        data-placeholder="-Pilih-" required>
+                                                        @foreach ($obat as $val)
+                                                        <option value="{{ $val->id }}">
+                                                            {{ $val->nama_obat }} - {{ $val->satuan->satuan }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="jumlah_obat" step=".01" class="form-control form-control-sm mb-2 mb-md-0"
+                                                        data-kt-repeater="tagify" min="0" required>
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="dosis_obat"  placeholder="dosis"
+                                                        class="form-control form-control-sm  mb-2 mb-md-0" min="0">
+                                                </td>
+                                                <td>
+                                                    <select name="takaran_obat" required class="form-select form-select-sm">
+                                                        <option value="">Pilih Takaran</option>
+                                                        <option value="tablet">tablet</option>
+                                                        <option value="kapsul">kapsul</option>
+                                                        <option value="bungkus">bungkus</option>
+                                                        <option value="tetes">tetes</option>
+                                                        <option value="ml">ml</option>
+                                                        <option value="sendok takar 5ml">sendok takar 5ml</option>
+                                                        <option value="sendok takar 15ml">sendok takar 15ml</option>
+                                                        <option value="Oles">Oles</option>
+                                                    </select>
+                                    
+                                                </td>
+                                                <td class="text-center align-middle"><input name="diminum" class="form-check-input form-check-input-sm" type="checkbox"
+                                                        value="P" id="flexCheckDefault" /></td>
+                                                <td class="text-center align-middle"><input class="form-check-input form-check-input-sm" type="checkbox"
+                                                        value="S" name="diminum" id="flexCheckDefault" /></td>
+                                                <td class="text-center align-middle"><input class="form-check-input form-check-input-sm" type="checkbox"
+                                                        value="M" name="diminum" id="flexCheckDefault" /></td>
+                                                <td>
+                                                    <div class="form-check form-check-inline mb-2">
+                                                        <input class="form-check-input" type="radio" name="takaran" id="tablet" value="sebelum">
+                                                        <label class="form-check-label" for="tablet">Sebelum</label>
+                                                    </div>
+                                    
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="takaran" id="kapsul" value="sesudah">
+                                                        <label class="form-check-label" for="kapsul">Sesudah</label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="catatan" class="form-control form-control-sm mb-2 mb-md-0" min="0">
+                                                </td>
+                                                <td>
+                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger">
+                                                        <i class="ki-duotone ki-trash fs-5">
+                                                            <span class="path1"></span>
+                                                            <span class="path2"></span>
+                                                            <span class="path3"></span>
+                                                            <span class="path4"></span>
+                                                            <span class="path5"></span>
+                                                        </i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                    
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td><a href="javascript:;" data-repeater-create class="btn btn-sm btn-light-primary">
+                                                        <i class="ki-duotone ki-plus fs-3"></i>
+                                                        Tambah Obat
+                                                    </a></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table> --}}
                                     <!--begin::Repeater-->
-                                    <div id="kt_docs_repeater_basic">
+                                    {{-- <div id="kt_docs_repeater_basic">
                                         <!--begin::Form group-->
                                         <div class="form-group">
                                             <div data-repeater-list="terapi_obat">
@@ -919,7 +1019,7 @@
                                             </a>
                                         </div>
                                         <!--end::Form group-->
-                                    </div>
+                                    </div> --}}
                                     <!--end::Repeater-->
                                 </div>
                                 <div class="row">
@@ -1004,6 +1104,7 @@
                     $(this).slideDown();
 
                     $(this).find('[data-kt-repeater="select2"]').select2();
+                    new Tagify(this.querySelector('[data-kt-repeater="tagify"]'));
                 },
 
                 hide: function(deleteElement) {
@@ -1012,6 +1113,8 @@
 
                 ready: function() {
                     $('[data-kt-repeater="select2"]').select2();
+                    new Tagify(document.querySelector('[data-kt-repeater="tagify"]'));
+
                 }
             });
 

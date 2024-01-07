@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\Obat\Obat;
 use Illuminate\Support\Facades\Http;
 
 class VclaimHelper
@@ -34,6 +35,11 @@ class VclaimHelper
             $this->ssl = false;
             $this->url_icare = config('app.url_icare_dev');
         }
+    }
+
+    public static function get_data_obat($idobat){
+        $obat = Obat::where('id',$idobat)->first();
+        return $obat?->nama_obat;
     }
 
     public static function stringDecrypt($key, $string)

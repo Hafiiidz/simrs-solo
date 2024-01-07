@@ -197,7 +197,7 @@
                                             <h5>ICD IX</h5>
                                             <ul>
                                                 @foreach (json_decode($resume_detail->icd9) as $val)
-                                                    <li>{{ $val->diagnosa_icdx }}</li>
+                                                    <li>{{ $val->diagnosa_icd9 }}</li>
                                                 @endforeach
                                             </ul>
                                         </td>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\VclaimHelper;
 use App\Models\Dokter;
 use App\Models\LabHasil;
 use App\Models\Obat\Obat;
@@ -71,7 +72,7 @@ class RekapMedisController extends Controller
         } 
         else {
             $rekap_medis->dokter = 1;
-            if ($detail->terapi_obat != 'null' || $detail->terapi_obat != '') {
+            if ($detail->laborat != null || $detail->terapi_obat != 'null' || $detail->terapi_obat != '') {
                 $no_antrian = DB::table('demo_antrian_resep')->whereDate('created_at', Carbon::today())->where('jenis_rawat', $rekap_medis->idrawat)->count();
                 DB::table('demo_antrian_resep')->insert([
                     'idrawat' => $rekap_medis->idrawat,
@@ -88,7 +89,7 @@ class RekapMedisController extends Controller
                 ]);
             }
 
-            if ($detail->radiologi != 'null' || $detail->radiologi != '') {
+            if ($detail->laborat != null || $detail->radiologi != 'null' || $detail->radiologi != '') {
                 DB::table('demo_permintaan_penunjang')->insert([
                     'idrawat' => $rekap_medis->idrawat,
                     'idbayar' => $rekap_medis->rawat->idbayar,
@@ -104,7 +105,7 @@ class RekapMedisController extends Controller
                     'idrekap' => $rekap_medis->id,
                 ]);
             }
-            if ($detail->laborat != 'null' || $detail->laborat != '') {
+            if ($detail->laborat != null || $detail->laborat != 'null' || $detail->laborat != '') {
                 DB::table('demo_permintaan_penunjang')->insert([
                     'idrawat' => $rekap_medis->idrawat,
                     'idbayar' => $rekap_medis->rawat->idbayar,
@@ -209,7 +210,7 @@ class RekapMedisController extends Controller
                 ->addIndexColumn()
                 ->make();
         }
-        $obat = Obat::with('satuan')->orderBy('obat.nama_obat', 'asc')->get();
+        $obat = Obat::with('satuan')->where('nama_obat','!=','')->orderBy('obat.nama_obat', 'asc')->get();
         $tindak_lanjut = TindakLanjut::where('idrawat', $id_rawat)->first();
         $radiologi = DB::table('radiologi_tindakan')->get();
         $lab = DB::table('laboratorium_pemeriksaan')->get();
@@ -217,13 +218,13 @@ class RekapMedisController extends Controller
         $dokter = Dokter::get();
         $tarif = DB::table('tarif')->whereNull('idjenisrawat')->orWhere('idjenisrawat', $rawat->id_jenis_rawat)->whereNull('idpoli')->orWhereIn('idpoli', [auth()->user()->detail->idpoli])->get();
         $soap_tindakan = SoapRajalTindakan::where('idrawat', $id_rawat)->get();
-
+        $resep_dokter = DB::table('demo_resep_dokter')->where('idrawat', $id_rawat)->get();
         $pemeriksaan_lab = LabHasil::where('idrawat', $id_rawat)->get();
         $pemeriksaan_radiologi = RadiologiHasil::where('idrawat', $id_rawat)->get();
         $pemeriksaan_luar = DB::table('demo_rekap_medis_file_penunjang')->where('id_rekap', $id_rawat)->get();
         $riwayat_berobat = RekapMedis::where('idpasien', $pasien->id)->where('idrawat', '!=', $id_rawat)->get();
         // dd($riwayat_berobat);
-        return view('rekap-medis.poliklinik', compact('pasien', 'rawat', 'resume_medis', 'resume_detail', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'soap_tindakan', 'fisio', 'pemeriksaan_lab', 'pemeriksaan_radiologi', 'riwayat_berobat', 'pemeriksaan_luar'));
+        return view('rekap-medis.poliklinik', compact('pasien', 'rawat', 'resume_medis', 'resume_detail', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'soap_tindakan', 'fisio', 'pemeriksaan_lab', 'pemeriksaan_radiologi', 'riwayat_berobat', 'pemeriksaan_luar', 'resep_dokter'));
     }
 
     public function copy_data(Request $request, $id)
@@ -425,42 +426,117 @@ class RekapMedisController extends Controller
         $rawat->tindakan = json_encode($request->tindakan_repeater);
         $rawat->save();
         return redirect()->back()->with('berhasil', 'Data Tindakan Berhasil Ditambahkan');
+    }
+
+    public function post_delete_resep(Request $request){
+        DB::table('demo_resep_dokter')->where('id',$request->id)->delete();
+        return response()->json([
+            'pesan' => 'Berhasil di hapus'
+        ]);
+    }
+
+    function get_nama_obat($id){
+        $obat = Obat::find($id);
+        return $obat->nama_obat;
+    }
+
+    public function post_resep_racikan(Request $request,$id){
+        // return $request->all();
+        // $mergedArray = array_merge(json_encode($request->obat), json_encode($request->jumlah_obat,true));
+        // return $mergedArray;
+
+        $nama_obat = new Collection([
+            'obat'=>$request->obat,
+            'jumlah'=>$request->jumlah_obat
+        ]);
+        // return $nama_obat->toJson();
+
+        // $nama_obat = new Collection([
+        //     'nama_obat1'=>$this->get_nama_obat($request->obat1).'-'.$request->jumlah1,
+        //     'nama_obat2'=>$this->get_nama_obat($request->obat2).'-'.$request->jumlah2,
+        //     'nama_obat3'=>$this->get_nama_obat($request->obat3).'-'.$request->jumlah3,
+        // ]);
+
+        // $jumlah = new Collection([
+        //     'jumlah1'=>$request->jumlah1,
+        //     'jumlah2'=>$request->jumlah2,
+        //     'jumlah3'=>$request->jumlah3,
+        // ]);
+
+        $resep = DB::table('demo_resep_dokter')->insertGetId([
+            'idrawat'=>$id,
+            'idobat'=>json_encode($request->obat),
+            'nama_obat'=>$nama_obat,
+            'jenis'=>'Racik',
+            'jumlah'=>json_encode($request->jumlah_obat),
+            'takaran'=>$request->takaran_obat,
+            'dosis'=>$request->dosis_obat,
+            'signa'=>json_encode($request->diminum),
+            'catatan'=>$request->catatan,
+            'diminum'=>$request->takaran
+        ]);
 
 
-        // $transakai = DB::table('transaksi')->where('kode_kunjungan', $rawat->idkunjungan)->first();
-        // if ($transakai) {
-        //     if ($request->tindakan_repeater) {
-        //         foreach ($request->tindakan_repeater as $tindakan) {
-        //             for ($x = 1; $x <= $tindakan['jumlah']; $x++) {
-        //                 $soap = DB::table('soap_rajaltindakan')->insert([
-        //                     'idrawat' => $rawat->id,
-        //                     'idkunjungan' => $rawat->idkunjungan,
-        //                     'idtindakan' => $tindakan['tindakan'],
-        //                     'no_rm' => $rawat->no_rm,
-        //                     'tgltindakan' => date('Y-m-d'),
-        //                     'iddokter' => $tindakan['dokter'],
-        //                     'idbayar' => $rawat->idbayar
-        //                 ]);
-        //                 if ($soap) {
-        //                     $tarif = DB::table('tarif')->where('id', $tindakan['tindakan'])->first();
-        //                     $tarif_trx = DB::table('transaksi_detail_rinci')->insert([
-        //                         'idjenis' => 0,
-        //                         'idrawat' => $rawat->id,
-        //                         'idtransaksi' => $transakai->id,
-        //                         'idtarif' => $tarif->id,
-        //                         'tarif' => $tarif->tarif,
-        //                         'idtindakan' => $tarif->kat_tindakan,
-        //                         'tgl' => now(),
-        //                         'iddokter' => $tindakan['dokter'],
-        //                         'idbayar' => $rawat->idbayar,
-        //                         'idpaket' => $tarif->paket == 1 ? '1' : '0'
-        //                     ]);
-        //                 }
-        //             }
+        $list_obat = json_decode($nama_obat);
+        $html_obat = '';
+        $html_jumlah = '';
+        foreach($list_obat->obat as $ob){
+            $html_obat .= VclaimHelper::get_data_obat($ob).'+';
+        }
 
-        //         }
-        //     }
-        // }
+        foreach($list_obat->jumlah as $jum){
+            $html_jumlah .= $jum.'+';
+        }
 
+        $html ='';
+        $html .= '<tr id="li'.$resep.'">';
+        $html .= '<td>'.$html_obat.' <span class="badge badge-success">Racikan</span></td>';
+        $html .= '<td>'.$html_jumlah.'</td>';
+        $html .= '<td>'.$request->dosis_obat.'</td>';
+        $html .= '<td>'.$request->takaran_obat.'</td>';
+        $html .= '<td>'.json_encode($request->diminum).'</td>';
+        $html .= '<td>'.$request->takaran.'</td>';
+        $html .= '<td>'.$request->catatan.'</td>';
+        $html .= '<td><a
+        class="btn btn-sm btn-danger btn-hapus"
+        id="'.$resep.'" href="javascript:void(0)"
+        style="cursor:pointer;"">Hapus</a></td>';
+
+        return response()->json(['status'=>'ok','data'=>$html]);
+    }
+    public function post_resep_non_racikan(Request $request,$id){
+        // return $request->all();
+        $obat = Obat::find($request->obat_non);
+
+        $resep = DB::table('demo_resep_dokter')->insertGetId([
+            'idrawat'=>$id,
+            'idobat'=>$request->obat_non,
+            'nama_obat'=>$obat->nama_obat,
+            'jenis'=>'Non Racik',
+            'jumlah'=>$request->jumlah_obat,
+            'takaran'=>$request->takaran_obat,
+            'dosis'=>$request->dosis_obat,
+            'signa'=>json_encode($request->diminum),
+            'catatan'=>$request->catatan,
+            'diminum'=>$request->takaran
+        ]);
+
+        $html ='';
+        $html .= '<tr id="li'.$resep.'">';
+        $html .= '<td>'.$obat->nama_obat.'</td>';
+        $html .= '<td>'.$request->jumlah_obat.'</td>';
+        $html .= '<td>'.$request->dosis_obat.'</td>';
+        $html .= '<td>'.$request->takaran_obat.'</td>';
+        $html .= '<td>'.json_encode($request->diminum).'</td>';
+        $html .= '<td>'.$request->takaran.'</td>';
+        $html .= '<td>'.$request->catatan.'</td>';
+        $html .= '<td><a
+        class="btn btn-sm btn-danger btn-hapus"
+        id="'.$resep.'" href="javascript:void(0)"
+        style="cursor:pointer;"">Hapus</a></td>';
+
+        $html .= '</tr>';
+
+        return response()->json(['status'=>'ok','data'=>$html]);
     }
 }

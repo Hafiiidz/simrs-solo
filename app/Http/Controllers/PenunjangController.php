@@ -16,9 +16,9 @@ class PenunjangController extends Controller
     public function antrian($jenis)
     {
 
-        $penunjang_rajal = PermintaanPenunjang::with('pasien', 'rawat')->where('status_pemeriksaan', 'Antrian')->where('jenis_penunjang', $jenis)->where('jenis_rawat', 1)->get();
-        $penunjang_ranap = PermintaanPenunjang::with('pasien', 'rawat')->where('status_pemeriksaan', 'Antrian')->where('jenis_penunjang', $jenis)->where('jenis_rawat', 2)->get();
-        $penunjang_ugd = PermintaanPenunjang::with('pasien', 'rawat')->where('status_pemeriksaan', 'Antrian')->where('jenis_penunjang', $jenis)->where('jenis_rawat', 3)->get();
+        $penunjang_rajal = PermintaanPenunjang::with('pasien', 'rawat')->where('status_pemeriksaan', 'Antrian')->where('jenis_penunjang', $jenis)->where('jenis_rawat', 1)->where('pemeriksaan_penunjang','!=','null')->whereDate('created_at', date('Y-m-d'))->get();
+        $penunjang_ranap = PermintaanPenunjang::with('pasien', 'rawat')->where('status_pemeriksaan', 'Antrian')->where('jenis_penunjang', $jenis)->where('jenis_rawat', 2)->where('pemeriksaan_penunjang','!=','null')->whereDate('created_at', date('Y-m-d'))->get();
+        $penunjang_ugd = PermintaanPenunjang::with('pasien', 'rawat')->where('status_pemeriksaan', 'Antrian')->where('jenis_penunjang', $jenis)->where('jenis_rawat', 3)->where('pemeriksaan_penunjang','!=','null')->whereDate('created_at', date('Y-m-d'))->get();
 
         $radiologi = DB::table('radiologi_tindakan')->get();
         $lab = DB::table('laboratorium_pemeriksaan')->get();
@@ -163,7 +163,24 @@ class PenunjangController extends Controller
     public function post_data_hasil_fisio(Request $request, $id){
         $pemeriksaan = DB::table('tindakan_fisio')->where('id', $id)->first();
         // return $request->all();
+        $tarif = DB::table('tarif')->where('id',$pemeriksaan->idtindakan)->first();
         $rawat = Rawat::find($pemeriksaan->idrawat);
+        $transaksi = DB::table('transaksi')->where('kode_kunjungan', $rawat->idkunjungan)->first();
+        if($pemeriksaan->status == 1){
+            DB::table('transaksi_detail_rinci')->insert([
+                'idbayar' => $rawat->idbayar,
+                'iddokter' => $pemeriksaan->iddokter,
+                'idpaket' => 0,
+                'idjenis' => 0,
+                'idrawat' => $rawat->id,
+                'idtransaksi' => $transaksi->id,
+                'idtarif' => $tarif->id,
+                'tarif' => $tarif->tarif,
+                'idtindakan' => $tarif->kat_tindakan,
+                'tgl' => now(),
+            ]);
+        }
+        
 
         $data = [
             'keterangan'=>$request->hasil,
@@ -178,7 +195,26 @@ class PenunjangController extends Controller
         $pemeriksaan = DB::table('radiologi_hasildetail')->where('id', $id)->first();
         $data_pemeriksaan = RadiologiHasil::find($pemeriksaan->idhasil);
         $rawat = Rawat::find($data_pemeriksaan->idrawat);
-
+        $transaksi = DB::table('transaksi')->where('kode_kunjungan', $rawat->idkunjungan)->first();
+        if($pemeriksaan->status == 1){
+            $tindakan = DB::table('radiologi_tindakan')->where('id', $pemeriksaan->idtindakan)->first();
+            // dd($tindakan);
+            if($tindakan->idtindakan != null){
+                $tarif = DB::table('tarif')->where('id',$tindakan->idtindakan)->first();
+                DB::table('transaksi_detail_rinci')->insert([
+                    'idbayar' => $rawat->idbayar,
+                    'iddokter' => $data_pemeriksaan->iddokter,
+                    'idpaket' => 0,
+                    'idjenis' => 0,
+                    'idrawat' => $rawat->id,
+                    'idtransaksi' => $transaksi->id,
+                    'idtarif' => $tarif->id,
+                    'tarif' => $tarif->tarif,
+                    'idtindakan' => $tarif->kat_tindakan,
+                    'tgl' => now(),
+                ]);
+            }
+        }
         $data = [
             'klinis' => $request->klinis,
             'hasil' => $request->hasil,
@@ -195,6 +231,7 @@ class PenunjangController extends Controller
         $pemeriksaan = DB::table('laboratorium_hasildetail')->where('id', $id)->first();
         $data_pemeriksaan = LabHasil::find($pemeriksaan->idhasil);
         $rawat = Rawat::find($data_pemeriksaan->idrawat);
+        $transaksi = DB::table('transaksi')->where('kode_kunjungan', $rawat->idkunjungan)->first();
         if ($request->lab) {
             foreach ($request->lab as $lab) {
                 // $lab2 = DB::table('laboratorium_pemeriksaan')->where('id',$lab['tindakan_lab'])->first();
@@ -210,6 +247,22 @@ class PenunjangController extends Controller
                 ];
                 DB::table('lab_hasil')->insert($data);
             }
+            $periksa = DB::table('laboratorium_pemeriksaan')->where('id',$pemeriksaan->idpemeriksaan)->first();
+            // dd($periksa);
+            $tarif = DB::table('tarif')->where('id',$periksa->idtarif)->first();
+            DB::table('transaksi_detail_rinci')->insert([
+                'idbayar' => $rawat->idbayar,
+                'iddokter' => $data_pemeriksaan->iddokter,
+                'idpaket' => 0,
+                'idjenis' => 0,
+                'idrawat' => $rawat->id,
+                'idtransaksi' => $transaksi->id,
+                'idtarif' => $tarif->id,
+                'tarif' => $tarif->tarif,
+                'idtindakan' => $tarif->kat_tindakan,
+                'tgl' => now(),
+            ]);
+
         }
         DB::table('laboratorium_hasildetail')->where('id', $id)->update([
             'status' => '2'
