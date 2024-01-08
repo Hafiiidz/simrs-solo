@@ -688,6 +688,9 @@
                                                                 </tr>
                                                             </table>
                                                         </td>
+                                                         <td class="align-middle text-center">{{ $val->dosis }}
+                                                            {{ $val->takaran }} ( {{ $val->signa }} )
+                                                            {{ $val->diminum . ' makan' }}</td>
                                                     </tr>
                                                 @endforeach
                                             @endif
