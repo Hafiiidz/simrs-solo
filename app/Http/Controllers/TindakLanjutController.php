@@ -42,6 +42,9 @@ class TindakLanjutController extends Controller
             $tindak_lanjut->tindakan_operasi = NULL;
             $tindak_lanjut->iddokter = NULL;
         } elseif ($request->rencana_tindak_lanjut == 'Dirawat') {
+            if($request->iddokter == null){
+                return redirect()->back()->with('gagal', 'Dokter harus diisi');
+            }
             $tindak_lanjut->poli_rujuk = NULL;
             $tindak_lanjut->tgl_tindak_lanjut = $request->tgl_rawat;
             $tindak_lanjut->tujuan_tindak_lanjut = NULL;
@@ -145,6 +148,9 @@ class TindakLanjutController extends Controller
             $tindak_lanjut->tindakan_operasi = NULL;
             $tindak_lanjut->iddokter = NULL;
         } elseif ($request->rencana_tindak_lanjut == 'Dirawat') {
+            if($request->iddokter == null){
+                return redirect()->back()->with('gagal', 'Dokter harus diisi');
+            }
             $tindak_lanjut->poli_rujuk = NULL;
             $tindak_lanjut->tujuan_tindak_lanjut = NULL;
             $tindak_lanjut->operasi = $request->operasi;
