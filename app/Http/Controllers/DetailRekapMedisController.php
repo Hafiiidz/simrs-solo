@@ -230,7 +230,7 @@ class DetailRekapMedisController extends Controller
                 ]);
                 $rekap->pemeriksaan_fisio = $pemeriksaan_fisio->toJson();
             }
-        } elseif (auth()->user()->idpriv == 14 || auth()->user()->idpriv == 18) {
+        } elseif (auth()->user()->idpriv == 14 || auth()->user()->idpriv == 18 || auth()->user()->idpriv == 29) {
             $rekap->anamnesa = $request->anamnesa;
             $alergi = new Collection([
                 'value_obat' => $request->value_obat,
