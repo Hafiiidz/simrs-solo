@@ -523,15 +523,15 @@
                                                                     </select>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="number" step=".01"
+                                                                    <input type="text"
                                                                         id='jumlah_obat1' name="jumlah_obat[]"
                                                                         class="form-control form-control-sm mb-2 mb-md-0"
                                                                         min="0" required>
-                                                                    <input type="number" step=".01"
+                                                                    <input type="text" step=".01"
                                                                         id='jumlah_obat2' name="jumlah_obat[]"
                                                                         class="form-control form-control-sm mb-2 mb-md-0"
                                                                         min="0">
-                                                                    <input type="number" step=".01"
+                                                                    <input type="text" step=".01"
                                                                         id='jumlah_obat3' name="jumlah_obat[]"
                                                                         class="form-control form-control-sm mb-2 mb-md-0"
                                                                         min="0">

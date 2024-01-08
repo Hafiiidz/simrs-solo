@@ -627,28 +627,44 @@
                                             @if ($antrian->racikan != 'null' || $antrian->racikan != '')
                                                 <tr>
                                                     <td colspan="10" class="fw-bold fs-6 text-gray-800">
-                                                        Racikan 
+                                                        Racikan
                                                     </td>
                                                 </tr>
                                                 @foreach (json_decode($antrian->racikan) as $val)
-                                                   <tr>
-                                                
-                                                   </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <table>
+                                                                @foreach ($val->obat as $ob_racikan)
+                                                                    <tr>
+                                                                        <td>{!! App\Helpers\VclaimHelper::get_data_obat($ob_racikan->obat) !!}</td>
+                                                                        <td>{{ $ob_racikan->jumlah_obat }}</td>
+                                                                        <td></td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                    
+                                                    <tr class="bg-success">
+                                                        <td colspan="10"></td>
+                                                    </tr>
                                                 @endforeach
-                                                
                                             @endif
 
                                             @if ($antrian->obat != 'null' || $antrian->obat != '')
-                                            <tr>
-                                                <td colspan="10" class="fw-bold fs-6 text-gray-800">
-                                                    Non Racikan 
-                                                </td>
-                                            </tr>
+                                                <tr>
+                                                    <td colspan="10" class="fw-bold fs-6 text-gray-800">
+                                                        Non Racikan
+                                                    </td>
+                                                </tr>
                                             @endif
                                             {{-- Non Racikan --}}
                                         </tbody>
                                     </table>
                                 @endif
+
+
+
                                 <table class="table table-bordered mt-10">
                                     <thead>
                                         <tr>

@@ -54,8 +54,36 @@ Route::get('/obat-tes',function(){
                     'jumlah_obat'=>$o,
                 ];
             }
+
+            $obatData= json_encode(array_merge($data_obat,$jumlah_obat));
+            $data = json_decode($obatData, true);
+
+            // Inisialisasi array 2 dimensi
+            $result = [];
+            $finalResult = array();
+            // Mengelompokkan elemen berdasarkan kunci
+            foreach ($data as $item) {
+                foreach ($item as $key => $value) {
+                    if (!isset($finalResult[$key])) {
+                        $finalResult[$key] = array();
+                    }
+                    $finalResult[$key][] = $value;
+                }
+            }
+            
+            // Menggabungkan hasil menjadi array sesuai format yang diinginkan
+            $combinedArray = array();
+            for ($i = 0; $i < count($finalResult['obat']); $i++) {
+                $combinedArray[] = array(
+                    'obat' => $finalResult['obat'][$i],
+                    'jumlah_obat' => $finalResult['jumlah_obat'][$i]
+                );
+            }
+            
+            // return $combinedArray;
+
             $racikan[] = [
-                'obat'=>$data_obat,
+                'obat'=>$combinedArray,
                 'jumlah_obat'=>$jumlah_obat,
                 'takaran'=>$rd->takaran,
                 'dosis'=>$rd->dosis,
@@ -229,11 +257,11 @@ Route::prefix('/rawat-jalan')->group(function () {
     Route::get('/poli-semua', [PoliklinikController::class, 'index_semua'])->middleware('auth')->name('poliklinik-semua');
     Route::prefix('/tindak-lanjut')->group(function () {
         Route::post('/', [TindakLanjutController::class, 'index'])->name('tindak-lanjut.index');
-        Route::get('/aksi-tindak-lanjut/{id}', [TindakLanjutController::class, 'aksi_tindak_lanjut'])->name('tindak-lanjut.aksi_tindak_lanjut');
-        Route::get('/edit-tindak-lanjut/{id}', [TindakLanjutController::class, 'edit_tindak_lanjut'])->name('tindak-lanjut.edit_tindak_lanjut');
-        Route::post('/post-tindak-lanjut/{id}', [TindakLanjutController::class, 'post_tindak_lanjut'])->name('tindak-lanjut.post_tindak_lanjut');
-        Route::post('/hapus-tindak-lanjut', [TindakLanjutController::class, 'hapus_tindak_lanjut'])->name('tindak-lanjut.hapus_tindak_lanjut');
-        Route::post('/edit-tindak-lanjut/{id}', [TindakLanjutController::class, 'post_edit_tindak_lanjut'])->name('tindak-lanjut.post_edit_tindak_lanjut');
+        Route::get('/aksi-tindak-lanjut/{id}', [TindakLanjutController::class, 'aksi_tindak_lanjut'])->middleware('auth')->name('tindak-lanjut.aksi_tindak_lanjut');
+        Route::get('/edit-tindak-lanjut/{id}', [TindakLanjutController::class, 'edit_tindak_lanjut'])->middleware('auth')->name('tindak-lanjut.edit_tindak_lanjut');
+        Route::post('/post-tindak-lanjut/{id}', [TindakLanjutController::class, 'post_tindak_lanjut'])->middleware('auth')->name('tindak-lanjut.post_tindak_lanjut');
+        Route::post('/hapus-tindak-lanjut', [TindakLanjutController::class, 'hapus_tindak_lanjut'])->middleware('auth')->name('tindak-lanjut.hapus_tindak_lanjut');
+        Route::post('/edit-tindak-lanjut/{id}', [TindakLanjutController::class, 'post_edit_tindak_lanjut'])->middleware('auth')->name('tindak-lanjut.post_edit_tindak_lanjut');
     });
     Route::prefix('/rekam-medis')->group(function () {
         Route::get('/{id_pasien}/show', [RekapMedisController::class, 'index_poli'])->name('rekam-medis-poli');
