@@ -615,7 +615,7 @@
                                         </thead>
                                         <tbody>
                                             {{-- Racikan --}}
-                                            @if ($antrian->racikan != 'null' || $antrian->racikan != '')
+                                            @if ($antrian->racikan != 'null' || $antrian->racikan != '' || $antrian->racikan != '[]')
                                                 <tr>
                                                     <td colspan="10" class="fw-bold fs-6 text-gray-800">
                                                         Racikan
@@ -673,17 +673,14 @@
                                                     </td>
                                                 </tr>
                                                 @foreach (json_decode($antrian->obat) as $val)
+                                                    {{-- {{ dd($val) }} --}}
                                                     <tr>
                                                         <td>
                                                             <table>
+                                                              
                                                                 <tr>
-                                                                    <th>Obat</th>
-                                                                    <th>Jumlah</th>
-                                                                    <th>Pemberian</th>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>{!! App\Helpers\VclaimHelper::get_data_obat($ob_racikan->obat) !!}</td>
-                                                                    <td class="text-center">{{ $ob_racikan->jumlah_obat }}
+                                                                    <td>{!! App\Helpers\VclaimHelper::get_data_obat($val->obat) !!}</td>
+                                                                    <td class="text-center">{{ $val->jumlah }}
                                                                     </td>
                                                                     <td>
                                                                         <input type="text" class="form-control">
