@@ -95,22 +95,67 @@
                         <tbody>
                             @php
                                 $total = 0;
+                                $total_racik = 0;
                             @endphp
-                            
+                            @if($resep->obat != null || $resep->obat != 'null')
+                                @foreach (json_decode($resep->obat) as $val)
+                                    @php
+                                        $total += App\Helpers\VclaimHelper::get_harga_obat($val->obat) * $val->diberikan;
+                                    @endphp
+                                    <tr class="border">
+                                        {{-- <td style="border: 1px solid black;" class="text-center">{{ $loop->iteration }}</td> --}}
+                                        <td style="border: 1px solid black;">{{  App\Helpers\VclaimHelper::get_data_obat($val->obat) }}</td>
+                                        <td style="border: 1px solid black;" class="text-center">{{ $val->diberikan }}</td>
+                                        <td style="border: 1px solid black;" class="text-end">{{ number_format(  App\Helpers\VclaimHelper::get_harga_obat($val->obat)*$val->diberikan ) }}</td>
+                                    </tr>
+                                @endforeach
+                            @endif
+                            @if($resep->racikan != null || $resep->racikan != 'null')
+                                @foreach (json_decode($resep->racikan) as $val)
+                                    @php
+                                        $total_racik += 10000;
+                                    @endphp
+                                    @foreach ($val->obat as $obat)
+                                        @php
+                                            $total += App\Helpers\VclaimHelper::get_harga_obat($obat->obat)*$obat->diberikan;
+                                        @endphp
+                                        <tr>
+                                            <td style="border: 1px solid black;">{{  App\Helpers\VclaimHelper::get_data_obat($obat->obat) }} ({{ $obat->jumlah_obat }})</td>
+                                            <td style="border: 1px solid black;" class="text-center">{{ $obat->diberikan }}</td>
+                                            <td style="border: 1px solid black;" class="text-end">{{  number_format(App\Helpers\VclaimHelper::get_harga_obat($obat->obat)* $obat->diberikan ) }}</td>
+                                        </tr>
+                                    @endforeach
+                                @endforeach
+                            @endif
                             {{-- @foreach ($detail_resep as $val)
                                 <tr class="border">
                                     <td style="border: 1px solid black;" class="text-center">{{ $loop->iteration }}</td>
                                     <td style="border: 1px solid black;">{{ $val->nama_obat }}</td>
                                     <td style="border: 1px solid black;" class="text-center">{{ $val->qty }}</td>
-                                    <td style="border: 1px solid black;" class="text-end">Rp.{{ number_format($val->total) }}</td>
+                                    <td style="border: 1px solid black;" class="text-end">{{ number_format($val->total) }}</td>
                                 </tr>
                             @endforeach --}}
                             <tr class="border">
-                                <td style="border: 1px solid black;" colspan="3" class="text-end">Total Harga</td>
+                                <td style="border: 1px solid black;" colspan="2" class="text-end">Total Harga</td>
                                 <td style="border: 1px solid black;" class="text-end">
                                     Rp.{{ number_format($total) }}
                                 </td>
+                               
                             </tr>
+                            @if($resep->racikan != null || $resep->racikan != 'null')
+                            <tr>                                
+                                <td style="border: 1px solid black;" colspan="2" class="text-end">Total Racik</td>
+                                <td style="border: 1px solid black;" class="text-end">
+                                    Rp.{{ number_format($total_racik) }}
+                                </td>                               
+                            </tr>
+                            <tr>                                
+                                <td style="border: 1px solid black;" colspan="2" class="text-end">Total</td>
+                                <td style="border: 1px solid black;" class="text-end">
+                                    Rp.{{ number_format($total_racik+$total) }}
+                                </td>                               
+                            </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>

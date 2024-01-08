@@ -339,10 +339,11 @@ class FarmasiController extends Controller
 
     public function cetakFakturTempo($id){
         $resep = AntrianFarmasi::find($id);
+        
         $rawat = Rawat::find($resep->idrawat);
         $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
         $obat = Obat::get();
-        $pdf = PDF::loadview('farmasi.cetak.faktur-tempo', compact('resep', 'rawat', 'pasien', 'obat'));
+        $pdf = PDF::loadview('farmasi.cetak.resep-faktur-tempo', compact('resep', 'rawat', 'pasien', 'obat'));
         $customPaper = array(0, 0, 323.15, 790.866);
         $pdf->setPaper($customPaper);
         return $pdf->stream();
