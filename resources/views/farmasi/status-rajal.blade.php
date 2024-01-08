@@ -603,22 +603,13 @@
                                     </form>
                                     <div class="separator separator-dashed border-secondary mt-5 mb-5"></div> --}}
 
-                                    <table class="table table-bordered fs-9 gs-2 gy-2 gx-2" id="kt_docs_repeater_basic">
+                                    <table class="table table-bordered fs-7 gs-2 gy-2 gx-2" id="kt_docs_repeater_basic">
                                         <thead class="text-center align-middle">
                                             <tr>
                                                 <th rowspan="2">Nama Obat</th>
-                                                <th rowspan="2" width=100>Jumlah</th>
-                                                <th rowspan="2" width=100>Dosis</th>
-                                                <th rowspan="2" width=200>Takaran</th>
-                                                <th width=50 colspan="3">Signa</th>
-                                                <th rowspan="2" width=100>Diminum</th>
-                                                <th rowspan="2" width=100>Catatan</th>
-                                                <th rowspan="2">Aksi</th>
-                                            </tr>
-                                            <tr>
-                                                <th width=10>P</th>
-                                                <th width=10>S</th>
-                                                <th width=10>M</th>
+                                                {{-- <th rowspan="2" width=100>Jumlah Pemberian</th> --}}
+                                                <th rowspan="2" width=500>Dosis</th>
+                                                <th rowspan="2">Jenis Obat</th>
                                             </tr>
 
                                         </thead>
@@ -634,17 +625,41 @@
                                                     <tr>
                                                         <td>
                                                             <table>
+                                                                <tr>
+                                                                    <th>Obat</th>
+                                                                    <th>Jumlah</th>
+                                                                    <th>Pemberian</th>
+                                                                </tr>
                                                                 @foreach ($val->obat as $ob_racikan)
                                                                     <tr>
                                                                         <td>{!! App\Helpers\VclaimHelper::get_data_obat($ob_racikan->obat) !!}</td>
-                                                                        <td>{{ $ob_racikan->jumlah_obat }}</td>
-                                                                        <td></td>
+                                                                        <td class="text-center">
+                                                                            {{ $ob_racikan->jumlah_obat }}</td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control">
+                                                                        </td>
                                                                     </tr>
                                                                 @endforeach
                                                             </table>
                                                         </td>
+                                                        <td class="align-middle text-center">{{ $val->dosis }}
+                                                            {{ $val->takaran }} ( {{ $val->signa }} )
+                                                            {{ $val->diminum . ' makan' }}</td>
+                                                        <td class="align-middle text-center">
+                                                            <select name="jenis_obat" id="" class="form-select"
+                                                                required>
+                                                                <option value="">- Jenis Obat
+                                                                    -
+                                                                </option>
+                                                                @foreach ($transaksi_bayar as $tb)
+                                                                    <option value="{{ $tb->id }}">
+                                                                        {{ $tb->bayar }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </td>
                                                     </tr>
-                                                    
+
                                                     <tr class="bg-success">
                                                         <td colspan="10"></td>
                                                     </tr>
@@ -657,6 +672,27 @@
                                                         Non Racikan
                                                     </td>
                                                 </tr>
+                                                @foreach (json_decode($antrian->obat) as $val)
+                                                    <tr>
+                                                        <td>
+                                                            <table>
+                                                                <tr>
+                                                                    <th>Obat</th>
+                                                                    <th>Jumlah</th>
+                                                                    <th>Pemberian</th>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>{!! App\Helpers\VclaimHelper::get_data_obat($ob_racikan->obat) !!}</td>
+                                                                    <td class="text-center">{{ $ob_racikan->jumlah_obat }}
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="text" class="form-control">
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
                                             @endif
                                             {{-- Non Racikan --}}
                                         </tbody>

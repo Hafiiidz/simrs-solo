@@ -149,7 +149,7 @@ class RekapMedisController extends Controller
                     'no_rm' => $rekap_medis->rawat->no_rm,
                     'idrekap' => $rekap_medis->id,
                     'no_antrian' => $no_antrian + 1,
-                    'obat' => json_encode($obat),
+                    'obat' => json_encode($non_racik),
                     'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
                     'created_at' => now(),
                     'updated_at' => now(),
