@@ -86,6 +86,7 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr class="border">
+                                {{-- <th style="border: 1px solid black;" class="text-center">No</th> --}}
                                 <th style="border: 1px solid black;" class="text-center">Nama Obat (Merk)</th>
                                 <th style="border: 1px solid black;" class="text-center">Qty</th>
                                 <th style="border: 1px solid black;" class="text-center">Total</th>
@@ -105,7 +106,7 @@
                                 </tr>
                             @endforeach --}}
                             <tr class="border">
-                                <td style="border: 1px solid black;" colspan="2" class="text-end">Total Harga</td>
+                                <td style="border: 1px solid black;" colspan="3" class="text-end">Total Harga</td>
                                 <td style="border: 1px solid black;" class="text-end">
                                     Rp.{{ number_format($total) }}
                                 </td>

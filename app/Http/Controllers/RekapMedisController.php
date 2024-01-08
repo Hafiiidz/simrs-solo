@@ -125,7 +125,8 @@ class RekapMedisController extends Controller
                             'dosis'=>$rd->dosis,
                             'signa'=>$rd->signa,
                             'diminum'=>$rd->diminum,
-                            'catatan'=>$rd->catatan
+                            'catatan'=>$rd->catatan,
+                            'idresep'=>$rd->id
                         ];
                     }else{
                         $non_racik[] = [
@@ -135,7 +136,8 @@ class RekapMedisController extends Controller
                             'dosis'=>$rd->dosis,
                             'signa'=>$rd->signa,
                             'diminum'=>$rd->diminum,
-                            'catatan'=>$rd->catatan
+                            'catatan'=>$rd->catatan,
+                            'idresep'=>$rd->id
                         ];
                     }
                 }
@@ -188,7 +190,7 @@ class RekapMedisController extends Controller
                     'idrekap' => $rekap_medis->id,
                 ]);
             }
-            if ($detail->fisio != 'null' || $detail->fisio != '') {
+            if ($detail->fisio != 'null' || $detail->fisio != '' || $detail->fisio != null) {
                 // DB::table('demo_terapi_fisio')->insert([
                 //     'idrekap' => $rekap_medis->id,
                 //     'idrawat' => $rekap_medis->idrawat,
@@ -508,7 +510,7 @@ class RekapMedisController extends Controller
     }
 
     public function post_resep_racikan(Request $request,$id){
-        return $request->all();
+        // return $request->all();
         // $mergedArray = array_merge(json_encode($request->obat), json_encode($request->jumlah_obat,true));
         // return $mergedArray;
 
@@ -540,7 +542,8 @@ class RekapMedisController extends Controller
             'dosis'=>$request->dosis_obat,
             'signa'=>json_encode($request->diminum),
             'catatan'=>$request->catatan,
-            'diminum'=>$request->takaran
+            'diminum'=>$request->takaran,
+            'diberikan'=>$request->pemberian
         ]);
 
 
@@ -548,11 +551,16 @@ class RekapMedisController extends Controller
         $html_obat = '';
         $html_jumlah = '';
         foreach($list_obat->obat as $ob){
-            $html_obat .= VclaimHelper::get_data_obat($ob).'+';
+            if($ob != null){
+                $html_obat .= VclaimHelper::get_data_obat($ob).'+';
+            }
+           
         }
 
         foreach($list_obat->jumlah as $jum){
-            $html_jumlah .= $jum.'+';
+            if($jum != null){
+                $html_jumlah .= $jum.'+';
+            }
         }
 
         $html ='';

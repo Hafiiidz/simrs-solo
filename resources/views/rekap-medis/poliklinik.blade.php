@@ -373,6 +373,7 @@
                                                                         <select name="takaran_obat" id='takaran_obat'
                                                                             required class="form-select form-select-sm">
                                                                             <option value="">Pilih Takaran</option>
+                                                                            <option value="-">-</option>
                                                                             <option value="tablet">tablet</option>
                                                                             <option value="kapsul">kapsul</option>
                                                                             <option value="bungkus">bungkus</option>
@@ -452,173 +453,156 @@
                                         <div class="tab-pane fade" id="kt_tab_pane_racikan" role="tabpanel">
                                             <div class="table-responsive">
                                                 @if (auth()->user()->idpriv == 7)
-                                                <table class="table table-bordered fs-9 gs-2 gy-2 gx-2"
-                                                    id="kt_docs_repeater_basic">
-                                                    <thead class="text-center align-middle">
-                                                        <tr>
-                                                            <th rowspan="2">Nama Obat</th>
-                                                            <th rowspan="2" width=100>Jumlah</th>
-                                                            <th rowspan="2" width=100>Dosis</th>
-                                                            <th rowspan="2" width=200>Takaran</th>
-                                                            <th width=50 colspan="3">Signa</th>
-                                                            <th rowspan="2" width=100>Diminum</th>
-                                                            <th rowspan="2" width=100>Catatan</th>
-                                                            <th rowspan="2">Aksi</th>
-                                                        </tr>
-                                                        <tr>
-                                                            <th width=10>P</th>
-                                                            <th width=10>S</th>
-                                                            <th width=10>M</th>
-                                                        </tr>
-
-                                                    </thead>
-                                                    <tbody class="align-middle">
-                                                        <form id='frmRacikan' method="POST">
-                                                            @csrf
+                                                    <table class="table table-bordered fs-9 gs-2 gy-2 gx-2"
+                                                        id="kt_docs_repeater_basic">
+                                                        <thead class="text-center align-middle">
                                                             <tr>
-                                                                <td>
-                                                                    <select name="obat[]" id='nama_obat'
-                                                                        class="form-select form-select-sm"
-                                                                        data-control="select2" data-placeholder="Obat 1"
-                                                                        required>
-                                                                        {{-- <option value="1" selected>1</option>
-                                                                        <option value="2" selected>2</option>
-                                                                        <option value="3" >3</option> --}}
-                                                                        <option value=""></option>
-                                                                        @foreach ($obat as $val)
-                                                                            <option value="{{ $val->id }}">
-                                                                                {{ $val->nama_obat }} -
-                                                                                {{ $val->satuan->satuan }}
-                                                                            </option>
-                                                                        @endforeach
-                                                                    </select>
-
-                                                                    <select name="obat[]" id='nama_obat1'
-                                                                        class="form-select form-select-sm"
-                                                                        data-control="select2" data-placeholder="Obat 2">
-                                                                        {{-- <option value="1" selected>1</option>
-                                                                        <option value="2" selected>2</option>
-                                                                        <option value="3" >3</option> --}}
-                                                                        <option value=""></option>
-                                                                        @foreach ($obat as $val)
-                                                                            <option value="{{ $val->id }}">
-                                                                                {{ $val->nama_obat }} -
-                                                                                {{ $val->satuan->satuan }}
-                                                                            </option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                    <select name="obat[]" id='nama_obat2'
-                                                                        class="form-select form-select-sm"
-                                                                        data-control="select2" data-placeholder="Obat 3">
-                                                                        {{-- <option value="1" selected>1</option>
-                                                                        <option value="2" selected>2</option>
-                                                                        <option value="3" >3</option> --}}
-                                                                        <option value=""></option>
-                                                                        @foreach ($obat as $val)
-                                                                            <option value="{{ $val->id }}">
-                                                                                {{ $val->nama_obat }} -
-                                                                                {{ $val->satuan->satuan }}
-                                                                            </option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="text"
-                                                                        id='jumlah_obat1' name="jumlah_obat[]"
-                                                                        class="form-control form-control-sm mb-2 mb-md-0"
-                                                                        min="0" required>
-                                                                    <input type="text" step=".01"
-                                                                        id='jumlah_obat2' name="jumlah_obat[]"
-                                                                        class="form-control form-control-sm mb-2 mb-md-0"
-                                                                        min="0">
-                                                                    <input type="text" step=".01"
-                                                                        id='jumlah_obat3' name="jumlah_obat[]"
-                                                                        class="form-control form-control-sm mb-2 mb-md-0"
-                                                                        min="0">
-                                                                </td>
-                                                                <td>
-                                                                    <input type="text" name="dosis_obat" required
-                                                                        placeholder="dosis"
-                                                                        class="form-control form-control-sm  mb-2 mb-md-0"
-                                                                        min="0">
-                                                                </td>
-                                                                <td>
-                                                                    <select name="takaran_obat" id='takaran_obat' required
-                                                                        class="form-select form-select-sm">
-                                                                        <option value="">Pilih Takaran</option>
-                                                                        <option value="tablet">tablet</option>
-                                                                        <option value="kapsul">kapsul</option>
-                                                                        <option value="bungkus">bungkus</option>
-                                                                        <option value="tetes">tetes</option>
-                                                                        <option value="ml">ml</option>
-                                                                        <option value="sendok takar 5ml">sendok takar 5ml
-                                                                        </option>
-                                                                        <option value="sendok takar 15ml">sendok takar 15ml
-                                                                        </option>
-                                                                        <option value="Oles">Oles</option>
-                                                                    </select>
-
-                                                                </td>
-                                                                <td class="text-center align-middle"><input
-                                                                        name="diminum[]"
-                                                                        class="form-check-input form-check-input-sm"
-                                                                        type="checkbox" value="P"
-                                                                        id="flexCheckDefault" /></td>
-                                                                <td class="text-center align-middle"><input
-                                                                        class="form-check-input form-check-input-sm"
-                                                                        type="checkbox" value="S" name="diminum[]"
-                                                                        id="flexCheckDefault" /></td>
-                                                                <td class="text-center align-middle"><input
-                                                                        class="form-check-input form-check-input-sm"
-                                                                        type="checkbox" value="M" name="diminum[]"
-                                                                        id="flexCheckDefault" /></td>
-                                                                <td>
-                                                                    <div class="form-check form-check-inline mb-2">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="takaran" id="kapsul"
-                                                                            value="sebelum">
-                                                                        <label class="form-check-label"
-                                                                            for="tablet">Sebelum</label>
-                                                                    </div>
-
-                                                                    <div class="form-check form-check-inline">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="takaran" id="kapsul"
-                                                                            value="sesudah">
-                                                                        <label class="form-check-label"
-                                                                            for="kapsul">Sesudah</label>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="text" name="catatan"
-                                                                        class="form-control form-control-sm mb-2 mb-md-0"
-                                                                        min="0">
-                                                                </td>
-                                                                <td>
-
-                                                                    {{-- <button class="btn btn-sm btn-info">Racik</button> --}}
-                                                                </td>
+                                                                <th rowspan="2">Nama Obat</th>
+                                                                <th rowspan="2" width=100>Dosis</th>
+                                                                <th rowspan="2" width=100>Jumlah</th>
+                                                                <th rowspan="2" width=50>Diberikan</th>
+                                                                <th rowspan="2" width=200>Takaran</th>
+                                                                <th width=50 colspan="3">Signa</th>
+                                                                <th rowspan="2" width=100>Diminum</th>
+                                                                <th rowspan="2" width=100>Catatan</th>
+                                                                <th rowspan="2">Aksi</th>
                                                             </tr>
                                                             <tr>
-                                                                <th colspan="10">
-                                                                    <button type="submit" name="upload_racikan"
-                                                                        id="upload_racikan"
-                                                                        class="btn btn-primary btn-sm">
-                                                                        <span class="indicator-label">
-                                                                            Simpan Obat
-                                                                        </span>
-                                                                        <span class="indicator-progress">
-                                                                            Prossesing... <span
-                                                                                class="spinner-border spinner-border-sm align-middle ms-2"></span>
-                                                                        </span>
-                                                                    </button>
-                                                                </th>
+                                                                <th width=10>P</th>
+                                                                <th width=10>S</th>
+                                                                <th width=10>M</th>
                                                             </tr>
-                                                        </form>
+
+                                                        </thead>
+                                                        <tbody class="align-middle">
+                                                            <form id='frmRacikan' method="POST">
+                                                                @csrf
+                                                                <tr>
+                                                                    <td>
+                                                                        @for ($i = 1; $i <= 8; $i++)
+                                                                            <select name="obat[]"
+                                                                                id='nama_obat{{ $i }}'
+                                                                                class="form-select form-select-sm"
+                                                                                data-control="select2"
+                                                                                data-placeholder="Obat {{ $i }}">
+                                                                                {{-- <option value="1" selected>1</option>
+                                                                        <option value="2" selected>2</option>
+                                                                        <option value="3" >3</option> --}}
+                                                                                <option value=""></option>
+                                                                                @foreach ($obat as $val)
+                                                                                    <option value="{{ $val->id }}">
+                                                                                        {{ $val->nama_obat }} -
+                                                                                        {{ $val->satuan->satuan }}
+                                                                                    </option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        @endfor
 
 
-                                                    </tbody>
-                                                </table>
+
+                                                                    </td>
+                                                                    <td>
+                                                                        @for ($i = 1; $i <= 8; $i++)
+                                                                            <input type="text"
+                                                                                id='jumlah_obat{{ $i }}'
+                                                                                name="jumlah_obat[]"
+                                                                                class="form-control form-control-sm mb-2 mb-md-0"
+                                                                                min="0">
+                                                                        @endfor
+
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="text" name="dosis_obat" required
+                                                                            placeholder=""
+                                                                            class="form-control form-control-sm  mb-2 mb-md-0"
+                                                                            min="0">
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="text" name="pemberian" required
+                                                                            placeholder=""
+                                                                            class="form-control form-control-sm  mb-2 mb-md-0"
+                                                                            min="0">
+                                                                    </td>
+                                                                    <td>
+                                                                        <select name="takaran_obat" id='takaran_obat'
+                                                                            required class="form-select form-select-sm">
+                                                                            <option value="">Pilih Takaran</option>
+                                                                            <option value="-">-</option>
+                                                                            <option value="tablet">tablet</option>
+                                                                            <option value="kapsul">kapsul</option>
+                                                                            <option value="bungkus">bungkus</option>
+                                                                            <option value="tetes">tetes</option>
+                                                                            <option value="ml">ml</option>
+                                                                            <option value="sendok takar 5ml">sendok takar
+                                                                                5ml
+                                                                            </option>
+                                                                            <option value="sendok takar 15ml">sendok takar
+                                                                                15ml
+                                                                            </option>
+                                                                            <option value="Oles">Oles</option>
+                                                                        </select>
+
+                                                                    </td>
+                                                                    <td class="text-center align-middle"><input
+                                                                            name="diminum[]"
+                                                                            class="form-check-input form-check-input-sm"
+                                                                            type="checkbox" value="P"
+                                                                            id="flexCheckDefault" /></td>
+                                                                    <td class="text-center align-middle"><input
+                                                                            class="form-check-input form-check-input-sm"
+                                                                            type="checkbox" value="S"
+                                                                            name="diminum[]" id="flexCheckDefault" /></td>
+                                                                    <td class="text-center align-middle"><input
+                                                                            class="form-check-input form-check-input-sm"
+                                                                            type="checkbox" value="M"
+                                                                            name="diminum[]" id="flexCheckDefault" /></td>
+                                                                    <td>
+                                                                        <div class="form-check form-check-inline mb-2">
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="takaran" id="kapsul"
+                                                                                value="sebelum">
+                                                                            <label class="form-check-label"
+                                                                                for="tablet">Sebelum</label>
+                                                                        </div>
+
+                                                                        <div class="form-check form-check-inline">
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="takaran" id="kapsul"
+                                                                                value="sesudah">
+                                                                            <label class="form-check-label"
+                                                                                for="kapsul">Sesudah</label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="text" name="catatan"
+                                                                            class="form-control form-control-sm mb-2 mb-md-0"
+                                                                            min="0">
+                                                                    </td>
+                                                                    <td>
+
+                                                                        {{-- <button class="btn btn-sm btn-info">Racik</button> --}}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th colspan="10">
+                                                                        <button type="submit" name="upload_racikan"
+                                                                            id="upload_racikan"
+                                                                            class="btn btn-primary btn-sm">
+                                                                            <span class="indicator-label">
+                                                                                Simpan Obat
+                                                                            </span>
+                                                                            <span class="indicator-progress">
+                                                                                Prossesing... <span
+                                                                                    class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                                                            </span>
+                                                                        </button>
+                                                                    </th>
+                                                                </tr>
+                                                            </form>
+
+
+                                                        </tbody>
+                                                    </table>
                                                 @endif
                                             </div>
                                         </div>
@@ -647,18 +631,26 @@
                                                                 @endphp
                                                                 <td>
                                                                     @foreach ($list_obat->obat as $ob)
-                                                                        {!! App\Helpers\VclaimHelper::get_data_obat($ob) . '+' !!}
+                                                                        @if ($ob != null)
+                                                                            {!! App\Helpers\VclaimHelper::get_data_obat($ob) . '+' !!}
+                                                                        @endif
                                                                     @endforeach
 
                                                                     <span class="badge badge-success">Racikan</span>
                                                                 </td>
                                                                 <td>
+                                                                    {{ $rd->dosis }}
+                                                                </td>
+                                                                <td>
                                                                     @foreach ($list_obat->jumlah as $ob)
-                                                                        {!! $ob !!} +
+                                                                        @if ($ob != null)
+                                                                            {!! $ob !!} +
+                                                                        @endif
                                                                     @endforeach
                                                                     <span class="badge badge-success">Racikan</span>
+
+                                                                    {{ '('.$rd->diberikan.')' }}
                                                                 </td>
-                                                                <td>{{ $rd->dosis }}</td>
                                                                 <td>{{ $rd->takaran }}</td>
                                                                 <td>{{ $rd->signa }}</td>
                                                                 <td>{{ $rd->diminum . ' makan' }}</td>
@@ -2176,7 +2168,7 @@
 
             });
             $('#frmRacikan').on('submit', function(event) {
-                const form = document.getElementById('frmNonracikan');
+                const form = document.getElementById('frmRacikan');
                 const submitButton = document.getElementById('upload_racikan');
 
                 event.preventDefault();
@@ -2193,11 +2185,11 @@
                         submitButton.disabled = true;
                     },
                     success: function(data) {
-                        console.log(data)
+
                         submitButton.setAttribute('data-kt-indicator', 'off');
                         submitButton.disabled = false;
                         Swal.fire(
-                            'Document has uploaded',
+                            'Obat Tersimpan',
                             '',
                             'success'
                         )
@@ -2215,6 +2207,7 @@
                         // $('#data_name').val('');
                         // $('#data_file').val('');
                         $('#list_resep > tbody:last-child').append(data.data);
+                        console.log(data.data)
                     }
                 })
 

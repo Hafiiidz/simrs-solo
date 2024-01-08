@@ -41,6 +41,10 @@ class VclaimHelper
         $obat = Obat::where('id',$idobat)->first();
         return $obat?->nama_obat;
     }
+    public static function get_harga_obat($idobat){
+        $obat = Obat::where('id',$idobat)->first();
+        return $obat?->harga_beli;
+    }
 
     public static function stringDecrypt($key, $string)
     {

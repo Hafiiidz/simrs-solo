@@ -175,6 +175,20 @@
                             @if (auth()->user()->idpriv == 7)
                                 <div class="row mb-5">
                                     <div class="col-md-12">
+                                        <label class="form-label fw-bold">Kategori Penyakit</label>
+                                        <select class="form-select" data-control="select2"
+                                            data-placeholder="Select an option">
+                                            <option></option>
+                                            @foreach ($kategori_diagnosa as $kd)
+                                                <option value="{{ $kd->id }}">{{ $kd->jenisdiagnosa }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            @endif
+                            @if (auth()->user()->idpriv == 7)
+                                <div class="row mb-5">
+                                    <div class="col-md-12">
                                         <label class="form-label fw-bold">Diagnosa</label>
                                         <textarea name="diagnosa" data-kt-autosize="true" rows="3" class="form-control" placeholder="...">{{ $rekap->diagnosa }}</textarea>
                                     </div>

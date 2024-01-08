@@ -35,36 +35,161 @@ class FarmasiController extends Controller
 
     public function updateResep(Request $request)
     {
-        // return $request->all();
-        $total_obat = 0;
-        foreach ($request->terapi_obat as $val) {
-            if (isset($val['terapi_obat_racikan'])) {
-                foreach ($val['terapi_obat_racikan'] as $racik) {
-                    $obat = Obat::find($racik['obat']);
-                    if($request->jenis_obat == 2){
-                        $total_obat += $obat->harga_beli * $racik['pemberian_obat'];
-                    }else{
-                        $total_obat += $obat->harga_jual * $racik['pemberian_obat'];
-                    }
-                   
-                }
-            } else {
-                $obat = Obat::find($val['obat']);
-                if($request->jenis_obat == 2){
-                    $total_obat += $obat->harga_beli * $val['pemberian_obat'];
-                }else{
-                    $total_obat += $obat->harga_jual * $val['pemberian_obat'];
+        
+       
+        // return $select_resep;
+        $obat_non_racik = 0;
+        $obat_racikan = 0;
+        $select_resep = DB::table('demo_resep_dokter')->where('id', $request->idresep)->first();
+        if($select_resep->jenis == 'Racik'){
+            $gabungkanArray = array();
+
+            foreach ($request->racikan as $key => $values) {
+                foreach ($values as $index => $value) {
+                    $gabungkanArray[$index][$key] = $value;
                 }
             }
+            // return $gabungkanArray;
+            $pemberian = [];
+            foreach($gabungkanArray as $key => $value){
+                $pemberian[] = $value['pemberian'];
+                DB::table('demo_resep_dokter')->where('id', $key)->update([
+                    'diberikan' => json_encode($value['pemberian']),
+                ]);
+            }
+            
+            foreach($gabungkanArray as $key => $value){
+                $resep_dokter = DB::table('demo_resep_dokter')->where('id', $key)->first();
+                $data_obat = [];
+                $jumlah_obat = [];
+                $diberikan = [];
+                $obat = json_decode($resep_dokter->nama_obat);
+                foreach($obat->obat as $o){
+                    $data_obat[] = [
+                        'obat'=>$o,
+                    ];
+                }
+                foreach($obat->jumlah as $o){
+                    $jumlah_obat[] = [
+                        'jumlah_obat'=>$o,
+                    ];
+                }
+                foreach(json_decode($resep_dokter->diberikan) as $o){
+                    $diberikan[] = [
+                        'diberikan'=>$o,
+                    ];
+                }
+    
+                $obatData= json_encode(array_merge($data_obat,$jumlah_obat,$diberikan));
+                $data = json_decode($obatData, true);
+    
+                // Inisialisasi array 2 dimensi
+                $result = [];
+                $finalResult = array();
+                // Mengelompokkan elemen berdasarkan kunci
+                foreach ($data as $item) {
+                    foreach ($item as $key => $value) {
+                        if (!isset($finalResult[$key])) {
+                            $finalResult[$key] = array();
+                        }
+                        $finalResult[$key][] = $value;
+                    }
+                }
+                
+                // Menggabungkan hasil menjadi array sesuai format yang diinginkan
+                $combinedArray = array();
+                for ($i = 0; $i < count($finalResult['diberikan']); $i++) {
+                    $combinedArray[] = array(
+                        'obat' => $finalResult['obat'][$i],
+                        'jumlah_obat' => $finalResult['jumlah_obat'][$i],
+                        'diberikan' => $finalResult['diberikan'][$i]
+                    );
+                }
+    
+                $racikan[] = [
+                    'obat'=>$combinedArray,
+                    'jumlah_obat'=>$jumlah_obat,
+                    'diberikan'=>$diberikan,
+                    'takaran'=>$resep_dokter->takaran,
+                    'dosis'=>$resep_dokter->dosis,
+                    'signa'=>$resep_dokter->signa,
+                    'diminum'=>$resep_dokter->diminum,
+                    'catatan'=>$resep_dokter->catatan,
+                    'idresep'=>$resep_dokter->id,
+                    'jenis'=>$request->jenis_obat[$resep_dokter->id],
+                ];
+            }
+
+            // return $racikan;
+
+
+            // 
+            AntrianFarmasi::where('id', $request->idantrian)->update([
+                'racikan' => json_encode($racikan),
+            ]);
+            // return $combinedArray;
         }
 
+        if($request->idresep_non_racikan){
+            foreach($request->idresep_non_racikan as $non_racik){
+                $select_resep_non = DB::table('demo_resep_dokter')->where('id', $non_racik)->update([
+                    'diberikan'=>$request->pemberian[$non_racik],
+                ]);
+                
+                $rd = DB::table('demo_resep_dokter')->where('id', $non_racik)->first();
+
+                $non_racikan[] = [
+                    'obat'=>$rd->idobat,
+                    'takaran'=>$rd->takaran,
+                    'jumlah'=>$rd->jumlah,
+                    'diberikan'=>$rd->diberikan,
+                    'dosis'=>$rd->dosis,
+                    'signa'=>$rd->signa,
+                    'diminum'=>$rd->diminum,
+                    'catatan'=>$rd->catatan,
+                    'idresep'=>$rd->id,
+                    'jenis'=>$request->jenis_obat_non_racikan[$rd->id],
+                ];
+            }
+            AntrianFarmasi::where('id', $request->idantrian)->update([
+                'obat' => json_encode($non_racikan),
+            ]);            
+        }
+        
+
+        // return $request->all();
+
+        $total_obat = 0;
+        $total_obat_racikan = 0;
+
         $antrian = AntrianFarmasi::find($request->idantrian);
-        $antrian->obat = json_encode($request->terapi_obat);
-        $antrian->save();
+        foreach(json_decode($antrian->obat) as $non){
+            $obat = Obat::find($non->obat);
+            if($non->jenis != 1){
+                $total_obat += $obat->harga_beli * $non->diberikan;
+            }else{
+                $total_obat += $obat->harga_jual * $non->diberikan;
+            }           
+        }
+
+        foreach(json_decode($antrian->racikan) as $racik){
+            foreach($racik->obat as $bat){
+                $obat = Obat::find($bat->obat);
+                if($racik->jenis != 1){
+                    $total_obat_racikan += $obat->harga_beli * $bat->diberikan;
+                }else{
+                    $total_obat_racikan += $obat->harga_jual * $bat->diberikan;
+                }           
+            }
+        }
+        
+
+        // return $total_obat_racikan;
+
 
         return response()->json([
             'status' => 'true',
-            'total' => $total_obat
+            'total' => $total_obat_racikan + $total_obat
         ]);
     }
 
@@ -217,7 +342,7 @@ class FarmasiController extends Controller
         $rawat = Rawat::find($resep->idrawat);
         $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
         $obat = Obat::get();
-        $pdf = PDF::loadview('farmasi.cetak.resep-tempo', compact('resep', 'rawat', 'pasien', 'obat'));
+        $pdf = PDF::loadview('farmasi.cetak.faktur-tempo', compact('resep', 'rawat', 'pasien', 'obat'));
         $customPaper = array(0, 0, 323.15, 790.866);
         $pdf->setPaper($customPaper);
         return $pdf->stream();
