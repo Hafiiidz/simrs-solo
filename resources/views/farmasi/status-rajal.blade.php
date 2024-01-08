@@ -223,7 +223,7 @@
                                             </div>
                                         </div>
                                     @endif --}}
-                                    <form action="{{ route('farmasi.post-resep', $antrian->id) }}" id='formPermintaanobat'
+                                    {{-- <form action="{{ route('farmasi.post-resep', $antrian->id) }}" id='formPermintaanobat'
                                         method="post">
                                         @csrf
                                         <input type="hidden" name="idantrian" id="" value="{{ $antrian->id }}">
@@ -601,7 +601,53 @@
                                         <a target="_blank" class="btn btn-light-info mt-10"  href="{{ route('farmasi.cetak-resep-tempo', $antrian->id) }}">Print Faktur</a>
                                         <button class="btn btn-success mt-10">Simpan Resep</button>
                                     </form>
-                                    <div class="separator separator-dashed border-secondary mt-5 mb-5"></div>
+                                    <div class="separator separator-dashed border-secondary mt-5 mb-5"></div> --}}
+
+                                    <table class="table table-bordered fs-9 gs-2 gy-2 gx-2" id="kt_docs_repeater_basic">
+                                        <thead class="text-center align-middle">
+                                            <tr>
+                                                <th rowspan="2">Nama Obat</th>
+                                                <th rowspan="2" width=100>Jumlah</th>
+                                                <th rowspan="2" width=100>Dosis</th>
+                                                <th rowspan="2" width=200>Takaran</th>
+                                                <th width=50 colspan="3">Signa</th>
+                                                <th rowspan="2" width=100>Diminum</th>
+                                                <th rowspan="2" width=100>Catatan</th>
+                                                <th rowspan="2">Aksi</th>
+                                            </tr>
+                                            <tr>
+                                                <th width=10>P</th>
+                                                <th width=10>S</th>
+                                                <th width=10>M</th>
+                                            </tr>
+
+                                        </thead>
+                                        <tbody>
+                                            {{-- Racikan --}}
+                                            @if ($antrian->racikan != 'null' || $antrian->racikan != '')
+                                                <tr>
+                                                    <td colspan="10" class="fw-bold fs-6 text-gray-800">
+                                                        Racikan 
+                                                    </td>
+                                                </tr>
+                                                @foreach (json_decode($antrian->racikan) as $val)
+                                                   <tr>
+                                                
+                                                   </tr>
+                                                @endforeach
+                                                
+                                            @endif
+
+                                            @if ($antrian->obat != 'null' || $antrian->obat != '')
+                                            <tr>
+                                                <td colspan="10" class="fw-bold fs-6 text-gray-800">
+                                                    Non Racikan 
+                                                </td>
+                                            </tr>
+                                            @endif
+                                            {{-- Non Racikan --}}
+                                        </tbody>
+                                    </table>
                                 @endif
                                 <table class="table table-bordered mt-10">
                                     <thead>
@@ -634,8 +680,10 @@
                                                 </td>
                                                 <td>{{ $r->total_harga }}</td>
                                                 <td>
-                                                    <a href="{{ route('farmasi.cetak-resep', $r->id) }}" class="btn btn-warning btn-sm" target="_blank">Print</a>
-                                                    <a href="{{ route('farmasi.cetak-resep', $r->id) }}" class="btn btn-success btn-sm" target="_blank">Print Resep</a>
+                                                    <a href="{{ route('farmasi.cetak-resep', $r->id) }}"
+                                                        class="btn btn-warning btn-sm" target="_blank">Print</a>
+                                                    <a href="{{ route('farmasi.cetak-resep', $r->id) }}"
+                                                        class="btn btn-success btn-sm" target="_blank">Print Resep</a>
                                                     <a href="{{ route('farmasi.cetak-tiket', $r->id) }}"
                                                         class="btn btn-info btn-sm" target="_blank">Print Tiket</a>
                                                 </td>

@@ -21,6 +21,7 @@ use App\Http\Controllers\GiziController;
 use App\Http\Controllers\LaboratoriumController;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Http\Request as HttpRequest;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 /*
@@ -33,6 +34,63 @@ use Illuminate\Support\Facades\Hash;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::get('/obat-tes',function(){
+    $resep_dokter = DB::table('demo_resep_dokter')->where('idrawat', 39070)->get();
+    $non_racik = [];
+    $racikan = [];
+    foreach($resep_dokter as $rd){
+        if($rd->jenis == 'Racik'){
+            $data_obat = [];
+            $jumlah_obat = [];
+            $obat = json_decode($rd->nama_obat);
+            foreach($obat->obat as $o){
+                $data_obat[] = [
+                    'obat'=>$o,
+                ];
+            }
+            foreach($obat->jumlah as $o){
+                $jumlah_obat[] = [
+                    'jumlah_obat'=>$o,
+                ];
+            }
+            $racikan[] = [
+                'obat'=>$data_obat,
+                'jumlah_obat'=>$jumlah_obat,
+                'takaran'=>$rd->takaran,
+                'dosis'=>$rd->dosis,
+                'signa'=>$rd->signa,
+                'diminum'=>$rd->diminum,
+                'catatan'=>$rd->catatan
+            ];
+        }else{
+            $non_racik[] = [
+                'obat'=>$rd->idobat,
+                'takaran'=>$rd->takaran,
+                'jumlah'=>$rd->jumlah,
+                'dosis'=>$rd->dosis,
+                'signa'=>$rd->signa,
+                'diminum'=>$rd->diminum,
+                'catatan'=>$rd->catatan
+            ];
+        }
+    }
+
+ 
+    DB::table('demo_antrian_resep')->insert([
+        'idrawat'=>39070,
+        'idbayar'=>2,
+        'status_antrian'=>'Antrian',
+        'obat'=>json_encode($non_racik),
+        'racikan'=>json_encode($racikan),
+    ]);
+    return [
+        'racikan'=>$racikan,
+        'non_racik'=>$non_racik
+    ];
+
+
+});
 
 Route::get('/faskes', function (HttpRequest $request) {
     return VclaimHelper::getFaskes($request->q);
