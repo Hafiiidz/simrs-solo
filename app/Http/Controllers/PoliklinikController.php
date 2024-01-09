@@ -17,6 +17,7 @@ class PoliklinikController extends Controller
                 ->select([
                     'rawat.id',
                     'pasien.no_rm',
+                    'rawat.idjenisrawat',
                     'pasien.nama_pasien',
                     'rawat.tglmasuk',
                     'poli.poli',
@@ -52,6 +53,10 @@ class PoliklinikController extends Controller
                 ->addColumn('opsi', function ($rawat) {
                     return '<a href="' . route('rekam-medis-poli', $rawat->id) . '" class="btn btn-sm btn-success">Lihat</a>';
                 })
+                ->addColumn('jenis_rawat',function($rawat){
+                    $jenis = DB::table('rawat_jenis')->where('id',$rawat->idjenisrawat)->first();
+                    return $jenis->jenis;
+                })
                 ->addColumn('status_pemeriksaan', function ($rawat) {
                     #span class="badge badge-success">Selesai</span>
                     if ($rawat->perawat == 1) {
@@ -75,7 +80,7 @@ class PoliklinikController extends Controller
 
                     return $dokter . ' ' . $perawat.' '.$bpjs;
                 })
-                ->rawColumns(['opsi', 'status_pemeriksaan'])
+                ->rawColumns(['opsi', 'status_pemeriksaan','jenis_rawat'])
                 ->make(true);
         }
         return view('poliklinik.index');
@@ -89,6 +94,7 @@ class PoliklinikController extends Controller
                 ->select([
                     'rawat.id',
                     'rawat.iddokter',
+                    'rawat.idjenisrawat',
                     'pasien.no_rm',
                     'pasien.nama_pasien',
                     'rawat.tglmasuk',
@@ -127,6 +133,10 @@ class PoliklinikController extends Controller
                 ->addColumn('opsi', function ($rawat) {
                     return '<a href="' . route('rekam-medis-poli', $rawat->id) . '" class="btn btn-sm btn-success">Lihat</a>';
                 })
+                ->addColumn('jenis_rawat',function($rawat){
+                    $jenis = DB::table('rawat_jenis')->where('id',$rawat->idjenisrawat)->first();
+                    return $jenis->jenis;
+                })
                 ->addColumn('status_pemeriksaan', function ($rawat) {
                     #span class="badge badge-success">Selesai</span>
                     if ($rawat->perawat == 1) {
@@ -150,7 +160,7 @@ class PoliklinikController extends Controller
 
                     return $dokter . ' ' . $perawat.' '.$bpjs;
                 })
-                ->rawColumns(['opsi', 'status_pemeriksaan'])
+                ->rawColumns(['opsi', 'status_pemeriksaan','jenis_rawat'])
                 ->make(true);
         }
         return view('poliklinik.index');

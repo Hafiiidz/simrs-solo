@@ -58,6 +58,7 @@
                                 <th>No RM</th>
                                 <th>Nama Pasien</th>
                                 <th>Tgl.Masuk</th>
+                                <th>Jenis Rawat</th>
                                 <th>Poli</th>
                                 <th>Bayar</th>
                                 <th>Status</th>
@@ -108,6 +109,7 @@
                 { data: 'no_rm', name: 'no_rm' },
                 { data: 'nama_pasien', name: 'pasien.nama_pasien' },
                 { data: 'tglmasuk', name: 'rawat.tglmasuk' },
+                { data: 'jenis_rawat', name: 'rawat.jenis_rawat' },
                 { data: 'poli', name: 'poli.poli' },
                 { data: 'bayar', name: 'rawat_bayar.bayar' },
                 { data: 'status', name: 'rawat_status.status' ,render: function(data, type, row){
