@@ -633,6 +633,7 @@
                                                                         <th>Harga</th>
                                                                         <th>Jumlah</th>
                                                                         <th width=50>Pemberian</th>
+                                                                        <th width=50>Kronis</th>
                                                                     </tr>
                                                                     @foreach ($val->obat as $ob_racikan)
                                                                         @if ($ob_racikan->obat != null)
@@ -647,6 +648,13 @@
                                                                                     <input type="text"
                                                                                         name="racikan[pemberian][{{ $val->idresep }}][]"
                                                                                         value="{{ isset($ob_racikan->diberikan) ? $ob_racikan->diberikan : '' }}"
+                                                                                        class="form-control form-control-sm">
+                                                                                    
+                                                                                </td>
+                                                                                <td>
+                                                                                    <input type="text"
+                                                                                        name="racikan[pemberian_kronis][{{ $val->idresep }}][]"
+                                                                                        value="{{ isset($ob_racikan->kronis) ? $ob_racikan->kronis : '' }}"
                                                                                         class="form-control form-control-sm">
                                                                                 </td>
                                                                             </tr>
@@ -697,6 +705,7 @@
                                                     <th rowspan="2">Harga</th>
                                                     <th rowspan="2">Jumlah</th>
                                                     <th rowspan="2" width=100>Pemberian</th>
+                                                    <th rowspan="2" width=100>Kronis</th>
                                                     <th rowspan="2">Dosis / Takaran Obat</th>
                                                     <th rowspan="2">Jenis Obat</th>
                                                 </tr>
@@ -719,6 +728,13 @@
                                                     <input type="hidden" value={{ $val->obat }} name="racikan[idobat][]" class="form-control"> --}}
                                                                 <input type="text" name="pemberian[{{ $val->idresep }}]"
                                                                     value="{{ isset($val->diberikan) ? $val->diberikan : '' }}"
+                                                                    class="form-control form-control-sm">
+                                                            </td>
+                                                            <td>
+                                                                {{-- <input type="hidden" value={{ $val->idresep }} name="racikan[idresep][]" class="form-control">
+                                                    <input type="hidden" value={{ $val->obat }} name="racikan[idobat][]" class="form-control"> --}}
+                                                                <input type="text" name="kronis[{{ $val->idresep }}]"
+                                                                value="{{ isset($val->kronis) ? $val->kronis : '' }}"
                                                                     class="form-control form-control-sm">
                                                             </td>
                                                             <td class="text-center">
