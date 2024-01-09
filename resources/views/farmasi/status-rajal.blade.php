@@ -786,7 +786,7 @@
                                     <div class="row">
                                         <div class="col">
                                             <a target="_blank" class="btn btn-warning mt-10"  href="{{ route('farmasi.cetak-resep-tempo', $antrian->id) }}">Print Resep</a>
-                                            <a target="_blank" class="btn btn-light-info mt-10"  href="{{ route('farmasi.cetak-resep-tempo', $antrian->id) }}">Print Faktur</a>
+                                            <a target="_blank" class="btn btn-light-info mt-10"  href="{{ route('farmasi.cetak-faktur-tempo', $antrian->id) }}">Print Faktur</a>
                                             <button class="btn btn-success mt-10">Simpan Resep</button>
                                         </div>
                                     </div>

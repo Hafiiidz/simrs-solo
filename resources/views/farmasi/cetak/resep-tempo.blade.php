@@ -16,7 +16,7 @@
             margin-bottom: 0px;
             margin-right: 10px;
             margin-left: 10px;
-            font-size: 10px;
+            font-size: 12px;
         }
     </style>
 </head>
@@ -24,19 +24,47 @@
 <body>
     <div class="container">
         <div class="row">
-            <table>
-                <tr>
-                    <td rowspan="3"><img width="40" src="data:image/png;base64, {!! base64_encode(file_get_contents(public_path('image/logosiswanto.png'))) !!} "></td>
-                    <td>FARMASI RSAU dr.SISWANTO</td>
-                </tr>
-                <tr>
-                    <td><i>JL Tentara Pelajar No 1, Malangjiwan, Colomadu</i></td>
-                </tr>
-                <tr>
-                    <td><i>Telepon 0271779112</i></td>
-                </tr>
-            </table>
+            <div style="width: 70%; float:left;">
+                <table>
+                    <tr>
+                        <td rowspan="3"><img width="40" src="data:image/png;base64, {!! base64_encode(file_get_contents(public_path('image/logosiswanto.png'))) !!} "></td>
+                        <td>FARMASI RSAU dr.SISWANTO</td>
+                    </tr>
+                    <tr>
+                        <td><i>JL Tentara Pelajar No 1, Malangjiwan, Colomadu</i></td>
+                    </tr>
+                    <tr>
+                        <td><i>Telepon 0271779112</i></td>
+                    </tr>
+                </table>
+            </div>
+            <div style="width: 30%; float:left;">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        @php
+                            $pfisik = json_decode($detail_rekap?->pemeriksaan_fisik);
+                        @endphp
+                        <table>
+                            <tr>
+                                <td>Diagnosa</td>
+                                <td>{{ $detail_rekap?->diagnosa }}</td>
+                            </tr>
+                            <tr>
+                                <td>Alergi</td>
+                                <td>{{ $detail_rekap?->alergi }}</td>
+                            </tr>
+                            <tr>
+                                <td>BB / TB</td>
+                                <td>{{ $pfisik?->berat_badan . ' Kg /' }} {{ $pfisik?->tinggi_badan . ' cm' }} </td>
+                            </tr>
+                        </table>
+                    </table>
+                </div>
+
+            </div>
         </div>
+        <br>
+        <div style="width:100%;"></div>
         <div class="row mt-2">
             <p>Rincian Resep</p>
         </div>
@@ -81,34 +109,143 @@
             <hr>
         </div>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6" style="width:70%; float:left">
                 <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table class="table">
                         <thead>
-                            <tr class="border">
-                                <th style="border: 1px solid black;" class="text-center">Nama Obat (Merk)</th>
-                                <th style="border: 1px solid black;" class="text-center">Qty</th>
-                                <th style="border: 1px solid black;" class="text-center">Total</th>
+                            <tr>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            @php
-                                $total = 0;
-                            @endphp
-                            
-                            {{-- @foreach ($detail_resep as $val)
-                                <tr class="border">
-                                    <td style="border: 1px solid black;" class="text-center">{{ $loop->iteration }}</td>
-                                    <td style="border: 1px solid black;">{{ $val->nama_obat }}</td>
-                                    <td style="border: 1px solid black;" class="text-center">{{ $val->qty }}</td>
-                                    <td style="border: 1px solid black;" class="text-end">Rp.{{ number_format($val->total) }}</td>
-                                </tr>
-                            @endforeach --}}
+                            @if ($resep->obat != null || $resep->obat != '[]' || $resep->obat != 'null')
+                                @foreach (json_decode($resep->obat) as $obat)
+                                    <tr  style="padding-bottom:10px; margin-bottom:10px; height: 50px;" class="border">
+                                        <td>
+                                            R / <br>{!! App\Helpers\VclaimHelper::get_data_obat($obat->obat) !!} {!! $obat->jumlah !!} <br>
+                                            {{ $obat->dosis }}
+                                            {{ $obat->takaran }} ( {{ $obat->signa }} )
+                                            {{ $obat->diminum . ' makan' }}
+                                            
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
+                            @if ($resep->racikan != null || $resep->racikan != '[]' || $resep->racikan != 'null')
+                                @foreach (json_decode($resep->racikan) as $racik)
+                                    <tr  class="border" style="padding-bottom:10px; margin-bottom:10px; height: 50px;">
+                                        <td width=100>
+                                            R / <br>
+                                            @foreach ($racik->obat as $ro)
+                                                {!! App\Helpers\VclaimHelper::get_data_obat($ro->obat) !!} ({{ $ro->jumlah_obat }}) +
+                                            @endforeach
+                                            <br>{{ $racik->dosis }}
+                                            {{ $racik->takaran }} ( {{ $racik->signa }} )
+                                            {{ $racik->diminum . ' makan' }}
+                                            <br>
+                                            
+                                            
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                
+                            @endif
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-6" style="width:30%; float:left">
+                <div class="table-responsive">
+                    <table class="table table-bordered" style="text-align: center;">
+                        <thead>
                             <tr class="border">
-                                <td style="border: 1px solid black;" colspan="2" class="text-end">Total Harga</td>
-                                <td style="border: 1px solid black;" class="text-end">
-                                    Rp.{{ number_format($total) }}
-                                </td>
+                                <th width=80 style="border: 1px solid black;" class="text-center">Administartif</th>
+                                <th style="border: 1px solid black;" class="text-center">Ceklis</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="border: 1px solid black;">Tgl R/</td>
+                                <td style="border: 1px solid black;"></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">Paraf Dokter</td>
+                                <td style="border: 1px solid black;"></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">Identitas Pasien</td>
+                                <td style="border: 1px solid black;"></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">BB / TB</td>
+                                <td style="border: 1px solid black;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-responsive" style="margin-top: 5px">
+                    <table class="table table-bordered" style="text-align: center;">
+                        <thead>
+                            <tr class="border">
+                                <th width=80 style="border: 1px solid black;" class="text-center">Farmasetis</th>
+                                <th style="border: 1px solid black;" class="text-center">Ceklis</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="border: 1px solid black;">Nama Obat</td>
+                                <td style="border: 1px solid black;"></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">Sediaan</td>
+                                <td style="border: 1px solid black;"></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">Dosis</td>
+                                <td style="border: 1px solid black;"></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">Jumlah Obat</td>
+                                <td style="border: 1px solid black;"></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">Aturan Pakai</td>
+                                <td style="border: 1px solid black;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-responsive" style="margin-top: 5px">
+                    <table class="table table-bordered" style="text-align: center;">
+                        <thead>
+                            <tr class="border">
+                                <th width=80 style="border: 1px solid black;" class="text-center">Persyaratan Klinis
+                                </th>
+                                <th style="border: 1px solid black;" class="text-center">Ceklis</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="border: 1px solid black;">Tepat Indikasi</td>
+                                <td style="border: 1px solid black;"></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">Tepat Dosis</td>
+                                <td style="border: 1px solid black;"></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">Waktu Penggunaan</td>
+                                <td style="border: 1px solid black;"></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">Duplikasi</td>
+                                <td style="border: 1px solid black;"></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black;">Kontra Indikasi</td>
+                                <td style="border: 1px solid black;"></td>
                             </tr>
                         </tbody>
                     </table>

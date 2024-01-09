@@ -402,11 +402,12 @@ class FarmasiController extends Controller
     {
         $resep = AntrianFarmasi::find($id);
         $rawat = Rawat::find($resep->idrawat);
+        $detail_rekap = DB::table('demo_detail_rekap_medis')->where('id', $rawat->idrekap)->first();
         $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
         $obat = Obat::get();
-        $pdf = PDF::loadview('farmasi.cetak.resep-tempo', compact('resep', 'rawat', 'pasien', 'obat'));
-        $customPaper = array(0, 0, 323.15, 790.866);
-        $pdf->setPaper($customPaper);
+        $pdf = PDF::loadview('farmasi.cetak.resep-tempo', compact('resep', 'rawat', 'pasien', 'obat', 'detail_rekap'));
+        $customPaper =array(0,0,567.00,283.80,'landscape');
+        $pdf->setPaper('a5','portrait');
         return $pdf->stream();
     }
     public function cetakFaktur($id){
@@ -420,7 +421,7 @@ class FarmasiController extends Controller
         $detail_resep = DB::table('obat_transaksi_detail')->where('idtrx', $resep->id)->get();
 
         $pdf = PDF::loadview('farmasi.cetak.resep', compact('resep', 'rawat', 'pasien', 'detail_resep'));
-        $customPaper = array(0, 0, 323.15, 790.866);
+        $customPaper =array(0,0,567.00,283.80);
         $pdf->setPaper($customPaper);
         return $pdf->stream();
     }
