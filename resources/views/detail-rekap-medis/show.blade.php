@@ -172,7 +172,7 @@
                                 </div>
                             </div>
                             <div class="separator separator-dashed border-secondary mb-5"></div>
-                            @if (auth()->user()->idpriv == 7)
+                            @if (auth()->user()->idpriv == 20)
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Kategori Penyakit</label>

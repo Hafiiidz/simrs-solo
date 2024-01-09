@@ -163,7 +163,7 @@
                                 @endif
                             @endif
                             @if (auth()->user()->idpriv == 7)
-                                <div class="row mb-5">
+                                {{-- <div class="row mb-5">
                                     <div class="col-md-12">
                                         <label class="form-label fw-bold">Kategori Penyakit</label>
                                         <select class="form-select" data-control="select2"
@@ -174,7 +174,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                </div>
+                                </div> --}}
                             @endif
                             @if (auth()->user()->idpriv == 7)
                                 <div class="row mb-5">
