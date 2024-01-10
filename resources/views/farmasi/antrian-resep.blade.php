@@ -65,28 +65,37 @@
 
                                 @foreach ($resep_rajal as $rr)
                                     <!--begin::Item-->
-                                    <a href="{{ route('farmasi.status-rajal', $rr->idrawat) }}">
-                                    <div class="d-flex text-end">
-                                        <!--begin::Wrapper-->
-                                        <div class="d-flex align-items-center">
-                                            <!--begin::Icon-->
-                                           
-                                           <span class="fs-2x fw-bold d-block text-gray-800 me-5 mb-2 lh-1 ">RJ - {{ $rr->no_antrian }}</span>
-                                            <!--end::Icon-->
+                                    @php
+                                        $cek_rawat = App\Models\Rawat::where('idrawat', $rr->idrawat)->first();
+                                    @endphp
+                                    @if ($cek_rawat)
+                                        <a href="{{ route('farmasi.status-rajal', $rr->idrawat) }}">
+                                            <div class="d-flex text-end">
+                                                <!--begin::Wrapper-->
+                                                <div class="d-flex align-items-center">
+                                                    <!--begin::Icon-->
 
-                                            <!--begin::Section-->
-                                            <div class="">
-                                                <a href="{{ route('farmasi.status-rajal', $rr->idrawat) }}"
-                                                    class="text-gray-800 text-hover-primary fs-3 fw-bold lh-0">{{ $rr->pasien->nama_pasien }}</a>
+                                                    <span class="fs-2x fw-bold d-block text-gray-800 me-5 mb-2 lh-1 ">RJ -
+                                                        {{ $rr->no_antrian }}</span>
+                                                    <!--end::Icon-->
 
-                                                <span class="text-gray-500 fw-semibold d-block fs-7">No RM: {{ $rr->no_rm }}</span>
-                                                <span class="text-gray-500 fw-semibold d-block fs-7">Poli : {{ $rr->rawat->poli->poli }}</span>
-                                                <span class="text-gray-500 fw-semibold d-block fs-7">Dokter : {{ $rr->rawat->dokter->nama_dokter }}</span>
+                                                    <!--begin::Section-->
+                                                    <div class="">
+                                                        <a href="{{ route('farmasi.status-rajal', $rr->idrawat) }}"
+                                                            class="text-gray-800 text-hover-primary fs-3 fw-bold lh-0">{{ $rr->pasien->nama_pasien }}</a>
+
+                                                        <span class="text-gray-500 fw-semibold d-block fs-7">No RM:
+                                                            {{ $rr->no_rm }}</span>
+                                                        <span class="text-gray-500 fw-semibold d-block fs-7">Poli :
+                                                            {{ $rr->rawat?->poli?->poli }}</span>
+                                                        <span class="text-gray-500 fw-semibold d-block fs-7">Dokter :
+                                                            {{ $rr->rawat?->dokter?->nama_dokter }}</span>
+                                                    </div>
+                                                    <!--end::Section-->
+                                                </div>
                                             </div>
-                                            <!--end::Section-->
-                                        </div>
-                                    </div>
-                                    </a>
+                                        </a>
+                                    @endif
                                     <!--end::Item-->
 
                                     <!--begin::Separator-->
@@ -148,45 +157,56 @@
                                     <!--begin::Content-->
                                     <div class="d-flex flex-stack my-5">
                                         <span class="text-gray-500 fs-7 fw-bold">ANTRIAN UGD</span>
-    
+
                                         {{-- <span class="text-gray-500 fw-bold fs-7">PASIEN</span> --}}
                                     </div>
                                     <!--end::Content-->
-    
+
                                     @foreach ($resep_ugd as $rr)
-                                        <!--begin::Item-->
-                                        <a href="{{ route('farmasi.status-rajal', $rr->idrawat) }}">
-                                        <div class="d-flex text-end">
-                                            <!--begin::Wrapper-->
-                                            <div class="d-flex align-items-center">
-                                                <!--begin::Icon-->
-                                               
-                                               <span class="fs-2x fw-bold d-block text-gray-800 me-5 mb-2 lh-1 ">UGD - {{$rr->no_antrian}}</span>
-                                                <!--end::Icon-->
-    
-                                                <!--begin::Section-->
-                                                <div class="">
-                                                    <a href="{{ route('farmasi.status-rajal', $rr->idrawat) }}"
-                                                        class="text-gray-800 text-hover-primary fs-3 fw-bold lh-0">{{ $rr->pasien->nama_pasien }}</a>
-    
-                                                    <span class="text-gray-500 fw-semibold d-block fs-7">No RM: {{ $rr->no_rm }}</span>
-                                                    <span class="text-gray-500 fw-semibold d-block fs-7">Poli : {{ $rr->rawat->poli->poli }}</span>
-                                                    <span class="text-gray-500 fw-semibold d-block fs-7">Dokter : {{ $rr->rawat->dokter->nama_dokter }}</span>
+                                        @php
+                                            $cek_rawat = App\Models\Rawat::where('idrawat', $rr->idrawat)->first();
+                                        @endphp
+                                        @if ($cek_rawat)
+                                            <!--begin::Item-->
+                                            <a href="{{ route('farmasi.status-rajal', $rr->idrawat) }}">
+                                                <div class="d-flex text-end">
+                                                    <!--begin::Wrapper-->
+                                                    <div class="d-flex align-items-center">
+                                                        <!--begin::Icon-->
+
+                                                        <span
+                                                            class="fs-2x fw-bold d-block text-gray-800 me-5 mb-2 lh-1 ">UGD
+                                                            -
+                                                            {{ $rr->no_antrian }}</span>
+                                                        <!--end::Icon-->
+
+                                                        <!--begin::Section-->
+                                                        <div class="">
+                                                            <a href="{{ route('farmasi.status-rajal', $rr->idrawat) }}"
+                                                                class="text-gray-800 text-hover-primary fs-3 fw-bold lh-0">{{ $rr->pasien->nama_pasien }}</a>
+
+                                                            <span class="text-gray-500 fw-semibold d-block fs-7">No RM:
+                                                                {{ $rr->no_rm }}</span>
+                                                            <span class="text-gray-500 fw-semibold d-block fs-7">Poli :
+                                                                {{ $rr->rawat->poli->poli }}</span>
+                                                            <span class="text-gray-500 fw-semibold d-block fs-7">Dokter :
+                                                                {{ $rr->rawat->dokter->nama_dokter }}</span>
+                                                        </div>
+                                                        <!--end::Section-->
+                                                    </div>
                                                 </div>
-                                                <!--end::Section-->
-                                            </div>
-                                        </div>
-                                        </a>
+                                            </a>
+                                        @endif
                                         <!--end::Item-->
-    
+
                                         <!--begin::Separator-->
                                         <div class="separator separator-dashed my-4"></div>
                                         <!--end::Separator-->
                                     @endforeach
-    
-    
-    
-    
+
+
+
+
                                 </div>
                                 <!--end::Body-->
                             </div>
@@ -200,45 +220,54 @@
                                     <!--begin::Content-->
                                     <div class="d-flex flex-stack my-5">
                                         <span class="text-gray-500 fs-7 fw-bold">ANTRIAN RAWAT INAP</span>
-    
+
                                         {{-- <span class="text-gray-500 fw-bold fs-7">PASIEN</span> --}}
                                     </div>
                                     <!--end::Content-->
-    
+
                                     @foreach ($resep_ranap as $rr)
                                         <!--begin::Item-->
+                                        @php
+                                            $cek_rawat = App\Models\Rawat::where('idrawat', $rr->idrawat)->first();
+                                        @endphp
+                                        @if ($cek_rawat)
                                         <a href="{{ route('farmasi.status-ranap', $rr->idrawat) }}">
-                                        <div class="d-flex text-end">
-                                            <!--begin::Wrapper-->
-                                            <div class="d-flex align-items-center">
-                                                <!--begin::Icon-->
-                                               
-                                               <span class="fs-2x fw-bold d-block text-gray-800 me-5 mb-2 lh-1 ">RI - {{ $rr->no_antrian }}</span>
-                                                <!--end::Icon-->
-    
-                                                <!--begin::Section-->
-                                                <div class="">
-                                                    <a href="{{ route('farmasi.status-ranap', $rr->idrawat) }}"
-                                                        class="text-gray-800 text-hover-primary fs-3 fw-bold lh-0">{{ $rr->pasien->nama_pasien }}</a>
-    
-                                                    <span class="text-gray-500 fw-semibold d-block fs-7">No RM: {{ $rr->no_rm }}</span>
-                                                    <span class="text-gray-500 fw-semibold d-block fs-7">Ruangan : {{ $rr->rawat->ruangan->nama_ruangan }}</span>
-                                                    <span class="text-gray-500 fw-semibold d-block fs-7">Dokter : {{ $rr->rawat->dokter->nama_dokter }}</span>
+                                            <div class="d-flex text-end">
+                                                <!--begin::Wrapper-->
+                                                <div class="d-flex align-items-center">
+                                                    <!--begin::Icon-->
+
+                                                    <span class="fs-2x fw-bold d-block text-gray-800 me-5 mb-2 lh-1 ">RI -
+                                                        {{ $rr->no_antrian }}</span>
+                                                    <!--end::Icon-->
+
+                                                    <!--begin::Section-->
+                                                    <div class="">
+                                                        <a href="{{ route('farmasi.status-ranap', $rr->idrawat) }}"
+                                                            class="text-gray-800 text-hover-primary fs-3 fw-bold lh-0">{{ $rr->pasien->nama_pasien }}</a>
+
+                                                        <span class="text-gray-500 fw-semibold d-block fs-7">No RM:
+                                                            {{ $rr->no_rm }}</span>
+                                                        <span class="text-gray-500 fw-semibold d-block fs-7">Ruangan :
+                                                            {{ $rr->rawat->ruangan->nama_ruangan }}</span>
+                                                        <span class="text-gray-500 fw-semibold d-block fs-7">Dokter :
+                                                            {{ $rr->rawat->dokter->nama_dokter }}</span>
+                                                    </div>
+                                                    <!--end::Section-->
                                                 </div>
-                                                <!--end::Section-->
                                             </div>
-                                        </div>
                                         </a>
+                                        @endif
                                         <!--end::Item-->
-    
+
                                         <!--begin::Separator-->
                                         <div class="separator separator-dashed my-4"></div>
                                         <!--end::Separator-->
                                     @endforeach
-    
-    
-    
-    
+
+
+
+
                                 </div>
                                 <!--end::Body-->
                             </div>
