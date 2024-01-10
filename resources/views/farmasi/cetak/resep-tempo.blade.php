@@ -122,12 +122,13 @@
                                 @foreach (json_decode($resep->obat) as $obat)
                                     <tr  style="padding-bottom:10px; margin-bottom:10px; height: 50px;" class="border">
                                         <td>
-                                            R / <br>{!! App\Helpers\VclaimHelper::get_data_obat($obat->obat) !!} {!! $obat->jumlah !!} <br>
+                                            R / <br>{!! App\Helpers\VclaimHelper::get_data_obat($obat->obat) !!} <br>
                                             {{ $obat->dosis }}
                                             {{ $obat->takaran }} ( {{ $obat->signa }} )
                                             {{ $obat->diminum . ' makan' }}
                                             
                                         </td>
+                                        <td>No. </td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -146,7 +147,10 @@
                                             
                                             
                                         </td>
-                                    </tr>
+                                       <td>
+                                        No. {{ $obat->diberikan }}
+                                       </td>
+                                    </td>
                                 @endforeach
                                 
                             @endif
