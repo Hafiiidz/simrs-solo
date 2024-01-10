@@ -699,7 +699,7 @@
                                                 <h3 class="card-title">Riwayat Obat</h3>
                                             </div>
                                             <div class="card-body">
-                                                <span class="fs-5">*Hanya bisa menyalin obat non racikan</span>
+                                                {{-- <span class="fs-5">*Hanya bisa menyalin obat non racikan</span> --}}
                                                 <table id='tblRiwayatResep' class="table table-bordered mt-10">
                                                     <thead>
                                                         <tr>

@@ -1039,12 +1039,12 @@
                                     </div> --}}
                                     <!--end::Repeater-->
                                 </div>
-                                <div class="row">
+                                {{-- <div class="row">
                                     <div class="col-md-12">
                                         <textarea name="terapi" data-kt-autosize="true" rows="3" class="form-control"
                                             placeholder="Tindakan , Rehabilitasi dan Diet"></textarea>
                                     </div>
-                                </div>
+                                </div> --}}
                             @endif
                     </div>
                     <!--end::Body-->

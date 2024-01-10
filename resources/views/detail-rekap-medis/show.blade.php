@@ -1669,12 +1669,12 @@
                                     </div> --}}
                                     <!--end::Repeater-->
                                 </div>
-                                <div class="row">
+                                {{-- <div class="row">
                                     <div class="col-md-12">
                                         <textarea name="terapi" data-kt-autosize="true" rows="3" class="form-control"
                                             placeholder="Baik Obat (Racikan), Prosedur, Operasi, Rehabilitasi dan Diet">{{ $rekap->terapi }}</textarea>
                                     </div>
-                                </div>
+                                </div> --}}
                             @endif
                     </div>
                     <!--end::Body-->
