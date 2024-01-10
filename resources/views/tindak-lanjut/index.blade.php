@@ -157,7 +157,7 @@
                                             @if ($rawat->idjenisrawat == 1)
                                                 <option value="Prb">Pasien Rujuk Balik</option>
                                             @else
-                                                <option value="Meninggal"></option>
+                                                <option value="Meninggal">Meninggal</option>
                                             @endif
                                             <option value="Dirawat">Pasien Dirawat</option>
                                         </select>
