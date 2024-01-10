@@ -216,6 +216,15 @@
                                     </div>
                                 </div>
 
+                                <div id="kontrol" class="d-none">
+                                    <div class="row mb-5">
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold">Tgl.Kontrol</label>
+                                            <input type="date" class="form-control" name='tgl_kontrol' id='tgl_kontrol'>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div id="rawat" class="d-none">
                                     <div class="row mb-5">
                                         <div class="col-md-12">
@@ -360,20 +369,30 @@
                 $('#rujukan').removeClass('d-none');
                 $('#rawat').addClass('d-none');
                 $('#interm').addClass('d-none');
+                $('#kontrol').addClass('d-none');
             } else if (aksi == 'Dirawat') {
                 $('#rujukan').addClass('d-none');
                 $('#rawat').removeClass('d-none');
                 $('#interm').addClass('d-none');
+                $('#kontrol').addClass('d-none');
             } else if (aksi == 'Interm') {
                 $('#rujukan').addClass('d-none');
                 $('#rawat').addClass('d-none');
                 $('#interm').removeClass('d-none');
+                $('#kontrol').addClass('d-none');
             } else if (aksi == 'Prb') {
                 $('#rujukan').addClass('d-none');
                 $('#rawat').addClass('d-none');
                 $('#interm').addClass('d-none');
                 $('#prb').removeClass('d-none');
-            }
+                $('#kontrol').addClass('d-none');
+            } else if (aksi == 'Kontrol Kembali'){
+                    $('#rujukan').addClass('d-none');
+                    $('#rawat').addClass('d-none');
+                    $('#interm').addClass('d-none');
+                    $('#prb').addClass('d-none');
+                    $('#kontrol').removeClass('d-none');
+                }
 
             // $('#tgl_kontrol').val('');
             // $('#tujuan_rujuk').val('');
