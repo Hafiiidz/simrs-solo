@@ -616,78 +616,83 @@
 
                                             </thead>
                                             <tbody>
-                                                @if ($antrian->racikan != 'null' || $antrian->racikan != '' || $antrian->racikan != '[]')
+                                                {{-- {{ dd($antrian->racikan) }} --}}
+                                                @if ($antrian->racikan != 'null' || $antrian->racikan != '' || $antrian->racikan != '[]' || $antrian->racikan != null)
                                                     <tr>
                                                         <td colspan="10" class="fw-bold fs-6 text-gray-800">
                                                             Racikan
                                                         </td>
                                                     </tr>
-                                                    @foreach (json_decode($antrian->racikan) as $val)
-                                                        <input type="hidden" value="{{ $val->idresep }}" name='idresep'>
-                                                        <input type="hidden" value="{{ $antrian->id }}" name='idantrian'>
-                                                        <tr>
-                                                            <td>
-                                                                <table>
-                                                                    <tr>
-                                                                        <th>Obat</th>
-                                                                        <th>Harga</th>
-                                                                        <th>Jumlah</th>
-                                                                        <th width=50>Pemberian</th>
-                                                                        <th width=50>Kronis</th>
-                                                                    </tr>
-                                                                    @foreach ($val->obat as $ob_racikan)
-                                                                        @if ($ob_racikan->obat != null)
-                                                                            <tr>
-                                                                                <td>{!! App\Helpers\VclaimHelper::get_data_obat($ob_racikan->obat) !!}</td>
-                                                                                <td>{!! App\Helpers\VclaimHelper::get_harga_obat($ob_racikan->obat) !!}</td>
-                                                                                <td class="text-center">
-                                                                                    {{ $ob_racikan->jumlah_obat }}</td>
-                                                                                <td>
-                                                                                    {{-- <input type="hidden" value={{ $val->idresep }} name="racikan[idresep][]" class="form-control">
-                                                                                <input type="hidden" value={{ $ob_racikan->obat }} name="racikan[idobat][]" class="form-control"> --}}
-                                                                                    <input type="text"
-                                                                                        name="racikan[pemberian][{{ $val->idresep }}][]"
-                                                                                        value="{{ isset($ob_racikan->diberikan) ? $ob_racikan->diberikan : '' }}"
-                                                                                        class="form-control form-control-sm">
-                                                                                    
-                                                                                </td>
-                                                                                <td>
-                                                                                    <input type="text"
-                                                                                        name="racikan[pemberian_kronis][{{ $val->idresep }}][]"
-                                                                                        value="{{ isset($ob_racikan->kronis) ? $ob_racikan->kronis : '' }}"
-                                                                                        class="form-control form-control-sm">
-                                                                                </td>
-                                                                            </tr>
-                                                                        @endif
-                                                                    @endforeach
-                                                                </table>
-                                                            </td>
-                                                            <td class="align-middle text-center">{{ $val->dosis }}
-                                                                {{ $val->takaran }} ( {{ $val->signa }} )
-                                                                {{ $val->diminum . ' makan' }}</td>
-                                                            <td class="align-middle text-center">
-                                                                <select name="jenis_obat[{{ $val->idresep }}]" id=""
-                                                                    class="form-select form-select-sm" required>
-                                                                    <option value="">- Jenis Obat
-                                                                        -
-                                                                    </option>
-                                                                    @foreach ($transaksi_bayar as $tb)
-                                                                        @if (isset($val->jenis))
-                                                                            <option
-                                                                                {{ $val->jenis == $tb->id ? 'selected' : '' }}
-                                                                                value="{{ $tb->id }}">
-                                                                                {{ $tb->bayar }}
-                                                                            </option>
-                                                                        @else
-                                                                            <option value="{{ $tb->id }}">
-                                                                                {{ $tb->bayar }}
-                                                                            </option>
-                                                                        @endif
-                                                                    @endforeach
-                                                                </select>
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
+                                                    @if ($antrian->racikan != 'null')
+                                                        @foreach (json_decode($antrian->racikan) as $val)
+                                                            <input type="hidden" value="{{ $val->idresep }}"
+                                                                name='idresep'>
+                                                            <input type="hidden" value="{{ $antrian->id }}"
+                                                                name='idantrian'>
+                                                            <tr>
+                                                                <td>
+                                                                    <table>
+                                                                        <tr>
+                                                                            <th>Obat</th>
+                                                                            <th>Harga</th>
+                                                                            <th>Jumlah</th>
+                                                                            <th width=50>Pemberian</th>
+                                                                            <th width=50>Kronis</th>
+                                                                        </tr>
+                                                                        @foreach ($val->obat as $ob_racikan)
+                                                                            @if ($ob_racikan->obat != null)
+                                                                                <tr>
+                                                                                    <td>{!! App\Helpers\VclaimHelper::get_data_obat($ob_racikan->obat) !!}</td>
+                                                                                    <td>{!! App\Helpers\VclaimHelper::get_harga_obat($ob_racikan->obat) !!}</td>
+                                                                                    <td class="text-center">
+                                                                                        {{ $ob_racikan->jumlah_obat }}</td>
+                                                                                    <td>
+
+                                                                                        <input type="text"
+                                                                                            name="racikan[pemberian][{{ $val->idresep }}][]"
+                                                                                            value="{{ isset($ob_racikan->diberikan) ? $ob_racikan->diberikan : '' }}"
+                                                                                            class="form-control form-control-sm">
+
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <input type="text"
+                                                                                            name="racikan[pemberian_kronis][{{ $val->idresep }}][]"
+                                                                                            value="{{ isset($ob_racikan->kronis) ? $ob_racikan->kronis : '' }}"
+                                                                                            class="form-control form-control-sm">
+                                                                                    </td>
+                                                                                </tr>
+                                                                            @endif
+                                                                        @endforeach
+                                                                    </table>
+                                                                </td>
+                                                                <td class="align-middle text-center">{{ $val->dosis }}
+                                                                    {{ $val->takaran }} ( {{ $val->signa }} )
+                                                                    {{ $val->diminum . ' makan' }}</td>
+                                                                <td class="align-middle text-center">
+                                                                    <select name="jenis_obat[{{ $val->idresep }}]"
+                                                                        id="" class="form-select form-select-sm"
+                                                                        required>
+                                                                        <option value="">- Jenis Obat
+                                                                            -
+                                                                        </option>
+                                                                        @foreach ($transaksi_bayar as $tb)
+                                                                            @if (isset($val->jenis))
+                                                                                <option
+                                                                                    {{ $val->jenis == $tb->id ? 'selected' : '' }}
+                                                                                    value="{{ $tb->id }}">
+                                                                                    {{ $tb->bayar }}
+                                                                                </option>
+                                                                            @else
+                                                                                <option value="{{ $tb->id }}">
+                                                                                    {{ $tb->bayar }}
+                                                                                </option>
+                                                                            @endif
+                                                                        @endforeach
+                                                                    </select>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    @endif
                                                 @endif
                                                 {{-- Non Racikan --}}
                                             </tbody>
@@ -713,57 +718,64 @@
                                             </thead>
                                             <tbody class="align-middle">
                                                 @if ($antrian->obat != 'null' || $antrian->obat != '' || $antrian->obat != '[]')
-                                                    @foreach (json_decode($antrian->obat) as $val)
-                                                        <input type="hidden" value="{{ $val->idresep }}" name='idresep_non_racikan[]'>
-                                                        <input type="hidden" value="{{ $antrian->id }}"
-                                                            name='idantrian'>
-                                                        <tr>
-                                                            <td>{!! App\Helpers\VclaimHelper::get_data_obat($val->obat) !!}</td>
-                                                            <td>{!! App\Helpers\VclaimHelper::get_harga_obat($val->obat) !!}</td>
-                                                            <td class="text-center">
-                                                                {{ $val->jumlah }}</td>
-                                                            <td>
-                                                                {{-- <input type="hidden" value={{ $val->idresep }} name="racikan[idresep][]" class="form-control">
+                                                    @if ($antrian->obat != 'null')
+                                                        @foreach (json_decode($antrian->obat) as $val)
+                                                            <input type="hidden" value="{{ $val->idresep }}"
+                                                                name='idresep_non_racikan[]'>
+                                                            <input type="hidden" value="{{ $antrian->id }}"
+                                                                name='idantrian'>
+                                                            <tr>
+                                                                <td>{!! App\Helpers\VclaimHelper::get_data_obat($val->obat) !!}</td>
+                                                                <td>{!! App\Helpers\VclaimHelper::get_harga_obat($val->obat) !!}</td>
+                                                                <td class="text-center">
+                                                                    {{ $val->jumlah }}</td>
+                                                                <td>
+                                                                    {{-- <input type="hidden" value={{ $val->idresep }} name="racikan[idresep][]" class="form-control">
                                                     <input type="hidden" value={{ $val->obat }} name="racikan[idobat][]" class="form-control"> --}}
-                                                                <input type="text" name="pemberian[{{ $val->idresep }}]"
-                                                                    value="{{ isset($val->diberikan) ? $val->diberikan : '' }}"
-                                                                    class="form-control form-control-sm">
-                                                            </td>
-                                                            <td>
-                                                                {{-- <input type="hidden" value={{ $val->idresep }} name="racikan[idresep][]" class="form-control">
+                                                                    <input type="text"
+                                                                        name="pemberian[{{ $val->idresep }}]"
+                                                                        value="{{ isset($val->diberikan) ? $val->diberikan : '' }}"
+                                                                        class="form-control form-control-sm">
+                                                                </td>
+                                                                <td>
+                                                                    {{-- <input type="hidden" value={{ $val->idresep }} name="racikan[idresep][]" class="form-control">
                                                     <input type="hidden" value={{ $val->obat }} name="racikan[idobat][]" class="form-control"> --}}
-                                                                <input type="text" name="kronis[{{ $val->idresep }}]"
-                                                                value="{{ isset($val->kronis) ? $val->kronis : '' }}"
-                                                                    class="form-control form-control-sm">
-                                                            </td>
-                                                            <td class="text-center">
-                                                                {{ $val->dosis }}
-                                                                {{ $val->takaran }} ( {{ $val->signa }} )
-                                                                {{ $val->diminum . ' makan' }}
-                                                            </td>
-                                                            <td class="align-middle text-center">
-                                                                <select name="jenis_obat_non_racikan[{{ $val->idresep }}]" id=""
-                                                                    class="form-select form-select-sm" required>
-                                                                    <option value="">- Jenis Obat
-                                                                        -
-                                                                    </option>
-                                                                    @foreach ($transaksi_bayar as $tb)
-                                                                        @if (isset($val->jenis))
-                                                                            <option
-                                                                                {{ $val->jenis == $tb->id ? 'selected' : '' }}
-                                                                                value="{{ $tb->id }}">
-                                                                                {{ $tb->bayar }}
-                                                                            </option>
-                                                                        @else
-                                                                            <option value="{{ $tb->id }}">
-                                                                                {{ $tb->bayar }}
-                                                                            </option>
-                                                                        @endif
-                                                                    @endforeach
-                                                                </select>
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
+                                                                    <input type="text"
+                                                                        name="kronis[{{ $val->idresep }}]"
+                                                                        value="{{ isset($val->kronis) ? $val->kronis : '' }}"
+                                                                        class="form-control form-control-sm">
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    {{ $val->dosis }}
+                                                                    {{ $val->takaran }} ( {{ $val->signa }} )
+                                                                    {{ $val->diminum . ' makan' }}
+                                                                </td>
+                                                                <td class="align-middle text-center">
+                                                                    <select
+                                                                        name="jenis_obat_non_racikan[{{ $val->idresep }}]"
+                                                                        id="" class="form-select form-select-sm"
+                                                                        required>
+                                                                        <option value="">- Jenis Obat
+                                                                            -
+                                                                        </option>
+                                                                        @foreach ($transaksi_bayar as $tb)
+                                                                            @if (isset($val->jenis))
+                                                                                <option
+                                                                                    {{ $val->jenis == $tb->id ? 'selected' : '' }}
+                                                                                    value="{{ $tb->id }}">
+                                                                                    {{ $tb->bayar }}
+                                                                                </option>
+                                                                            @else
+                                                                                <option value="{{ $tb->id }}">
+                                                                                    {{ $tb->bayar }}
+                                                                                </option>
+                                                                            @endif
+                                                                        @endforeach
+                                                                    </select>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    @endif
                                                 @endif
                                             </tbody>
                                         </table>
@@ -780,12 +792,18 @@
                                             <button type="button" class="btn btn-primary" id="btn-resep">Update
                                                 Resep</button>
                                         </div>
-                                        
+
                                     </div>
                                     <div class="row">
                                         <div class="col">
-                                            <a target="_blank" class="btn btn-warning mt-10"  href="{{ route('farmasi.cetak-resep-tempo', $antrian->id) }}">Print Resep</a>
-                                            <a target="_blank" class="btn btn-light-info mt-10"  href="{{ route('farmasi.cetak-faktur-tempo', $antrian->id) }}">Print Faktur</a>
+                                            <a target="_blank" class="btn btn-warning mt-10"
+                                                href="{{ route('farmasi.cetak-resep-tempo', $antrian->id) }}">Print
+                                                Resep</a>
+                                            <a target="_blank" class="btn btn-light-info mt-10"
+                                                href="{{ route('farmasi.cetak-faktur-tempo', $antrian->id) }}">Print
+                                                Faktur</a>
+                                            <a target="_blank" class="btn btn-light-danger mt-10"
+                                                href="{{ route('farmasi.cetak-tiket-tempo', $antrian->id) }}">E Tiket</a>
                                             <button class="btn btn-success mt-10">Simpan Resep</button>
                                         </div>
                                     </div>

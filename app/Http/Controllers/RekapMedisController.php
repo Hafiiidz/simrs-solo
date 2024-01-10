@@ -268,7 +268,7 @@ class RekapMedisController extends Controller
             return $html;
         })
         ->addColumn('aksi', function ($resep) {
-            return '<a href="" class="btn btn-sm btn-success">Salin</a>';
+            return '<a href="" class="btn btn-sm btn-success">-</a>';
         })
         ->addIndexColumn()
         ->rawColumns(['data_obat','aksi'])

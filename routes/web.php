@@ -252,6 +252,7 @@ Route::prefix('/farmasi')->group(function () {
     Route::get('/cetak-faktur-tempo/{id}', [FarmasiController::class, 'cetakFakturTempo'])->middleware('auth')->name('farmasi.cetak-faktur-tempo');
     Route::get('/cetak-resep/{id}', [FarmasiController::class, 'cetakResep'])->middleware('auth')->name('farmasi.cetak-resep');
     Route::get('/cetak-tiket/{id}', [FarmasiController::class, 'cetakTiket'])->middleware('auth')->name('farmasi.cetak-tiket');
+    Route::get('/cetak-tiket-tempo/{id}', [FarmasiController::class, 'cetakTiketTempo'])->middleware('auth')->name('farmasi.cetak-tiket-tempo');
 });
 Route::prefix('/rawat-jalan')->group(function () {
     Route::get('/poli', [PoliklinikController::class, 'index'])->middleware('auth')->name('poliklinik');

@@ -429,6 +429,24 @@ class FarmasiController extends Controller
         return $pdf->stream();
     }
 
+    public function cetakTiketTempo($id)
+    {
+        // $resep = ObatTransaksi::where('id', $id)->first();
+        // $rawat = Rawat::find($resep->idrawat);
+        // $pasien = Pasien::select('pasien.*', 'pasien_alamat.alamat')
+        //     ->leftJoin('pasien_alamat', 'pasien.id', '=', 'pasien_alamat.idpasien')->where('pasien.no_rm', $rawat->no_rm)->first();
+        // $detail_resep = DB::table('obat_transaksi_detail')->where('idtrx', $resep->id)->get();
+        $resep = AntrianFarmasi::find($id);
+        $rawat = Rawat::find($resep->idrawat);
+        $detail_rekap = DB::table('demo_detail_rekap_medis')->where('id', $rawat->idrekap)->first();
+        $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
+        $obat = Obat::get();
+        
+        $pdf = PDF::loadview('farmasi.cetak.tiket-tempo', compact('resep', 'rawat', 'pasien', 'detail_rekap'));
+        $customPaper = array(0, 0, 170.079, 198.425);
+        $pdf->setPaper($customPaper);
+        return $pdf->stream();
+    }
     public function cetakTiket($id)
     {
         $resep = ObatTransaksi::where('id', $id)->first();

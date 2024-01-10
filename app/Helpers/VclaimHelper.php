@@ -37,6 +37,18 @@ class VclaimHelper
         }
     }
 
+    public static function get_signa($signa){
+        switch($signa){
+            case 'P':
+                return 'Pagi';
+            case 'S':
+                return 'Siang';
+            case 'SO':
+                return 'Sore';
+            case 'M':
+                return 'Malam';
+        }
+    }
     public static function get_data_obat($idobat){
         $obat = Obat::where('id',$idobat)->first();
         return $obat?->nama_obat;

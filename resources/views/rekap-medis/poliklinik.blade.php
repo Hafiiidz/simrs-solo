@@ -364,7 +364,7 @@
                                                                             min="0" required>
                                                                     </td>
                                                                     <td>
-                                                                        <input type="text" name="dosis_obat" required
+                                                                        <input type="text" name="dosis_obat" 
                                                                             placeholder="dosis"
                                                                             class="form-control form-control-sm  mb-2 mb-md-0"
                                                                             min="0">
@@ -665,8 +665,7 @@
                                                                         href="javascript:void(0)"
                                                                         style='cursor:pointer;'>Hapus</a>
                                                                     <button data-id="{{ $rd->id }}"
-                                                                        class="btn btn-sm btn-info btn-edit-racik">Edit
-                                                                        Racikan</button>
+                                                                        class="btn btn-sm btn-info btn-edit-racik">Edit</button>
                                                                 </td>
                                                             @else
                                                                 <td>{{ $rd->nama_obat }}</td>
@@ -684,8 +683,7 @@
                                                                             href="javascript:void(0)"
                                                                             style='cursor:pointer;'>Hapus</a>
                                                                         <button data-id="{{ $rd->id }}"
-                                                                            class="btn btn-sm btn-info btn-edit-racik">Edit
-                                                                            Racikan</button>
+                                                                            class="btn btn-sm btn-info btn-edit-racik">Edit</button>
                                                                     @endif
                                                                 </td>
                                                             @endif
