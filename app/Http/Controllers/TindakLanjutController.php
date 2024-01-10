@@ -71,7 +71,10 @@ class TindakLanjutController extends Controller
             $tindak_lanjut->prb = $prb;
             $tindak_lanjut->tujuan_tindak_lanjut = "Prb";
 
-        }
+        }elseif($request->rencana_tindak_lanjut == 'Meninggal') {
+            $tindak_lanjut->tgl_tindak_lanjut = $request->tgl_kontrol;
+        } 
+        
         $tindak_lanjut->nomor = $tindak_lanjut->generateNomorOtomatis();
         $tindak_lanjut->save();
 

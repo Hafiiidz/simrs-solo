@@ -156,6 +156,8 @@
                                             <option value="Interm">Pasien Dirujuk Interm</option>
                                             @if ($rawat->idjenisrawat == 1)
                                                 <option value="Prb">Pasien Rujuk Balik</option>
+                                            @else
+                                                <option value="Meninggal"></option>
                                             @endif
                                             <option value="Dirawat">Pasien Dirawat</option>
                                         </select>
@@ -220,7 +222,8 @@
                                     <div class="row mb-5">
                                         <div class="col-md-3">
                                             <label class="form-label fw-bold">Tgl.Kontrol</label>
-                                            <input type="date" class="form-control" name='tgl_kontrol' id='tgl_kontrol'>
+                                            <input type="date" class="form-control" name='tgl_kontrol'
+                                                id='tgl_kontrol'>
                                         </div>
                                     </div>
                                 </div>
@@ -264,6 +267,15 @@
                                     </div>
                                 </div>
 
+                                <div id="meninggal" class="d-none">
+                                    <div class="row mb-5">
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold">Tgl.Meninggal</label>
+                                            <input type="date" class="form-control" name='tgl_kontrol'
+                                                id='tgl_kontrol'>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div id="prb" class="d-none">
                                     <div class="row mb-5">
                                         <div class="col-md-3">
@@ -386,13 +398,20 @@
                 $('#interm').addClass('d-none');
                 $('#prb').removeClass('d-none');
                 $('#kontrol').addClass('d-none');
-            } else if (aksi == 'Kontrol Kembali'){
-                    $('#rujukan').addClass('d-none');
-                    $('#rawat').addClass('d-none');
-                    $('#interm').addClass('d-none');
-                    $('#prb').addClass('d-none');
-                    $('#kontrol').removeClass('d-none');
-                }
+            } else if (aksi == 'Kontrol Kembali') {
+                $('#rujukan').addClass('d-none');
+                $('#rawat').addClass('d-none');
+                $('#interm').addClass('d-none');
+                $('#prb').addClass('d-none');
+                $('#kontrol').removeClass('d-none');
+            }else if (aksi == 'Meninggal') {
+                $('#rujukan').addClass('d-none');
+                $('#rawat').addClass('d-none');
+                $('#interm').addClass('d-none');
+                $('#prb').addClass('d-none');
+                $('#kontrol').addClass('d-none');
+                $('#meninggal').removeClass('d-none');
+            }
 
             // $('#tgl_kontrol').val('');
             // $('#tujuan_rujuk').val('');
