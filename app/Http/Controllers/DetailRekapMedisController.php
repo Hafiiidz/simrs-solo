@@ -104,6 +104,7 @@ class DetailRekapMedisController extends Controller
             'berat_badan' => $request->berat_badan,
             'tinggi_badan' => $request->tinggi_badan,
             'bmi' => $request->bmi,
+            'spo2' => $request->spo2,
         ]);
 
         $riwayat_kesehatan = new Collection([
@@ -138,6 +139,7 @@ class DetailRekapMedisController extends Controller
         $rekap->idrekapmedis = $id_rekapmedis;
         $rekap->diagnosa = $request->diagnosa;
         $rekap->anamnesa = $request->anamnesa;
+        $rekap->pemeriksaan_fisik_dokter = $request->pemeriksaan_fisik;
         $rekap->anamnesa_dokter = $request->anamnesa_dokter;
         $rekap->obat_yang_dikonsumsi = $request->obat_yang_dikonsumsi;
         $rekap->alergi = $alergi->toJson();
@@ -187,6 +189,7 @@ class DetailRekapMedisController extends Controller
         if (auth()->user()->idpriv == 7) {
             $rekap->diagnosa = $request->diagnosa;
             $rekap->anamnesa_dokter = $request->anamnesa_dokter;
+            $rekap->pemeriksaan_fisik_dokter = $request->pemeriksaan_fisik;
             $rekap->rencana_pemeriksaan = $request->rencana_pemeriksaan;
             if ($request->terapi_obat) {
                 $rekap->terapi_obat = json_encode($request->terapi_obat);
@@ -246,6 +249,7 @@ class DetailRekapMedisController extends Controller
                 'berat_badan' => $request->berat_badan,
                 'tinggi_badan' => $request->tinggi_badan,
                 'bmi' => $request->bmi,
+                'spo2' => $request->spo2,
             ]);
 
             $riwayat_kesehatan = new Collection([

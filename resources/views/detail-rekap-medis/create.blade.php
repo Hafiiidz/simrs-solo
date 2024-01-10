@@ -307,6 +307,14 @@
                                         <textarea name="anamnesa_dokter" rows="3" class="form-control" placeholder="Anamnesa Dokter"></textarea>
                                     </div>
                                 </div>
+                                @if ($rawat->idjenisrawat == 3)
+                                <div class="row mb-5">
+                                    <div class="col-md-12">
+                                        <label class="form-label fw-bold">Pemeriksaan Fisik</label>
+                                        <textarea name="pemeriksaan_fisik" rows="3" class="form-control" placeholder="Pemeriksaan Fisik"></textarea>
+                                    </div>
+                                </div>
+                                @endif
                                 @if ($rawat->idpoli == 12)
                                     <div class="row mb-5">
                                         <div class="col-md-12">
@@ -541,6 +549,15 @@
                                                         name="bmi" placeholder="...." aria-label="....e"
                                                         aria-describedby="bmi" />
                                                     <span class="input-group-text" id="bmi">Kg/M2</span>
+                                                </div>
+                                            </div>
+                                            <div class="row col-md-4">
+                                                <label class="form-label">saturasi oksigen (SpO2) </label>
+                                                <div class="input-group mb-5">
+                                                    <input type="text" class="form-control"
+                                                        name="spo2" placeholder="...." aria-label="....e"
+                                                        aria-describedby="spo2" />
+                                                    <span class="input-group-text" id="bmi">%</span>
                                                 </div>
                                             </div>
                                         </div>

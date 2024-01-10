@@ -1072,6 +1072,11 @@
                                                                         x/menit</td>
                                                                 </tr>
                                                                 <tr>
+                                                                    <td>&nbsp;&nbsp;Saturasi oksigen (SpO2)</td>
+                                                                    <td class="text-start">:
+                                                                        {{ isset($pfisik->spo2) ? $pfisik->spo2 : '-' }} %</td>
+                                                                </tr>
+                                                                <tr>
                                                                     <td>&nbsp;&nbsp;Suhu</td>
                                                                     <td class="text-start">:
                                                                         {{ $pfisik->suhu ? $pfisik->suhu : '-' }} celcius

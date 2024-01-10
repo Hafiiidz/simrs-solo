@@ -251,11 +251,11 @@ class VclaimHelper
     public static function getFaskes($nama_faskes){
         $helper = new VclaimHelper();
         $token = $helper->getToken();
-        return $helper->url;
+        // return $helper->url;
         $response = Http::withHeaders($token['signature'])
             ->withOptions(["verify" => false])
             ->get($helper->url . '/referensi/faskes/rsau/2');
-        return $token;
+        // return $token;
         try {
             $helper = new VclaimHelper();
             $token = $helper->getToken();
