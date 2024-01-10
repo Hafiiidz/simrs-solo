@@ -66,7 +66,7 @@
                                 @foreach ($resep_rajal as $rr)
                                     <!--begin::Item-->
                                     @php
-                                        $cek_rawat = App\Models\Rawat::where('idrawat', $rr->idrawat)->first();
+                                        $cek_rawat = App\Models\Rawat::where('id', $rr->idrawat)->first();
                                     @endphp
                                     @if ($cek_rawat)
                                         <a href="{{ route('farmasi.status-rajal', $rr->idrawat) }}">
@@ -164,7 +164,7 @@
 
                                     @foreach ($resep_ugd as $rr)
                                         @php
-                                            $cek_rawat = App\Models\Rawat::where('idrawat', $rr->idrawat)->first();
+                                            $cek_rawat = App\Models\Rawat::where('id', $rr->idrawat)->first();
                                         @endphp
                                         @if ($cek_rawat)
                                             <!--begin::Item-->
@@ -228,7 +228,7 @@
                                     @foreach ($resep_ranap as $rr)
                                         <!--begin::Item-->
                                         @php
-                                            $cek_rawat = App\Models\Rawat::where('idrawat', $rr->idrawat)->first();
+                                            $cek_rawat = App\Models\Rawat::where('id', $rr->idrawat)->first();
                                         @endphp
                                         @if ($cek_rawat)
                                         <a href="{{ route('farmasi.status-ranap', $rr->idrawat) }}">
