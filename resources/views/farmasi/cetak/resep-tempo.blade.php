@@ -128,7 +128,7 @@
                                             {{ $obat->diminum . ' makan' }}
                                             
                                         </td>
-                                        <td>No. </td>
+                                        <td>No. {{ $obat->diberikan }}</td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -148,7 +148,7 @@
                                             
                                         </td>
                                        <td>
-                                        No. {{ $obat->diberikan }}
+                                        No. 
                                        </td>
                                     </td>
                                 @endforeach
