@@ -324,14 +324,14 @@
                                                                 <th rowspan="2" width=100>Jumlah</th>
                                                                 <th rowspan="2" width=100>Dosis</th>
                                                                 <th rowspan="2" width=200>Takaran</th>
-                                                                <th width=50 colspan="3">Signa</th>
+                                                                <th width=50 colspan="4">Signa</th>
                                                                 <th rowspan="2" width=100>Diminum</th>
                                                                 <th rowspan="2" width=100>Catatan</th>
-                                                                <th rowspan="2">Aksi</th>
                                                             </tr>
                                                             <tr>
                                                                 <th width=10>P</th>
                                                                 <th width=10>S</th>
+                                                                <th width=10>SO</th>
                                                                 <th width=10>M</th>
                                                             </tr>
 
@@ -400,6 +400,10 @@
                                                                             name="diminum[]" id="flexCheckDefault" /></td>
                                                                     <td class="text-center align-middle"><input
                                                                             class="form-check-input form-check-input-sm"
+                                                                            type="checkbox" value="SO"
+                                                                            name="diminum[]" id="flexCheckDefault" /></td>
+                                                                    <td class="text-center align-middle"><input
+                                                                            class="form-check-input form-check-input-sm"
                                                                             type="checkbox" value="M"
                                                                             name="diminum[]" id="flexCheckDefault" /></td>
                                                                     <td>
@@ -462,14 +466,14 @@
                                                                 <th rowspan="2" width=100>Jumlah</th>
                                                                 <th rowspan="2" width=50>Diberikan</th>
                                                                 <th rowspan="2" width=200>Takaran</th>
-                                                                <th width=50 colspan="3">Signa</th>
+                                                                <th width=50 colspan="4">Signa</th>
                                                                 <th rowspan="2" width=100>Diminum</th>
                                                                 <th rowspan="2" width=100>Catatan</th>
-                                                                <th rowspan="2">Aksi</th>
                                                             </tr>
                                                             <tr>
                                                                 <th width=10>P</th>
                                                                 <th width=10>S</th>
+                                                                <th width=10>SO</th>
                                                                 <th width=10>M</th>
                                                             </tr>
 
@@ -649,7 +653,7 @@
                                                                     @endforeach
                                                                     <span class="badge badge-success">Racikan</span>
 
-                                                                    {{ '('.$rd->diberikan.')' }}
+                                                                    {{ '(' . $rd->diberikan . ')' }}
                                                                 </td>
                                                                 <td>{{ $rd->takaran }}</td>
                                                                 <td>{{ $rd->signa }}</td>
@@ -660,10 +664,14 @@
                                                                         id='{{ $rd->id }}'
                                                                         href="javascript:void(0)"
                                                                         style='cursor:pointer;'>Hapus</a>
+                                                                    <button data-id="{{ $rd->id }}"
+                                                                        class="btn btn-sm btn-info btn-edit-racik">Edit
+                                                                        Racikan</button>
                                                                 </td>
                                                             @else
                                                                 <td>{{ $rd->nama_obat }}</td>
-                                                                <td>{{ $rd->jumlah }}</td>
+                                                                <td role="button" id="{{ $resep }}">
+                                                                    {{ $rd->jumlah }}</td>
                                                                 <td>{{ $rd->dosis }}</td>
                                                                 <td>{{ $rd->takaran }}</td>
                                                                 <td>{{ $rd->signa }}</td>
@@ -675,6 +683,9 @@
                                                                             id='{{ $rd->id }}'
                                                                             href="javascript:void(0)"
                                                                             style='cursor:pointer;'>Hapus</a>
+                                                                        <button data-id="{{ $rd->id }}"
+                                                                            class="btn btn-sm btn-info btn-edit-racik">Edit
+                                                                            Racikan</button>
                                                                     @endif
                                                                 </td>
                                                             @endif
@@ -684,6 +695,30 @@
                                                 @endif
                                             </tbody>
                                         </table>
+
+                                        <div class="card mt-10">
+                                            <div class="card-header">
+                                                <h3 class="card-title">Riwayat Obat</h3>
+                                            </div>
+                                            <div class="card-body">
+                                                <span class="fs-5">*Hanya bisa menyalin obat non racikan</span>
+                                                <table id='tblRiwayatResep' class="table table-bordered mt-10">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>No</th>
+                                                            <th>Kode Resep</th>
+                                                            <th>Tgl</th>
+                                                            <th>Obat</th>
+                                                            <th>Total Resep</th>
+                                                            <th>Aksi</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
 
                                     </div>
 
@@ -1074,7 +1109,8 @@
                                                                 <tr>
                                                                     <td>&nbsp;&nbsp;Saturasi oksigen (SpO2)</td>
                                                                     <td class="text-start">:
-                                                                        {{ isset($pfisik->spo2) ? $pfisik->spo2 : '-' }} %</td>
+                                                                        {{ isset($pfisik->spo2) ? $pfisik->spo2 : '-' }} %
+                                                                    </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>&nbsp;&nbsp;Suhu</td>
@@ -1727,6 +1763,55 @@
 
 
 
+            $("#tblRiwayatResep").DataTable({
+                "language": {
+                    "lengthMenu": "Show _MENU_",
+                },
+                "dom": "<'row'" +
+                    "<'col-sm-6 d-flex align-items-center justify-conten-start'l>" +
+                    "<'col-sm-6 d-flex align-items-center justify-content-end'f>" +
+                    ">" +
+
+                    "<'table-responsive'tr>" +
+
+                    "<'row'" +
+                    "<'col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start'i>" +
+                    "<'col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end'p>" +
+                    ">",
+                processing: true,
+                serverSide: true,
+                search: {
+                    return: true
+                },
+                ajax: '{{ route('rekam-medis-poli.data-resep',$rawat->no_rm) }}',
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'kode_resep',
+                        name: 'kode_resep'
+                    },
+                    {
+                        data: 'tgl',
+                        name: 'tgl'
+                    },
+                    {
+                        data: 'data_obat',
+                        name: 'data_obat'
+                    },
+                    {
+                        data: 'total_harga',
+                        name: 'total_harga'
+                    },
+                    {
+                        data: 'aksi',
+                        name: 'aksi'
+                    },
+                ]
+            });
             $("#tbl_histori").DataTable({
                 "language": {
                     "lengthMenu": "Show _MENU_",
@@ -2144,6 +2229,7 @@
                     cache: false,
                     processData: false,
                     beforeSend: function() {
+
                         submitButton.setAttribute('data-kt-indicator', 'on');
                         submitButton.disabled = true;
                     },
@@ -2175,7 +2261,7 @@
             $('#frmRacikan').on('submit', function(event) {
                 const form = document.getElementById('frmRacikan');
                 const submitButton = document.getElementById('upload_racikan');
-
+                var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
                 event.preventDefault();
                 $.ajax({
                     url: "{{ route('rekap-medis.post_resep_racikan', $rawat->id) }}",
@@ -2219,7 +2305,9 @@
             });
 
         });
+        $(document).on('click', '.btn-salin-obat', function() {
 
+        });
         $(document).on('click', '.btn-hapus', function() {
 
             e = $(this)

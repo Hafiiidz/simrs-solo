@@ -6,6 +6,7 @@ use App\Helpers\VclaimHelper;
 use App\Models\Dokter;
 use App\Models\LabHasil;
 use App\Models\Obat\Obat;
+use App\Models\ObatTransaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Carbon;
@@ -223,7 +224,10 @@ class RekapMedisController extends Controller
 
         if ($rekap_medis->perawat == 1 && $rekap_medis->dokter == 1) {
             $rawat = Rawat::find($rekap_medis->idrawat);
-            $rawat->status = 4;
+            if($rawat->status != 2){
+                $rawat->status = 4;
+            }
+            
             $rawat->save();
             if ($rekap_medis->tindakan != NULL || $rekap_medis->tindakan != 'null') {
                 $jumlah = 0;
@@ -251,6 +255,26 @@ class RekapMedisController extends Controller
         }
         return redirect()->back()->with('berhasil', 'Pasien Selesai Diperiksa');
     }
+
+    public function data_resep_pasien($no_rm){
+        $resep = ObatTransaksi::where('no_rm', $no_rm)->orderBy('id','desc');
+        return DataTables::eloquent($resep)
+        ->addColumn('data_obat',function($resep){
+            $data_obat = DB::table('obat_transaksi_detail')->where('idtrx', $resep->id)->get();
+            $html = '';
+            foreach($data_obat as $do){
+                $html .= '<li>'.$do->nama_obat.' - '.$do->qty.'</li>';
+            }
+            return $html;
+        })
+        ->addColumn('aksi', function ($resep) {
+            return '<a href="" class="btn btn-sm btn-success">Salin</a>';
+        })
+        ->addIndexColumn()
+        ->rawColumns(['data_obat','aksi'])
+        ->make(true);
+    }
+
     public function index_poli($id_rawat)
     {
         // $rawat = DB::table('rawat')->where('id', $id_rawat)->first();
@@ -292,8 +316,10 @@ class RekapMedisController extends Controller
         $pemeriksaan_radiologi = RadiologiHasil::where('idrawat', $id_rawat)->get();
         $pemeriksaan_luar = DB::table('demo_rekap_medis_file_penunjang')->where('id_rekap', $id_rawat)->get();
         $riwayat_berobat = RekapMedis::where('idpasien', $pasien->id)->where('idrawat', '!=', $id_rawat)->get();
+
+        $resep = ObatTransaksi::where('no_rm', $rawat->no_rm)->get();
         // dd($riwayat_berobat);
-        return view('rekap-medis.poliklinik', compact('pasien', 'rawat', 'resume_medis', 'resume_detail', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'soap_tindakan', 'fisio', 'pemeriksaan_lab', 'pemeriksaan_radiologi', 'riwayat_berobat', 'pemeriksaan_luar', 'resep_dokter'));
+        return view('rekap-medis.poliklinik', compact('pasien', 'rawat', 'resume_medis', 'resume_detail', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'soap_tindakan', 'fisio', 'pemeriksaan_lab', 'pemeriksaan_radiologi', 'riwayat_berobat', 'pemeriksaan_luar', 'resep_dokter', 'resep'));
     }
 
     public function copy_data(Request $request, $id)
@@ -460,7 +486,10 @@ class RekapMedisController extends Controller
     public function input_resume_poli(Request $request)
     {
         $rawat = Rawat::find($request->idrawat);
-        $rawat->status = 3;
+        if($rawat->status != 2){
+            $rawat->status = 3;
+        }
+       
         $rawat->timestamps = false;
         $rawat->save();
 
@@ -572,10 +601,10 @@ class RekapMedisController extends Controller
         $html .= '<td>'.json_encode($request->diminum).'</td>';
         $html .= '<td>'.$request->takaran.'</td>';
         $html .= '<td>'.$request->catatan.'</td>';
-        $html .= '<td><a
-        class="btn btn-sm btn-danger btn-hapus"
-        id="'.$resep.'" href="javascript:void(0)"
-        style="cursor:pointer;"">Hapus</a></td>';
+        $html .= '<td>
+        <a class="btn btn-sm btn-danger btn-hapus" id="'.$resep.'" href="javascript:void(0)" style="cursor:pointer;"">Hapus</a>
+        <button data-id="'.$resep.'" class="btn btn-sm btn-info btn-edit-racik">Edit</button>
+        </td>';
 
         return response()->json(['status'=>'ok','data'=>$html]);
     }
@@ -599,7 +628,7 @@ class RekapMedisController extends Controller
         $html ='';
         $html .= '<tr id="li'.$resep.'">';
         $html .= '<td>'.$obat->nama_obat.'</td>';
-        $html .= '<td>'.$request->jumlah_obat.'</td>';
+        $html .= '<td role="button" id="'.$resep.'">'.$request->jumlah_obat.'</td>';
         $html .= '<td>'.$request->dosis_obat.'</td>';
         $html .= '<td>'.$request->takaran_obat.'</td>';
         $html .= '<td>'.json_encode($request->diminum).'</td>';
@@ -608,7 +637,9 @@ class RekapMedisController extends Controller
         $html .= '<td><a
         class="btn btn-sm btn-danger btn-hapus"
         id="'.$resep.'" href="javascript:void(0)"
-        style="cursor:pointer;"">Hapus</a></td>';
+        style="cursor:pointer;"">Hapus</a>
+        <button data-id="'.$resep.'" class="btn btn-sm btn-info btn-edit-racik">Edit</button>   
+        </td>';
 
         $html .= '</tr>';
 
