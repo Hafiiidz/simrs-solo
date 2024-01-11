@@ -364,7 +364,7 @@
                                                                             min="0" required>
                                                                     </td>
                                                                     <td>
-                                                                        <input type="text" name="dosis_obat" 
+                                                                        <input type="text" name="dosis_obat"
                                                                             placeholder="dosis"
                                                                             class="form-control form-control-sm  mb-2 mb-md-0"
                                                                             min="0">
@@ -556,10 +556,10 @@
                                                                             class="form-check-input form-check-input-sm"
                                                                             type="checkbox" value="S"
                                                                             name="diminum[]" id="flexCheckDefault" /></td>
-                                                                            <td class="text-center align-middle"><input
-                                                                                class="form-check-input form-check-input-sm"
-                                                                                type="checkbox" value="SO"
-                                                                                name="diminum[]" id="flexCheckDefault" /></td>
+                                                                    <td class="text-center align-middle"><input
+                                                                            class="form-check-input form-check-input-sm"
+                                                                            type="checkbox" value="SO"
+                                                                            name="diminum[]" id="flexCheckDefault" /></td>
                                                                     <td class="text-center align-middle"><input
                                                                             class="form-check-input form-check-input-sm"
                                                                             type="checkbox" value="M"
@@ -783,7 +783,9 @@
                                                                     @if ($rekap_resume->icdx != 'null')
                                                                         @foreach (json_decode($rekap_resume->icdx) as $val)
                                                                             <li>{{ $val->diagnosa_icdx }}
-                                                                                (<b>{{ $val->jenis_diagnosa == 'P' ? 'Primer' : 'Sekunder' }}</b>)
+                                                                                @if (isset($val->jenis_diagnosa))
+                                                                                    (<b>{{ $val->jenis_diagnosa == 'P' ? 'Primer' : 'Sekunder' }}</b>)
+                                                                                @endif                                                                              
                                                                             </li>
                                                                         @endforeach
                                                                     @endif
@@ -1785,7 +1787,7 @@
                 search: {
                     return: true
                 },
-                ajax: '{{ route('rekam-medis-poli.data-resep',$rawat->no_rm) }}',
+                ajax: '{{ route('rekam-medis-poli.data-resep', $rawat->no_rm) }}',
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',

@@ -237,8 +237,8 @@ class RekapMedisController extends Controller
                     // return $rekap_medis->tindakan;
                     foreach (json_decode($rekap_medis->tindakan) as $tindakan) {
                         // $jumlah += 2;
-                        $cek_tindakan = DB::table('transaksi_detail_rinci')->where('idrawat', $rawat->id)->where('idtarif', $tindakan->tindakan)->first();
-                        if(!$cek_tindakan){
+                        // $cek_tindakan = DB::table('transaksi_detail_rinci')->where('idrawat', $rawat->id)->where('idtarif', $tindakan->tindakan)->first();
+                        // if(!$cek_tindakan){
                             $tarif = Tarif::find($tindakan->tindakan);
                             for ($x = 1; $x <= $tindakan->jumlah; $x++) {
                                 DB::table('transaksi_detail_rinci')->insert([
@@ -253,7 +253,7 @@ class RekapMedisController extends Controller
                                     'idtindakan' => $tarif->kat_tindakan,
                                     'tgl' => now(),
                                 ]);
-                            }   
+                            // }   
                         }
                         
                     }
