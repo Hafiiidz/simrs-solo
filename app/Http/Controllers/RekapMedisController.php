@@ -60,6 +60,7 @@ class RekapMedisController extends Controller
         $rekap_medis = RekapMedis::where('id', $id)->first();
         $rawat = Rawat::find($rekap_medis->idrawat);
         $transaksi = DB::table('transaksi')->where('kode_kunjungan', $rawat->idkunjungan)->first();
+        // return $rawat->idkunjungan;
         // return $transaksi;
         // return $rekap_medis;
         $detail = DetailRekapMedis::where('idrekapmedis', $rekap_medis->id)->first();
@@ -234,21 +235,25 @@ class RekapMedisController extends Controller
                 // return $rekap_medis->tindakan;
                 foreach (json_decode($rekap_medis->tindakan) as $tindakan) {
                     // $jumlah += 2;
-                    $tarif = Tarif::find($tindakan->tindakan);
-                    for ($x = 1; $x <= $tindakan->jumlah; $x++) {
-                        DB::table('transaksi_detail_rinci')->insert([
-                            'idbayar' => $rawat->idbayar,
-                            'iddokter' => $tindakan->dokter,
-                            'idpaket' => 0,
-                            'idjenis' => 0,
-                            'idrawat' => $rawat->id,
-                            'idtransaksi' => $transaksi->id,
-                            'idtarif' => $tindakan->tindakan,
-                            'tarif' => $tarif->tarif,
-                            'idtindakan' => $tarif->kat_tindakan,
-                            'tgl' => now(),
-                        ]);
+                    $cek_tindakan = DB::table('transaksi_detail_rinci')->where('idrawat', $rawat->id)->where('idtarif', $tindakan->tindakan)->first();
+                    if(!$cek_tindakan){
+                        $tarif = Tarif::find($tindakan->tindakan);
+                        for ($x = 1; $x <= $tindakan->jumlah; $x++) {
+                            DB::table('transaksi_detail_rinci')->insert([
+                                'idbayar' => $rawat->idbayar,
+                                'iddokter' => $tindakan->dokter,
+                                'idpaket' => 0,
+                                'idjenis' => 0,
+                                'idrawat' => $rawat->id,
+                                'idtransaksi' => $transaksi->id,
+                                'idtarif' => $tindakan->tindakan,
+                                'tarif' => $tarif->tarif,
+                                'idtindakan' => $tarif->kat_tindakan,
+                                'tgl' => now(),
+                            ]);
+                        }   
                     }
+                    
                 }
                 // return $jumlah;
             }

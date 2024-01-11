@@ -556,6 +556,10 @@
                                                                             class="form-check-input form-check-input-sm"
                                                                             type="checkbox" value="S"
                                                                             name="diminum[]" id="flexCheckDefault" /></td>
+                                                                            <td class="text-center align-middle"><input
+                                                                                class="form-check-input form-check-input-sm"
+                                                                                type="checkbox" value="SO"
+                                                                                name="diminum[]" id="flexCheckDefault" /></td>
                                                                     <td class="text-center align-middle"><input
                                                                             class="form-check-input form-check-input-sm"
                                                                             type="checkbox" value="M"
