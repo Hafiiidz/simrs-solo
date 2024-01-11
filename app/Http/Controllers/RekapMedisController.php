@@ -223,41 +223,45 @@ class RekapMedisController extends Controller
 
         $rekap_medis->save();
 
-        if ($rekap_medis->perawat == 1 && $rekap_medis->dokter == 1) {
-            $rawat = Rawat::find($rekap_medis->idrawat);
-            if($rawat->status != 2){
-                $rawat->status = 4;
-            }
-            
-            $rawat->save();
-            if ($rekap_medis->tindakan != NULL || $rekap_medis->tindakan != 'null') {
-                $jumlah = 0;
-                // return $rekap_medis->tindakan;
-                foreach (json_decode($rekap_medis->tindakan) as $tindakan) {
-                    // $jumlah += 2;
-                    $cek_tindakan = DB::table('transaksi_detail_rinci')->where('idrawat', $rawat->id)->where('idtarif', $tindakan->tindakan)->first();
-                    if(!$cek_tindakan){
-                        $tarif = Tarif::find($tindakan->tindakan);
-                        for ($x = 1; $x <= $tindakan->jumlah; $x++) {
-                            DB::table('transaksi_detail_rinci')->insert([
-                                'idbayar' => $rawat->idbayar,
-                                'iddokter' => $tindakan->dokter,
-                                'idpaket' => 0,
-                                'idjenis' => 0,
-                                'idrawat' => $rawat->id,
-                                'idtransaksi' => $transaksi->id,
-                                'idtarif' => $tindakan->tindakan,
-                                'tarif' => $tarif->tarif,
-                                'idtindakan' => $tarif->kat_tindakan,
-                                'tgl' => now(),
-                            ]);
-                        }   
-                    }
-                    
+        if($request->jenis != 'bpjs'){
+            if ($rekap_medis->perawat == 1 && $rekap_medis->dokter == 1) {
+                $rawat = Rawat::find($rekap_medis->idrawat);
+                if($rawat->status != 2){
+                    $rawat->status = 4;
                 }
-                // return $jumlah;
+                
+                $rawat->save();
+               
+                if ($rekap_medis->tindakan != NULL || $rekap_medis->tindakan != 'null') {
+                    $jumlah = 0;
+                    // return $rekap_medis->tindakan;
+                    foreach (json_decode($rekap_medis->tindakan) as $tindakan) {
+                        // $jumlah += 2;
+                        $cek_tindakan = DB::table('transaksi_detail_rinci')->where('idrawat', $rawat->id)->where('idtarif', $tindakan->tindakan)->first();
+                        if(!$cek_tindakan){
+                            $tarif = Tarif::find($tindakan->tindakan);
+                            for ($x = 1; $x <= $tindakan->jumlah; $x++) {
+                                DB::table('transaksi_detail_rinci')->insert([
+                                    'idbayar' => $rawat->idbayar,
+                                    'iddokter' => $tindakan->dokter,
+                                    'idpaket' => 0,
+                                    'idjenis' => 0,
+                                    'idrawat' => $rawat->id,
+                                    'idtransaksi' => $transaksi->id,
+                                    'idtarif' => $tindakan->tindakan,
+                                    'tarif' => $tarif->tarif,
+                                    'idtindakan' => $tarif->kat_tindakan,
+                                    'tgl' => now(),
+                                ]);
+                            }   
+                        }
+                        
+                    }
+                    // return $jumlah;
+                }
             }
         }
+       
         return redirect()->back()->with('berhasil', 'Pasien Selesai Diperiksa');
     }
 
