@@ -153,6 +153,7 @@ class FarmasiController extends Controller
                 // 
                 AntrianFarmasi::where('id', $request->idantrian)->update([
                     'racikan' => json_encode($racikan),
+                    'update'=>1,
                 ]);
                 // return $combinedArray;
             }
@@ -250,6 +251,9 @@ class FarmasiController extends Controller
     {
         // return $request->all();
         $antrian = AntrianFarmasi::find($id);
+        if($antrian->update != 1){
+            return back()->with('gagal', 'Pastikan data sudah di update');
+        }
         $rawat = Rawat::find($antrian->idrawat);
         $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
         #simpan transaksi resep
@@ -265,25 +269,94 @@ class FarmasiController extends Controller
 
         #simpan resep
         $total_obat = 0;
-        foreach ($request->terapi_obat as $to) {
-            $obat = Obat::find($to['obat']);
-            $total_obat += $obat->harga_jual * $to['pemberian_obat'];
-            DB::table('obat_transaksi_detail')->insert([
-                'idtrx' => $obat_transaksi->id,
-                'nama_obat' => $obat->nama_obat,
-                'idobat' => $to['obat'],
-                'qty' => $to['pemberian_obat'],
-                'harga' => $obat->harga_jual,
-                'signa' => $to['signa1'] . 'x' . $to['signa2'],
-                'total' => $obat->harga_jual * $to['pemberian_obat'],
-                'idbayar' => $to['jenis_obat'],
-            ]);
+        if($antrian->obat != null || $antrian->obat != ''){
+            foreach (json_decode($antrian->obat) as $to) {
+                $obat = Obat::find($to->obat);
+                $total_obat += $obat->harga_jual * $to->diberikan;
+                if($to->kronis > 0){
+                    $total_obat += $obat->harga_jual * $to->kronis;
+                    for($i=1; $i<=$to->kronis; $i++){
+                        DB::table('obat_transaksi_detail')->insert([
+                            'idtrx' => $obat_transaksi->id,
+                            'nama_obat' => $obat->nama_obat,
+                            'idobat' => $to->obat,
+                            'qty' => $to->kronis,
+                            'harga' => $obat->harga_jual,
+                            'signa' => $to->signa,
+                            'dosis'=> $to->dosis,
+                            'diminum'=> $to->diminum,
+                            'takaran'=> $to->takaran,
+                            'total' => $obat->harga_jual * $to->kronis,
+                            'idbayar' =>3,
+                            'no_stok'=>1,
+                        ]);
+                    }
+                }
+               
+                DB::table('obat_transaksi_detail')->insert([
+                    'idtrx' => $obat_transaksi->id,
+                    'nama_obat' => $obat->nama_obat,
+                    'idobat' => $to->obat,
+                    'qty' => $to->diberikan,
+                    'harga' => $obat->harga_jual,
+                    'signa' => $to->signa,
+                    'dosis'=> $to->dosis,
+                    'diminum'=> $to->diminum,
+                    'takaran'=> $to->takaran,
+                    'total' => $obat->harga_jual * $to->diberikan,
+                    'idbayar' => $to->jenis,
+                    'no_stok'=>1,
+                ]);
+            }
         }
+        if($antrian->racikan != null || $antrian->racikan != ''){
+            foreach (json_decode($antrian->racikan) as $to) {
+                foreach($to->obat as $ob){
+                    if($ob->kronis > 0){
+                        $total_obat += $obat->harga_jual * $ob->kronis;
+                        for($i=1; $i<=$ob->kronis; $i++){
+                            DB::table('obat_transaksi_detail')->insert([
+                                'idtrx' => $obat_transaksi->id,
+                                'nama_obat' => $obat->nama_obat,
+                                'idobat' => $ob->obat,
+                                'qty' => $ob->kronis,
+                                'harga' => $obat->harga_jual,
+                                'signa' => $to->signa,
+                                'dosis'=> $to->dosis,
+                                'diminum'=> $to->diminum,
+                                'takaran'=> $to->takaran,
+                                'total' => $obat->harga_jual * $ob->kronis,
+                                'idbayar' =>3,
+                                'no_stok'=>1,
+                            ]);
+                        }
+                    }
+                    $obat = Obat::find($ob->obat);
+                    $total_obat += $obat->harga_jual * $ob->diberikan;
+                    DB::table('obat_transaksi_detail')->insert([
+                        'idtrx' => $obat_transaksi->id,
+                        'nama_obat' => $obat->nama_obat,
+                        'idobat' => $ob->obat,
+                        'qty' => $ob->diberikan,
+                        'harga' => $obat->harga_jual,
+                        'signa' => $to->signa,
+                        'dosis'=> $to->dosis,
+                        'diminum'=> $to->diminum,
+                        'takaran'=> $to->takaran,
+                        'total' => $obat->harga_jual * $ob->diberikan,
+                        'idbayar' => $to->jenis,
+                        'no_stok'=>1,
+                    ]);
+                }
+            }
+        }
+
         $obat_transaksi_save = ObatTransaksi::find($obat_transaksi->id);
         $obat_transaksi_save->total_harga = $total_obat;
         $obat_transaksi_save->save();
 
         $antrian->status_antrian = 'Selesai';
+        
         $antrian->save();
         return back()->with('berhasil', 'Resep Berhasil Di Simpan');
     }

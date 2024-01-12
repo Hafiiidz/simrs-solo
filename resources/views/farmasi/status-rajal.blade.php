@@ -796,15 +796,22 @@
                                     </div>
                                     <div class="row">
                                         <div class="col">
-                                            <a target="_blank" class="btn btn-warning mt-10"
-                                                href="{{ route('farmasi.cetak-resep-tempo', $antrian->id) }}">Print
-                                                Resep</a>
-                                            <a target="_blank" class="btn btn-light-info mt-10"
-                                                href="{{ route('farmasi.cetak-faktur-tempo', $antrian->id) }}">Print
-                                                Faktur</a>
-                                            <a target="_blank" class="btn btn-light-danger mt-10"
-                                                href="{{ route('farmasi.cetak-tiket-tempo', $antrian->id) }}">E Tiket</a>
-                                            <button class="btn btn-success mt-10">Simpan Resep</button>
+                                          
+                                                <form action="{{ route('farmasi.post-resep', $antrian->id) }}" id='formPermintaanobatSelesai'
+                                                    method="post">
+                                                    @csrf
+                                                    <a target="_blank" class="btn btn-warning mt-10"
+                                                    href="{{ route('farmasi.cetak-resep-tempo', $antrian->id) }}">Print
+                                                    Resep</a>
+                                                <a target="_blank" class="btn btn-light-info mt-10"
+                                                    href="{{ route('farmasi.cetak-faktur-tempo', $antrian->id) }}">Print
+                                                    Faktur</a>
+                                                <a target="_blank" class="btn btn-light-danger mt-10"
+                                                    href="{{ route('farmasi.cetak-tiket-tempo', $antrian->id) }}">E Tiket</a>
+                                                    <input type="hidden" name="idantrian" id="" value="{{ $antrian->id }}">
+                                                    <button class="btn btn-success mt-10">Simpan Resep</button>
+                                                </form>
+                                           
                                         </div>
                                     </div>
                                 @endif
@@ -903,7 +910,7 @@
                 }
             });
 
-            $("#formPermintaanobat").on("submit", function(event) {
+            $("#formPermintaanobatSelesai").on("submit", function(event) {
                 event.preventDefault();
                 var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
                 Swal.fire({

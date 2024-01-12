@@ -62,6 +62,7 @@
                         <div class="card-toolbar">
                             <a href="{{ route('poliklinik') }}" class="btn btn-sm btn-secondary me-2">Kembali</a>
                             @if ($resume_medis)
+                                <a id="confirmButton" class="btn btn-sm btn-light-primary" href="#">Update Template</a>
                                 <form action="{{ route('rekap-medis-selesai', $resume_medis->id) }}" id='frmSelesai'
                                     method="POST">
                                     @csrf
@@ -687,7 +688,7 @@
                                                                             href="javascript:void(0)"
                                                                             style='cursor:pointer;'>Hapus</a>
                                                                         <button data-id="{{ $rd->id }}"
-                                                                            class="btn btn-sm btn-info btn-edit-racik">Edit</button>
+                                                                            class="btn btn-sm btn-info btn-edit">Edit</button>
                                                                     @endif
                                                                 </td>
                                                             @endif
@@ -785,7 +786,7 @@
                                                                             <li>{{ $val->diagnosa_icdx }}
                                                                                 @if (isset($val->jenis_diagnosa))
                                                                                     (<b>{{ $val->jenis_diagnosa == 'P' ? 'Primer' : 'Sekunder' }}</b>)
-                                                                                @endif                                                                              
+                                                                                @endif
                                                                             </li>
                                                                         @endforeach
                                                                     @endif
@@ -1732,6 +1733,60 @@
     <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js"></script>
     <script>
+        @if ($resume_medis)
+            document.getElementById("confirmButton").addEventListener("click", function() {
+                // Add your confirmation logic here
+                Swal.fire({
+                    title: 'Simpan Template',
+                    text: "Yakin Menyimpan Template",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.blockUI({
+                            css: {
+                                border: 'none',
+                                padding: '15px',
+                                backgroundColor: '#000',
+                                '-webkit-border-radius': '10px',
+                                '-moz-border-radius': '10px',
+                                opacity: .5,
+                                color: '#fff',
+                                fontSize: '16px'
+                            },
+                            message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                            baseZ: 9000,
+                        });
+                        window.location.href = "{{ route('update-template',$resume_medis->id) }}";
+                    }
+                });
+
+            });
+        @endif
+        $(document).on('click', '.btn-edit', function() {
+            var value = $(this).attr('data-id');
+            url = "{{ route('get-data-obat', '') }}" + "/" + value;
+            $("#modal-hasil").empty();
+            $.get(url).done(function(data) {
+                $("#modal-hasil").html(data);
+                $("#modal_lihat").modal('show');
+            });
+        });
+
+        $(document).on('click', '.btn-edit-racik', function() {
+            var value = $(this).attr('data-id');
+            url = "{{ route('get-data-racik-obat', '') }}" + "/" + value;
+            $("#modal-hasil").empty();
+            $.get(url).done(function(data) {
+                $("#modal-hasil").html(data);
+                $("#modal_lihat").modal('show');
+            });
+        });
+
         function modalHasilLab(id) {
             // alert(id)
             url = "{{ route('get-hasil-lab', '') }}" + "/" + id;
@@ -2246,6 +2301,8 @@
                             '',
                             'success'
                         )
+
+
                         $('#nama_obat').val(null).trigger('change');
                         $('#takaran_obat').val(null).trigger('change');
                         $('input[type="text"]').val('');
@@ -2262,6 +2319,7 @@
                 })
 
             });
+
             $('#frmRacikan').on('submit', function(event) {
                 const form = document.getElementById('frmRacikan');
                 const submitButton = document.getElementById('upload_racikan');
@@ -2309,9 +2367,7 @@
             });
 
         });
-        $(document).on('click', '.btn-salin-obat', function() {
 
-        });
         $(document).on('click', '.btn-hapus', function() {
 
             e = $(this)

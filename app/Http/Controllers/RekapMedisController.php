@@ -26,6 +26,16 @@ use Termwind\Components\Raw;
 
 class RekapMedisController extends Controller
 {
+    public function get_data_racik_obat($id){
+        $resep = DB::table('demo_resep_dokter')->where('id', $id)->first();   
+        $takaran = ['-','tablet','kapsul','bungkus','tetes','ml','sendok takar 5ml','sendok takar 15ml','oles'];
+        return View::make('rekap-medis.data-obat', compact('resep','takaran'));
+    }
+    public function get_data_obat($id){
+        $resep = DB::table('demo_resep_dokter')->where('id', $id)->first();   
+        $takaran = ['-','tablet','kapsul','bungkus','tetes','ml','sendok takar 5ml','sendok takar 15ml','oles'];
+        return View::make('rekap-medis.data-obat', compact('resep','takaran'));
+    }
     public function get_hasil_lab($id)
     {
         $hasil = LabHasil::find($id);
@@ -548,27 +558,10 @@ class RekapMedisController extends Controller
     }
 
     public function post_resep_racikan(Request $request,$id){
-        // return $request->all();
-        // $mergedArray = array_merge(json_encode($request->obat), json_encode($request->jumlah_obat,true));
-        // return $mergedArray;
-
         $nama_obat = new Collection([
             'obat'=>$request->obat,
             'jumlah'=>$request->jumlah_obat
         ]);
-        // return $nama_obat->toJson();
-
-        // $nama_obat = new Collection([
-        //     'nama_obat1'=>$this->get_nama_obat($request->obat1).'-'.$request->jumlah1,
-        //     'nama_obat2'=>$this->get_nama_obat($request->obat2).'-'.$request->jumlah2,
-        //     'nama_obat3'=>$this->get_nama_obat($request->obat3).'-'.$request->jumlah3,
-        // ]);
-
-        // $jumlah = new Collection([
-        //     'jumlah1'=>$request->jumlah1,
-        //     'jumlah2'=>$request->jumlah2,
-        //     'jumlah3'=>$request->jumlah3,
-        // ]);
 
         $resep = DB::table('demo_resep_dokter')->insertGetId([
             'idrawat'=>$id,
@@ -617,6 +610,83 @@ class RekapMedisController extends Controller
 
         return response()->json(['status'=>'ok','data'=>$html]);
     }
+    public function post_resep_update_non_racikan(Request $request,$id){
+        // return $request->all();
+        $resep = DB::table('demo_resep_dokter')->where('id',$id)->first();
+        if($resep->jenis == 'Racik'){
+            DB::table('demo_resep_dokter')->where('id',$id)->update([
+                'jumlah'=>json_encode($request->jumlah_obat),
+                'takaran'=>$request->takaran_obat,
+                'dosis'=>$request->dosis_obat,
+                'signa'=>json_encode($request->diminum),
+                'catatan'=>$request->catatan,
+                'diminum'=>$request->takaran,
+                'diberikan'=>$request->pemberian
+            ]);
+    
+    
+            $list_obat = json_decode($resep->nama_obat);
+            $html_obat = '';
+            $html_jumlah = '';
+            foreach($list_obat->obat as $ob){
+                if($ob != null){
+                    $html_obat .= VclaimHelper::get_data_obat($ob).'+';
+                }
+               
+            }
+    
+            foreach($list_obat->jumlah as $jum){
+                if($jum != null){
+                    $html_jumlah .= $jum.'+';
+                }
+            }
+            $html ='';
+            $html .= '<tr id="li'.$resep->id.'">';
+            $html .= '<td>'.$html_obat.' <span class="badge badge-success">Racikan</span></td>';
+            $html .= '<td>'.$html_jumlah.'</td>';
+            $html .= '<td>'.$request->dosis_obat.'</td>';
+            $html .= '<td>'.$request->takaran_obat.'</td>';
+            $html .= '<td>'.json_encode($request->diminum).'</td>';
+            $html .= '<td>'.$request->takaran.'</td>';
+            $html .= '<td>'.$request->catatan.'</td>';
+            $html .= '<td>
+            <a class="btn btn-sm btn-danger btn-hapus" id="'.$resep->id.'" href="javascript:void(0)" style="cursor:pointer;"">Hapus</a>
+            <button data-id="'.$resep->id.'" class="btn btn-sm btn-info btn-edit-racik">Edit</button>
+            </td>';
+
+        return response()->json(['status'=>'ok','data'=>$html]);
+        }
+        DB::table('demo_resep_dokter')->where('id',$id)->update([
+            'jumlah'=>$request->jumlah_obat,
+            'takaran'=>$request->takaran_obat,
+            'dosis'=>$request->dosis_obat,
+            'signa'=>json_encode($request->diminum),
+            'catatan'=>$request->catatan,
+            'diminum'=>$request->takaran
+        ]);
+
+        
+
+        $html ='';
+        $html .= '<tr id="li'.$resep->id.'">';
+        $html .= '<td>'.$resep->nama_obat.'</td>';
+        $html .= '<td role="button" id="'.$resep->id.'">'.$resep->jumlah.'</td>';
+        $html .= '<td>'.$resep->dosis.'</td>';
+        $html .= '<td>'.$resep->takaran.'</td>';
+        $html .= '<td>'.$resep->signa.'</td>';
+        $html .= '<td>'.$resep->diminum.' makan</td>';
+        $html .= '<td>'.$resep->catatan.'</td>';
+        $html .= '<td><a
+        class="btn btn-sm btn-danger btn-hapus"
+        id="'.$resep->id.'" href="javascript:void(0)"
+        style="cursor:pointer;"">Hapus</a>
+        <button data-id="'.$resep->id.'" class="btn btn-sm btn-info btn-edit">Edit</button>   
+        </td>';
+
+        $html .= '</tr>';
+
+        return response()->json(['status'=>'ok','data'=>$html]);
+    }
     public function post_resep_non_racikan(Request $request,$id){
         // return $request->all();
         $obat = Obat::find($request->obat_non);
@@ -653,5 +723,12 @@ class RekapMedisController extends Controller
         $html .= '</tr>';
 
         return response()->json(['status'=>'ok','data'=>$html]);
+    }
+
+    public function update_template($id){
+        $rekap_medis = RekapMedis::find($id);
+        $rekap_medis->template = 1;
+        $rekap_medis->save();
+        return redirect()->back()->with('berhasil','Template Berhasil Diupdate');
     }
 }

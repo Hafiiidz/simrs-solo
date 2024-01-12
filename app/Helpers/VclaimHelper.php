@@ -37,6 +37,20 @@ class VclaimHelper
         }
     }
 
+    public static function cek_signa($resep,$signa){
+        // $array = ["P","S","SO","M"];
+        if($resep == 'null' || $resep == null || $resep == ''){
+            return false;
+        }else{
+            if(in_array($signa,json_decode($resep))){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        
+    }
     public static function get_signa($signa){
         switch($signa){
             case 'P':
