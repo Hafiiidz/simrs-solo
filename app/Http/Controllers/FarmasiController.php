@@ -195,6 +195,7 @@ class FarmasiController extends Controller
             }
             AntrianFarmasi::where('id', $request->idantrian)->update([
                 'obat' => json_encode($non_racikan),
+                'update'=>1,
             ]);            
         }
         
