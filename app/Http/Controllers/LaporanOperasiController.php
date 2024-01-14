@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\Operasi\LaporanOperasi;
+use App\Models\Operasi\CatatanAnestesi;
+use App\Models\Template\TemplateOperasi;
 use App\Models\Rawat;
 use App\Models\Pasien\Pasien;
 use App\Models\Tarif;
@@ -84,7 +86,7 @@ class LaporanOperasiController extends Controller
             ];
             DB::table('operasi_tindakan')->insert($data);
         }
-        return redirect()->back()->with('berhasil','Data Berhasil Disimpan!'); 
+        return redirect()->back()->with('berhasil','Data Berhasil Disimpan!');
     }
     public function bhp($id){
         $operasi_tindakan = DB::table('operasi_tindakan')->where('id',$id)->first();
@@ -129,8 +131,16 @@ class LaporanOperasiController extends Controller
         ])
         ->where('operasi_tindakan.idrawat',$data->idrawat)->get();
 
+        $catatan = CatatanAnestesi::where('laporan_operasi_id', $id)->first();
+        if($catatan == null){
+            $catatan = new CatatanAnestesi;
+            $catatan->laporan_operasi_id = $id;
+            $catatan->save();
+        }
+        $template = TemplateOperasi::where('status', 1)->get();
+
         // dd($tindakan);
-        return view('operasi.edit', compact('data','dokter','tindakan','tarif'));
+        return view('operasi.edit', compact('data','dokter','tindakan','tarif','catatan','template'));
     }
 
     public function update(Request $request, $id)
@@ -170,6 +180,28 @@ class LaporanOperasiController extends Controller
         $data->desinfektan_kulit = $request->desinfektan_kulit;
         $data->save();
 
+        if($request->nama_template){
+            $template = new TemplateOperasi;
+
+            $template->nama = $request->nama_template;
+            $template->dokter_bedah = json_encode($request->dokter_bedah);
+            $template->perawat_bedah = json_encode($request->perawat_bedah);
+            $template->asisten = json_encode($request->asisten);
+            $template->desinfektan_kulit = $request->desinfektan_kulit;
+            $template->kamar_operasi = $request->kamar_operasi;
+            $template->jenis_operasi = $request->jenis_operasi;
+            $template->detail_operasi = $request->detail_operasi;
+            $template->diagnosis_pasca_bedah = $request->diagnosis_pasca_bedah;
+            $template->tindakan_bedah = json_encode($request->tindakan_bedah);
+            $template->jenis_anestesi = $request->jenis_anastesi;
+            $template->indikasi_operasi = $request->indikasi_operasi;
+            $template->implant = $request->implant;
+            $template->uraian_pembedahan = $request->uraian_pembedahan;
+            $template->post_operasi = $request->instruksi_post_operasi;
+
+            $template->save();
+        }
+
         return redirect()->route('index.operasi')->with('berhasil','Data Berhasil Disimpan!');
     }
 
@@ -189,6 +221,62 @@ class LaporanOperasiController extends Controller
         // dd(json_decode($data->dokter_bedah)[0]->dokter_bedah);
 
         $pdf = PDF::loadview('operasi.cetak.laporan', compact('data'));
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->stream();
+    }
+
+    public function postAnestesi(Request $request)
+    {
+        $stadia = new Collection([
+            'anestesi' => $request->anestesi,
+            'operasi' => $request->operasi,
+            'respirasi' => $request->respirasi
+        ]);
+        $anestesi = [
+            'laporan_operasi_id' => $request->laporan_operasi_id,
+            'tanggal' => $request->tanggal,
+            'status_fisik' => $request->status_fisik,
+            'teknik_anestesi' => $request->teknik_anestesis,
+            'posisi' => $request->posisi,
+            'premedikasi' => $request->premedikasi,
+            'pemberian' => $request->pemberian,
+            'jam' => $request->jam,
+            'efek' => $request->efek,
+            'obat_anestesi' => json_encode($request->obat_anestesi_catatan),
+            'o2' => json_encode($request->o2),
+            'n2o' => json_encode($request->n2o),
+            'isoflurane' => json_encode($request->isoflurane),
+            'sevoflurane' => json_encode($request->sevoflurane),
+            'infus' => json_encode($request->infus),
+            'medikasi' => json_encode($request->medikasi),
+            'stadia' => $stadia,
+            'jumlah_medikasi' => $request->jumlah_medikasi,
+            'jumlah_cairan' => $request->jumlah_cairan,
+            'catatan' => $request->catatan,
+            'pendarahan' => $request->pendarahan,
+            'urine' => $request->urine,
+            'lama_anestesi' => $request->lama_anestesi,
+            'pra_anestesi' => $request->pra_anestesi,
+            'post_anestesi' => $request->post_anestesi
+        ];
+        $data = CatatanAnestesi::where('laporan_operasi_id', $request->laporan_operasi_id)->first();
+
+        if($data){
+            CatatanAnestesi::find($data->id)->update($anestesi);
+
+            return redirect()->back()->with('berhasil','Data Berhasil Disimpan!');
+        }
+
+        CatatanAnestesi::insert($anestesi);
+        return redirect()->back()->with('berhasil','Data Berhasil Disimpan!');
+    }
+
+    public function cetakAnestesi($id)
+    {
+        $data = CatatanAnestesi::find($id);
+        $operasi = LaporanOperasi::with('rawat','rawat.pasien')->where('id', $data->laporan_operasi_id)->first();
+
+        $pdf = PDF::loadview('operasi.cetak.anestesi', compact('data','operasi'));
         $pdf->setPaper('A4', 'portrait');
         return $pdf->stream();
     }

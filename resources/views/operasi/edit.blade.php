@@ -150,823 +150,884 @@
                                                 data-bs-toggle="tab" href="#kt_tab_pane_2" aria-selected="true"
                                                 role="tab">Tindakan Operasi</a>
                                         </li>
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0 "
+                                                data-bs-toggle="tab" href="#kt_tab_pane_3" aria-selected="true"
+                                                role="tab">Catatan Anestesi</a>
+                                        </li>
                                     </ul>
                                 </div>
                                 <div class="tab-content" id="myTabContent">
                                     <div class="tab-pane fade show active" id="kt_tab_pane_1" role="tabpanel">
                                         <div class="rounded border p-5">
-                                            <span class="d-inline-block position-relative mb-7">
-                                                <!--begin::Label-->
-                                                <span class="d-inline-block mb-2 fs-4 fw-bold">
-                                                    Detail Operasi
-                                                </span>
-                                                <!--end::Label-->
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <span class="d-inline-block position-relative mb-7">
+                                                        <!--begin::Label-->
+                                                        <span class="d-inline-block mb-2 fs-4 fw-bold">
+                                                            Template Operasi
+                                                        </span>
+                                                        <!--end::Label-->
 
-                                                <!--begin::Line-->
-                                                <span
-                                                    class="d-inline-block position-absolute h-5px bottom-0 end-0 start-0 bg-success translate rounded"></span>
-                                                <!--end::Line-->
-                                            </span>
-                                            <form id="frm-data" action="{{ route('update.operasi', $data->id) }}"
-                                                method="POST" autocomplete="off">
-                                                @csrf
-                                                <div class="row">
-                                                    <div class="col-md-3">
-                                                        <label for="" class="form-label">Tanggal Operasi</label>
-                                                        <input class="form-control" placeholder="Pilih Tanggal Operasi"
-                                                            id="tgl_operasi" name="tgl_operasi"
-                                                            value="{{ $data->tgl_operasi }}" required />
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label for="" class="form-label">Jam Mulai</label>
-                                                        <input class="form-control" placeholder="Pilih Jam Mulai"
-                                                            id="mulai_jam" name="mulai_jam"
-                                                            value="{{ $data->mulai_jam }}" required />
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label for="" class="form-label">Jam Selesai</label>
-                                                        <input class="form-control" placeholder="Pilih Jam Mulai"
-                                                            id="selesai_jam" name="selesai_jam"
-                                                            value="{{ $data->selesai_jam }}" required />
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label for="" class="form-label">Lama Operasi</label>
-                                                        <input class="form-control" type="text"
-                                                            placeholder="Masukan Lama Operasi" id="lama_operasi"
-                                                            name="lama_operasi" value="{{ $data->lama_operasi }}"
-                                                            required />
-                                                    </div>
-                                                </div>
-                                                <div class="row mt-5">
+                                                        <!--begin::Line-->
+                                                        <span
+                                                            class="d-inline-block position-absolute h-5px bottom-0 end-0 start-0 bg-primary translate rounded"></span>
+                                                        <!--end::Line-->
+                                                    </span>
                                                     <div class="row">
-                                                        <div class="col-md-4">
-                                                            <!--begin::Repeater-->
-                                                            <div id="dokter_bedah">
-                                                                <!--begin::Form group-->
-                                                                <div class="form-group">
-                                                                    <div data-repeater-list="dokter_bedah">
-                                                                        @if ($data->dokter_bedah)
-                                                                            @foreach (json_decode($data->dokter_bedah) as $val)
-                                                                                <div data-repeater-item>
-                                                                                    <div class="form-group row mb-5">
-                                                                                        <div class="col-md-10">
-                                                                                            <label
-                                                                                                class="form-label">Dokter
-                                                                                                Bedah</label>
-                                                                                            <input type="text"
-                                                                                                name="dokter_bedah"
-                                                                                                class="form-control mb-2 mb-md-0"
-                                                                                                placeholder="Masukan Nama"
-                                                                                                value="{{ $val->dokter_bedah }}" />
-                                                                                        </div>
-                                                                                        <div class="col-md-2">
-                                                                                            <a href="javascript:;"
-                                                                                                data-repeater-delete
-                                                                                                class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                                                <i
-                                                                                                    class="ki-duotone ki-trash fs-5"><span
-                                                                                                        class="path1"></span><span
-                                                                                                        class="path2"></span><span
-                                                                                                        class="path3"></span><span
-                                                                                                        class="path4"></span><span
-                                                                                                        class="path5"></span></i>
-                                                                                            </a>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            @endforeach
-                                                                        @else
-                                                                            <div data-repeater-item>
-                                                                                <div class="form-group row mb-5">
-                                                                                    <div class="col-md-10">
-                                                                                        <label class="form-label">Dokter
-                                                                                            Bedah</label>
-                                                                                        <input type="text"
-                                                                                            name="dokter_bedah"
-                                                                                            class="form-control mb-2 mb-md-0"
-                                                                                            placeholder="Masukan Nama" />
-                                                                                    </div>
-                                                                                    <div class="col-md-2">
-                                                                                        <a href="javascript:;"
-                                                                                            data-repeater-delete
-                                                                                            class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                                            <i
-                                                                                                class="ki-duotone ki-trash fs-5"><span
-                                                                                                    class="path1"></span><span
-                                                                                                    class="path2"></span><span
-                                                                                                    class="path3"></span><span
-                                                                                                    class="path4"></span><span
-                                                                                                    class="path5"></span></i>
-                                                                                        </a>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
+                                                        <div class="col-md-10">
+                                                            <div class="row justify-content-md-start">
+                                                                <div class="col-md-auto">
+                                                                    @foreach ($template as $val)
+                                                                        @if($loop->iteration < 7)
+                                                                            <button type="button" class="btn btn-light-primary" onclick="showTemplate({{ $val->id }})">{{ $val->nama }}</button>
                                                                         @endif
-                                                                    </div>
+                                                                    @endforeach
                                                                 </div>
-                                                                <!--end::Form group-->
-
-                                                                <!--begin::Form group-->
-                                                                <div class="form-group mt-5">
-                                                                    <a href="javascript:;" data-repeater-create
-                                                                        class="btn btn-sm btn-light-primary">
-                                                                        <i class="ki-duotone ki-plus fs-3"></i>
-                                                                        Tambah Dokter
-                                                                    </a>
-                                                                </div>
-                                                                <!--end::Form group-->
                                                             </div>
-                                                            <!--end::Repeater-->
                                                         </div>
-                                                        <div class="col-md-4">
-                                                            <!--begin::Repeater-->
-                                                            <div id="perawat_bedah">
-                                                                <!--begin::Form group-->
-                                                                <div class="form-group">
-                                                                    <div data-repeater-list="perawat_bedah">
-                                                                        @if ($data->perawat_bedah)
-                                                                            @foreach (json_decode($data->perawat_bedah) as $val)
-                                                                                <div data-repeater-item>
-                                                                                    <div class="form-group row mb-5">
-                                                                                        <div class="col-md-10">
-                                                                                            <label
-                                                                                                class="form-label">Perawat
-                                                                                                Bedah</label>
-                                                                                            <input type="text"
-                                                                                                name="perawat_bedah"
-                                                                                                class="form-control mb-2 mb-md-0"
-                                                                                                placeholder="Masukan Nama"
-                                                                                                value="{{ $val->perawat_bedah }}" />
+                                                        <div class="col-md-2">
+                                                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modal-template">Template Lainnya</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-5">
+                                                <div class="col-md-12">
+                                                    <span class="d-inline-block position-relative mb-7">
+                                                        <!--begin::Label-->
+                                                        <span class="d-inline-block mb-2 fs-4 fw-bold">
+                                                            Detail Operasi
+                                                        </span>
+                                                        <!--end::Label-->
+
+                                                        <!--begin::Line-->
+                                                        <span
+                                                            class="d-inline-block position-absolute h-5px bottom-0 end-0 start-0 bg-success translate rounded"></span>
+                                                        <!--end::Line-->
+                                                    </span>
+                                                    <form id="frm-data" action="{{ route('update.operasi', $data->id) }}"
+                                                        method="POST" autocomplete="off">
+                                                        @csrf
+                                                        <div class="row">
+                                                            <div class="col-md-3">
+                                                                <label for="" class="form-label">Tanggal Operasi</label>
+                                                                <input class="form-control" placeholder="Pilih Tanggal Operasi"
+                                                                    id="tgl_operasi" name="tgl_operasi"
+                                                                    value="{{ $data->tgl_operasi }}" required />
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <label for="" class="form-label">Jam Mulai</label>
+                                                                <input class="form-control" placeholder="Pilih Jam Mulai"
+                                                                    id="mulai_jam" name="mulai_jam"
+                                                                    value="{{ $data->mulai_jam }}" required />
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <label for="" class="form-label">Jam Selesai</label>
+                                                                <input class="form-control" placeholder="Pilih Jam Mulai"
+                                                                    id="selesai_jam" name="selesai_jam"
+                                                                    value="{{ $data->selesai_jam }}" required />
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <label for="" class="form-label">Lama Operasi</label>
+                                                                <input class="form-control" type="text"
+                                                                    placeholder="Masukan Lama Operasi" id="lama_operasi"
+                                                                    name="lama_operasi" value="{{ $data->lama_operasi }}"
+                                                                    required />
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mt-5">
+                                                            <div class="row">
+                                                                <div class="col-md-4">
+                                                                    <!--begin::Repeater-->
+                                                                    <div id="dokter_bedah">
+                                                                        <!--begin::Form group-->
+                                                                        <div class="form-group">
+                                                                            <div data-repeater-list="dokter_bedah">
+                                                                                <div id="template_dokter_bedah"></div>
+                                                                                @if ($data->dokter_bedah)
+                                                                                    @foreach (json_decode($data->dokter_bedah) as $val)
+                                                                                        <div data-repeater-item>
+                                                                                            <div class="form-group row mb-5">
+                                                                                                <div class="col-md-10">
+                                                                                                    <label
+                                                                                                        class="form-label">Dokter
+                                                                                                        Bedah</label>
+                                                                                                    <input type="text"
+                                                                                                        name="dokter_bedah"
+                                                                                                        class="form-control mb-2 mb-md-0"
+                                                                                                        placeholder="Masukan Nama"
+                                                                                                        value="{{ $val->dokter_bedah }}" required/>
+                                                                                                </div>
+                                                                                                <div class="col-md-2">
+                                                                                                    <a href="javascript:;"
+                                                                                                        data-repeater-delete
+                                                                                                        class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                                                        <i
+                                                                                                            class="ki-duotone ki-trash fs-5"><span
+                                                                                                                class="path1"></span><span
+                                                                                                                class="path2"></span><span
+                                                                                                                class="path3"></span><span
+                                                                                                                class="path4"></span><span
+                                                                                                                class="path5"></span></i>
+                                                                                                    </a>
+                                                                                                </div>
+                                                                                            </div>
                                                                                         </div>
-                                                                                        <div class="col-md-2">
-                                                                                            <a href="javascript:;"
-                                                                                                data-repeater-delete
-                                                                                                class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                                                <i
-                                                                                                    class="ki-duotone ki-trash fs-5"><span
-                                                                                                        class="path1"></span><span
-                                                                                                        class="path2"></span><span
-                                                                                                        class="path3"></span><span
-                                                                                                        class="path4"></span><span
-                                                                                                        class="path5"></span></i>
-                                                                                            </a>
+                                                                                    @endforeach
+                                                                                @else
+                                                                                    <div data-repeater-item>
+                                                                                        <div class="form-group row mb-5">
+                                                                                            <div class="col-md-10">
+                                                                                                <label class="form-label">Dokter
+                                                                                                    Bedah</label>
+                                                                                                <input type="text"
+                                                                                                    name="dokter_bedah"
+                                                                                                    class="form-control mb-2 mb-md-0"
+                                                                                                    placeholder="Masukan Nama" required/>
+                                                                                            </div>
+                                                                                            <div class="col-md-2">
+                                                                                                <a href="javascript:;"
+                                                                                                    data-repeater-delete
+                                                                                                    class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                                                    <i
+                                                                                                        class="ki-duotone ki-trash fs-5"><span
+                                                                                                            class="path1"></span><span
+                                                                                                            class="path2"></span><span
+                                                                                                            class="path3"></span><span
+                                                                                                            class="path4"></span><span
+                                                                                                            class="path5"></span></i>
+                                                                                                </a>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                </div>
-                                                                            @endforeach
-                                                                        @else
-                                                                            <div data-repeater-item>
-                                                                                <div class="form-group row mb-5">
-                                                                                    <div class="col-md-10">
-                                                                                        <label class="form-label">Perawat
-                                                                                            Bedah</label>
-                                                                                        <input type="text"
-                                                                                            name="perawat_bedah"
-                                                                                            class="form-control mb-2 mb-md-0"
-                                                                                            placeholder="Masukan Nama" />
-                                                                                    </div>
-                                                                                    <div class="col-md-2">
-                                                                                        <a href="javascript:;"
-                                                                                            data-repeater-delete
-                                                                                            class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                                            <i
-                                                                                                class="ki-duotone ki-trash fs-5"><span
-                                                                                                    class="path1"></span><span
-                                                                                                    class="path2"></span><span
-                                                                                                    class="path3"></span><span
-                                                                                                    class="path4"></span><span
-                                                                                                    class="path5"></span></i>
-                                                                                        </a>
-                                                                                    </div>
-                                                                                </div>
+                                                                                @endif
                                                                             </div>
-                                                                        @endif
-                                                                    </div>
-                                                                </div>
-                                                                <!--end::Form group-->
+                                                                        </div>
+                                                                        <!--end::Form group-->
 
-                                                                <!--begin::Form group-->
-                                                                <div class="form-group mt-5">
-                                                                    <a href="javascript:;" data-repeater-create
-                                                                        class="btn btn-sm btn-light-primary">
-                                                                        <i class="ki-duotone ki-plus fs-3"></i>
-                                                                        Tambah Perawat
-                                                                    </a>
+                                                                        <!--begin::Form group-->
+                                                                        <div class="form-group mt-5">
+                                                                            <a href="javascript:;" data-repeater-create
+                                                                                class="btn btn-sm btn-light-primary">
+                                                                                <i class="ki-duotone ki-plus fs-3"></i>
+                                                                                Tambah Dokter
+                                                                            </a>
+                                                                        </div>
+                                                                        <!--end::Form group-->
+                                                                    </div>
+                                                                    <!--end::Repeater-->
                                                                 </div>
-                                                                <!--end::Form group-->
-                                                            </div>
-                                                            <!--end::Repeater-->
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <!--begin::Repeater-->
-                                                            <div id="asisten">
-                                                                <!--begin::Form group-->
-                                                                <div class="form-group">
-                                                                    <div data-repeater-list="asisten">
-                                                                        @if ($data->asisten)
-                                                                            @foreach (json_decode($data->asisten) as $val)
-                                                                                <div data-repeater-item>
-                                                                                    <div class="form-group row mb-5">
-                                                                                        <div class="col-md-10">
-                                                                                            <label
-                                                                                                class="form-label">Asisten</label>
-                                                                                            <input type="text"
-                                                                                                name="asisten"
-                                                                                                class="form-control mb-2 mb-md-0"
-                                                                                                placeholder="Masukan Nama"
-                                                                                                value="{{ $val->asisten }}" />
+                                                                <div class="col-md-4">
+                                                                    <!--begin::Repeater-->
+                                                                    <div id="perawat_bedah">
+                                                                        <!--begin::Form group-->
+                                                                        <div class="form-group">
+                                                                            <div data-repeater-list="perawat_bedah">
+                                                                                <div id="template_perawat_bedah"></div>
+                                                                                @if ($data->perawat_bedah)
+                                                                                    @foreach (json_decode($data->perawat_bedah) as $val)
+                                                                                        <div data-repeater-item>
+                                                                                            <div class="form-group row mb-5">
+                                                                                                <div class="col-md-10">
+                                                                                                    <label
+                                                                                                        class="form-label">Perawat
+                                                                                                        Bedah</label>
+                                                                                                    <input type="text"
+                                                                                                        name="perawat_bedah"
+                                                                                                        class="form-control mb-2 mb-md-0"
+                                                                                                        placeholder="Masukan Nama"
+                                                                                                        value="{{ $val->perawat_bedah }}" required/>
+                                                                                                </div>
+                                                                                                <div class="col-md-2">
+                                                                                                    <a href="javascript:;"
+                                                                                                        data-repeater-delete
+                                                                                                        class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                                                        <i
+                                                                                                            class="ki-duotone ki-trash fs-5"><span
+                                                                                                                class="path1"></span><span
+                                                                                                                class="path2"></span><span
+                                                                                                                class="path3"></span><span
+                                                                                                                class="path4"></span><span
+                                                                                                                class="path5"></span></i>
+                                                                                                    </a>
+                                                                                                </div>
+                                                                                            </div>
                                                                                         </div>
-                                                                                        <div class="col-md-2">
-                                                                                            <a href="javascript:;"
-                                                                                                data-repeater-delete
-                                                                                                class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                                                <i
-                                                                                                    class="ki-duotone ki-trash fs-5"><span
-                                                                                                        class="path1"></span><span
-                                                                                                        class="path2"></span><span
-                                                                                                        class="path3"></span><span
-                                                                                                        class="path4"></span><span
-                                                                                                        class="path5"></span></i>
-                                                                                            </a>
+                                                                                    @endforeach
+                                                                                @else
+                                                                                    <div data-repeater-item>
+                                                                                        <div class="form-group row mb-5">
+                                                                                            <div class="col-md-10">
+                                                                                                <label class="form-label">Perawat
+                                                                                                    Bedah</label>
+                                                                                                <input type="text"
+                                                                                                    name="perawat_bedah"
+                                                                                                    class="form-control mb-2 mb-md-0"
+                                                                                                    placeholder="Masukan Nama" required/>
+                                                                                            </div>
+                                                                                            <div class="col-md-2">
+                                                                                                <a href="javascript:;"
+                                                                                                    data-repeater-delete
+                                                                                                    class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                                                    <i
+                                                                                                        class="ki-duotone ki-trash fs-5"><span
+                                                                                                            class="path1"></span><span
+                                                                                                            class="path2"></span><span
+                                                                                                            class="path3"></span><span
+                                                                                                            class="path4"></span><span
+                                                                                                            class="path5"></span></i>
+                                                                                                </a>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                </div>
-                                                                            @endforeach
-                                                                        @else
-                                                                            <div data-repeater-item>
-                                                                                <div class="form-group row mb-5">
-                                                                                    <div class="col-md-10">
-                                                                                        <label
-                                                                                            class="form-label">Asisten</label>
-                                                                                        <input type="text"
-                                                                                            name="asisten"
-                                                                                            class="form-control mb-2 mb-md-0"
-                                                                                            placeholder="Masukan Nama" />
-                                                                                    </div>
-                                                                                    <div class="col-md-2">
-                                                                                        <a href="javascript:;"
-                                                                                            data-repeater-delete
-                                                                                            class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                                            <i
-                                                                                                class="ki-duotone ki-trash fs-5"><span
-                                                                                                    class="path1"></span><span
-                                                                                                    class="path2"></span><span
-                                                                                                    class="path3"></span><span
-                                                                                                    class="path4"></span><span
-                                                                                                    class="path5"></span></i>
-                                                                                        </a>
-                                                                                    </div>
-                                                                                </div>
+                                                                                @endif
                                                                             </div>
-                                                                        @endif
-                                                                    </div>
-                                                                </div>
-                                                                <!--end::Form group-->
+                                                                        </div>
+                                                                        <!--end::Form group-->
 
-                                                                <!--begin::Form group-->
-                                                                <div class="form-group mt-5">
-                                                                    <a href="javascript:;" data-repeater-create
-                                                                        class="btn btn-sm btn-light-primary">
-                                                                        <i class="ki-duotone ki-plus fs-3"></i>
-                                                                        Tambah Asisten
-                                                                    </a>
+                                                                        <!--begin::Form group-->
+                                                                        <div class="form-group mt-5">
+                                                                            <a href="javascript:;" data-repeater-create
+                                                                                class="btn btn-sm btn-light-primary">
+                                                                                <i class="ki-duotone ki-plus fs-3"></i>
+                                                                                Tambah Perawat
+                                                                            </a>
+                                                                        </div>
+                                                                        <!--end::Form group-->
+                                                                    </div>
+                                                                    <!--end::Repeater-->
                                                                 </div>
-                                                                <!--end::Form group-->
-                                                            </div>
-                                                            <!--end::Repeater-->
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row mt-5">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <label for="" class="form-label">Diagnosis
-                                                                Prabedah</label>
-                                                            <textarea name="diagnosis_prabedah" id="diagnosis_prabedah" rows="5" class="form-control" required>{{ $data->diagnosis_prabedah }}</textarea>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row mt-5">
-                                                    <div class="col-md-12">
-                                                        <label for="" class="form-label">Jenis Operasi</label>
-                                                        <select name="jenis_operasi" class="form-select"
-                                                            data-control="select2" data-placeholder="Pilih Jenis Operasi">
-                                                            <option></option>
-                                                            <option value="Kecil"
-                                                                {{ $data->jenis_operasi == 'Kecil' ? 'selected' : '' }}>
-                                                                Kecil</option>
-                                                            <option value="Sedang"
-                                                                {{ $data->jenis_operasi == 'Sedang' ? 'selected' : '' }}>
-                                                                Sedang</option>
-                                                            <option value="Besar"
-                                                                {{ $data->jenis_operasi == 'Besar' ? 'selected' : '' }}>
-                                                                Besar</option>
-                                                            <option value="Khusus"
-                                                                {{ $data->jenis_operasi == 'Khusus' ? 'selected' : '' }}>
-                                                                Khusus</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="row mt-5">
-                                                    <div class="col-md-12">
-                                                        <select name="detail_operasi" class="form-select"
-                                                            data-control="select2" data-placeholder="Pilih">
-                                                            <option></option>
-                                                            <option value="Bersih"
-                                                                {{ $data->detail_operasi == 'Bersih' ? 'selected' : '' }}>
-                                                                Bersih</option>
-                                                            <option value="Bersih Terkontaminasi"
-                                                                {{ $data->detail_operasi == 'Bersih Terkontaminasi' ? 'selected' : '' }}>
-                                                                Bersih Terkontaminasi</option>
-                                                            <option value="Terkontaminasi"
-                                                                {{ $data->detail_operasi == 'Terkontaminasi' ? 'selected' : '' }}>
-                                                                Terkontaminasi</option>
-                                                            <option value="Kotor / Terinfeksi"
-                                                                {{ $data->detail_operasi == 'Kotor / Terinfeksi' ? 'selected' : '' }}>
-                                                                Kotor / Terinfeksi</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="row mt-5">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <label for="" class="form-label">Diagnosis Pasca
-                                                                Bedah</label>
-                                                            <textarea name="diagnosis_pasca_bedah" id="diagnosis_pasca_bedah" rows="5" class="form-control" required>{{ $data->diagnosis_pasca_bedah }}</textarea>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row mt-5">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <label for="" class="form-label">Desinfektan
-                                                                Kulit</label>
-                                                            <input type="text" name="desinfektan_kulit"
-                                                                class="form-control"
-                                                                placeholder="Masukan Desinfektan Kulit"
-                                                                value="{{ $data->desinfektan_kulit }}" required>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row mt-5">
-                                                    <div class="row">
-                                                        <div class="col-md-4">
-                                                            <!--begin::Repeater-->
-                                                            <div id="tindakan_bedah">
-                                                                <!--begin::Form group-->
-                                                                <div class="form-group">
-                                                                    <div data-repeater-list="tindakan_bedah">
-                                                                        @if ($data->tindakan_bedah)
-                                                                            @foreach (json_decode($data->tindakan_bedah) as $val)
-                                                                                <div data-repeater-item>
-                                                                                    <div class="form-group row mb-5">
-                                                                                        <div class="col-md-10">
-                                                                                            <label
-                                                                                                class="form-label">Tindakan
-                                                                                                Bedah</label>
-                                                                                            <select name="tindakan_bedah"
-                                                                                                class="form-select"
-                                                                                                data-kt-repeater="tindakan_bedah_select"
-                                                                                                data-placeholder="Pilih Tindakan Bedah"
-                                                                                                required>
-                                                                                                <option
-                                                                                                    value="{{ $val->tindakan_bedah }}"
-                                                                                                    selected>
-                                                                                                    {{ $val->tindakan_bedah }}
-                                                                                                </option>
-                                                                                            </select>
+                                                                <div class="col-md-4">
+                                                                    <!--begin::Repeater-->
+                                                                    <div id="asisten">
+                                                                        <!--begin::Form group-->
+                                                                        <div class="form-group">
+                                                                            <div data-repeater-list="asisten">
+                                                                                <div id="template_asisten"></div>
+                                                                                @if ($data->asisten)
+                                                                                    @foreach (json_decode($data->asisten) as $val)
+                                                                                        <div data-repeater-item>
+                                                                                            <div class="form-group row mb-5">
+                                                                                                <div class="col-md-10">
+                                                                                                    <label
+                                                                                                        class="form-label">Asisten</label>
+                                                                                                    <input type="text"
+                                                                                                        name="asisten"
+                                                                                                        class="form-control mb-2 mb-md-0"
+                                                                                                        placeholder="Masukan Nama"
+                                                                                                        value="{{ $val->asisten }}" required/>
+                                                                                                </div>
+                                                                                                <div class="col-md-2">
+                                                                                                    <a href="javascript:;"
+                                                                                                        data-repeater-delete
+                                                                                                        class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                                                        <i
+                                                                                                            class="ki-duotone ki-trash fs-5"><span
+                                                                                                                class="path1"></span><span
+                                                                                                                class="path2"></span><span
+                                                                                                                class="path3"></span><span
+                                                                                                                class="path4"></span><span
+                                                                                                                class="path5"></span></i>
+                                                                                                    </a>
+                                                                                                </div>
+                                                                                            </div>
                                                                                         </div>
-                                                                                        <div class="col-md-2">
-                                                                                            <a href="javascript:;"
-                                                                                                data-repeater-delete
-                                                                                                class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                                                <i
-                                                                                                    class="ki-duotone ki-trash fs-5"><span
-                                                                                                        class="path1"></span><span
-                                                                                                        class="path2"></span><span
-                                                                                                        class="path3"></span><span
-                                                                                                        class="path4"></span><span
-                                                                                                        class="path5"></span></i>
-                                                                                            </a>
+                                                                                    @endforeach
+                                                                                @else
+                                                                                    <div data-repeater-item>
+                                                                                        <div class="form-group row mb-5">
+                                                                                            <div class="col-md-10">
+                                                                                                <label
+                                                                                                    class="form-label">Asisten</label>
+                                                                                                <input type="text"
+                                                                                                    name="asisten"
+                                                                                                    class="form-control mb-2 mb-md-0"
+                                                                                                    placeholder="Masukan Nama" required/>
+                                                                                            </div>
+                                                                                            <div class="col-md-2">
+                                                                                                <a href="javascript:;"
+                                                                                                    data-repeater-delete
+                                                                                                    class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                                                    <i
+                                                                                                        class="ki-duotone ki-trash fs-5"><span
+                                                                                                            class="path1"></span><span
+                                                                                                            class="path2"></span><span
+                                                                                                            class="path3"></span><span
+                                                                                                            class="path4"></span><span
+                                                                                                            class="path5"></span></i>
+                                                                                                </a>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                </div>
-                                                                            @endforeach
-                                                                        @else
-                                                                            <div data-repeater-item>
-                                                                                <div class="form-group row mb-5">
-                                                                                    <div class="col-md-10">
-                                                                                        <label class="form-label">Tindakan
-                                                                                            Bedah</label>
-                                                                                        <select name="tindakan_bedah"
-                                                                                            class="form-select"
-                                                                                            data-kt-repeater="tindakan_bedah_select"
-                                                                                            data-placeholder="Pilih Tindakan Bedah"
-                                                                                            required>
-                                                                                        </select>
-                                                                                    </div>
-                                                                                    <div class="col-md-2">
-                                                                                        <a href="javascript:;"
-                                                                                            data-repeater-delete
-                                                                                            class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                                            <i
-                                                                                                class="ki-duotone ki-trash fs-5"><span
-                                                                                                    class="path1"></span><span
-                                                                                                    class="path2"></span><span
-                                                                                                    class="path3"></span><span
-                                                                                                    class="path4"></span><span
-                                                                                                    class="path5"></span></i>
-                                                                                        </a>
-                                                                                    </div>
-                                                                                </div>
+                                                                                @endif
                                                                             </div>
-                                                                        @endif
-                                                                    </div>
-                                                                </div>
-                                                                <!--end::Form group-->
+                                                                        </div>
+                                                                        <!--end::Form group-->
 
-                                                                <!--begin::Form group-->
-                                                                <div class="form-group mt-5">
-                                                                    <a href="javascript:;" data-repeater-create
-                                                                        class="btn btn-sm btn-light-primary">
-                                                                        <i class="ki-duotone ki-plus fs-3"></i>
-                                                                        Tambah Tindakan Bedah
-                                                                    </a>
+                                                                        <!--begin::Form group-->
+                                                                        <div class="form-group mt-5">
+                                                                            <a href="javascript:;" data-repeater-create
+                                                                                class="btn btn-sm btn-light-primary">
+                                                                                <i class="ki-duotone ki-plus fs-3"></i>
+                                                                                Tambah Asisten
+                                                                            </a>
+                                                                        </div>
+                                                                        <!--end::Form group-->
+                                                                    </div>
+                                                                    <!--end::Repeater-->
                                                                 </div>
-                                                                <!--end::Form group-->
                                                             </div>
-                                                            <!--end::Repeater-->
                                                         </div>
-                                                        <div class="col-md-4">
-                                                            <label class="form-label">Indikasi Operasi</label>
-                                                            <textarea name="indikasi_operasi" rows="3" class="form-control">{{ $data->indikasi_operasi }}</textarea>
+                                                        <div class="row mt-5">
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <label for="" class="form-label">Diagnosis
+                                                                        Prabedah</label>
+                                                                    <textarea name="diagnosis_prabedah" id="diagnosis_prabedah" rows="5" class="form-control" required>{{ $data->diagnosis_prabedah }}</textarea>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <div class="col-md-4">
-                                                            <label class="form-label">Posisi</label>
-                                                            <textarea name="posisi" rows="3" class="form-control">{{ $data->posisi }}</textarea>
+                                                        <div class="row mt-5">
+                                                            <div class="col-md-12">
+                                                                <label for="" class="form-label">Jenis Operasi</label>
+                                                                <select name="jenis_operasi" class="form-select" id="jenis_operasi"
+                                                                    data-control="select2" data-placeholder="Pilih Jenis Operasi">
+                                                                    <option></option>
+                                                                    <option value="Kecil"
+                                                                        {{ $data->jenis_operasi == 'Kecil' ? 'selected' : '' }}>
+                                                                        Kecil</option>
+                                                                    <option value="Sedang"
+                                                                        {{ $data->jenis_operasi == 'Sedang' ? 'selected' : '' }}>
+                                                                        Sedang</option>
+                                                                    <option value="Besar"
+                                                                        {{ $data->jenis_operasi == 'Besar' ? 'selected' : '' }}>
+                                                                        Besar</option>
+                                                                    <option value="Khusus"
+                                                                        {{ $data->jenis_operasi == 'Khusus' ? 'selected' : '' }}>
+                                                                        Khusus</option>
+                                                                </select>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row mt-5">
-                                                    <div class="row">
-                                                        <div class="col-md-4">
-                                                            <!--begin::Repeater-->
-                                                            <div id="ahli_anastesi">
-                                                                <!--begin::Form group-->
-                                                                <div class="form-group">
-                                                                    <div data-repeater-list="ahli_anastesi">
-                                                                        @if ($data->ahli_anastesi)
-                                                                            @foreach (json_decode($data->ahli_anastesi) as $val)
-                                                                                <div data-repeater-item>
-                                                                                    <div class="form-group row mb-5">
-                                                                                        <div class="col-md-10">
-                                                                                            <label
-                                                                                                class="form-label">Dokter
-                                                                                                Anestesi</label>
-                                                                                            <input type="text"
-                                                                                                name="ahli_anastesi"
-                                                                                                class="form-control mb-2 mb-md-0"
-                                                                                                placeholder="Masukan Nama"
-                                                                                                value="{{ $val->ahli_anastesi }}" />
+                                                        <div class="row mt-5">
+                                                            <div class="col-md-12">
+                                                                <select name="detail_operasi" class="form-select" id="detail_operasi"
+                                                                    data-control="select2" data-placeholder="Pilih">
+                                                                    <option></option>
+                                                                    <option value="Bersih"
+                                                                        {{ $data->detail_operasi == 'Bersih' ? 'selected' : '' }}>
+                                                                        Bersih</option>
+                                                                    <option value="Bersih Terkontaminasi"
+                                                                        {{ $data->detail_operasi == 'Bersih Terkontaminasi' ? 'selected' : '' }}>
+                                                                        Bersih Terkontaminasi</option>
+                                                                    <option value="Terkontaminasi"
+                                                                        {{ $data->detail_operasi == 'Terkontaminasi' ? 'selected' : '' }}>
+                                                                        Terkontaminasi</option>
+                                                                    <option value="Kotor / Terinfeksi"
+                                                                        {{ $data->detail_operasi == 'Kotor / Terinfeksi' ? 'selected' : '' }}>
+                                                                        Kotor / Terinfeksi</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mt-5">
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <label for="" class="form-label">Diagnosis Pasca
+                                                                        Bedah</label>
+                                                                    <textarea name="diagnosis_pasca_bedah" id="diagnosis_pasca_bedah" rows="5" class="form-control" required>{{ $data->diagnosis_pasca_bedah }}</textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mt-5">
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <label for="" class="form-label">Desinfektan
+                                                                        Kulit</label>
+                                                                    <input type="text" name="desinfektan_kulit" id="desinfektan_kulit"
+                                                                        class="form-control"
+                                                                        placeholder="Masukan Desinfektan Kulit"
+                                                                        value="{{ $data->desinfektan_kulit }}" required>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mt-5">
+                                                            <div class="row">
+                                                                <div class="col-md-4">
+                                                                    <!--begin::Repeater-->
+                                                                    <div id="tindakan_bedah">
+                                                                        <!--begin::Form group-->
+                                                                        <div class="form-group">
+                                                                            <div data-repeater-list="tindakan_bedah">
+                                                                                <div id="template_tindakan_bedah"></div>
+                                                                                @if ($data->tindakan_bedah)
+                                                                                    @foreach (json_decode($data->tindakan_bedah) as $val)
+                                                                                        <div data-repeater-item>
+                                                                                            <div class="form-group row mb-5">
+                                                                                                <div class="col-md-10">
+                                                                                                    <label
+                                                                                                        class="form-label">Tindakan
+                                                                                                        Bedah</label>
+                                                                                                    <select name="tindakan_bedah"
+                                                                                                        class="form-select"
+                                                                                                        data-kt-repeater="tindakan_bedah_select"
+                                                                                                        data-placeholder="Pilih Tindakan Bedah"
+                                                                                                        required>
+                                                                                                        <option
+                                                                                                            value="{{ $val->tindakan_bedah }}"
+                                                                                                            selected>
+                                                                                                            {{ $val->tindakan_bedah }}
+                                                                                                        </option>
+                                                                                                    </select>
+                                                                                                </div>
+                                                                                                <div class="col-md-2">
+                                                                                                    <a href="javascript:;"
+                                                                                                        data-repeater-delete
+                                                                                                        class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                                                        <i
+                                                                                                            class="ki-duotone ki-trash fs-5"><span
+                                                                                                                class="path1"></span><span
+                                                                                                                class="path2"></span><span
+                                                                                                                class="path3"></span><span
+                                                                                                                class="path4"></span><span
+                                                                                                                class="path5"></span></i>
+                                                                                                    </a>
+                                                                                                </div>
+                                                                                            </div>
                                                                                         </div>
-                                                                                        <div class="col-md-2">
-                                                                                            <a href="javascript:;"
-                                                                                                data-repeater-delete
-                                                                                                class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                                                <i
-                                                                                                    class="ki-duotone ki-trash fs-5"><span
-                                                                                                        class="path1"></span><span
-                                                                                                        class="path2"></span><span
-                                                                                                        class="path3"></span><span
-                                                                                                        class="path4"></span><span
-                                                                                                        class="path5"></span></i>
-                                                                                            </a>
+                                                                                    @endforeach
+                                                                                @else
+                                                                                    <div data-repeater-item>
+                                                                                        <div class="form-group row mb-5">
+                                                                                            <div class="col-md-10">
+                                                                                                <label class="form-label">Tindakan
+                                                                                                    Bedah</label>
+                                                                                                <select name="tindakan_bedah"
+                                                                                                    class="form-select"
+                                                                                                    data-kt-repeater="tindakan_bedah_select"
+                                                                                                    data-placeholder="Pilih Tindakan Bedah"
+                                                                                                    required>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                            <div class="col-md-2">
+                                                                                                <a href="javascript:;"
+                                                                                                    data-repeater-delete
+                                                                                                    class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                                                    <i
+                                                                                                        class="ki-duotone ki-trash fs-5"><span
+                                                                                                            class="path1"></span><span
+                                                                                                            class="path2"></span><span
+                                                                                                            class="path3"></span><span
+                                                                                                            class="path4"></span><span
+                                                                                                            class="path5"></span></i>
+                                                                                                </a>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                </div>
-                                                                            @endforeach
-                                                                        @else
-                                                                            <div data-repeater-item>
-                                                                                <div class="form-group row mb-5">
-                                                                                    <div class="col-md-10">
-                                                                                        <label class="form-label">Dokter
-                                                                                            Anestesi</label>
-                                                                                        <input type="text"
-                                                                                            name="ahli_anastesi"
-                                                                                            class="form-control mb-2 mb-md-0"
-                                                                                            placeholder="Masukan Nama" />
-                                                                                    </div>
-                                                                                    <div class="col-md-2">
-                                                                                        <a href="javascript:;"
-                                                                                            data-repeater-delete
-                                                                                            class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                                            <i
-                                                                                                class="ki-duotone ki-trash fs-5"><span
-                                                                                                    class="path1"></span><span
-                                                                                                    class="path2"></span><span
-                                                                                                    class="path3"></span><span
-                                                                                                    class="path4"></span><span
-                                                                                                    class="path5"></span></i>
-                                                                                        </a>
-                                                                                    </div>
-                                                                                </div>
+                                                                                @endif
                                                                             </div>
-                                                                        @endif
-                                                                    </div>
-                                                                </div>
-                                                                <!--end::Form group-->
+                                                                        </div>
+                                                                        <!--end::Form group-->
 
-                                                                <!--begin::Form group-->
-                                                                <div class="form-group mt-5">
-                                                                    <a href="javascript:;" data-repeater-create
-                                                                        class="btn btn-sm btn-light-primary">
-                                                                        <i class="ki-duotone ki-plus fs-3"></i>
-                                                                        Tambah Ahli Anestesi
-                                                                    </a>
+                                                                        <!--begin::Form group-->
+                                                                        <div class="form-group mt-5">
+                                                                            <a href="javascript:;" data-repeater-create
+                                                                                class="btn btn-sm btn-light-primary">
+                                                                                <i class="ki-duotone ki-plus fs-3"></i>
+                                                                                Tambah Tindakan Bedah
+                                                                            </a>
+                                                                        </div>
+                                                                        <!--end::Form group-->
+                                                                    </div>
+                                                                    <!--end::Repeater-->
                                                                 </div>
-                                                                <!--end::Form group-->
+                                                                <div class="col-md-4">
+                                                                    <label class="form-label">Indikasi Operasi</label>
+                                                                    <textarea name="indikasi_operasi" rows="3" class="form-control" id="indikasi_operasi">{{ $data->indikasi_operasi }}</textarea>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <label class="form-label">Posisi</label>
+                                                                    <textarea name="posisi" rows="3" class="form-control">{{ $data->posisi }}</textarea>
+                                                                </div>
                                                             </div>
-                                                            <!--end::Repeater-->
                                                         </div>
-                                                        <div class="col-md-4">
-                                                            <!--begin::Repeater-->
-                                                            <div id="penata_anastesi">
-                                                                <!--begin::Form group-->
-                                                                <div class="form-group">
-                                                                    <div data-repeater-list="penata_anastesi">
-                                                                        @if ($data->penata_anastesi)
-                                                                            @foreach (json_decode($data->penata_anastesi) as $val)
-                                                                                <div data-repeater-item>
-                                                                                    <div class="form-group row mb-5">
-                                                                                        <div class="col-md-10">
-                                                                                            <label
-                                                                                                class="form-label">Penata
-                                                                                                Anestesi</label>
-                                                                                            <input type="text"
-                                                                                                name="penata_anastesi"
-                                                                                                class="form-control mb-2 mb-md-0"
-                                                                                                placeholder="Masukan Nama"
-                                                                                                value="{{ $val->penata_anastesi }}" />
+                                                        <div class="row mt-5">
+                                                            <div class="row">
+                                                                <div class="col-md-4">
+                                                                    <!--begin::Repeater-->
+                                                                    <div id="ahli_anastesi">
+                                                                        <!--begin::Form group-->
+                                                                        <div class="form-group">
+                                                                            <div data-repeater-list="ahli_anastesi">
+                                                                                @if ($data->ahli_anastesi)
+                                                                                    @foreach (json_decode($data->ahli_anastesi) as $val)
+                                                                                        <div data-repeater-item>
+                                                                                            <div class="form-group row mb-5">
+                                                                                                <div class="col-md-10">
+                                                                                                    <label
+                                                                                                        class="form-label">Dokter
+                                                                                                        Anestesi</label>
+                                                                                                    <input type="text"
+                                                                                                        name="ahli_anastesi"
+                                                                                                        class="form-control mb-2 mb-md-0"
+                                                                                                        placeholder="Masukan Nama"
+                                                                                                        value="{{ $val->ahli_anastesi }}" />
+                                                                                                </div>
+                                                                                                <div class="col-md-2">
+                                                                                                    <a href="javascript:;"
+                                                                                                        data-repeater-delete
+                                                                                                        class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                                                        <i
+                                                                                                            class="ki-duotone ki-trash fs-5"><span
+                                                                                                                class="path1"></span><span
+                                                                                                                class="path2"></span><span
+                                                                                                                class="path3"></span><span
+                                                                                                                class="path4"></span><span
+                                                                                                                class="path5"></span></i>
+                                                                                                    </a>
+                                                                                                </div>
+                                                                                            </div>
                                                                                         </div>
-                                                                                        <div class="col-md-2">
-                                                                                            <a href="javascript:;"
-                                                                                                data-repeater-delete
-                                                                                                class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                                                <i
-                                                                                                    class="ki-duotone ki-trash fs-5"><span
-                                                                                                        class="path1"></span><span
-                                                                                                        class="path2"></span><span
-                                                                                                        class="path3"></span><span
-                                                                                                        class="path4"></span><span
-                                                                                                        class="path5"></span></i>
-                                                                                            </a>
+                                                                                    @endforeach
+                                                                                @else
+                                                                                    <div data-repeater-item>
+                                                                                        <div class="form-group row mb-5">
+                                                                                            <div class="col-md-10">
+                                                                                                <label class="form-label">Dokter
+                                                                                                    Anestesi</label>
+                                                                                                <input type="text"
+                                                                                                    name="ahli_anastesi"
+                                                                                                    class="form-control mb-2 mb-md-0"
+                                                                                                    placeholder="Masukan Nama" />
+                                                                                            </div>
+                                                                                            <div class="col-md-2">
+                                                                                                <a href="javascript:;"
+                                                                                                    data-repeater-delete
+                                                                                                    class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                                                    <i
+                                                                                                        class="ki-duotone ki-trash fs-5"><span
+                                                                                                            class="path1"></span><span
+                                                                                                            class="path2"></span><span
+                                                                                                            class="path3"></span><span
+                                                                                                            class="path4"></span><span
+                                                                                                            class="path5"></span></i>
+                                                                                                </a>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                </div>
-                                                                            @endforeach
-                                                                        @else
-                                                                            <div data-repeater-item>
-                                                                                <div class="form-group row mb-5">
-                                                                                    <div class="col-md-10">
-                                                                                        <label class="form-label">Penata
-                                                                                            Anestesi</label>
-                                                                                        <input type="text"
-                                                                                            name="penata_anastesi"
-                                                                                            class="form-control mb-2 mb-md-0"
-                                                                                            placeholder="Masukan Nama" />
-                                                                                    </div>
-                                                                                    <div class="col-md-2">
-                                                                                        <a href="javascript:;"
-                                                                                            data-repeater-delete
-                                                                                            class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                                            <i
-                                                                                                class="ki-duotone ki-trash fs-5"><span
-                                                                                                    class="path1"></span><span
-                                                                                                    class="path2"></span><span
-                                                                                                    class="path3"></span><span
-                                                                                                    class="path4"></span><span
-                                                                                                    class="path5"></span></i>
-                                                                                        </a>
-                                                                                    </div>
-                                                                                </div>
+                                                                                @endif
                                                                             </div>
-                                                                        @endif
-                                                                    </div>
-                                                                </div>
-                                                                <!--end::Form group-->
+                                                                        </div>
+                                                                        <!--end::Form group-->
 
-                                                                <!--begin::Form group-->
-                                                                <div class="form-group mt-5">
-                                                                    <a href="javascript:;" data-repeater-create
-                                                                        class="btn btn-sm btn-light-primary">
-                                                                        <i class="ki-duotone ki-plus fs-3"></i>
-                                                                        Tambah Penata Anestesi
-                                                                    </a>
+                                                                        <!--begin::Form group-->
+                                                                        <div class="form-group mt-5">
+                                                                            <a href="javascript:;" data-repeater-create
+                                                                                class="btn btn-sm btn-light-primary">
+                                                                                <i class="ki-duotone ki-plus fs-3"></i>
+                                                                                Tambah Ahli Anestesi
+                                                                            </a>
+                                                                        </div>
+                                                                        <!--end::Form group-->
+                                                                    </div>
+                                                                    <!--end::Repeater-->
                                                                 </div>
-                                                                <!--end::Form group-->
-                                                            </div>
-                                                            <!--end::Repeater-->
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <!--begin::Repeater-->
-                                                            <div id="obat_anastesi">
-                                                                <!--begin::Form group-->
-                                                                <div class="form-group">
-                                                                    <div data-repeater-list="obat_anastesi">
-                                                                        @if ($data->obat_anastesi)
-                                                                            @foreach (json_decode($data->obat_anastesi) as $val)
-                                                                                <div data-repeater-item>
-                                                                                    <div class="form-group row mb-5">
-                                                                                        <div class="col-md-10">
-                                                                                            <label class="form-label">Obat
-                                                                                                Anestesi</label>
-                                                                                            <input type="text"
-                                                                                                name="obat_anastesi"
-                                                                                                class="form-control mb-2 mb-md-0"
-                                                                                                placeholder="Masukan Nama"
-                                                                                                value="{{ $val->obat_anastesi }}" />
+                                                                <div class="col-md-4">
+                                                                    <!--begin::Repeater-->
+                                                                    <div id="penata_anastesi">
+                                                                        <!--begin::Form group-->
+                                                                        <div class="form-group">
+                                                                            <div data-repeater-list="penata_anastesi">
+                                                                                @if ($data->penata_anastesi)
+                                                                                    @foreach (json_decode($data->penata_anastesi) as $val)
+                                                                                        <div data-repeater-item>
+                                                                                            <div class="form-group row mb-5">
+                                                                                                <div class="col-md-10">
+                                                                                                    <label
+                                                                                                        class="form-label">Penata
+                                                                                                        Anestesi</label>
+                                                                                                    <input type="text"
+                                                                                                        name="penata_anastesi"
+                                                                                                        class="form-control mb-2 mb-md-0"
+                                                                                                        placeholder="Masukan Nama"
+                                                                                                        value="{{ $val->penata_anastesi }}" />
+                                                                                                </div>
+                                                                                                <div class="col-md-2">
+                                                                                                    <a href="javascript:;"
+                                                                                                        data-repeater-delete
+                                                                                                        class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                                                        <i
+                                                                                                            class="ki-duotone ki-trash fs-5"><span
+                                                                                                                class="path1"></span><span
+                                                                                                                class="path2"></span><span
+                                                                                                                class="path3"></span><span
+                                                                                                                class="path4"></span><span
+                                                                                                                class="path5"></span></i>
+                                                                                                    </a>
+                                                                                                </div>
+                                                                                            </div>
                                                                                         </div>
-                                                                                        <div class="col-md-2">
-                                                                                            <a href="javascript:;"
-                                                                                                data-repeater-delete
-                                                                                                class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                                                <i
-                                                                                                    class="ki-duotone ki-trash fs-5"><span
-                                                                                                        class="path1"></span><span
-                                                                                                        class="path2"></span><span
-                                                                                                        class="path3"></span><span
-                                                                                                        class="path4"></span><span
-                                                                                                        class="path5"></span></i>
-                                                                                            </a>
+                                                                                    @endforeach
+                                                                                @else
+                                                                                    <div data-repeater-item>
+                                                                                        <div class="form-group row mb-5">
+                                                                                            <div class="col-md-10">
+                                                                                                <label class="form-label">Penata
+                                                                                                    Anestesi</label>
+                                                                                                <input type="text"
+                                                                                                    name="penata_anastesi"
+                                                                                                    class="form-control mb-2 mb-md-0"
+                                                                                                    placeholder="Masukan Nama" />
+                                                                                            </div>
+                                                                                            <div class="col-md-2">
+                                                                                                <a href="javascript:;"
+                                                                                                    data-repeater-delete
+                                                                                                    class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                                                    <i
+                                                                                                        class="ki-duotone ki-trash fs-5"><span
+                                                                                                            class="path1"></span><span
+                                                                                                            class="path2"></span><span
+                                                                                                            class="path3"></span><span
+                                                                                                            class="path4"></span><span
+                                                                                                            class="path5"></span></i>
+                                                                                                </a>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                </div>
-                                                                            @endforeach
-                                                                        @else
-                                                                            <div data-repeater-item>
-                                                                                <div class="form-group row mb-5">
-                                                                                    <div class="col-md-10">
-                                                                                        <label class="form-label">Obat
-                                                                                            Anestesi</label>
-                                                                                        <input type="text"
-                                                                                            name="obat_anastesi"
-                                                                                            class="form-control mb-2 mb-md-0"
-                                                                                            placeholder="Masukan Nama" />
-                                                                                    </div>
-                                                                                    <div class="col-md-2">
-                                                                                        <a href="javascript:;"
-                                                                                            data-repeater-delete
-                                                                                            class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                                            <i
-                                                                                                class="ki-duotone ki-trash fs-5"><span
-                                                                                                    class="path1"></span><span
-                                                                                                    class="path2"></span><span
-                                                                                                    class="path3"></span><span
-                                                                                                    class="path4"></span><span
-                                                                                                    class="path5"></span></i>
-                                                                                        </a>
-                                                                                    </div>
-                                                                                </div>
+                                                                                @endif
                                                                             </div>
-                                                                        @endif
-                                                                    </div>
-                                                                </div>
-                                                                <!--end::Form group-->
+                                                                        </div>
+                                                                        <!--end::Form group-->
 
-                                                                <!--begin::Form group-->
-                                                                <div class="form-group mt-5">
-                                                                    <a href="javascript:;" data-repeater-create
-                                                                        class="btn btn-sm btn-light-primary">
-                                                                        <i class="ki-duotone ki-plus fs-3"></i>
-                                                                        Tambah Obat Anestesi
-                                                                    </a>
+                                                                        <!--begin::Form group-->
+                                                                        <div class="form-group mt-5">
+                                                                            <a href="javascript:;" data-repeater-create
+                                                                                class="btn btn-sm btn-light-primary">
+                                                                                <i class="ki-duotone ki-plus fs-3"></i>
+                                                                                Tambah Penata Anestesi
+                                                                            </a>
+                                                                        </div>
+                                                                        <!--end::Form group-->
+                                                                    </div>
+                                                                    <!--end::Repeater-->
                                                                 </div>
-                                                                <!--end::Form group-->
+                                                                <div class="col-md-4">
+                                                                    <!--begin::Repeater-->
+                                                                    <div id="obat_anastesi">
+                                                                        <!--begin::Form group-->
+                                                                        <div class="form-group">
+                                                                            <div data-repeater-list="obat_anastesi">
+                                                                                @if ($data->obat_anastesi)
+                                                                                    @foreach (json_decode($data->obat_anastesi) as $val)
+                                                                                        <div data-repeater-item>
+                                                                                            <div class="form-group row mb-5">
+                                                                                                <div class="col-md-10">
+                                                                                                    <label class="form-label">Obat
+                                                                                                        Anestesi</label>
+                                                                                                    <input type="text"
+                                                                                                        name="obat_anastesi"
+                                                                                                        class="form-control mb-2 mb-md-0"
+                                                                                                        placeholder="Masukan Nama"
+                                                                                                        value="{{ $val->obat_anastesi }}" />
+                                                                                                </div>
+                                                                                                <div class="col-md-2">
+                                                                                                    <a href="javascript:;"
+                                                                                                        data-repeater-delete
+                                                                                                        class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                                                        <i
+                                                                                                            class="ki-duotone ki-trash fs-5"><span
+                                                                                                                class="path1"></span><span
+                                                                                                                class="path2"></span><span
+                                                                                                                class="path3"></span><span
+                                                                                                                class="path4"></span><span
+                                                                                                                class="path5"></span></i>
+                                                                                                    </a>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    @endforeach
+                                                                                @else
+                                                                                    <div data-repeater-item>
+                                                                                        <div class="form-group row mb-5">
+                                                                                            <div class="col-md-10">
+                                                                                                <label class="form-label">Obat
+                                                                                                    Anestesi</label>
+                                                                                                <input type="text"
+                                                                                                    name="obat_anastesi"
+                                                                                                    class="form-control mb-2 mb-md-0"
+                                                                                                    placeholder="Masukan Nama" />
+                                                                                            </div>
+                                                                                            <div class="col-md-2">
+                                                                                                <a href="javascript:;"
+                                                                                                    data-repeater-delete
+                                                                                                    class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                                                    <i
+                                                                                                        class="ki-duotone ki-trash fs-5"><span
+                                                                                                            class="path1"></span><span
+                                                                                                            class="path2"></span><span
+                                                                                                            class="path3"></span><span
+                                                                                                            class="path4"></span><span
+                                                                                                            class="path5"></span></i>
+                                                                                                </a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                @endif
+                                                                            </div>
+                                                                        </div>
+                                                                        <!--end::Form group-->
+
+                                                                        <!--begin::Form group-->
+                                                                        <div class="form-group mt-5">
+                                                                            <a href="javascript:;" data-repeater-create
+                                                                                class="btn btn-sm btn-light-primary">
+                                                                                <i class="ki-duotone ki-plus fs-3"></i>
+                                                                                Tambah Obat Anestesi
+                                                                            </a>
+                                                                        </div>
+                                                                        <!--end::Form group-->
+                                                                    </div>
+                                                                    <!--end::Repeater-->
+                                                                </div>
                                                             </div>
-                                                            <!--end::Repeater-->
                                                         </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row mt-5">
-                                                    <div class="col-md-2">
-                                                        <label for="" class="form-label">
-                                                            Jaringan/Kultur
-                                                        </label>
-                                                        <div class="mt-5" style="margin-left: 20px;">
-                                                            <div
-                                                                class="form-check form-check-custom form-check-solid form-check-sm ml-5">
-                                                                <input class="form-check-input" type="radio"
-                                                                    value="1" name="jaringan_kultur"
-                                                                    {{ $data->jaringan ? (json_decode($data?->jaringan)->jaringan_kultur == 1 ? 'checked' : '') : '' }} />
-                                                                <label class="form-check-label">
-                                                                    Ya
+                                                        <div class="row mt-5">
+                                                            <div class="col-md-2">
+                                                                <label for="" class="form-label">
+                                                                    Jaringan/Kultur
                                                                 </label>
+                                                                <div class="mt-5" style="margin-left: 20px;">
+                                                                    <div
+                                                                        class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            value="1" name="jaringan_kultur"
+                                                                            {{ $data->jaringan ? (json_decode($data?->jaringan)->jaringan_kultur == 1 ? 'checked' : '') : '' }} />
+                                                                        <label class="form-check-label">
+                                                                            Ya
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mt-5" style="margin-left: 20px;">
+                                                                    <div
+                                                                        class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            value="2" name="jaringan_kultur"
+                                                                            {{ $data->jaringan ? (json_decode($data?->jaringan)->jaringan_kultur == 2 ? 'checked' : '') : '' }} />
+                                                                        <label class="form-check-label">
+                                                                            Tidak
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div id="frm-jaringan" class="col-md-6" style="display: none">
+                                                                <label for="" class="form-label">Macam Jaringan</label>
+                                                                <textarea name="macam_jaringan" rows="3" class="form-control">{{ isset($data->jaringan) ? json_decode($data?->jaringan)->macam_jaringan : '' }}</textarea>
                                                             </div>
                                                         </div>
-                                                        <div class="mt-5" style="margin-left: 20px;">
-                                                            <div
-                                                                class="form-check form-check-custom form-check-solid form-check-sm ml-5">
-                                                                <input class="form-check-input" type="radio"
-                                                                    value="2" name="jaringan_kultur"
-                                                                    {{ $data->jaringan ? (json_decode($data?->jaringan)->jaringan_kultur == 2 ? 'checked' : '') : '' }} />
-                                                                <label class="form-check-label">
-                                                                    Tidak
-                                                                </label>
+                                                        <div class="row mt-5">
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <label class="form-label">Implant</label>
+                                                                    <textarea name="implant" id="implant" rows="3" class="form-control">{{ $data->implant }}</textarea>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div id="frm-jaringan" class="col-md-6" style="display: none">
-                                                        <label for="" class="form-label">Macam Jaringan</label>
-                                                        <textarea name="macam_jaringan" rows="3" class="form-control">{{ isset($data->jaringan) ? json_decode($data?->jaringan)->macam_jaringan : '' }}</textarea>
-                                                    </div>
+                                                        <div class="row mt-5">
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label">Jenis Anestesi</label>
+                                                                    <select name="jenis_anastesi" class="form-select" id="jenis_anestesi"
+                                                                        data-control="select2"
+                                                                        data-placeholder="Pilih Jenis anestesi">
+                                                                        <option></option>
+                                                                        <option value="Umum"
+                                                                            {{ $data?->jenis_anastesi == 'Umum' ? 'selected' : '' }}>
+                                                                            Umum</option>
+                                                                        <option value="Spinal"
+                                                                            {{ $data?->jenis_anastesi == 'Spinal' ? 'selected' : '' }}>
+                                                                            Spinal</option>
+                                                                        <option value="Lokal"
+                                                                            {{ $data?->jenis_anastesi == 'Lokal' ? 'selected' : '' }}>
+                                                                            Lokal</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <label for="" class="form-label">Kamar Operasi</label>
+                                                                    <input type="text" name="kamar_operasi" id="kamar_operasi"
+                                                                        class="form-control" placeholder="Masukan Kamar Operasi"
+                                                                        value="{{ $data->kamar_operasi }}">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mt-5">
+                                                            <div class="row">
+                                                                <div class="col-md-4">
+                                                                    <label for="" class="form-label">Komplikasi</label>
+                                                                    <input type="text" name="komplikasi" id="komplikasi"
+                                                                        class="form-control" placeholder="Masukan Komplikasi"
+                                                                        value="{{ $data->komplikasi }}">
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <label for="" class="form-label">Jumlah Kehilangan
+                                                                        Pendarahan</label>
+                                                                    <input type="text" name="jumlah_pendarahan"
+                                                                        id="jumlah_pendarahan" class="form-control"
+                                                                        placeholder="Masukan Jumlah Pendarahan"
+                                                                        value="{{ $data->jumlah_pendarahan }}">
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <label for="" class="form-label">Jumlah Darah
+                                                                        Masuk</label>
+                                                                    <input type="text" name="jumlah_darah_masuk"
+                                                                        id="jumlah_darah_masuk" class="form-control"
+                                                                        placeholder="Masukan Jumlah Pendarahan"
+                                                                        value="{{ $data?->jumlah_darah_masuk }}">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mt-5">
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <label for="" class="form-label">Uraian
+                                                                        Pembedahan</label>
+                                                                    <textarea name="uraian_pembedahan" id="uraian_pembedahan" rows="5" class="form-control"
+                                                                        placeholder="Masukan Uraian Pembedahan">{{ $data->uraian_pembedahan }}</textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mt-5">
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <label for="" class="form-label">Instruksi Post
+                                                                        Operasi</label>
+                                                                    <textarea name="instruksi_post_operasi" id="instruksi_post_operasi" rows="5" class="form-control"
+                                                                        placeholder="Masukan Instruksi Post Operasi">{{ $data?->instruksi_post_operasi }}</textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mt-5">
+                                                            <div class="col-md-12">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox" id="check_template" />
+                                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                                        <b>Simpan Ke Template</b>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mt-5 d-none" id="tampil_template">
+                                                            <div class="col-md-6">
+                                                                <label for="" class="form-label required">Nama Template</label>
+                                                                <input type="text" name="nama_template" id="nama_template" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mt-5">
+                                                            <div class="col-md-12">
+                                                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
                                                 </div>
-                                                <div class="row mt-5">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <label class="form-label">Implant</label>
-                                                            <textarea name="implant" rows="3" class="form-control">{{ $data->implant }}</textarea>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row mt-5">
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">Jenis Anestesi</label>
-                                                            <select name="jenis_anastesi" class="form-select"
-                                                                data-control="select2"
-                                                                data-placeholder="Pilih Jenis anestesi">
-                                                                <option></option>
-                                                                <option value="Umum"
-                                                                    {{ $data?->jenis_anastesi == 'Umum' ? 'selected' : '' }}>
-                                                                    Umum</option>
-                                                                <option value="Spinal"
-                                                                    {{ $data?->jenis_anastesi == 'Spinal' ? 'selected' : '' }}>
-                                                                    Spinal</option>
-                                                                <option value="Lokal"
-                                                                    {{ $data?->jenis_anastesi == 'Lokal' ? 'selected' : '' }}>
-                                                                    Lokal</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <label for="" class="form-label">Kamar Operasi</label>
-                                                            <input type="text" name="kamar_operasi" id="kamar_operasi"
-                                                                class="form-control" placeholder="Masukan Kamar Operasi"
-                                                                value="{{ $data->kamar_operasi }}">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row mt-5">
-                                                    <div class="row">
-                                                        <div class="col-md-4">
-                                                            <label for="" class="form-label">Komplikasi</label>
-                                                            <input type="text" name="komplikasi" id="komplikasi"
-                                                                class="form-control" placeholder="Masukan Komplikasi"
-                                                                value="{{ $data->komplikasi }}">
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <label for="" class="form-label">Jumlah Kehilangan
-                                                                Pendarahan</label>
-                                                            <input type="text" name="jumlah_pendarahan"
-                                                                id="jumlah_pendarahan" class="form-control"
-                                                                placeholder="Masukan Jumlah Pendarahan"
-                                                                value="{{ $data->jumlah_pendarahan }}">
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <label for="" class="form-label">Jumlah Darah
-                                                                Masuk</label>
-                                                            <input type="text" name="jumlah_darah_masuk"
-                                                                id="jumlah_darah_masuk" class="form-control"
-                                                                placeholder="Masukan Jumlah Pendarahan"
-                                                                value="{{ $data?->jumlah_darah_masuk }}">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row mt-5">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <label for="" class="form-label">Uraian
-                                                                Pembedahan</label>
-                                                            <textarea name="uraian_pembedahan" id="uraian_pembedahan" rows="5" class="form-control"
-                                                                placeholder="Masukan Uraian Pembedahan">{{ $data->uraian_pembedahan }}</textarea>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row mt-5">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <label for="" class="form-label">Instruksi Post
-                                                                Operasi</label>
-                                                            <textarea name="instruksi_post_operasi" id="instruksi_post_operasi" rows="5" class="form-control"
-                                                                placeholder="Masukan Instruksi Post Operasi">{{ $data?->instruksi_post_operasi }}</textarea>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row mt-5">
-                                                    <div class="col-md-12">
-                                                        <button type="submit" class="btn btn-primary">Simpan</button>
-                                                    </div>
-                                                </div>
-                                            </form>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="kt_tab_pane_2" role="tabpanel">
@@ -975,7 +1036,7 @@
                                                 <button data-bs-toggle="modal" data-bs-target="#kt_modal_1"
                                                     class="btn btn-warning">Tindakan / Tarif Pembedahan</button>
                                             </div>
-                                           
+
                                             <div class="col-md-12">
                                                 @if ($tindakan)
                                                 <br>
@@ -1115,6 +1176,573 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="tab-pane fade" id="kt_tab_pane_3" role="tabpanel">
+                                        <div class="rounded border p-5">
+                                            <span class="d-inline-block position-relative mb-7">
+                                                <!--begin::Label-->
+                                                <span class="d-inline-block mb-2 fs-4 fw-bold">
+                                                    Anestesi
+                                                </span>
+                                                <!--end::Label-->
+
+                                                <!--begin::Line-->
+                                                <span
+                                                    class="d-inline-block position-absolute h-5px bottom-0 end-0 start-0 bg-success translate rounded"></span>
+                                                <!--end::Line-->
+                                            </span>
+                                            <div class="row mb-5">
+                                                <div class="col">
+                                                    <a href="{{ route('cetak-catatan-anestesi.operasi', $catatan->id) }}" class="btn btn-sm btn-secondary" target="_blank">Cetak Catatan Anestesi</a>
+                                                </div>
+                                            </div>
+                                            <form action="{{ route('post-catatan-anestesi.operasi') }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="laporan_operasi_id" value="{{ $data->id }}">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <label for="" class="form-label">Tanggal</label>
+                                                        <input type="date" name="tanggal" value="{{ $catatan->tanggal }}" class="form-control tgl">
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="" class="form-label">Status Fisik</label>
+                                                        <select name="status_fisik" class="form-select" data-control="select2" data-placeholder="- Pilih -">
+                                                            <option></option>
+                                                            <option value="1" {{ ($catatan->status_fisik == 1) ? 'selected' : '' }}>1</option>
+                                                            <option value="2" {{ ($catatan->status_fisik == 2) ? 'selected' : '' }}>2</option>
+                                                            <option value="3" {{ ($catatan->status_fisik == 3) ? 'selected' : '' }}>3</option>
+                                                            <option value="4" {{ ($catatan->status_fisik == 4) ? 'selected' : '' }}>4</option>
+                                                            <option value="5" {{ ($catatan->status_fisik == 5) ? 'selected' : '' }}>5</option>
+                                                            <option value="E" {{ ($catatan->status_fisik == "E") ? 'selected' : '' }}>E</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="" class="form-label">Jenis / Teknis Anestesis</label>
+                                                        <div class="row mt-3">
+                                                            <div class="col">
+                                                                <input class="form-check-input" type="radio" value="LA" name="teknik_anestesis" {{ ($catatan->teknik_anestesi == "LA") ? 'checked' : '' }}/>
+                                                                <label class="form-check-label" for="flexCheckbox30">
+                                                                    LA
+                                                                </label>
+                                                            </div>
+                                                            <div class="col">
+                                                                <input class="form-check-input" type="radio" value="REGIONAL" name="teknik_anestesis" {{ ($catatan->teknik_anestesi == "REGIONAL") ? 'checked' : '' }}/>
+                                                                <label class="form-check-label" for="flexCheckbox30">
+                                                                    REGIONAL
+                                                                </label>
+                                                            </div>
+                                                            <div class="col">
+                                                                <input class="form-check-input" type="radio" value="GA" name="teknik_anestesis" {{ ($catatan->teknik_anestesi == "GA") ? 'checked' : '' }}/>
+                                                                <label class="form-check-label" for="flexCheckbox30">
+                                                                    GA
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-5">
+                                                    <div class="col-md-6">
+                                                        <label for="" class="form-label">Posisi</label>
+                                                        <textarea class="form-control" data-kt-autosize="true" name="posisi">{{ $catatan->posisi }}</textarea>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="" class="form-label">Premedikasi</label>
+                                                        <textarea class="form-control" data-kt-autosize="true" name="premedikasi">{{ $catatan->premedikasi }}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-5">
+                                                    <div class="col-md-4">
+                                                        <label for="" class="form-label">Pemberian</label>
+                                                        <select name="pemberian" id="" class="form-select" data-control="select2" data-placeholder="- Pilih -">
+                                                            <option></option>
+                                                            <option value="SC" {{ ($catatan->pemberian == 'SC') ? 'selected' : '' }}>SC</option>
+                                                            <option value="IM" {{ ($catatan->pemberian == 'IM') ? 'selected' : '' }}>IM</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="" class="form-label">Jam</label>
+                                                        <input class="form-control jam" placeholder="Jam" name="jam" value="{{ $catatan->jam }}" />
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="" class="form-label">Efek</label>
+                                                        <input type="text" name="efek" class="form-control" value="{{ $catatan->efek }}">
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-5">
+                                                    <div class="col-md-12">
+                                                        <label class="form-label">Obat Anestesi</label>
+                                                        <!--begin::Repeater-->
+                                                        <div id="obat_anestesi_catatan">
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group mt-1">
+                                                                <a href="javascript:;" data-repeater-create
+                                                                    class="btn btn-sm btn-light-primary">
+                                                                    <i class="ki-duotone ki-plus fs-3"></i>
+                                                                    Tambah Obat Anestesi
+                                                                </a>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group">
+                                                                <div data-repeater-list="obat_anestesi_catatan" class="row">
+                                                                @if ($catatan->obat_anestesi)
+                                                                    @foreach (json_decode($catatan->obat_anestesi) as $val)
+                                                                        <div class="col-md-4" data-repeater-item>
+                                                                            <div class="form-group row mb-5">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="text"
+                                                                                        name="obat_anestesi_catatan"
+                                                                                        class="form-control mb-2 mb-md-0 mt-5"
+                                                                                        placeholder="Masukan Nama Obat" value="{{ $val->obat_anestesi_catatan }}" />
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <a href="javascript:;"
+                                                                                        data-repeater-delete
+                                                                                        class="btn btn-sm btn-light-danger mt-6">
+                                                                                        <i class="ki-duotone ki-trash fs-5">
+                                                                                            <span
+                                                                                                class="path1"></span><span
+                                                                                                class="path2"></span><span
+                                                                                                class="path3"></span><span
+                                                                                                class="path4"></span><span
+                                                                                                class="path5"></span>
+                                                                                        </i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endforeach
+                                                                @else
+                                                                    <div class="col-md-4" data-repeater-item>
+                                                                        <div class="form-group row mb-5">
+                                                                            <div class="col-md-10">
+                                                                                <input type="text"
+                                                                                    name="obat_anestesi_catatan"
+                                                                                    class="form-control mb-2 mb-md-0 mt-5"
+                                                                                    placeholder="Masukan Nama Obat" />
+                                                                            </div>
+                                                                            <div class="col-md-2">
+                                                                                <a href="javascript:;"
+                                                                                    data-repeater-delete
+                                                                                    class="btn btn-sm btn-light-danger mt-6">
+                                                                                    <i class="ki-duotone ki-trash fs-5">
+                                                                                        <span
+                                                                                            class="path1"></span><span
+                                                                                            class="path2"></span><span
+                                                                                            class="path3"></span><span
+                                                                                            class="path4"></span><span
+                                                                                            class="path5"></span>
+                                                                                    </i>
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                @endif
+                                                                </div>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                        </div>
+                                                        <!--end::Repeater-->
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col-md-12">
+                                                        <label class="form-label">O2</label>
+                                                        <!--begin::Repeater-->
+                                                        <div id="o2">
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group mt-1">
+                                                                <a href="javascript:;" data-repeater-create class="btn btn-sm btn-light-primary">
+                                                                    <i class="ki-duotone ki-plus fs-3"></i>
+                                                                    Tambah
+                                                                </a>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group">
+                                                                <div data-repeater-list="o2" class="row">
+                                                                    @if ($catatan->o2)
+                                                                        @foreach (json_decode($catatan->o2) as $val)
+                                                                        <div class="col-md-4" data-repeater-item>
+                                                                            <div class="form-group row mb-5">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="text" name="o2" class="form-control mb-2 mb-md-0 mt-5" placeholder="Per 5 Menit" value="{{ $val->o2 }}" />
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-6">
+                                                                                        <i class="ki-duotone ki-trash fs-5">
+                                                                                            <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                                                                                        </i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        @endforeach
+                                                                    @else
+                                                                        <div class="col-md-4" data-repeater-item>
+                                                                            <div class="form-group row mb-5">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="text" name="o2" class="form-control mb-2 mb-md-0 mt-5" placeholder="Per 5 Menit" />
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-6">
+                                                                                        <i class="ki-duotone ki-trash fs-5">
+                                                                                            <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                                                                                        </i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                        </div>
+                                                        <!--end::Repeater-->
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col-md-12">
+                                                        <label class="form-label">N2O</label>
+                                                        <!--begin::Repeater-->
+                                                        <div id="n2o">
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group mt-1">
+                                                                <a href="javascript:;" data-repeater-create class="btn btn-sm btn-light-primary">
+                                                                    <i class="ki-duotone ki-plus fs-3"></i>
+                                                                    Tambah
+                                                                </a>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group">
+                                                                <div data-repeater-list="n2o" class="row">
+                                                                    @if ($catatan->n2o)
+                                                                        @foreach (json_decode($catatan->n2o) as $val)
+                                                                        <div class="col-md-4" data-repeater-item>
+                                                                            <div class="form-group row mb-5">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="text" name="n2o" class="form-control mb-2 mb-md-0 mt-5" placeholder="Per 5 Menit" value="{{ $val->n2o }}" />
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-6">
+                                                                                        <i class="ki-duotone ki-trash fs-5">
+                                                                                            <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                                                                                        </i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        @endforeach
+                                                                    @else
+                                                                        <div class="col-md-4" data-repeater-item>
+                                                                            <div class="form-group row mb-5">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="text" name="n2o" class="form-control mb-2 mb-md-0 mt-5" placeholder="Per 5 Menit" />
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-6">
+                                                                                        <i class="ki-duotone ki-trash fs-5">
+                                                                                            <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                                                                                        </i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                        </div>
+                                                        <!--end::Repeater-->
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col-md-12">
+                                                        <label class="form-label">Isoflurane</label>
+                                                        <!--begin::Repeater-->
+                                                        <div id="isoflurane">
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group mt-1">
+                                                                <a href="javascript:;" data-repeater-create class="btn btn-sm btn-light-primary">
+                                                                    <i class="ki-duotone ki-plus fs-3"></i>
+                                                                    Tambah
+                                                                </a>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group">
+                                                                <div data-repeater-list="isoflurane" class="row">
+                                                                    @if ($catatan->isoflurane)
+                                                                        @foreach (json_decode($catatan->isoflurane) as $val)
+                                                                        <div class="col-md-4" data-repeater-item>
+                                                                            <div class="form-group row mb-5">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="text" name="isoflurane" class="form-control mb-2 mb-md-0 mt-5" placeholder="Per 5 Menit" value="{{ $val->isoflurane }}" />
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-6">
+                                                                                        <i class="ki-duotone ki-trash fs-5">
+                                                                                            <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                                                                                        </i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        @endforeach
+                                                                    @else
+                                                                        <div class="col-md-4" data-repeater-item>
+                                                                            <div class="form-group row mb-5">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="text" name="isoflurane" class="form-control mb-2 mb-md-0 mt-5" placeholder="Per 5 Menit" />
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-6">
+                                                                                        <i class="ki-duotone ki-trash fs-5">
+                                                                                            <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                                                                                        </i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                        </div>
+                                                        <!--end::Repeater-->
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col-md-12">
+                                                        <label class="form-label">Sevoflurane</label>
+                                                        <!--begin::Repeater-->
+                                                        <div id="sevoflurane">
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group mt-1">
+                                                                <a href="javascript:;" data-repeater-create class="btn btn-sm btn-light-primary">
+                                                                    <i class="ki-duotone ki-plus fs-3"></i>
+                                                                    Tambah
+                                                                </a>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group">
+                                                                <div data-repeater-list="sevoflurane" class="row">
+                                                                    @if ($catatan->sevoflurane)
+                                                                        @foreach (json_decode($catatan->sevoflurane) as $val)
+                                                                        <div class="col-md-4" data-repeater-item>
+                                                                            <div class="form-group row mb-5">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="text" name="sevoflurane" class="form-control mb-2 mb-md-0 mt-5" placeholder="Per 5 Menit" value="{{ $val->sevoflurane }}" />
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-6">
+                                                                                        <i class="ki-duotone ki-trash fs-5">
+                                                                                            <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                                                                                        </i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        @endforeach
+                                                                    @else
+                                                                        <div class="col-md-4" data-repeater-item>
+                                                                            <div class="form-group row mb-5">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="text" name="sevoflurane" class="form-control mb-2 mb-md-0 mt-5" placeholder="Per 5 Menit" />
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-6">
+                                                                                        <i class="ki-duotone ki-trash fs-5">
+                                                                                            <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                                                                                        </i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                        </div>
+                                                        <!--end::Repeater-->
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col-md-12">
+                                                        <label class="form-label">Infus</label>
+                                                        <!--begin::Repeater-->
+                                                        <div id="infus">
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group mt-1">
+                                                                <a href="javascript:;" data-repeater-create class="btn btn-sm btn-light-primary">
+                                                                    <i class="ki-duotone ki-plus fs-3"></i>
+                                                                    Tambah
+                                                                </a>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group">
+                                                                <div data-repeater-list="infus" class="row">
+                                                                    @if ($catatan->infus)
+                                                                        @foreach (json_decode($catatan->infus) as $val)
+                                                                        <div class="col-md-4" data-repeater-item>
+                                                                            <div class="form-group row mb-5">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="text" name="infus" class="form-control mb-2 mb-md-0 mt-5" placeholder="Per 5 Menit" value="{{ $val->infus }}" />
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-6">
+                                                                                        <i class="ki-duotone ki-trash fs-5">
+                                                                                            <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                                                                                        </i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        @endforeach
+                                                                    @else
+                                                                        <div class="col-md-4" data-repeater-item>
+                                                                            <div class="form-group row mb-5">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="text" name="infus" class="form-control mb-2 mb-md-0 mt-5" placeholder="Per 5 Menit" />
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-6">
+                                                                                        <i class="ki-duotone ki-trash fs-5">
+                                                                                            <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                                                                                        </i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                        </div>
+                                                        <!--end::Repeater-->
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col-md-12">
+                                                        <label class="form-label">Medikasi</label>
+                                                        <!--begin::Repeater-->
+                                                        <div id="medikasi">
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group mt-1">
+                                                                <a href="javascript:;" data-repeater-create class="btn btn-sm btn-light-primary">
+                                                                    <i class="ki-duotone ki-plus fs-3"></i>
+                                                                    Tambah
+                                                                </a>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group">
+                                                                <div data-repeater-list="medikasi" class="row">
+                                                                    @if ($catatan->medikasi)
+                                                                        @foreach (json_decode($catatan->medikasi) as $val)
+                                                                        <div class="col-md-4" data-repeater-item>
+                                                                            <div class="form-group row mb-5">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="text" name="medikasi" class="form-control mb-2 mb-md-0 mt-5" placeholder="Per 5 Menit" value="{{ $val->medikasi }}" />
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-6">
+                                                                                        <i class="ki-duotone ki-trash fs-5">
+                                                                                            <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                                                                                        </i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        @endforeach
+                                                                    @else
+                                                                        <div class="col-md-4" data-repeater-item>
+                                                                            <div class="form-group row mb-5">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="text" name="medikasi" class="form-control mb-2 mb-md-0 mt-5" placeholder="Per 5 Menit" />
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-6">
+                                                                                        <i class="ki-duotone ki-trash fs-5">
+                                                                                            <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                                                                                        </i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                        </div>
+                                                        <!--end::Repeater-->
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-5">
+                                                    <label for="" class="form-label"><b>Stadia</b></label>
+                                                    <div class="col-md-4">
+                                                        <label for="" class="form-label">Anestesi</label>
+                                                        <textarea class="form-control" data-kt-autosize="true" name="anestesi">{{ json_decode($catatan?->stadia)->anestesi ?? '' }}</textarea>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="" class="form-label">Operasi</label>
+                                                        <textarea class="form-control" data-kt-autosize="true" name="operasi">{{ json_decode($catatan?->stadia)->operasi ?? '' }}</textarea>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="" class="form-label">Respirasi</label>
+                                                        <textarea class="form-control" data-kt-autosize="true" name="respirasi">{{ json_decode($catatan?->stadia)->respirasi ?? '' }}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-5">
+                                                    <div class="col-md-6">
+                                                        <label for="" class="form-label">Jumlah Medikasi</label>
+                                                        <input type="text" name="jumlah_medikasi" value="{{ $catatan->jumlah_medikasi }}" class="form-control">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="" class="form-label">Jumlah Cairan</label>
+                                                        <input type="text" name="jumlah_cairan" value="{{ $catatan->jumlah_cairan }}" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-5">
+                                                    <div class="col-md-12">
+                                                        <label for="" class="form-label">Catatan</label>
+                                                        <textarea class="form-control" data-kt-autosize="true" name="catatan">{{ $catatan->catatan }}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-5">
+                                                    <div class="col-md-4">
+                                                        <label for="" class="form-label">Pendarahan</label>
+                                                        <input type="text" name="pendarahan" value="{{ $catatan->pendarahan }}" class="form-control">
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="" class="form-label">Urine</label>
+                                                        <input type="text" name="urine" value="{{ $catatan->urine }}" class="form-control">
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="" class="form-label">Lama Anestesi</label>
+                                                        <input type="text" name="lama_anestesi" value="{{ $catatan->lama_anestesi }}" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-5">
+                                                    <div class="col-md-6">
+                                                        <label for="" class="form-label">Komplikasi Pra Anestesi</label>
+                                                        <textarea class="form-control" data-kt-autosize="true" name="pra_anestesi">{{ $catatan->pra_anestesi }}</textarea>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="" class="form-label">Komplikasi Post Anestesi</label>
+                                                        <textarea class="form-control" data-kt-autosize="true" name="post_anestesi">{{ $catatan->post_anestesi }}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-5">
+                                                    <div class="col-md-12">
+                                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1171,6 +1799,35 @@
                 </div>
                 </form>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modal-template" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Template</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+                <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="" class="form-label">Template Operasi</label>
+                        <select name="template_lain" id="template_lain" data-control="select2" data-placeholder="-Pilih-" class="form-select">
+                            <option></option>
+                            @foreach ($template as $val)
+                                <option value="{{ $val->id }}">{{ $val->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="btn-terapkan" type="button" class="btn btn-primary">Terapkan</button>
+            </div>
+        </div>
         </div>
     </div>
 
@@ -1246,6 +1903,7 @@
                     }
                 });
             });
+
             $("#frm-status").on("submit", function(event) {
                 event.preventDefault();
                 var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
@@ -1368,7 +2026,7 @@
                         minimumInputLength: 1,
                         placeholder: 'Pilih Tindakan Bedah'
                     });
-                    
+
                 },
 
                 hide: function(deleteElement) {
@@ -1406,15 +2064,16 @@
                         minimumInputLength: 1,
                         placeholder: 'Pilih Tindakan Bedah'
                     });
-                    
+
                 }
             });
+
             $('#tindakan_bedah').repeater({
                 initEmpty: false,
 
                 show: function() {
                     $(this).slideDown();
-                    
+
                     $(this).find('[data-kt-repeater="tindakan_bedah_select"]').select2({
                         ajax: {
                             url: 'https://new-simrs.rsausulaiman.com/auth/listprosedur2',
@@ -1448,7 +2107,7 @@
                 },
 
                 ready: function() {
-                    
+
                     $('[data-kt-repeater="tindakan_bedah_select"]').select2({
                         ajax: {
                             url: 'https://new-simrs.rsausulaiman.com/auth/listprosedur2',
@@ -1550,6 +2209,227 @@
             } else {
                 $('#frm-jaringan').hide('Fadein');
             }
+        });
+
+        $(".jam").flatpickr({
+            noCalendar: true,
+            enableTime: true,
+            time_24hr: true
+        });
+
+        $(".tgl").flatpickr({
+            altInput: true,
+            altFormat: "d-m-Y",
+            dateFormat: "Y-m-d"
+        });
+
+        $('#obat_anestesi_catatan').repeater({
+            initEmpty: false,
+
+            show: function() {
+                $(this).slideDown();
+            },
+
+            hide: function(deleteElement) {
+                $(this).slideUp(deleteElement);
+            }
+        });
+
+        $('#o2').repeater({
+            initEmpty: false,
+
+            show: function() {
+                $(this).slideDown();
+            },
+
+            hide: function(deleteElement) {
+                $(this).slideUp(deleteElement);
+            }
+        });
+
+        $('#n2o').repeater({
+            initEmpty: false,
+
+            show: function() {
+                $(this).slideDown();
+            },
+
+            hide: function(deleteElement) {
+                $(this).slideUp(deleteElement);
+            }
+        });
+
+        $('#isoflurane').repeater({
+            initEmpty: false,
+
+            show: function() {
+                $(this).slideDown();
+            },
+
+            hide: function(deleteElement) {
+                $(this).slideUp(deleteElement);
+            }
+        });
+
+        $('#sevoflurane').repeater({
+            initEmpty: false,
+
+            show: function() {
+                $(this).slideDown();
+            },
+
+            hide: function(deleteElement) {
+                $(this).slideUp(deleteElement);
+            }
+        });
+
+        $('#infus').repeater({
+            initEmpty: false,
+
+            show: function() {
+                $(this).slideDown();
+            },
+
+            hide: function(deleteElement) {
+                $(this).slideUp(deleteElement);
+            }
+        });
+
+        $('#medikasi').repeater({
+            initEmpty: false,
+
+            show: function() {
+                $(this).slideDown();
+            },
+
+            hide: function(deleteElement) {
+                $(this).slideUp(deleteElement);
+            }
+        });
+
+        function showTemplate(id){
+            $.ajax({
+                type: 'GET',
+                url: '{{ route('show.template') }}',
+                data: { template_id : id},
+                beforeSend: function() {
+                    $.blockUI({
+                        css: {
+                            border: 'none',
+                            padding: '15px',
+                            backgroundColor: '#000',
+                            '-webkit-border-radius': '10px',
+                            '-moz-border-radius': '10px',
+                            opacity: .5,
+                            color: '#fff',
+                            fontSize: '16px'
+                        },
+                        message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                        baseZ: 9000,
+                    });
+                },
+                success: function(data) {
+                    $('#template_dokter_bedah').html(data.dokter_bedah);
+                    $('#template_perawat_bedah').html(data.perawat_bedah);
+                    $('#template_asisten').html(data.asisten);
+
+                    $('#desinfektan_kulit').val(data.template.desinfektan_kulit);
+                    $('#kamar_operasi').val(data.template.kamar_operasi);
+
+                    $("#jenis_operasi").val(data.template.jenis_operasi).change();
+                    $("#detail_operasi").val(data.template.detail_operasi).change();
+
+                    $('#diagnosis_pasca_bedah').val(data.template.diagnosis_pasca_bedah);
+
+                    $('#template_tindakan_bedah').html(data.tindakan_bedah);
+                    // console.log(data.tindakan_bedah)
+
+                    $("#jenis_anestesi").val(data.template.jenis_anestesi).change();
+
+                    $('#indikasi_operasi').val(data.template.indikasi_operasi);
+                    $('#implant').val(data.template.implant);
+
+                    $('#uraian_pembedahan').val(data.template.uraian_pembedahan);
+                    $('#instruksi_post_operasi').val(data.template.post_operasi);
+
+                    $.unblockUI();
+                },
+                error: function(data) {
+                    console.log('error');
+                },
+            });
+        }
+
+        $("#btn-terapkan").on( "click", function(e) {
+
+            var id = $('#template_lain').val();
+            if(id === ""){
+                Swal.fire('Template Tidak Boleh Kosong','','warning');
+                return false;
+            }
+
+            $.ajax({
+                type: 'GET',
+                url: '{{ route('show.template') }}',
+                data: { template_id : id},
+                beforeSend: function() {
+                    $('#modal-template').modal('hide');
+                    $.blockUI({
+                        css: {
+                            border: 'none',
+                            padding: '15px',
+                            backgroundColor: '#000',
+                            '-webkit-border-radius': '10px',
+                            '-moz-border-radius': '10px',
+                            opacity: .5,
+                            color: '#fff',
+                            fontSize: '16px'
+                        },
+                        message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                        baseZ: 9000,
+                    });
+                },
+                success: function(data) {
+                    $('#template_dokter_bedah').html(data.dokter_bedah);
+                    $('#template_perawat_bedah').html(data.perawat_bedah);
+                    $('#template_asisten').html(data.asisten);
+
+                    $('#desinfektan_kulit').val(data.template.desinfektan_kulit);
+                    $('#kamar_operasi').val(data.template.kamar_operasi);
+
+                    $("#jenis_operasi").val(data.template.jenis_operasi).change();
+                    $("#detail_operasi").val(data.template.detail_operasi).change();
+
+                    $('#diagnosis_pasca_bedah').val(data.template.diagnosis_pasca_bedah);
+
+                    $('#template_tindakan_bedah').html(data.tindakan_bedah);
+                    // console.log(data.tindakan_bedah)
+
+                    $("#jenis_anestesi").val(data.template.jenis_anestesi).change();
+
+                    $('#indikasi_operasi').val(data.template.indikasi_operasi);
+                    $('#implant').val(data.template.implant);
+
+                    $('#uraian_pembedahan').val(data.template.uraian_pembedahan);
+                    $('#instruksi_post_operasi').val(data.template.post_operasi);
+
+                    $.unblockUI();
+                },
+                error: function(data) {
+                    console.log('error');
+                },
+            });
+
+        });
+
+        $('#check_template').change(function() {
+            if(this.checked) {
+                $('#tampil_template').removeClass('d-none');
+                $("#nama_template").prop('required',true);
+                return false;
+            }
+            $('#tampil_template').addClass('d-none');
+            $("#nama_template").prop('required',false);
         });
 
         @if ($message = session('gagal'))

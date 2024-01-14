@@ -19,6 +19,7 @@ use App\Http\Controllers\TindakLanjutController;
 use App\Http\Controllers\LaporanOperasiController;
 use App\Http\Controllers\GiziController;
 use App\Http\Controllers\LaboratoriumController;
+use App\Http\Controllers\TemplateController;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\DB;
@@ -70,7 +71,7 @@ Route::get('/obat-tes',function(){
                     $finalResult[$key][] = $value;
                 }
             }
-            
+
             // Menggabungkan hasil menjadi array sesuai format yang diinginkan
             $combinedArray = array();
             for ($i = 0; $i < count($finalResult['obat']); $i++) {
@@ -79,7 +80,7 @@ Route::get('/obat-tes',function(){
                     'jumlah_obat' => $finalResult['jumlah_obat'][$i]
                 );
             }
-            
+
             // return $combinedArray;
 
             $racikan[] = [
@@ -104,7 +105,7 @@ Route::get('/obat-tes',function(){
         }
     }
 
- 
+
     DB::table('demo_antrian_resep')->insert([
         'idrawat'=>39070,
         'idbayar'=>2,
@@ -292,7 +293,7 @@ Route::prefix('/rawat-inap')->group(function () {
     Route::post('{id}/order-obat', [RawatInapController::class, 'postOrderObat'])->name('postOrderObat.rawat-inap');
     Route::post('{id}/order-penunjang', [RawatInapController::class, 'postOrderPenunjang'])->name('postOrderPenunjang.rawat-inap');
     Route::post('{id}/post-cppt', [RawatInapController::class, 'post_cppt'])->name('post_cppt.rawat-inap');
-    Route::post('{id}/post-implementasi', [RawatInapController::class, 'post_implementasi'])->name('post_implementasi.rawat-inap');    
+    Route::post('{id}/post-implementasi', [RawatInapController::class, 'post_implementasi'])->name('post_implementasi.rawat-inap');
     Route::post('{id}/post-diagnosa-akhir', [RawatInapController::class, 'post_diagnosa_akhir'])->name('post-diagnosa-akhir.rawat-inap');
     Route::post('{id}/post-tindakan', [RawatInapController::class, 'post_tindakan'])->name('post_tindakan.rawat-inap');
     Route::post('post-ranap-pulang', [RawatInapController::class, 'postRanap'])->name('post_pulang.rawat-inap');
@@ -334,6 +335,21 @@ Route::prefix('/pasien')->group(function () {
         Route::post('{id}/post-tindakan', [LaporanOperasiController::class, 'post_tindakan_ok'])->name('post_tindakan_ok.operasi');
         Route::post('{id}/post-bhp', [LaporanOperasiController::class, 'post_bhp_ok'])->name('post_bhp_ok.operasi');
         Route::get('{id}/cetak-laporan', [LaporanOperasiController::class, 'cetakLaporan'])->name('cetak-laporan.operasi');
+        Route::prefix('/anestesi')->group(function () {
+            Route::post('/catatan', [LaporanOperasiController::class, 'postAnestesi'])->name('post-catatan-anestesi.operasi');
+            Route::get('/cetak/{id}', [LaporanOperasiController::class, 'cetakAnestesi'])->name('cetak-catatan-anestesi.operasi');
+        });
+    });
+
+    //template
+    Route::prefix('/template')->group(function () {
+        Route::get('/', [TemplateController::class, 'index'])->name('index.template');
+        Route::get('/create', [TemplateController::class, 'create'])->name('create.template');
+        Route::post('/store', [TemplateController::class, 'store'])->name('store.template');
+        Route::get('/edit/{id}', [TemplateController::class, 'edit'])->name('edit.template');
+        Route::post('/update/{id}', [TemplateController::class, 'update'])->name('update.template');
+        Route::get('/update-status/{id}/{status}', [TemplateController::class, 'updateStatus'])->name('update-status.template');
+        Route::get('/show', [TemplateController::class, 'showTemplate'])->name('show.template');
     });
 
     //gizi
@@ -350,4 +366,6 @@ Route::prefix('/pasien')->group(function () {
 //Ajax
 Route::prefix('ajax')->group(function () {
     Route::get('bed/edit', [RuanganBedController::class, 'edit'])->name('edit.ruangan-bed-ajax');
+    Route::get('get-dokter', [TemplateController::class, 'getDokter'])->name('get-dokter.ajax');
+    Route::get('get-perawat', [TemplateController::class, 'getPerawat'])->name('get-perawat.ajax');
 });
