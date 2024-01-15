@@ -398,7 +398,7 @@ class RekapMedisController extends Controller
         ->where('template',1)
         ->whereNotNull('diagnosa')
         ->orderBy('demo_detail_rekap_medis.created_at','desc')
-        ->groupBy('demo_rekap_medis.diagnosa')
+        ->groupBy('demo_detail_rekap_medis.diagnosa')
         ->limit(10)
         ->get();
         // dd($get_template);
