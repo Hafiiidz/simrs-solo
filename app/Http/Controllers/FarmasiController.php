@@ -248,11 +248,13 @@ class FarmasiController extends Controller
             return back()->with('gagal', 'Pastikan data sudah di update');
         }
         $rawat = Rawat::find($antrian->idrawat);
+        $transaksi = DB::table('transaksi')->where('kode_kunjungan', $rawat->idkunjungan)->first();
         $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
         #simpan transaksi resep
         $obat_transaksi = new ObatTransaksi();
         $obat_transaksi->idrawat = $rawat->id;
         $obat_transaksi->no_rm = $rawat->no_rm;
+        $obat_transaksi->idtrx = $transaksi?->id;
         $obat_transaksi->tgl = date('Y-m-d');
         $obat_transaksi->idjenisrawat = $rawat->idjenisrawat;
         $obat_transaksi->jam = date('H:i:s');
@@ -271,6 +273,7 @@ class FarmasiController extends Controller
                     // for($i=1; $i<=$to->kronis; $i++){
                         DB::table('obat_transaksi_detail')->insert([
                             'idtrx' => $obat_transaksi->id,
+                            'idtransaksi' => $transaksi?->id,
                             'nama_obat' => $obat->nama_obat,
                             'idobat' => $to->obat,
                             'qty' => $to->kronis,
@@ -289,6 +292,7 @@ class FarmasiController extends Controller
                 DB::table('obat_transaksi_detail')->insert([
                     'idtrx' => $obat_transaksi->id,
                     'nama_obat' => $obat->nama_obat,
+                    'idtransaksi' => $transaksi?->id,
                     'idobat' => $to->obat,
                     'qty' => $to->diberikan,
                     'harga' => $obat->harga_jual,
@@ -311,6 +315,7 @@ class FarmasiController extends Controller
                             DB::table('obat_transaksi_detail')->insert([
                                 'idtrx' => $obat_transaksi->id,
                                 'nama_obat' => $obat->nama_obat,
+                                'idtransaksi' => $transaksi?->id,
                                 'idobat' => $ob->obat,
                                 'qty' => $ob->kronis,
                                 'harga' => $obat->harga_jual,
@@ -331,6 +336,7 @@ class FarmasiController extends Controller
                         'nama_obat' => $obat->nama_obat,
                         'idobat' => $ob->obat,
                         'qty' => $ob->diberikan,
+                        'idtransaksi' => $transaksi?->id,
                         'harga' => $obat->harga_jual,
                         'signa' => $to->signa,
                         'dosis'=> $to->dosis,
