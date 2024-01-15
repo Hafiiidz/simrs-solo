@@ -62,7 +62,8 @@
                         <div class="card-toolbar">
                             <a href="{{ route('poliklinik') }}" class="btn btn-sm btn-secondary me-2">Kembali</a>
                             @if ($resume_medis)
-                                <a id="confirmButton" class="btn btn-sm btn-light-primary" href="#">Update Template</a>
+                                <a id="confirmButton" class="btn btn-sm btn-light-primary" href="#">Update
+                                    Template</a>
                                 <form action="{{ route('rekap-medis-selesai', $resume_medis->id) }}" id='frmSelesai'
                                     method="POST">
                                     @csrf
@@ -97,9 +98,15 @@
                     <div class="card-body">
                         <div class="row mb-10">
                             <div class="col-md-12">
-                                @foreach ($get_template as $temp)
-                                    <a href="{{ route('copy-template',[$temp->idrawat,$rawat->id]) }}" class="btn btn-warning btn-sm">{{ $temp->diagnosa }}</a>
-                                @endforeach
+                                @if (auth()->user()->idpriv == 7)
+                                    @if ($rawat->status != 4 || $rawat->status != 5)
+                                        @foreach ($get_template as $temp)
+                                            <a href="{{ route('copy-template', [$temp->idrawat, $rawat->id]) }}"
+                                                class="btn btn-warning btn-sm">{{ $temp->diagnosa }}</a>
+                                        @endforeach
+                                    @endif
+
+                                @endif
                             </div>
                         </div>
                         <div class="d-flex justify-content-between">
@@ -669,7 +676,8 @@
                                                                 </td>
                                                                 <td>{{ $rd->takaran }}</td>
                                                                 <td>{{ $rd->signa }}</td>
-                                                                <td>{{ $rd->diminum  }} {{ $rd->diminum == null ? '':'makan' }}</td>
+                                                                <td>{{ $rd->diminum }}
+                                                                    {{ $rd->diminum == null ? '' : 'makan' }}</td>
                                                                 <td>{{ $rd->catatan }}</td>
                                                                 <td>
                                                                     <a class="btn btn-sm btn-danger btn-hapus"
@@ -686,7 +694,8 @@
                                                                 <td>{{ $rd->dosis }}</td>
                                                                 <td>{{ $rd->takaran }}</td>
                                                                 <td>{{ $rd->signa }}</td>
-                                                                <td>{{ $rd->diminum }} {{ $rd->diminum == null ? '':'makan' }}</td>
+                                                                <td>{{ $rd->diminum }}
+                                                                    {{ $rd->diminum == null ? '' : 'makan' }}</td>
                                                                 <td>{{ $rd->catatan }}</td>
                                                                 <td>
                                                                     @if (auth()->user()->idpriv == 7)
@@ -1768,7 +1777,7 @@
                             message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
                             baseZ: 9000,
                         });
-                        window.location.href = "{{ route('update-template',$resume_medis->id) }}";
+                        window.location.href = "{{ route('update-template', $resume_medis->id) }}";
                     }
                 });
 
@@ -1849,7 +1858,7 @@
                 search: {
                     return: true
                 },
-                ajax: '{{ route('rekam-medis-poli.data-resep', [$rawat->no_rm,$rawat->id]) }}',
+                ajax: '{{ route('rekam-medis-poli.data-resep', [$rawat->no_rm, $rawat->id]) }}',
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
