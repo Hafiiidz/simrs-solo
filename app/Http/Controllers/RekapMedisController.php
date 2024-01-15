@@ -397,7 +397,10 @@ class RekapMedisController extends Controller
         ->whereRelation('rawat','idpoli',auth()->user()->detail->idpoli)
         ->where('template',1)
         ->whereNotNull('diagnosa')
-        ->orderBy('demo_detail_rekap_medis.diagnosa')->get();
+        ->orderBy('demo_detail_rekap_medis.created_at','desc')
+        ->groupBy('demo_rekap_medis.diagnosa')
+        ->limit(10)
+        ->get();
         // dd($get_template);
         // dd($riwayat_berobat);
         return view('rekap-medis.poliklinik', compact('pasien', 'rawat', 'resume_medis', 'resume_detail', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'soap_tindakan', 'fisio', 'pemeriksaan_lab', 'pemeriksaan_radiologi', 'riwayat_berobat', 'pemeriksaan_luar', 'resep_dokter', 'resep','get_template'));
