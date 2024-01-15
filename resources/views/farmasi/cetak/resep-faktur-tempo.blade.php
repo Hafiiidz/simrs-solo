@@ -231,7 +231,7 @@
                         <tr>
                             <td>Tgl Resep</td>
                             <td>:</td>
-                            <td>{{ $resep->tgl }}</td>
+                            <td>{{ date('Y-m-d') }}</td>
                             <td>Poli/Ruangan</td>
                             <td>:</td>
                             <td>Poli {{ $rawat->poli?->poli }}</td>
