@@ -267,7 +267,12 @@ class FarmasiController extends Controller
         if($antrian->obat != null || $antrian->obat != ''){
             foreach (json_decode($antrian->obat) as $to) {
                 $obat = Obat::find($to->obat);
-                $total_obat += $obat->harga_jual * $to->diberikan;
+                if($to->jenis != 1){
+                    $total_obat += $obat->harga_beli * $to->diberikan;
+                }else{
+                    $total_obat += $obat->harga_jual * $to->diberikan;
+                }
+                
                 if($to->kronis > 0){
                     $total_obat += $obat->harga_jual * $to->kronis;
                     // for($i=1; $i<=$to->kronis; $i++){
@@ -306,11 +311,17 @@ class FarmasiController extends Controller
                 ]);
             }
         }
+
         if($antrian->racikan != null || $antrian->racikan != ''){
             foreach (json_decode($antrian->racikan) as $to) {
                 foreach($to->obat as $ob){
                     if($ob->kronis > 0){
-                        $total_obat += $obat->harga_jual * $ob->kronis;
+                        if($to->jenis != 1){
+                            $total_obat += $obat->harga_beli * $ob->kronis;
+                        }else{
+                            $total_obat += $obat->harga_jual * $ob->kronis;
+                        }
+                        
                         // for($i=1; $i<=$ob->kronis; $i++){
                             DB::table('obat_transaksi_detail')->insert([
                                 'idtrx' => $obat_transaksi->id,
@@ -330,7 +341,11 @@ class FarmasiController extends Controller
                         // }
                     }
                     $obat = Obat::find($ob->obat);
-                    $total_obat += $obat->harga_jual * $ob->diberikan;
+                    if($to->jenis != 1){
+                        $total_obat += $obat->harga_beli * $ob->diberikan;
+                    }else{
+                        $total_obat += $obat->harga_jual * $ob->diberikan;
+                    }
                     DB::table('obat_transaksi_detail')->insert([
                         'idtrx' => $obat_transaksi->id,
                         'nama_obat' => $obat->nama_obat,
