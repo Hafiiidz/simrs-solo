@@ -275,7 +275,41 @@ class RekapMedisController extends Controller
         return redirect()->back()->with('berhasil', 'Pasien Selesai Diperiksa');
     }
 
-    public function data_resep_pasien($no_rm){
+    public function copy_resep($id,$idrawat){
+        $resep = ObatTransaksi::find($id);
+        $rekap_medis = RekapMedis::where('idrawat', $idrawat)->first();
+        $resep_detail = DB::table('obat_transaksi_detail')->where('idtrx', $resep->id)->get();
+        $array = [];
+        foreach($resep_detail as $rd){
+            $obat = Obat::find($rd->idobat);
+            // $array[] = [
+            //     'obat'=>$rd->idobat,
+            //     'takaran'=>$rd->takaran,
+            //     'jumlah'=>$rd->qty,
+            //     'dosis'=>$rd->dosis,
+            //     'signa'=>'',
+            //     'diminum'=>'',
+            // ];
+            $data = [
+                'idrawat'=>$idrawat,
+                'idobat'=>$rd->idobat,
+                'takaran'=>$rd->takaran,
+                'jumlah'=>$rd->qty,
+                'dosis'=>$rd->dosis,
+                'signa'=>'',
+                'diminum'=>'',
+                'nama_obat'=>$obat->nama_obat,
+                'jenis'=>'Non Racik'
+            ];
+            DB::table('demo_resep_dokter')->insert($data);
+        }
+        return redirect()->back()->with('berhasil', 'Resep Berhasil Disalin');
+
+
+       return $array;
+    }
+
+    public function data_resep_pasien($no_rm,$idrawat){
         $resep = ObatTransaksi::where('no_rm', $no_rm)->orderBy('id','desc');
         return DataTables::eloquent($resep)
         ->addColumn('data_obat',function($resep){
@@ -286,12 +320,33 @@ class RekapMedisController extends Controller
             }
             return $html;
         })
-        ->addColumn('aksi', function ($resep) {
-            return '<a href="" class="btn btn-sm btn-success">-</a>';
+        ->addColumn('aksi', function ($resep) use ($idrawat) {
+            return '<a href="'.route('copy-resep',[$resep->id,$idrawat]).'" class="btn btn-sm btn-success">Salin Obat</a>';
         })
         ->addIndexColumn()
         ->rawColumns(['data_obat','aksi'])
         ->make(true);
+    }
+
+    public function copy_template($id,$idrawatbaru){
+        $rekap_lama = RekapMedis::where('idrawat', $id)->first();
+        $rekap_medis = RekapMedis::create([
+            'idrawat'=>$idrawatbaru,
+            'idkategori'=>$rekap_lama->idkategori,
+            'idpasien'=>Rawat::find($idrawatbaru)->pasien->id,
+            'dokter'=>0,
+            'perawat'=>0,
+            'bpjs'=>1,
+        ]);
+
+        $originalPost = DetailRekapMedis::where('idrawat', $id)->first();
+        $pemodal = new DetailRekapMedis();
+        $rawat_baru = Rawat::find($idrawatbaru);
+        $pemodal->fill($originalPost->attributesToArray());
+        $pemodal->idrekapmedis = $rekap_medis->id;
+        $pemodal->idrawat = $idrawatbaru;
+        $pemodal->save();
+        return redirect()->back()->with('berhasil', 'Template Berhasil Disalin');
     }
 
     public function index_poli($id_rawat)
@@ -341,10 +396,11 @@ class RekapMedisController extends Controller
         ->join('demo_detail_rekap_medis','demo_detail_rekap_medis.idrekapmedis','=','demo_rekap_medis.id')
         ->whereRelation('rawat','idpoli',auth()->user()->detail->idpoli)
         ->where('template',1)
+        ->whereNotNull('diagnosa')
         ->orderBy('demo_detail_rekap_medis.diagnosa')->get();
         // dd($get_template);
         // dd($riwayat_berobat);
-        return view('rekap-medis.poliklinik', compact('pasien', 'rawat', 'resume_medis', 'resume_detail', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'soap_tindakan', 'fisio', 'pemeriksaan_lab', 'pemeriksaan_radiologi', 'riwayat_berobat', 'pemeriksaan_luar', 'resep_dokter', 'resep'));
+        return view('rekap-medis.poliklinik', compact('pasien', 'rawat', 'resume_medis', 'resume_detail', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'soap_tindakan', 'fisio', 'pemeriksaan_lab', 'pemeriksaan_radiologi', 'riwayat_berobat', 'pemeriksaan_luar', 'resep_dokter', 'resep','get_template'));
     }
 
     public function copy_data(Request $request, $id)

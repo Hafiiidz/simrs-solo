@@ -849,10 +849,10 @@
                                                 </td>
                                                 <td>{{ $r->total_harga }}</td>
                                                 <td>
-                                                    <a href="{{ route('farmasi.cetak-resep', $r->id) }}"
+                                                    <a href="{{ route('farmasi.cetak-faktur', $r->id) }}"
                                                         class="btn btn-warning btn-sm" target="_blank">Print</a>
-                                                    <a href="{{ route('farmasi.cetak-resep', $r->id) }}"
-                                                        class="btn btn-success btn-sm" target="_blank">Print Resep</a>
+                                                    {{-- <a href="{{ route('farmasi.cetak-resep', $r->id) }}"
+                                                        class="btn btn-success btn-sm" target="_blank">Print Resep</a> --}}
                                                     <a href="{{ route('farmasi.cetak-tiket', $r->id) }}"
                                                         class="btn btn-info btn-sm" target="_blank">Print Tiket</a>
                                                 </td>

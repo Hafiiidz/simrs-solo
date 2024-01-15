@@ -95,6 +95,13 @@
                     </div>
                     <!--begin::Body-->
                     <div class="card-body">
+                        <div class="row mb-10">
+                            <div class="col-md-12">
+                                @foreach ($get_template as $temp)
+                                    <a href="{{ route('copy-template',[$temp->idrawat,$rawat->id]) }}" class="btn btn-warning btn-sm">{{ $temp->diagnosa }}</a>
+                                @endforeach
+                            </div>
+                        </div>
                         <div class="d-flex justify-content-between">
                             <div class="p-0">
                                 <!--begin::Underline-->
@@ -662,7 +669,7 @@
                                                                 </td>
                                                                 <td>{{ $rd->takaran }}</td>
                                                                 <td>{{ $rd->signa }}</td>
-                                                                <td>{{ $rd->diminum . ' makan' }}</td>
+                                                                <td>{{ $rd->diminum  }} {{ $rd->diminum == null ? '':'makan' }}</td>
                                                                 <td>{{ $rd->catatan }}</td>
                                                                 <td>
                                                                     <a class="btn btn-sm btn-danger btn-hapus"
@@ -679,7 +686,7 @@
                                                                 <td>{{ $rd->dosis }}</td>
                                                                 <td>{{ $rd->takaran }}</td>
                                                                 <td>{{ $rd->signa }}</td>
-                                                                <td>{{ $rd->diminum . ' makan' }}</td>
+                                                                <td>{{ $rd->diminum }} {{ $rd->diminum == null ? '':'makan' }}</td>
                                                                 <td>{{ $rd->catatan }}</td>
                                                                 <td>
                                                                     @if (auth()->user()->idpriv == 7)
@@ -1842,7 +1849,7 @@
                 search: {
                     return: true
                 },
-                ajax: '{{ route('rekam-medis-poli.data-resep', $rawat->no_rm) }}',
+                ajax: '{{ route('rekam-medis-poli.data-resep', [$rawat->no_rm,$rawat->id]) }}',
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',

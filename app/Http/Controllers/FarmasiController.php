@@ -370,7 +370,7 @@ class FarmasiController extends Controller
         $obat_transaksi_save->save();
 
         $antrian->status_antrian = 'Selesai';
-        
+        $antrian->idresep = $obat_transaksi->id;
         $antrian->save();
         return back()->with('berhasil', 'Resep Berhasil Di Simpan');
     }
@@ -500,18 +500,26 @@ class FarmasiController extends Controller
         $pdf->setPaper('a5','portrait');
         return $pdf->stream();
     }
-    public function cetakFaktur($id){
-
+   
+    public function cetakResep($id){
+        $resep = ObatTransaksi::where('id', $id)->first();
+        $rawat = Rawat::find($resep->idrawat);
+        $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
+        $detail_resep = DB::table('obat_transaksi_detail')->where('idtrx', $resep->id)->get();
+        $obat = Obat::get();
+        $pdf = PDF::loadview('farmasi.cetak.resep', compact('resep', 'rawat', 'pasien', 'obat', 'detail_resep'));
+        $pdf->setPaper('a5','portrait');
+        return $pdf->stream();
     }
-    public function cetakResep($id)
+    public function cetakFaktur($id)
     {
         $resep = ObatTransaksi::where('id', $id)->first();
         $rawat = Rawat::find($resep->idrawat);
         $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
         $detail_resep = DB::table('obat_transaksi_detail')->where('idtrx', $resep->id)->get();
 
-        $pdf = PDF::loadview('farmasi.cetak.resep', compact('resep', 'rawat', 'pasien', 'detail_resep'));
-        $customPaper =array(0,0,567.00,283.80);
+        $pdf = PDF::loadview('farmasi.cetak.faktur', compact('resep', 'rawat', 'pasien', 'detail_resep'));
+        $customPaper = array(0, 0, 323.15, 790.866);
         $pdf->setPaper($customPaper);
         return $pdf->stream();
     }

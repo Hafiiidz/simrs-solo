@@ -51,7 +51,7 @@
                         <tr>
                             <td>Alamat</td>
                             <td>:</td>
-                            <td><b>{{ $pasien->alamat }}</b></td>
+                            <td><b>{{ substr($pasien->alamat, 0, 10); }}</b></td>
                             <td>Usia</td>
                             <td>:</td>
                             <td><b>{{ $pasien->usia_tahun }}Thn</b></td>
