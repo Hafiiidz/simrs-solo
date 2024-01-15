@@ -750,8 +750,8 @@
                                                     @endphp
                                                     <tr data-id="{{ $rb->id }}">
                                                         <td>{{ $rb->created_at }}</td>
-                                                        <td>{{ $rb->rawat->poli->poli }}</td>
-                                                        <td>{{ $rb->rawat->dokter->nama_dokter }}</td>
+                                                        <td>{{ $rb->rawat?->poli?->poli }}</td>
+                                                        <td>{{ $rb->rawat?->dokter?->nama_dokter }}</td>
                                                         <td>
                                                             @if ($rekap_resume)
                                                                 {{-- @if ($rekap_resume->terapi_obat != 'null')
