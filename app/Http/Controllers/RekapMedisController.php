@@ -403,7 +403,7 @@ class RekapMedisController extends Controller
         ->groupBy('demo_detail_rekap_medis.diagnosa')
         ->limit(20)
         ->get();
-        dd($get_template);
+        // dd($get_template);
         // dd($riwayat_berobat);
         return view('rekap-medis.poliklinik', compact('pasien', 'rawat', 'resume_medis', 'resume_detail', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'soap_tindakan', 'fisio', 'pemeriksaan_lab', 'pemeriksaan_radiologi', 'riwayat_berobat', 'pemeriksaan_luar', 'resep_dokter', 'resep','get_template'));
     }
