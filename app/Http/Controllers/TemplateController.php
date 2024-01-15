@@ -18,7 +18,7 @@ class TemplateController extends Controller
     public function create()
     {
         $perawatBedah = PerawatBedah::orderBy('nama','asc')->get();
-        $dokter = Dokter::orderBy('nama_dokter', 'asc')->get();
+        $dokter = Dokter::where('status',1)->where('kode_dpjp','!=',NULL)->orderBy('nama_dokter', 'asc')->get();
 
         return view('template.create', compact('perawatBedah','dokter'));
     }
@@ -52,7 +52,7 @@ class TemplateController extends Controller
     {
         $data = TemplateOperasi::find($id);
         $perawatBedah = PerawatBedah::orderBy('nama','asc')->get();
-        $dokter = Dokter::orderBy('nama_dokter', 'asc')->get();
+        $dokter = Dokter::where('status',1)->where('kode_dpjp','!=',NULL)->orderBy('nama_dokter', 'asc')->get();
 
         return view('template.edit', compact('data','perawatBedah','dokter'));
     }
@@ -93,7 +93,7 @@ class TemplateController extends Controller
 
     public function getDokter()
     {
-        $dokter = Dokter::orderBy('nama_dokter', 'asc')->get();
+        $dokter = Dokter::where('status',1)->where('kode_dpjp','!=',NULL)->orderBy('nama_dokter', 'asc')->get();
         $data = [];
 
         foreach ($dokter as $val) {

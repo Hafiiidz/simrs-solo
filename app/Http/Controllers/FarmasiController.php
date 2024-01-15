@@ -233,14 +233,6 @@ class FarmasiController extends Controller
             }
         }
 
-     
-
-
-        
-
-        // return $total_obat_racikan;
-
-
         return response()->json([
             'status' => 'true',
             'total' => $total_obat_racikan + $total_obat,
@@ -276,7 +268,7 @@ class FarmasiController extends Controller
                 $total_obat += $obat->harga_jual * $to->diberikan;
                 if($to->kronis > 0){
                     $total_obat += $obat->harga_jual * $to->kronis;
-                    for($i=1; $i<=$to->kronis; $i++){
+                    // for($i=1; $i<=$to->kronis; $i++){
                         DB::table('obat_transaksi_detail')->insert([
                             'idtrx' => $obat_transaksi->id,
                             'nama_obat' => $obat->nama_obat,
@@ -291,7 +283,7 @@ class FarmasiController extends Controller
                             'idbayar' =>3,
                             'no_stok'=>1,
                         ]);
-                    }
+                    // }
                 }
                
                 DB::table('obat_transaksi_detail')->insert([
@@ -315,7 +307,7 @@ class FarmasiController extends Controller
                 foreach($to->obat as $ob){
                     if($ob->kronis > 0){
                         $total_obat += $obat->harga_jual * $ob->kronis;
-                        for($i=1; $i<=$ob->kronis; $i++){
+                        // for($i=1; $i<=$ob->kronis; $i++){
                             DB::table('obat_transaksi_detail')->insert([
                                 'idtrx' => $obat_transaksi->id,
                                 'nama_obat' => $obat->nama_obat,
@@ -330,7 +322,7 @@ class FarmasiController extends Controller
                                 'idbayar' =>3,
                                 'no_stok'=>1,
                             ]);
-                        }
+                        // }
                     }
                     $obat = Obat::find($ob->obat);
                     $total_obat += $obat->harga_jual * $ob->diberikan;
