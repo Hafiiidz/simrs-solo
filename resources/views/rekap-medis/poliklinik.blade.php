@@ -102,7 +102,7 @@
                                     @if ($rawat->status != 4 || $rawat->status != 5)
                                         @foreach ($get_template as $temp)
                                             <a href="{{ route('copy-template', [$temp->idrawat, $rawat->id]) }}"
-                                                class="btn btn-warning btn-sm">{{ $temp->diagnosa }}</a>
+                                                class="btn btn-warning btn-sm py-2">{{ $temp->diagnosa }}</a>
                                         @endforeach
                                     @endif
 
