@@ -399,7 +399,7 @@ class RekapMedisController extends Controller
         ->whereNotNull('diagnosa')
         ->orderBy('demo_detail_rekap_medis.created_at','desc')
         ->groupBy('demo_detail_rekap_medis.diagnosa')
-        ->limit(10)
+        ->limit(20)
         ->get();
         // dd($get_template);
         // dd($riwayat_berobat);
