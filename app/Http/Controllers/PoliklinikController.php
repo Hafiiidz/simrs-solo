@@ -63,21 +63,28 @@ class PoliklinikController extends Controller
                 ->addColumn('status_pemeriksaan', function ($rawat) {
                     #span class="badge badge-success">Selesai</span>
                     $rekap = DB::table('demo_rekap_medis')->where('idrawat',$rawat->id)->first();
-                    if ($rekap->perawat == 1) {
-                        $color_perawat = 'primary';
-                    } else {
-                        $color_perawat = 'danger';
-                    }
-                    if ($rekap->dokter == 1) {
-                        $color_dokter = 'primary';
-                    } else {
-                        $color_dokter = 'danger';
-                    }
-                    if($rekap->bpjs == 1){
-                        $color_bpjs = 'primary';
+                    if($rekap){
+                        if ($rekap->perawat == 1) {
+                            $color_perawat = 'primary';
+                        } else {
+                            $color_perawat = 'danger';
+                        }
+                        if ($rekap->dokter == 1) {
+                            $color_dokter = 'primary';
+                        } else {
+                            $color_dokter = 'danger';
+                        }
+                        if($rekap->bpjs == 1){
+                            $color_bpjs = 'primary';
+                        }else{
+                            $color_bpjs = 'danger';
+                        }
                     }else{
+                        $color_perawat = 'danger';
+                        $color_dokter = 'danger';
                         $color_bpjs = 'danger';
                     }
+                   
                     $perawat = '<span class="badge badge-' . $color_perawat . '">Perawat</span>';
                     $dokter = '<span class="badge badge-' . $color_dokter . '">Dokter</span>';
                     $bpjs = '<span class="badge badge-' . $color_bpjs . '">BPJS</span>';
@@ -147,19 +154,25 @@ class PoliklinikController extends Controller
                 ->addColumn('status_pemeriksaan', function ($rawat) {
                     #span class="badge badge-success">Selesai</span>
                     $rekap = DB::table('demo_rekap_medis')->where('idrawat',$rawat->id)->first();
-                    if ($rekap->perawat == 1) {
-                        $color_perawat = 'primary';
-                    } else {
-                        $color_perawat = 'danger';
-                    }
-                    if ($rekap->dokter == 1) {
-                        $color_dokter = 'primary';
-                    } else {
-                        $color_dokter = 'danger';
-                    }
-                    if($rekap->bpjs == 1){
-                        $color_bpjs = 'primary';
+                    if($rekap){
+                        if ($rekap->perawat == 1) {
+                            $color_perawat = 'primary';
+                        } else {
+                            $color_perawat = 'danger';
+                        }
+                        if ($rekap->dokter == 1) {
+                            $color_dokter = 'primary';
+                        } else {
+                            $color_dokter = 'danger';
+                        }
+                        if($rekap->bpjs == 1){
+                            $color_bpjs = 'primary';
+                        }else{
+                            $color_bpjs = 'danger';
+                        }
                     }else{
+                        $color_perawat = 'danger';
+                        $color_dokter = 'danger';
                         $color_bpjs = 'danger';
                     }
                     $perawat = '<span class="badge badge-' . $color_perawat . '">Perawat</span>';
