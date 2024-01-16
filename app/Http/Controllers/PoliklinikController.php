@@ -25,16 +25,16 @@ class PoliklinikController extends Controller
                     'dokter.kode_dpjp',
                     'rawat_bayar.bayar',
                     'rawat_status.status',
-                    'rekap_medis.dokter',
-                    'rekap_medis.perawat',
-                    'rekap_medis.bpjs',
+                    // 'rekap_medis.dokter',
+                    // 'rekap_medis.perawat',
+                    // 'rekap_medis.bpjs',
                 ])
                 ->join('pasien', 'pasien.no_rm', '=', 'rawat.no_rm')
                 ->join('poli', 'poli.id', '=', 'rawat.idpoli')
                 ->join('rawat_bayar', 'rawat_bayar.id', '=', 'rawat.idbayar')
                 ->join('rawat_status', 'rawat_status.id', '=', 'rawat.status')
                 ->Leftjoin('dokter', 'dokter.id', '=', 'rawat.iddokter')
-                ->Leftjoin('demo_rekap_medis as rekap_medis', 'rekap_medis.idrawat', '=', 'rawat.id')  
+                // ->Leftjoin('demo_rekap_medis as rekap_medis', 'rekap_medis.idrawat', '=', 'rawat.id')  
                 ->whereIn('rawat.status',[1,2,3,4,8])            
                 ->whereDate('rawat.tglmasuk', date('Y-m-d'))
                 ->groupBy('rawat.id')
@@ -62,17 +62,18 @@ class PoliklinikController extends Controller
                 })
                 ->addColumn('status_pemeriksaan', function ($rawat) {
                     #span class="badge badge-success">Selesai</span>
-                    if ($rawat->perawat == 1) {
+                    $rekap = DB::table('demo_rekap_medis')->where('idrawat',$rawat->id)->first();
+                    if ($rekap->perawat == 1) {
                         $color_perawat = 'primary';
                     } else {
                         $color_perawat = 'danger';
                     }
-                    if ($rawat->dokter == 1) {
+                    if ($rekap->dokter == 1) {
                         $color_dokter = 'primary';
                     } else {
                         $color_dokter = 'danger';
                     }
-                    if($rawat->bpjs == 1){
+                    if($rekap->bpjs == 1){
                         $color_bpjs = 'primary';
                     }else{
                         $color_bpjs = 'danger';
@@ -106,16 +107,16 @@ class PoliklinikController extends Controller
                     'dokter.kode_dpjp',
                     'rawat_bayar.bayar',
                     'rawat_status.status',
-                    'rekap_medis.dokter',
-                    'rekap_medis.perawat',
-                    'rekap_medis.bpjs',
+                    // 'rekap_medis.dokter',
+                    // 'rekap_medis.perawat',
+                    // 'rekap_medis.bpjs',
                 ])
                 ->join('pasien', 'pasien.no_rm', '=', 'rawat.no_rm')
                 ->join('poli', 'poli.id', '=', 'rawat.idpoli')
                 ->join('rawat_bayar', 'rawat_bayar.id', '=', 'rawat.idbayar')
                 ->join('rawat_status', 'rawat_status.id', '=', 'rawat.status')
                 ->Leftjoin('dokter', 'dokter.id', '=', 'rawat.iddokter')
-                ->Leftjoin('demo_rekap_medis as rekap_medis', 'rekap_medis.idrawat', '=', 'rawat.id')
+                // ->Leftjoin('demo_rekap_medis as rekap_medis', 'rekap_medis.idrawat', '=', 'rawat.id')
                 ->whereIn('rawat.status',[1,2,3,4,8])
                 ->groupBy('rawat.id')
                 ;
@@ -145,17 +146,18 @@ class PoliklinikController extends Controller
                 })
                 ->addColumn('status_pemeriksaan', function ($rawat) {
                     #span class="badge badge-success">Selesai</span>
-                    if ($rawat->perawat == 1) {
+                    $rekap = DB::table('demo_rekap_medis')->where('idrawat',$rawat->id)->first();
+                    if ($rekap->perawat == 1) {
                         $color_perawat = 'primary';
                     } else {
                         $color_perawat = 'danger';
                     }
-                    if ($rawat->dokter == 1) {
+                    if ($rekap->dokter == 1) {
                         $color_dokter = 'primary';
                     } else {
                         $color_dokter = 'danger';
                     }
-                    if($rawat->bpjs == 1){
+                    if($rekap->bpjs == 1){
                         $color_bpjs = 'primary';
                     }else{
                         $color_bpjs = 'danger';
