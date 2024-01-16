@@ -36,7 +36,9 @@ class PoliklinikController extends Controller
                 ->Leftjoin('dokter', 'dokter.id', '=', 'rawat.iddokter')
                 ->Leftjoin('demo_rekap_medis as rekap_medis', 'rekap_medis.idrawat', '=', 'rawat.id')  
                 ->whereIn('rawat.status',[1,2,3,4,8])            
-                ->whereDate('rawat.tglmasuk', date('Y-m-d'));
+                ->whereDate('rawat.tglmasuk', date('Y-m-d'))
+                ->groupBy('rawat.id')
+                ;
                 if(auth()->user()->idpriv != 20){
                     $rawat->where('rawat.idpoli', auth()->user()->detail->idpoli);
                 }   
@@ -114,7 +116,9 @@ class PoliklinikController extends Controller
                 ->join('rawat_status', 'rawat_status.id', '=', 'rawat.status')
                 ->Leftjoin('dokter', 'dokter.id', '=', 'rawat.iddokter')
                 ->Leftjoin('demo_rekap_medis as rekap_medis', 'rekap_medis.idrawat', '=', 'rawat.id')
-                ->whereIn('rawat.status',[1,2,3,4,8]);
+                ->whereIn('rawat.status',[1,2,3,4,8])
+                ->groupBy('rawat.id')
+                ;
                     
                 if(auth()->user()->idpriv != 20){
                     $rawat->where('rawat.idpoli', auth()->user()->detail->idpoli);

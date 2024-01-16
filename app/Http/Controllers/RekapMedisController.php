@@ -330,21 +330,55 @@ class RekapMedisController extends Controller
 
     public function copy_template($id,$idrawatbaru){
         $rekap_lama = RekapMedis::where('idrawat', $id)->first();
-        $rekap_medis = RekapMedis::create([
-            'idrawat'=>$idrawatbaru,
-            'idkategori'=>$rekap_lama->idkategori,
-            'idpasien'=>Rawat::find($idrawatbaru)->pasien->id,
-            'dokter'=>0,
-            'perawat'=>0,
-            'bpjs'=>1,
-        ]);
-
+        $cek_rekap = RekapMedis::where('idrawat', $idrawatbaru)->first();
+        if($cek_rekap){
+            $rekap_medis = RekapMedis::where('idrawat',$idrawatbaru)->update([
+                'dokter'=>0,
+                'perawat'=>0,
+                'bpjs'=>1,
+            ]);
+        }else{
+            $rekap_medis = RekapMedis::create([
+                'idrawat'=>$idrawatbaru,
+                'idkategori'=>$rekap_lama->idkategori,
+                'idpasien'=>Rawat::find($idrawatbaru)->pasien->id,
+                'dokter'=>0,
+                'perawat'=>0,
+                'bpjs'=>1,
+            ]);
+        }
+        
+        $obat_lama = DB::table('demo_resep_dokter')->where('idrawat', $id)->get();
+        // return $obat_lama;
+        foreach($obat_lama as $ol){
+            $obat = Obat::find($ol->idobat);
+            $data = [
+                'idrawat'=>$idrawatbaru,
+                'idobat'=>$ol->idobat,
+                'takaran'=>$ol->takaran,
+                'jumlah'=>$ol->jumlah,
+                'dosis'=>$ol->dosis,
+                'signa'=>'',
+                'diminum'=>'',
+                'nama_obat'=>$obat->nama_obat,
+                'jenis'=>'Non Racik'
+            ];
+            DB::table('demo_resep_dokter')->insert($data);
+        }
+        
         $originalPost = DetailRekapMedis::where('idrawat', $id)->first();
-        $pemodal = new DetailRekapMedis();
-        $rawat_baru = Rawat::find($idrawatbaru);
+        if(!$cek_rekap){
+            $pemodal = new DetailRekapMedis();
+            $pemodal->idrekapmedis = $rekap_medis->id;
+            $pemodal->idrawat = $idrawatbaru;
+        }else{
+            $pemodal = DetailRekapMedis::where('idrawat', $idrawatbaru)->first();
+            $pemodal->idrekapmedis = $cek_rekap->id;
+            $pemodal->idrawat = $idrawatbaru;
+        }
+       
         $pemodal->fill($originalPost->attributesToArray());
-        $pemodal->idrekapmedis = $rekap_medis->id;
-        $pemodal->idrawat = $idrawatbaru;
+       
         $pemodal->save();
         return redirect()->back()->with('berhasil', 'Template Berhasil Disalin');
     }
