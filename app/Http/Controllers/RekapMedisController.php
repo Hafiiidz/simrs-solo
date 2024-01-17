@@ -336,7 +336,7 @@ class RekapMedisController extends Controller
             $rekap_medis = RekapMedis::where('idrawat',$idrawatbaru)->update([
                 'dokter'=>0,
                 'perawat'=>0,
-                'bpjs'=>1,
+                'bpjs'=>0,
             ]);
         }else{
             $rekap_medis = RekapMedis::create([
@@ -345,7 +345,7 @@ class RekapMedisController extends Controller
                 'idpasien'=>Rawat::find($idrawatbaru)->pasien->id,
                 'dokter'=>0,
                 'perawat'=>0,
-                'bpjs'=>1,
+                'bpjs'=>0,
             ]);
         }
         
