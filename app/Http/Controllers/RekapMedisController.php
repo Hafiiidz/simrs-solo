@@ -331,6 +331,7 @@ class RekapMedisController extends Controller
     public function copy_template($id,$idrawatbaru){
         $rekap_lama = RekapMedis::where('idrawat', $id)->first();
         $cek_rekap = RekapMedis::where('idrawat', $idrawatbaru)->first();
+
         if($cek_rekap){
             $rekap_medis = RekapMedis::where('idrawat',$idrawatbaru)->update([
                 'dokter'=>0,
@@ -430,7 +431,8 @@ class RekapMedisController extends Controller
         ->join('demo_detail_rekap_medis','demo_detail_rekap_medis.idrekapmedis','=','demo_rekap_medis.id')
         ->whereRelation('rawat','idpoli',auth()->user()->detail->idpoli)
         ->where('template',1)
-       
+        ->where('rawat.id','!=',$id_rawat)
+        ->where('rawat.iddokter',$rawat->iddokter)
         ->whereNotNull('diagnosa')
         ->orderBy(DB::raw('COUNT(demo_detail_rekap_medis.diagnosa)'),'DESC')
         // ->orderBy('demo_detail_rekap_medis.created_at','desc')

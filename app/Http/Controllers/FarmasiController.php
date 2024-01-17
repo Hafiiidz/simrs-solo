@@ -235,7 +235,7 @@ class FarmasiController extends Controller
 
         return response()->json([
             'status' => 'true',
-            'total' => $total_obat_racikan + $total_obat,
+            'total' => $total_obat_racikan + $total_obat + $total_kronis,
             'kronis' => $total_kronis
         ]);
     }
@@ -274,7 +274,11 @@ class FarmasiController extends Controller
                 }
                 
                 if($to->kronis > 0){
-                    $total_obat += $obat->harga_jual * $to->kronis;
+                    if($to->jenis != 1){
+                        $total_obat += $obat->harga_beli * $to->kronis;
+                    }else{
+                        $total_obat += $obat->harga_jual * $to->kronis;
+                    }
                     // for($i=1; $i<=$to->kronis; $i++){
                         DB::table('obat_transaksi_detail')->insert([
                             'idtrx' => $obat_transaksi->id,
@@ -375,6 +379,14 @@ class FarmasiController extends Controller
         return back()->with('berhasil', 'Resep Berhasil Di Simpan');
     }
 
+    public function tambah_obat_status(Request $request,$id){
+        return $request->all();
+    }
+
+    public function modal_tambah_obat(){
+
+    }
+
     public function status_rajal($id)
     {
         $rawat = Rawat::find($id);
@@ -383,9 +395,9 @@ class FarmasiController extends Controller
         $rekap_medis = RekapMedis::where('idrawat', $id)->first();
         $obat = Obat::get();
         $transaksi_bayar = DB::table('transaksi_bayar')->where('status',1)->orderBy('urutan', 'asc')->get();
-
+        $takaran = ['-','tablet','kapsul','bungkus','tetes','ml','sendok takar 5ml','sendok takar 15ml','oles'];
         $resep = ObatTransaksi::where('idrawat', $id)->get();
-        return view('farmasi.status-rajal', compact('rawat', 'pasien', 'antrian', 'rekap_medis', 'obat', 'transaksi_bayar', 'resep'));
+        return view('farmasi.status-rajal', compact('rawat', 'pasien', 'antrian', 'rekap_medis', 'obat', 'transaksi_bayar', 'resep','takaran'));
     }
     public function status_ranap($id)
     {
@@ -517,8 +529,8 @@ class FarmasiController extends Controller
         $rawat = Rawat::find($resep->idrawat);
         $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
         $detail_resep = DB::table('obat_transaksi_detail')->where('idtrx', $resep->id)->get();
-
-        $pdf = PDF::loadview('farmasi.cetak.faktur', compact('resep', 'rawat', 'pasien', 'detail_resep'));
+        $cek_kronis = DB::table('obat_transaksi_detail')->where('idbayar',3)->where('idtrx', $resep->id)->count();
+        $pdf = PDF::loadview('farmasi.cetak.faktur', compact('resep', 'rawat', 'pasien', 'detail_resep', 'cek_kronis'));
         $customPaper = array(0, 0, 323.15, 790.866);
         $pdf->setPaper($customPaper);
         return $pdf->stream();

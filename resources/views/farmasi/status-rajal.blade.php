@@ -775,6 +775,11 @@
                                                                 </td>
                                                             </tr>
                                                         @endforeach
+                                                        <tr>
+                                                            <td colspan=7>
+                                                                {{-- <button type="button" data-bs-toggle="modal"data-bs-target="#modal_tambah"class="btn btn-primary btn-sm">Tambah</button> --}}
+                                                            </td>
+                                                        </tr>
                                                     @endif
                                                 @endif
                                             </tbody>
@@ -796,22 +801,24 @@
                                     </div>
                                     <div class="row">
                                         <div class="col">
-                                          
-                                                <form action="{{ route('farmasi.post-resep', $antrian->id) }}" id='formPermintaanobatSelesai'
-                                                    method="post">
-                                                    @csrf
-                                                    <a target="_blank" class="btn btn-warning mt-10"
+
+                                            <form action="{{ route('farmasi.post-resep', $antrian->id) }}"
+                                                id='formPermintaanobatSelesai' method="post">
+                                                @csrf
+                                                <a target="_blank" class="btn btn-warning mt-10"
                                                     href="{{ route('farmasi.cetak-resep-tempo', $antrian->id) }}">Print
                                                     Resep</a>
                                                 <a target="_blank" class="btn btn-light-info mt-10"
                                                     href="{{ route('farmasi.cetak-faktur-tempo', $antrian->id) }}">Print
                                                     Faktur</a>
                                                 <a target="_blank" class="btn btn-light-danger mt-10"
-                                                    href="{{ route('farmasi.cetak-tiket-tempo', $antrian->id) }}">E Tiket</a>
-                                                    <input type="hidden" name="idantrian" id="" value="{{ $antrian->id }}">
-                                                    <button class="btn btn-success mt-10">Simpan Resep</button>
-                                                </form>
-                                           
+                                                    href="{{ route('farmasi.cetak-tiket-tempo', $antrian->id) }}">E
+                                                    Tiket</a>
+                                                <input type="hidden" name="idantrian" id=""
+                                                    value="{{ $antrian->id }}">
+                                                <button class="btn btn-success mt-10">Simpan Resep</button>
+                                            </form>
+
                                         </div>
                                     </div>
                                 @endif
@@ -873,6 +880,133 @@
             <!--end::Content container-->
         </div>
         <!--end::Content-->
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="modal_tambah">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Tambah Obat</h3>
+
+                    <!--begin::Close-->
+                    <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                        aria-label="Close">
+                        <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                    </div>
+                    <!--end::Close-->
+                </div>
+
+                <div class="modal-body">
+                    <div class="card card-bordered">
+                        <div class="card-body">
+
+                            <form id='updNonracikan' method="POST">
+                                @csrf
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Obat</th>
+                                            <th rowspan="2" width=100>Jumlah</th>
+                                            <th rowspan="2" width=100>Dosis</th>
+                                            <th rowspan="2" width=200>Takaran</th>
+                                            <th width=50 colspan="4">Signa</th>
+                                            <th rowspan="2" width=100>Diminum</th>
+                                        </tr>
+                                        <tr>
+                                            <th width=10>P</th>
+                                            <th width=10>S</th>
+                                            <th width=10>SO</th>
+                                            <th width=10>M</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <select name="obat" id='obat'
+                                                    class="form-select form-select-sm" data-control="select2"
+                                                    data-placeholder="-Pilih-" required>
+                                                    {{-- <option value="1" selected>1</option>
+                                        <option value="2" selected>2</option>
+                                        <option value="3" >3</option> --}}
+                                                    <option value=""></option>
+                                                    @foreach ($obat as $val)
+                                                        <option value="{{ $val->id }}">
+                                                            {{ $val->nama_obat }} -
+                                                            {{ $val->satuan->satuan }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" id='jumlah_obat' name="jumlah_obat"
+                                                    class="form-control form-control-sm mb-2 mb-md-0" min="0"
+                                                    required>
+                                            </td>
+                                            <td>
+                                                <input type="text" name="dosis_obat" placeholder="dosis"
+                                                    class="form-control form-control-sm  mb-2 mb-md-0" min="0">
+                                            </td>
+                                            <td>
+                                                <select name="takaran_obat" id='takaran_obat' required
+                                                    class="form-select form-select-sm">
+                                                    <option value="">Pilih Takaran</option>
+                                                    @foreach ($takaran as $t)
+                                                        <option 
+                                                            value="{{ $t }}">{{ $t }}</option>
+                                                    @endforeach
+                                                </select>
+
+                                            </td>
+                                            <td class="text-center align-middle"><input name="diminum[]"
+                                                    class="form-check-input form-check-input-sm" type="checkbox"
+                                                    value="P" id="flexCheckDefault" /></td>
+                                            <td class="text-center align-middle"><input
+                                                    class="form-check-input form-check-input-sm" type="checkbox"
+                                                    value="S" name="diminum[]" id="flexCheckDefault" /></td>
+                                            <td class="text-center align-middle"><input
+                                                    class="form-check-input form-check-input-sm" type="checkbox"
+                                                    value="SO" name="diminum[]" id="flexCheckDefault" /></td>
+                                            <td class="text-center align-middle"><input
+                                                    class="form-check-input form-check-input-sm" type="checkbox"
+                                                    value="M" name="diminum[]" id="flexCheckDefault" /></td>
+                                            <td>
+                                                <div class="form-check form-check-inline mb-2">
+                                                    <input class="form-check-input" type="radio" name="takaran"
+                                                        id="kapsul" value="sebelum">
+                                                    <label class="form-check-label" for="tablet">Sebelum</label>
+                                                </div>
+
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="takaran"
+                                                        id="kapsul" value="sesudah">
+                                                    <label class="form-check-label" for="kapsul">Sesudah</label>
+                                                </div>
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                            <th colspan="10">
+                                                <button type="submit" class="btn btn-success"
+                                                    id='update-data'>Simpan</button>
+                                            </th>
+                                        </tr>
+
+                                    </tbody>
+
+                                </table>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 @section('js')
