@@ -329,9 +329,10 @@ class RekapMedisController extends Controller
     }
 
     public function copy_template($id,$idrawatbaru){
+        // return $idrawatbaru;
         $rekap_lama = RekapMedis::where('idrawat', $id)->first();
         $cek_rekap = RekapMedis::where('idrawat', $idrawatbaru)->first();
-
+        // return $rekap_lama;
         if($cek_rekap){
             $rekap_medis = RekapMedis::where('idrawat',$idrawatbaru)->update([
                 'dokter'=>0,
@@ -339,7 +340,7 @@ class RekapMedisController extends Controller
                 'bpjs'=>0,
             ]);
         }else{
-            $rekap_medis = RekapMedis::create([
+            $rekap_medis_baru = RekapMedis::create([
                 'idrawat'=>$idrawatbaru,
                 'idkategori'=>$rekap_lama->idkategori,
                 'idpasien'=>Rawat::find($idrawatbaru)->pasien->id,
@@ -347,40 +348,50 @@ class RekapMedisController extends Controller
                 'perawat'=>0,
                 'bpjs'=>0,
             ]);
+            // return $rekap_medis->id;
         }
         
-        $obat_lama = DB::table('demo_resep_dokter')->where('idrawat', $id)->get();
-        // return $obat_lama;
-        foreach($obat_lama as $ol){
-            $obat = Obat::find($ol->idobat);
-            $data = [
-                'idrawat'=>$idrawatbaru,
-                'idobat'=>$ol->idobat,
-                'takaran'=>$ol->takaran,
-                'jumlah'=>$ol->jumlah,
-                'dosis'=>$ol->dosis,
-                'signa'=>'',
-                'diminum'=>'',
-                'nama_obat'=>$obat->nama_obat,
-                'jenis'=>'Non Racik'
-            ];
-            DB::table('demo_resep_dokter')->insert($data);
-        }
+        // $obat_lama = DB::table('demo_resep_dokter')->where('idrawat', $id)->get();
+
+        // // return $obat_lama;
+        // foreach($obat_lama as $ol){
+        //     $obat = Obat::find($ol->idobat);
+        //     $data = [
+        //         'idrawat'=>$idrawatbaru,
+        //         'idobat'=>$ol->idobat,
+        //         'takaran'=>$ol->takaran,
+        //         'jumlah'=>$ol->jumlah,
+        //         'dosis'=>$ol->dosis,
+        //         'signa'=>'',
+        //         'diminum'=>'',
+        //         'nama_obat'=>$obat->nama_obat,
+        //         'jenis'=>'Non Racik'
+        //     ];
+        //     DB::table('demo_resep_dokter')->insert($data);
+        // }
         
         $originalPost = DetailRekapMedis::where('idrawat', $id)->first();
+        // return $originalPost;
         if(!$cek_rekap){
+            // return $rekap_medis->id;
             $pemodal = new DetailRekapMedis();
-            $pemodal->idrekapmedis = $rekap_medis->id;
+            $pemodal->fill($originalPost->attributesToArray());
+            
+            $pemodal->idrekapmedis = $rekap_medis_baru->id;
             $pemodal->idrawat = $idrawatbaru;
+       
+            $pemodal->save();
         }else{
             $pemodal = DetailRekapMedis::where('idrawat', $idrawatbaru)->first();
+            
+            $pemodal->fill($originalPost->attributesToArray());
             $pemodal->idrekapmedis = $cek_rekap->id;
             $pemodal->idrawat = $idrawatbaru;
+       
+            $pemodal->save();
         }
        
-        $pemodal->fill($originalPost->attributesToArray());
        
-        $pemodal->save();
         return redirect()->back()->with('berhasil', 'Template Berhasil Disalin');
     }
 
