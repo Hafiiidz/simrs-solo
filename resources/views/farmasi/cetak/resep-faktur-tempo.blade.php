@@ -104,7 +104,7 @@
                             @if ($resep->obat != null || $resep->obat != 'null')
                                 @foreach (json_decode($resep->obat) as $val)
                                     @php
-                                        if ($rawat->idbayarbayar == 1) {
+                                        if ($rawat->idbayar == 1) {
                                             $total += App\Helpers\VclaimHelper::get_harga_obat($val->obat, $rawat->idbayar) * $val->diberikan;
                                             $total += 3000;
                                         } else {
@@ -119,7 +119,7 @@
                                         <td style="border: 1px solid black;" class="text-center">{{ $val->diberikan }}
                                         </td>
                                         <td style="border: 1px solid black;" class="text-end">
-                                            @if ($rawat->idbayarbayar == 1)
+                                            @if ($rawat->idbayar == 1)
                                             {{ number_format(App\Helpers\VclaimHelper::get_harga_obat($val->obat, $rawat->idbayar) * $val->diberikan + 3000) }}
                                             @else
                                             {{ number_format(App\Helpers\VclaimHelper::get_harga_obat($val->obat, $rawat->idbayar) * $val->diberikan) }}
@@ -135,7 +135,7 @@
                                     @endphp
                                     @foreach ($val->obat as $obat)
                                         @php
-                                            if ($rawat->idbayarbayar == 1) {
+                                            if ($rawat->idbayar == 1) {
                                                 $total += App\Helpers\VclaimHelper::get_harga_obat($obat->obat, $rawat->idbayar) * $obat->diberikan;
                                                 $total += 3000;
                                             } else {
@@ -151,7 +151,7 @@
                                             <td style="border: 1px solid black;" class="text-center">
                                                 {{ $obat->diberikan }}</td>
                                             <td style="border: 1px solid black;" class="text-end">
-                                                @if ($rawat->idbayarbayar == 1)
+                                                @if ($rawat->idbayar == 1)
                                                 {{ number_format(App\Helpers\VclaimHelper::get_harga_obat($obat->obat, $rawat->idbayar) * $obat->diberikan + 3000) }}
                                                 @else
                                                 {{ number_format(App\Helpers\VclaimHelper::get_harga_obat($obat->obat, $rawat->idbayar) * $obat->diberikan) }}
