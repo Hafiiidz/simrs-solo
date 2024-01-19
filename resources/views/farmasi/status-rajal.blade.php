@@ -1189,12 +1189,13 @@
 
         $("#btn-resep").on("click", function() {
             var formData = $("#formPermintaanobat").serialize();
-            console.log(formData)
+            // console.log(formData)
             $.ajax({
                 type: "GET",
                 url: '{{ route('farmasi.update-resep') }}',
                 data: formData,
                 success: function(response) {
+                    console.log(response);
                     $('#total_resep').val('Rp.' + response.total);
                 }
             });

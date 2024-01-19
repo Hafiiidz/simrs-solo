@@ -36,7 +36,7 @@ class FarmasiController extends Controller
     public function updateResep(Request $request)
     {
         
-       
+    //    return $request->idantrian;
         // return $select_resep;
         $obat_non_racik = 0;
         $obat_racikan = 0;
@@ -53,7 +53,7 @@ class FarmasiController extends Controller
                         }                    
                     }
                 }
-                // return $gabungkanArray;
+                return $request->idantrian;
                 $pemberian = [];
                 foreach($gabungkanArray as $key => $value){
                     $pemberian[] = $value['pemberian'];
@@ -63,6 +63,7 @@ class FarmasiController extends Controller
                         'idantrian'=>$request->idantrian
                     ]);
                 }
+                return $pemberian;
                 
                 foreach($gabungkanArray as $key => $value){
                     $resep_dokter = DB::table('demo_resep_dokter')->where('id', $key)->first();
@@ -167,6 +168,7 @@ class FarmasiController extends Controller
                 $select_resep_non = DB::table('demo_resep_dokter')->where('id', $non_racik)->update([
                     'diberikan'=>$request->pemberian[$non_racik],
                     'kronis'=>$request->kronis[$non_racik],
+                    'idantrian'=>$request->idantrian
                 ]);
                 
                 $rd = DB::table('demo_resep_dokter')->where('id', $non_racik)->first();
@@ -672,6 +674,8 @@ class FarmasiController extends Controller
             DB::table('demo_resep_dokter')->where('idrawat', $request->idrawat)->whereNotNull('idantrian')->update([
                 'idantrian'=>$request->idtambah,
             ]);
+
+
             $resep = DB::table('demo_resep_dokter')->insertGetId([
                 'idrawat'=>$request->idrawat,
                 'idantrian'=>$request->idtambah,
