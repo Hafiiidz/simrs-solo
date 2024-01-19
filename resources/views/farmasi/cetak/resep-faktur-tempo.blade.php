@@ -120,9 +120,9 @@
                                         </td>
                                         <td style="border: 1px solid black;" class="text-end">
                                             @if ($rawat->idbayar == 1)
-                                            {{ number_format(App\Helpers\VclaimHelper::get_harga_obat($val->obat, $rawat->id) * $obat->diberikan + 3000) }}
+                                            {{ number_format(App\Helpers\VclaimHelper::get_harga_obat($val->obat, $rawat->id) * $val->diberikan + 3000) }}
                                             @else
-                                            {{ number_format(App\Helpers\VclaimHelper::get_harga_obat($val->obat, $rawat->id) * $obat->diberikan) }}
+                                            {{ number_format(App\Helpers\VclaimHelper::get_harga_obat($val->obat, $rawat->id) * $val->diberikan) }}
                                             @endif
                                         </td>
                                     </tr>
