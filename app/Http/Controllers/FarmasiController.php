@@ -276,19 +276,24 @@ class FarmasiController extends Controller
         if($antrian->obat != null || $antrian->obat != ''){
             foreach (json_decode($antrian->obat) as $to) {
                 $obat = Obat::find($to->obat);
-                if($to->jenis != 1){
-                    $total_obat += $obat->harga_beli * $to->diberikan;
+                if($to->jenis != 1){                    
+                    $tuslah = 0;
+                    $total_obat += $obat->harga_beli * $to->diberikan + $tuslah;
                     $harga = $obat->harga_beli;
                 }else{
-                    $total_obat += $obat->harga_jual * $to->diberikan;
+                    
+                    $tuslah = 3000;
+                    $total_obat += $obat->harga_jual * $to->diberikan + $tuslah;
                     $harga = $obat->harga_jual;
                 }
                 
                 if($to->kronis > 0){
                     if($to->jenis != 1){
+                        $tuslah = 0;
                         $total_obat += $obat->harga_beli * $to->kronis;
                         $harga = $obat->harga_beli;
-                    }else{
+                    }else{                        
+                        $tuslah = 3000;
                         $total_obat += $obat->harga_jual * $to->kronis;
                         $harga = $obat->harga_jual;
                     }
@@ -301,6 +306,7 @@ class FarmasiController extends Controller
                             'qty' => $to->kronis,
                             'harga' => $harga,
                             'signa' => $to->signa,
+                            'tuslah'=>$tuslah,
                             'dosis'=> $to->dosis,
                             'diminum'=> $to->diminum,
                             'takaran'=> $to->takaran,
@@ -319,10 +325,11 @@ class FarmasiController extends Controller
                     'qty' => $to->diberikan,
                     'harga' => $harga,
                     'signa' => $to->signa,
+                    'tuslah'=>$tuslah,
                     'dosis'=> $to->dosis,
                     'diminum'=> $to->diminum,
                     'takaran'=> $to->takaran,
-                    'total' => $harga * $to->diberikan,
+                    'total' => $harga * $to->diberikan + $tuslah,
                     'idbayar' => $to->jenis,
                     'no_stok'=>1,
                 ]);
@@ -349,10 +356,14 @@ class FarmasiController extends Controller
                 foreach($to->obat as $ob){
                     if($ob->kronis > 0){
                         if($to->jenis != 1){
-                            $total_obat_racikan += $obat->harga_beli * $ob->kronis;
+                            
+                            $tuslah = 0;
+                            $total_obat_racikan += $obat->harga_beli * $ob->kronis + $tuslah;
                             $harga = $obat->harga_beli;
                         }else{
-                            $total_obat_racikan += $obat->harga_jual * $ob->kronis;
+                            
+                            $tuslah = 3000;
+                            $total_obat_racikan += $obat->harga_jual * $ob->kronis + $tuslah;
                             $harga = $obat->harga_jual;
                         }
                         
@@ -364,11 +375,12 @@ class FarmasiController extends Controller
                                 'idobat' => $ob->obat,
                                 'qty' => $ob->kronis,
                                 'harga' => $harga,
+                                'tuslah'=>$tuslah,
                                 'signa' => $to->signa,
                                 'dosis'=> $to->dosis,
                                 'diminum'=> $to->diminum,
                                 'takaran'=> $to->takaran,
-                                'total' => $harga * $ob->kronis,
+                                'total' => $harga * $ob->kronis + $tuslah,
                                 'idbayar' =>3,
                                 'no_stok'=>1,
                             ]);
@@ -376,11 +388,15 @@ class FarmasiController extends Controller
                     }
                     $obat = Obat::find($ob->obat);
                     if($to->jenis != 1){
-                        $total_obat_racikan += $obat->harga_beli * $ob->diberikan;
+                        $tuslah = 0;
+                        $total_obat_racikan += $obat->harga_beli * $ob->diberikan + $tuslah;
                         $harga = $obat->harga_beli;
+                        
                     }else{
-                        $total_obat_racikan += $obat->harga_jual * $ob->diberikan;
+                        $tuslah = 3000;
+                        $total_obat_racikan += $obat->harga_jual * $ob->diberikan + $tuslah;
                         $harga = $obat->harga_jual;
+                        
                     }
                     DB::table('obat_transaksi_detail')->insert([
                         'idtrx' => $obat_transaksi->id,
@@ -390,10 +406,11 @@ class FarmasiController extends Controller
                         'idtransaksi' => $transaksi?->id,
                         'harga' => $harga,
                         'signa' => $to->signa,
+                        'tuslah'=>$tuslah,
                         'dosis'=> $to->dosis,
                         'diminum'=> $to->diminum,
                         'takaran'=> $to->takaran,
-                        'total' => $harga * $ob->diberikan,
+                        'total' => $harga * $ob->diberikan + $tuslah,
                         'idbayar' => $to->jenis,
                         'no_stok'=>1,
                     ]);
