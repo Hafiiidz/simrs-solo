@@ -104,7 +104,7 @@
                             @if ($resep->obat != null || $resep->obat != 'null')
                                 @foreach (json_decode($resep->obat) as $val)
                                     @php
-                                        $total += App\Helpers\VclaimHelper::get_harga_obat($val->obat) * $val->diberikan;
+                                        $total += App\Helpers\VclaimHelper::get_harga_obat($val->obat,$rawat->id) * $val->diberikan;
                                     @endphp
                                     <tr class="border">
                                         {{-- <td style="border: 1px solid black;" class="text-center">{{ $loop->iteration }}</td> --}}
@@ -113,7 +113,7 @@
                                         <td style="border: 1px solid black;" class="text-center">{{ $val->diberikan }}
                                         </td>
                                         <td style="border: 1px solid black;" class="text-end">
-                                            {{ number_format(App\Helpers\VclaimHelper::get_harga_obat($val->obat) * $val->diberikan) }}
+                                            {{ number_format(App\Helpers\VclaimHelper::get_harga_obat($val->obat,$rawat->id) * $val->diberikan) }}
                                         </td>
                                     </tr>
                                 @endforeach
@@ -125,7 +125,7 @@
                                     @endphp
                                     @foreach ($val->obat as $obat)
                                         @php
-                                            $total += App\Helpers\VclaimHelper::get_harga_obat($obat->obat) * $obat->diberikan;
+                                            $total += App\Helpers\VclaimHelper::get_harga_obat($obat->obat,$rawat->id) * $obat->diberikan;
                                         @endphp
                                         <tr>
                                             <td style="border: 1px solid black;">
@@ -134,7 +134,7 @@
                                             <td style="border: 1px solid black;" class="text-center">
                                                 {{ $obat->diberikan }}</td>
                                             <td style="border: 1px solid black;" class="text-end">
-                                                {{ number_format(App\Helpers\VclaimHelper::get_harga_obat($obat->obat) * $obat->diberikan) }}
+                                                {{ number_format(App\Helpers\VclaimHelper::get_harga_obat($obat->obat,$rawat->id) * $obat->diberikan) }}
                                             </td>
                                         </tr>
                                     @endforeach
@@ -261,7 +261,7 @@
                                     @foreach (json_decode($resep->obat) as $val)
                                         @if ($val->kronis > 0)
                                             @php
-                                                $total += App\Helpers\VclaimHelper::get_harga_obat($val->obat) * $val->kronis;
+                                                $total += App\Helpers\VclaimHelper::get_harga_obat($val->obat,$rawat->id) * $val->kronis;
                                             @endphp
                                             <tr class="border">
                                                 {{-- <td style="border: 1px solid black;" class="text-center">{{ $loop->iteration }}</td> --}}
@@ -270,7 +270,7 @@
                                                 <td style="border: 1px solid black;" class="text-center">
                                                     {{ $val->kronis }}</td>
                                                 <td style="border: 1px solid black;" class="text-end">
-                                                    {{ number_format(App\Helpers\VclaimHelper::get_harga_obat($val->obat) * $val->kronis) }}
+                                                    {{ number_format(App\Helpers\VclaimHelper::get_harga_obat($val->obat,$rawat->id) * $val->kronis) }}
                                                 </td>
                                             </tr>
                                         @endif
@@ -284,7 +284,7 @@
                                         @foreach ($val->obat as $obat)
                                             @if ($obat->kronis > 0)
                                                 @php
-                                                    $total += App\Helpers\VclaimHelper::get_harga_obat($obat->obat) * $obat->kronis;
+                                                    $total += App\Helpers\VclaimHelper::get_harga_obat($obat->obat,$rawat->id) * $obat->kronis;
                                                 @endphp
                                                 <tr>
                                                     <td style="border: 1px solid black;">
@@ -293,7 +293,7 @@
                                                     <td style="border: 1px solid black;" class="text-center">
                                                         {{ $obat->kronis }}</td>
                                                     <td style="border: 1px solid black;" class="text-end">
-                                                        {{ number_format(App\Helpers\VclaimHelper::get_harga_obat($obat->obat) * $obat->kronis) }}
+                                                        {{ number_format(App\Helpers\VclaimHelper::get_harga_obat($obat->obat,$rawat->id) * $obat->kronis) }}
                                                     </td>
                                                 </tr>
                                             @endif
