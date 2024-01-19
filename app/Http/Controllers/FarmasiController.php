@@ -53,7 +53,7 @@ class FarmasiController extends Controller
                         }                    
                     }
                 }
-                return $request->idantrian;
+                // return $request->idantrian;
                 $pemberian = [];
                 foreach($gabungkanArray as $key => $value){
                     $pemberian[] = $value['pemberian'];
@@ -63,7 +63,7 @@ class FarmasiController extends Controller
                         'idantrian'=>$request->idantrian
                     ]);
                 }
-                return $pemberian;
+                // return $pemberian;
                 
                 foreach($gabungkanArray as $key => $value){
                     $resep_dokter = DB::table('demo_resep_dokter')->where('id', $key)->first();
