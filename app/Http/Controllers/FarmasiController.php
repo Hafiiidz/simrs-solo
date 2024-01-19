@@ -119,7 +119,8 @@ class FarmasiController extends Controller
                             'obat' => $finalResult['obat'][$i],
                             'jumlah_obat' => $finalResult['jumlah_obat'][$i],
                             'diberikan' => $finalResult['diberikan'][$i],
-                            'kronis' => $finalResult['kronis'][$i]
+                            'kronis' => $finalResult['kronis'][$i],
+                            
                         );
                     }
                    
@@ -668,6 +669,9 @@ class FarmasiController extends Controller
         //     'obat'=>$obat
         // ]);
         try{
+            DB::table('demo_resep_dokter')->where('idrawat', $request->idrawat)->whereNotNull('idantrian')->update([
+                'idantrian'=>$request->idtambah,
+            ]);
             $resep = DB::table('demo_resep_dokter')->insertGetId([
                 'idrawat'=>$request->idrawat,
                 'idantrian'=>$request->idtambah,

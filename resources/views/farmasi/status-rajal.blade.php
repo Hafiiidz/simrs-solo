@@ -798,6 +798,11 @@
                                                         @endforeach
                                                         <tr>
                                                             <td colspan=7>
+                                                                <div class="alert alert-primary d-flex align-items-center p-5 mb-10">
+                                                                    <i class="ki-duotone ki-shield-tick fs-2hx text-primary me-4"><span class="path1"></span><span class="path2"></span></i>                    <div class="d-flex flex-column">
+                                                                        <h4 class="mb-1 text-primary">Klik Update terlebih dahulu untuk dapat menambah obat</h4>
+                                                                    </div>
+                                                                </div>
                                                                 <button type="button" data-id="{{ $antrian->id }}"
                                                                     id="modal_tambah_non"
                                                                     class="btn btn-primary btn-sm">Tambah</button>
