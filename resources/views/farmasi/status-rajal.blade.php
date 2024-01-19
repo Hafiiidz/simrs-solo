@@ -643,7 +643,7 @@
                                                                             @if ($ob_racikan->obat != null)
                                                                                 <tr>
                                                                                     <td>{!! App\Helpers\VclaimHelper::get_data_obat($ob_racikan->obat) !!}</td>
-                                                                                    <td>{!! App\Helpers\VclaimHelper::get_harga_obat($ob_racikan->obat) !!}</td>
+                                                                                    <td>{!! App\Helpers\VclaimHelper::get_harga_obat($ob_racikan->obat, $rawat->idbayar) !!}</td>
                                                                                     <td class="text-center">
                                                                                         {{ $ob_racikan->jumlah_obat }}</td>
                                                                                     <td>
@@ -725,8 +725,29 @@
                                                             <input type="hidden" value="{{ $antrian->id }}"
                                                                 name='idantrian'>
                                                             <tr>
-                                                                <td>{!! App\Helpers\VclaimHelper::get_data_obat($val->obat) !!}</td>
-                                                                <td>{!! App\Helpers\VclaimHelper::get_harga_obat($val->obat) !!}</td>
+                                                                <td>
+                                                                    @if (isset($val->tambahan_farmasi))
+                                                                        @if ($val->tambahan_farmasi != null)
+                                                                            <button type="button"
+                                                                                data-id="{{ $antrian->id }}"
+                                                                                data-value="{{ $val->obat }}"
+                                                                                class="btn btn-light-danger btn-sm btn-hapus-farmasi">
+                                                                                {!! App\Helpers\VclaimHelper::get_data_obat($val->obat) !!}</button>
+                                                                        @else
+                                                                            <button type="button"
+                                                                                class="btn btn-light-success btn-sm">
+                                                                                {!! App\Helpers\VclaimHelper::get_data_obat($val->obat) !!}
+                                                                            </button>
+                                                                        @endif
+                                                                    @else
+                                                                        <button type="button"
+                                                                            class="btn btn-light-success btn-sm">
+                                                                            {!! App\Helpers\VclaimHelper::get_data_obat($val->obat) !!}
+                                                                        </button>
+                                                                    @endif
+
+                                                                </td>
+                                                                <td>{!! App\Helpers\VclaimHelper::get_harga_obat($val->obat, $rawat->idbayar) !!}</td>
                                                                 <td class="text-center">
                                                                     {{ $val->jumlah }}</td>
                                                                 <td>
@@ -777,7 +798,9 @@
                                                         @endforeach
                                                         <tr>
                                                             <td colspan=7>
-                                                                {{-- <button type="button" data-bs-toggle="modal"data-bs-target="#modal_tambah"class="btn btn-primary btn-sm">Tambah</button> --}}
+                                                                <button type="button" data-id="{{ $antrian->id }}"
+                                                                    id="modal_tambah_non"
+                                                                    class="btn btn-primary btn-sm">Tambah</button>
                                                             </td>
                                                         </tr>
                                                     @endif
@@ -854,7 +877,7 @@
                                                         @endforeach
                                                     </ol>
                                                 </td>
-                                                <td>{{ $r->total_harga }}</td>
+                                                <td>{{ number_format($r->total_harga + $r->jasa_racik) }}</td>
                                                 <td>
                                                     <a href="{{ route('farmasi.cetak-faktur', $r->id) }}"
                                                         class="btn btn-warning btn-sm" target="_blank">Print</a>
@@ -900,12 +923,29 @@
                     <div class="card card-bordered">
                         <div class="card-body">
 
-                            <form id='updNonracikan' method="POST">
+                            <form id='updNonracikan' action="{{ route('farmasi.tambah-obat') }}" method="POST">
                                 @csrf
+                                {{-- <label for="">aaa</label> --}}
+                                <input type="hidden" name="idtambah" id="id_tambah">
+                                <input type="hidden" name="idrawat" id="id_rawat" value="{{ $rawat->id }}">
+                                <div class="row mb-5">
+                                    <div class="col-md-12">
+                                        <label for="">Obat</label>
+                                        <select name="obat_non" id='nama_obat_non' class="form-select form-select-sm"
+                                            data-control="select2" data-placeholder="-Pilih-" required>
+                                            <option value=""></option>
+                                            @foreach ($obat as $val)
+                                                <option value="{{ $val->id }}">
+                                                    {{ $val->nama_obat }} -
+                                                    {{ $val->satuan->satuan }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>Obat</th>
                                             <th rowspan="2" width=100>Jumlah</th>
                                             <th rowspan="2" width=100>Dosis</th>
                                             <th rowspan="2" width=200>Takaran</th>
@@ -923,22 +963,6 @@
                                     <tbody>
                                         <tr>
                                             <td>
-                                                <select name="obat" id='obat'
-                                                    class="form-select form-select-sm" data-control="select2"
-                                                    data-placeholder="-Pilih-" required>
-                                                    {{-- <option value="1" selected>1</option>
-                                        <option value="2" selected>2</option>
-                                        <option value="3" >3</option> --}}
-                                                    <option value=""></option>
-                                                    @foreach ($obat as $val)
-                                                        <option value="{{ $val->id }}">
-                                                            {{ $val->nama_obat }} -
-                                                            {{ $val->satuan->satuan }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td>
                                                 <input type="number" id='jumlah_obat' name="jumlah_obat"
                                                     class="form-control form-control-sm mb-2 mb-md-0" min="0"
                                                     required>
@@ -952,8 +976,7 @@
                                                     class="form-select form-select-sm">
                                                     <option value="">Pilih Takaran</option>
                                                     @foreach ($takaran as $t)
-                                                        <option 
-                                                            value="{{ $t }}">{{ $t }}</option>
+                                                        <option value="{{ $t }}">{{ $t }}</option>
                                                     @endforeach
                                                 </select>
 
@@ -1002,8 +1025,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+
                 </div>
             </div>
         </div>
@@ -1016,6 +1038,9 @@
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js"></script>
     <script>
         $(function() {
+            $('#nama_obat_non').select2({
+                dropdownParent: $('#modal_tambah')
+            });
             $('#kt_docs_repeater_basic').repeater({
                 initEmpty: false,
                 repeaters: [{
@@ -1044,7 +1069,86 @@
                 }
             });
 
+            $("#modal_tambah_non").on("click", function(event) {
+                var id = $(this).data('id');
+                $('#modal_tambah').modal('show');
+                $('#id_tambah').val(id);
+
+            })
             $("#formPermintaanobatSelesai").on("submit", function(event) {
+                event.preventDefault();
+                var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                Swal.fire({
+                    title: 'Simpan Data',
+                    text: "Apakah Anda yakin akan menyimpan data ini ? data yang sudah di simpan tidak dapat di hapus kembali",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Simpan Data',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.blockUI({
+                            css: {
+                                border: 'none',
+                                padding: '15px',
+                                backgroundColor: '#000',
+                                '-webkit-border-radius': '10px',
+                                '-moz-border-radius': '10px',
+                                opacity: .5,
+                                color: '#fff',
+                                fontSize: '16px'
+                            },
+                            message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                            baseZ: 9000,
+                        });
+                        this.submit();
+                    }
+                });
+            });
+            $(".btn-hapus-farmasi").on("click", function(event) {
+                var idantrian = $(this).data('id');
+                var idobat = $(this).data('value');
+                event.preventDefault();
+                var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                Swal.fire({
+                    title: 'Hapus Data',
+                    text: "Apakah Anda yakin akan menghapus data ini ?",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Hapus Data',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    $.ajax({
+                            method: "GET",
+                            url: "{{ route('hapus-data-resep') }}",
+                            data: {
+                                antrian: idantrian,
+                                idobat: idobat
+                            }
+                        })
+                        .done(function(msg) {
+                            //reload page
+                            console.log(msg);
+                            Swal.fire({
+                                text: 'Data berhasil di hapus',
+                                icon: "success",
+                                buttonsStyling: false,
+                                confirmButtonText: "Ok",
+                                customClass: {
+                                    confirmButton: "btn btn-primary"
+                                }
+                            });
+                            location.reload();
+                        });
+                });
+
+
+            })
+            $("#updNonracikan").on("submit", function(event) {
                 event.preventDefault();
                 var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
                 Swal.fire({

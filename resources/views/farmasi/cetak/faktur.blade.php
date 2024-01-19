@@ -116,9 +116,24 @@
                                     </tr>
                                 @endif
                             @endforeach
+                            @php
+                                $total_racik = 0;
+                            @endphp
+                            @if (count($racik) > 0)
+                                    @php
+                                        $total_racik = 10000 * count($racik);
+                                    @endphp
+                                <tr class="border">
+                                    <td style="border: 1px solid black;" colspan="3" class="text-end">Total Racik
+                                    </td>
+                                    <td style="border: 1px solid black;" class="text-end">
+                                        Rp.{{ number_format($total_racik) }}
+                                    </td>
+                                </tr>
+                            @endif
                             <tr class="border">
                                 <td style="border: 1px solid black;" colspan="3" class="text-end">Total Harga</td>
-                                <td style="border: 1px solid black;" class="text-end">Rp.{{ number_format($total) }}
+                                <td style="border: 1px solid black;" class="text-end">Rp.{{ number_format($total+$total_racik) }}
                                 </td>
                             </tr>
                         </tbody>
@@ -133,7 +148,8 @@
             <div class="row">
                 <table>
                     <tr>
-                        <td rowspan="3"><img width="40" src="data:image/png;base64, {!! base64_encode(file_get_contents(public_path('image/logosiswanto.png'))) !!} "></td>
+                        <td rowspan="3"><img width="40" src="data:image/png;base64, {!! base64_encode(file_get_contents(public_path('image/logosiswanto.png'))) !!} ">
+                        </td>
                         <td>FARMASI RSAU dr.SISWANTO</td>
                     </tr>
                     <tr>
@@ -156,7 +172,8 @@
                             <td>{{ $pasien->nama_pasien }}</td>
                             <td>Usia</td>
                             <td>:</td>
-                            <td>{{ $pasien->usia_tahun }}Th , {{ $pasien->usia_bulan }}Bln , {{ $pasien->usia_hari }}Hr
+                            <td>{{ $pasien->usia_tahun }}Th , {{ $pasien->usia_bulan }}Bln ,
+                                {{ $pasien->usia_hari }}Hr
                             </td>
                         </tr>
                         <tr>
@@ -209,19 +226,24 @@
                                             $total_kronis += $val->total;
                                         @endphp
                                         <tr class="border">
-                                            <td style="border: 1px solid black;" class="text-center">{{ $loop->iteration }}
+                                            <td style="border: 1px solid black;" class="text-center">
+                                                {{ $loop->iteration }}
                                             </td>
                                             <td style="border: 1px solid black;">{{ $val->nama_obat }}</td>
-                                            <td style="border: 1px solid black;" class="text-center">{{ $val->qty }}
+                                            <td style="border: 1px solid black;" class="text-center">
+                                                {{ $val->qty }}
                                             </td>
                                             <td style="border: 1px solid black;" class="text-end">
                                                 Rp.{{ number_format($val->total) }}</td>
                                         </tr>
                                     @endif
                                 @endforeach
+
                                 <tr class="border">
-                                    <td style="border: 1px solid black;" colspan="3" class="text-end">Total Harga</td>
-                                    <td style="border: 1px solid black;" class="text-end">Rp.{{ number_format($total_kronis) }}
+                                    <td style="border: 1px solid black;" colspan="3" class="text-end">Total Harga
+                                    </td>
+                                    <td style="border: 1px solid black;" class="text-end">
+                                        Rp.{{ number_format($total_kronis) }}
                                     </td>
                                 </tr>
                             </tbody>

@@ -154,8 +154,8 @@ class RekapMedisController extends Controller
                     }
                 }
                 
-                $no_antrian = DB::table('demo_antrian_resep')->whereDate('created_at', Carbon::today())->where('jenis_rawat', $rekap_medis->idrawat)->count();
-                DB::table('demo_antrian_resep')->insert([
+                $no_antrian = DB::table('demo_antrian_resep')->whereDate('created_at', Carbon::today())->where('jenis_rawat', $rawat->idjenisrawat)->count();
+                $antrian = DB::table('demo_antrian_resep')->insertGetId([
                     'idrawat' => $rekap_medis->idrawat,
                     'racikan' => json_encode($racikan),
                     'idbayar' => $rekap_medis->rawat->idbayar,
@@ -167,6 +167,9 @@ class RekapMedisController extends Controller
                     'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
                     'created_at' => now(),
                     'updated_at' => now(),
+                ]);
+                DB::table('demo_resep_dokter')->where('idrawat', $rawat->id)->whereNull('idantrian')->update([
+                    'idantrian'=>$antrian
                 ]);
             }
 

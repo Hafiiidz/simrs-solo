@@ -255,6 +255,8 @@ Route::prefix('/farmasi')->group(function () {
     Route::get('/cetak-resep/{id}', [FarmasiController::class, 'cetakResep'])->middleware('auth')->name('farmasi.cetak-resep');
     Route::get('/cetak-tiket/{id}', [FarmasiController::class, 'cetakTiket'])->middleware('auth')->name('farmasi.cetak-tiket');
     Route::get('/cetak-tiket-tempo/{id}', [FarmasiController::class, 'cetakTiketTempo'])->middleware('auth')->name('farmasi.cetak-tiket-tempo');
+    Route::get('/hapus-data-resep', [FarmasiController::class, 'hapus_obat'])->middleware('auth')->name('hapus-data-resep');
+    Route::post('/tambah-obat', [FarmasiController::class, 'tambah_obat'])->middleware('auth')->name('farmasi.tambah-obat');
 });
 Route::prefix('/rawat-jalan')->group(function () {
     Route::get('/poli', [PoliklinikController::class, 'index'])->middleware('auth')->name('poliklinik');
@@ -268,7 +270,7 @@ Route::prefix('/rawat-jalan')->group(function () {
         Route::post('/edit-tindak-lanjut/{id}', [TindakLanjutController::class, 'post_edit_tindak_lanjut'])->middleware('auth')->name('tindak-lanjut.post_edit_tindak_lanjut');
     });
     Route::prefix('/rekam-medis')->group(function () {
-        Route::get('/{idrawat}/{id_rawat_baru}/copy-template', [RekapMedisController::class, 'copy_template'])->name('copy-template');
+        Route::get('/{idrawat}/{idrawatbaru}/copy-template', [RekapMedisController::class, 'copy_template'])->name('copy-template');
         Route::get('/{id_resep}/{idrawat}/copy-resep', [RekapMedisController::class, 'copy_resep'])->name('copy-resep');
         Route::get('/{id_pasien}/update-template', [RekapMedisController::class, 'update_template'])->name('update-template');
         Route::get('/{id_pasien}/show', [RekapMedisController::class, 'index_poli'])->name('rekam-medis-poli');
