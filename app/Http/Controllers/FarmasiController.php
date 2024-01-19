@@ -219,7 +219,7 @@ class FarmasiController extends Controller
                 $total_obat += $obat->harga_beli * $non->diberikan;
                 $total_kronis += $obat->harga_beli *$non->kronis;
             }else{
-                $total_obat += $obat->harga_jual * $non->diberikan;
+                $total_obat += $obat->harga_jual * $non->diberikan + 3000;
                 $total_kronis += $obat->harga_beli *$non->kronis;
             }           
 
@@ -232,7 +232,7 @@ class FarmasiController extends Controller
                     $total_obat_racikan += $obat->harga_beli * $bat->diberikan;
                     $total_kronis += $obat->harga_beli *$bat->kronis;
                 }else{
-                    $total_obat_racikan += $obat->harga_jual * $bat->diberikan;
+                    $total_obat_racikan += $obat->harga_jual * $bat->diberikan + 3000;
                     $total_kronis += $obat->harga_beli *$bat->kronis;
                 }           
             }
