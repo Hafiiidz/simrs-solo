@@ -105,8 +105,7 @@
                                 @foreach (json_decode($resep->obat) as $val)
                                     @php
                                         if ($rawat->idbayar == 1) {
-                                            $total += App\Helpers\VclaimHelper::get_harga_obat($val->obat, $rawat->id) * $val->diberikan;
-                                            +3000;
+                                            $total += App\Helpers\VclaimHelper::get_harga_obat($val->obat, $rawat->id) * $val->diberikan+3000;
                                         } else {
                                             $total += App\Helpers\VclaimHelper::get_harga_obat($val->obat, $rawat->id) * $val->diberikan;
                                         }
