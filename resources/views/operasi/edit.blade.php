@@ -913,6 +913,7 @@
                                                                         <!--begin::Form group-->
                                                                         <div class="form-group">
                                                                             <div data-repeater-list="obat_anastesi">
+                                                                               
                                                                                 @if ($data->obat_anastesi)
                                                                                     @foreach (json_decode($data->obat_anastesi) as $val)
                                                                                         <div data-repeater-item>
@@ -1287,6 +1288,38 @@
                                                     class="d-inline-block position-absolute h-5px bottom-0 end-0 start-0 bg-success translate rounded"></span>
                                                 <!--end::Line-->
                                             </span>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <span class="d-inline-block position-relative mb-7">
+                                                        <!--begin::Label-->
+                                                        <span class="d-inline-block mb-2 fs-4 fw-bold">
+                                                            Template Anastesi
+                                                        </span>
+                                                        <!--end::Label-->
+
+                                                        <!--begin::Line-->
+                                                        <span
+                                                            class="d-inline-block position-absolute h-5px bottom-0 end-0 start-0 bg-primary translate rounded"></span>
+                                                        <!--end::Line-->
+                                                    </span>
+                                                    <div class="row">
+                                                        <div class="col-md-10">
+                                                            <div class="row justify-content-md-start">
+                                                                <div class="col-md-auto">
+                                                                    @foreach ($template_anastesi as $val)
+                                                                        @if($loop->iteration < 7)
+                                                                            <button type="button" class="btn btn-light-primary btn-sm" onclick="showTemplate({{ $val->id }})">{{ $val->nama }}</button>
+                                                                        @endif
+                                                                    @endforeach
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modal-template-anastesi">Template Lainnya</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="row mb-5">
                                                 <div class="col">
                                                     <a href="{{ route('cetak-catatan-anestesi.operasi', $catatan->id) }}" class="btn btn-sm btn-secondary" target="_blank">Cetak Catatan Anestesi</a>
@@ -1381,7 +1414,8 @@
                                                             <!--begin::Form group-->
                                                             <div class="form-group">
                                                                 <div data-repeater-list="obat_anestesi_catatan" class="row">
-                                                                @if ($catatan->obat_anestesi)
+                                                                    
+                                                                    @if ($catatan->obat_anestesi)
                                                                     @foreach (json_decode($catatan->obat_anestesi) as $val)
                                                                         <div class="col-md-4" data-repeater-item>
                                                                             <div class="form-group row mb-5">
@@ -1409,7 +1443,10 @@
                                                                         </div>
                                                                     @endforeach
                                                                 @else
+                                                                    <div id="template_obat_anastesi"></div>
+                                                                    
                                                                     <div class="col-md-4" data-repeater-item>
+                                                                       
                                                                         <div class="form-group row mb-5">
                                                                             <div class="col-md-10">
                                                                                 <input type="text"
@@ -2009,6 +2046,22 @@
                                                 </div>
                                                 <div class="row mt-5">
                                                     <div class="col-md-12">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="check_template_anastesi" />
+                                                            <label class="form-check-label" for="flexCheckDefault">
+                                                                <b>Simpan Ke Template</b>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-5 d-none" id="tampil_template_anastesi">
+                                                    <div class="col-md-6">
+                                                        <label for="" class="form-label required">Nama Template</label>
+                                                        <input type="text" name="nama_template" id="nama_template_anastesi" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-5">
+                                                    <div class="col-md-12">
                                                         <button type="submit" class="btn btn-primary">Simpan</button>
                                                     </div>
                                                 </div>
@@ -2075,6 +2128,33 @@
     </div>
 
     <!-- Modal -->
+    <div class="modal fade" id="modal-template-anastesi" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Template</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+                <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="" class="form-label">Template Anastesi</label>
+                        <select name="template_lain_anastesi" id="template_lain_anastesi" data-control="select2" data-placeholder="-Pilih-" class="form-select">
+                            <option></option>
+                            @foreach ($template_anastesi as $val)
+                                <option value="{{ $val->id }}">{{ $val->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="btn-terapkan-anastesi" type="button" class="btn btn-primary">Terapkan</button>
+            </div>
+        </div>
+        </div>
+    </div>
     <div class="modal fade" id="modal-template" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
         <div class="modal-content">
@@ -2726,6 +2806,45 @@
             });
 
         });
+        $("#btn-terapkan-anastesi").on( "click", function(e) {
+
+            var id = $('#template_lain_anastesi').val();
+            if(id === ""){
+                Swal.fire('Template Tidak Boleh Kosong','','warning');
+                return false;
+            }
+
+            $.ajax({
+                type: 'GET',
+                url: '{{ route('show.template-anastesi') }}',
+                data: { template_id : id},
+                beforeSend: function() {
+                    $('#modal-template-anastesi').modal('hide');
+                    $.blockUI({
+                        css: {
+                            border: 'none',
+                            padding: '15px',
+                            backgroundColor: '#000',
+                            '-webkit-border-radius': '10px',
+                            '-moz-border-radius': '10px',
+                            opacity: .5,
+                            color: '#fff',
+                            fontSize: '16px'
+                        },
+                        message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                        baseZ: 9000,
+                    });
+                },
+                success: function(data) {
+                    $('#template_obat_anastesi').html(data.obat_anastesi);
+                    $.unblockUI();
+                },
+                error: function(data) {
+                    console.log('error');
+                },
+            });
+
+        });
 
         $('#check_template').change(function() {
             if(this.checked) {
@@ -2735,6 +2854,15 @@
             }
             $('#tampil_template').addClass('d-none');
             $("#nama_template").prop('required',false);
+        });
+        $('#check_template_anastesi').change(function() {
+            if(this.checked) {
+                $('#tampil_template_anastesi').removeClass('d-none');
+                $("#nama_template_anastesi").prop('required',true);
+                return false;
+            }
+            $('#tampil_template_anastesi').addClass('d-none');
+            $("#nama_template_anastesi").prop('required',false);
         });
 
         @if ($message = session('gagal'))

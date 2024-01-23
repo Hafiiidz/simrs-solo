@@ -2,13 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Operasi\PerawatBedah;
 use App\Models\Dokter;
+use Illuminate\Http\Request;
+use App\Models\TemplateAnastesi;
+use App\Http\Controllers\Controller;
+use App\Models\Operasi\PerawatBedah;
 use App\Models\Template\TemplateOperasi;
+use Illuminate\Support\Collection;
 
 class TemplateController extends Controller
 {
+    public function index_template_anastesi(){
+        $data = TemplateAnastesi::all();
+        return view('template.index-anastesi', compact('data'));
+    }
+
+    public function create_anastesi()
+    {
+        $perawatBedah = PerawatBedah::orderBy('nama','asc')->get();
+        $dokter = Dokter::where('status',1)->where('kode_dpjp','!=',NULL)->orderBy('nama_dokter', 'asc')->get();
+
+        return view('template.create-anastesi', compact('perawatBedah','dokter'));
+    }
+
     public function index()
     {
         $data = TemplateOperasi::all();
@@ -23,6 +39,32 @@ class TemplateController extends Controller
         return view('template.create', compact('perawatBedah','dokter'));
     }
 
+    public function store_anastesi(Request $request){
+        // return $request->all();
+        $stadia = new Collection([
+            'anestesi' => $request->anestesi,
+            'operasi' => $request->operasi,
+            'respirasi' => $request->respirasi
+        ]);
+        $data = new TemplateAnastesi;
+        $data->obat_anestesi =  json_encode($request->obat_anestesi_catatan);
+        $data->nama = $request->nama;
+        $data->teknik_anestesi = $request->teknik_anestesi;
+        $data->premedikasi = $request->premedikasi;
+        $data->pemberian = $request->pemberian;
+        $data->efek = $request->efek;
+        $data->stadia = $stadia;
+        $data->catatan = $request->catatan;
+        $data->lama_anestesi = $request->lama_anestesi;
+        $data->pra_anestesi = $request->pra_anestesi;
+        $data->post_anestesi = $request->post_anestesi;
+        $data->status = 1;
+        $data->save();
+        
+        return redirect()->route('index.template-anastesi')->with('berhasil','Data Berhasil Ditambahkan!');
+        
+
+    }
     public function store(Request $request)
     {
         $data = new TemplateOperasi;
@@ -121,18 +163,58 @@ class TemplateController extends Controller
         return response()->json($data);
     }
 
+    public function showTemplateAnastesi(Request $request){
+        $data = TemplateAnastesi::find($request->template_id);
+        $obat_anastesi = '';
+        if($data->obat_anestesi != 'null'){
+            foreach(json_decode($data->obat_anestesi) as $val){
+            $obat_anastesi .='
+            <div class="col-md-4" data-repeater-item>                                                                       
+                <div class="form-group row mb-5">
+                    <div class="col-md-10">
+                        <input type="text"
+                            name="obat_anestesi_catatan" value="'.$val->obat_anestesi_catatan.'"
+                            class="form-control mb-2 mb-md-0 mt-5"
+                            placeholder="Masukan Nama Obat" />
+                    </div>
+                    <div class="col-md-2">
+                        <a href="javascript:;"
+                            data-repeater-delete
+                            class="btn btn-sm btn-light-danger mt-6">
+                            <i class="ki-duotone ki-trash fs-5">
+                                <span
+                                    class="path1"></span><span
+                                    class="path2"></span><span
+                                    class="path3"></span><span
+                                    class="path4"></span><span
+                                    class="path5"></span>
+                            </i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            ';
+        }
+    }
+        return response()->json([
+            'status' => 'true',
+            'template' => $data,
+            'obat_anastesi' => $obat_anastesi,
+        ]);
+    }
     public function showTemplate(Request $request)
     {
         $data = TemplateOperasi::find($request->template_id);
         $dokter_bedah = '';
         if($data->dokter_bedah != 'null'){
         foreach(json_decode($data->dokter_bedah) as $val){
-            $dokter_bedah .= '<div data-repeater-item> <div class="form-group row mb-5"><div class="col-md-10">
+            $dokter_bedah .= '<div data-repeater-item> 
+                                    <div class="form-group row mb-5"><div class="col-md-10">
                                         <label class="form-label">Dokter Bedah</label>
                                         <input type="text"
-                                            name="dokter_bedah"
+                                            name="dokter_bedah  "
                                             class="form-control mb-2 mb-md-0"
-                                            placeholder="Masukan Nama" value="'. $val->dokter_bedah .'" required />
+                                            placeholder="Dokter Bedah" value="'. $val->dokter_bedah .'" required />
                                     </div>
                                     <div class="col-md-2">
                                         <a href="javascript:;"
@@ -144,6 +226,8 @@ class TemplateController extends Controller
                                 </div>
                             </div>';
         }
+        
+        
     }
 
         $perawat_bedah = '';

@@ -9,6 +9,7 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Models\Operasi\LaporanOperasi;
 use App\Models\Operasi\CatatanAnestesi;
 use App\Models\Template\TemplateOperasi;
+use App\Models\TemplateAnastesi;
 use App\Models\Rawat;
 use App\Models\Pasien\Pasien;
 use App\Models\Tarif;
@@ -140,9 +141,10 @@ class LaporanOperasiController extends Controller
             $catatan->save();
         }
         $template = TemplateOperasi::where('status', 1)->get();
+        $template_anastesi = TemplateAnastesi::where('status', 1)->get();
 
         // dd($tindakan);
-        return view('operasi.edit', compact('data','dokter','tindakan','tarif','catatan','template','sign_in','sign_out','time_out'));
+        return view('operasi.edit', compact('data','dokter','tindakan','tarif','catatan','template','sign_in','sign_out','time_out','template_anastesi'));
     }
 
     public function update(Request $request, $id)
@@ -265,7 +267,22 @@ class LaporanOperasiController extends Controller
             'post_anestesi' => $request->post_anestesi
         ];
         $data = CatatanAnestesi::where('laporan_operasi_id', $request->laporan_operasi_id)->first();
-
+        if($request->nama_template){
+            $data = new TemplateAnastesi;
+            $data->obat_anestesi =  json_encode($request->obat_anestesi_catatan);
+            $data->nama = $request->nama_template ;
+            $data->teknik_anestesi = $request->teknik_anestesi;
+            $data->premedikasi = $request->premedikasi;
+            $data->pemberian = $request->pemberian;
+            $data->efek = $request->efek;
+            $data->stadia = $stadia;
+            $data->catatan = $request->catatan;
+            $data->lama_anestesi = $request->lama_anestesi;
+            $data->pra_anestesi = $request->pra_anestesi;
+            $data->post_anestesi = $request->post_anestesi;
+            $data->status = 1;
+            $data->save();
+        }
         if($data){
             CatatanAnestesi::find($data->id)->update($anestesi);
 

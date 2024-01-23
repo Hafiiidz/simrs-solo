@@ -349,12 +349,16 @@ Route::prefix('/pasien')->group(function () {
     //template
     Route::prefix('/template')->group(function () {
         Route::get('/', [TemplateController::class, 'index'])->name('index.template');
+        Route::get('/template-anastesi', [TemplateController::class, 'index_template_anastesi'])->name('index.template-anastesi');
+        Route::get('/create-anastesi', [TemplateController::class, 'create_anastesi'])->name('create.template-anastesi');
         Route::get('/create', [TemplateController::class, 'create'])->name('create.template');
         Route::post('/store', [TemplateController::class, 'store'])->name('store.template');
+        Route::post('/store-anastesi', [TemplateController::class, 'store_anastesi'])->name('store.template-anastesi');
         Route::get('/edit/{id}', [TemplateController::class, 'edit'])->name('edit.template');
         Route::post('/update/{id}', [TemplateController::class, 'update'])->name('update.template');
         Route::get('/update-status/{id}/{status}', [TemplateController::class, 'updateStatus'])->name('update-status.template');
         Route::get('/show', [TemplateController::class, 'showTemplate'])->name('show.template');
+        Route::get('/show-anastesi', [TemplateController::class, 'showTemplateAnastesi'])->name('show.template-anastesi');
     });
 
     //gizi

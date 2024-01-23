@@ -351,12 +351,24 @@
                             <div class="menu-item">
                                 <!--begin:Menu link-->
 
-                                <a class="menu-link {{ Request::is('pasien/template') || Request::is('pasien/template/*') ? 'active' : '' }}"
+                                <a class="menu-link {{ Request::is('pasien/template') || Request::is('pasien/template') ? 'active' : '' }}"
                                     href="{{ route('index.template') }}">
                                     <span class="menu-bullet">
                                         <span class="bullet bullet-dot"></span>
                                     </span>
                                     <span class="menu-title">Template Operasi</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+
+                                <a class="menu-link {{ Request::is('pasien/template/template-anastesi') || Request::is('pasien/template/template-anastesi') ? 'active' : '' }}"
+                                    href="{{ route('index.template-anastesi') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <span class="menu-title">Template Anastesi</span>
                                 </a>
                                 <!--end:Menu link-->
                             </div>
