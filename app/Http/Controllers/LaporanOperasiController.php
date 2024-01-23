@@ -130,7 +130,9 @@ class LaporanOperasiController extends Controller
             'dokter.nama_dokter',
         ])
         ->where('operasi_tindakan.idrawat',$data->idrawat)->get();
-
+        $sign_in = DB::table('demo_checklist_sign_in')->get();
+        $sign_out = DB::table('demo_checklist_sign_out')->get();
+        $time_out = DB::table('demo_checklist_time_out')->get();
         $catatan = CatatanAnestesi::where('laporan_operasi_id', $id)->first();
         if($catatan == null){
             $catatan = new CatatanAnestesi;
@@ -140,7 +142,7 @@ class LaporanOperasiController extends Controller
         $template = TemplateOperasi::where('status', 1)->get();
 
         // dd($tindakan);
-        return view('operasi.edit', compact('data','dokter','tindakan','tarif','catatan','template'));
+        return view('operasi.edit', compact('data','dokter','tindakan','tarif','catatan','template','sign_in','sign_out','time_out'));
     }
 
     public function update(Request $request, $id)
@@ -243,6 +245,9 @@ class LaporanOperasiController extends Controller
             'jam' => $request->jam,
             'efek' => $request->efek,
             'obat_anestesi' => json_encode($request->obat_anestesi_catatan),
+            'spo2' => json_encode($request->spo2),
+            'nadi' => json_encode($request->nadi),
+            'rr' => json_encode($request->rr),
             'o2' => json_encode($request->o2),
             'n2o' => json_encode($request->n2o),
             'isoflurane' => json_encode($request->isoflurane),

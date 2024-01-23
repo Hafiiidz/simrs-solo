@@ -337,12 +337,13 @@ class RekapMedisController extends Controller
         $cek_rekap = RekapMedis::where('idrawat', $idrawatbaru)->first();
         // return $rekap_lama;
         if($cek_rekap){
-            $rekap_medis = RekapMedis::where('idrawat',$idrawatbaru)->update([
-                'dokter'=>0,
-                'perawat'=>0,
-                'bpjs'=>0,
-            ]);
+            // $rekap_medis = RekapMedis::where('idrawat',$idrawatbaru)->update([
+            //     'dokter'=>0,
+            //     'perawat'=>0,
+            //     'bpjs'=>0,
+            // ]);
         }else{
+            return back()->with('gagal','Data gagal disalin harap perawat mengisi isiannya terlebih dahulu')
             $rekap_medis_baru = RekapMedis::create([
                 'idrawat'=>$idrawatbaru,
                 'idkategori'=>$rekap_lama->idkategori,
@@ -377,19 +378,15 @@ class RekapMedisController extends Controller
         // return $originalPost;
         if(!$cek_rekap){
             // return $rekap_medis->id;
-            $pemodal = new DetailRekapMedis();
-            $pemodal->fill($originalPost->attributesToArray());
-            
-            $pemodal->idrekapmedis = $rekap_medis_baru->id;
-            $pemodal->idrawat = $idrawatbaru;
-       
-            $pemodal->save();
+            return back()->with('gagal','Data gagal disalin harap perawat mengisi isiannya terlebihdahulu')
         }else{
             $pemodal = DetailRekapMedis::where('idrawat', $idrawatbaru)->first();
             
-            $pemodal->fill($originalPost->attributesToArray());
-            $pemodal->idrekapmedis = $cek_rekap->id;
-            $pemodal->idrawat = $idrawatbaru;
+            $pemodal->diagnosa = $originalPost->diagnosa;
+            $pemodal->anamnesa_dokter = $originalPost->anamnesa_dokter;
+            $pemodal->kategori_penyakit = $originalPost->kategori_penyakit;
+            $pemodal->icdx = $originalPost->icdx;
+            $pemodal->icd9 = $originalPost->icd9;
        
             $pemodal->save();
         }

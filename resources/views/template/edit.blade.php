@@ -80,7 +80,7 @@
                                                 </a>
                                             </div>
                                             <!--end::Form group-->
-                                            @if ($data->dokter_bedah)
+                                            @if ($data->dokter_bedah != 'null')
                                                 @foreach (json_decode($data->dokter_bedah) as $val)
                                                     <div data-repeater-item class="mt-3">
                                                         <div class="form-group row mb-5">
@@ -138,7 +138,7 @@
                                                 </a>
                                             </div>
                                             <!--end::Form group-->
-                                            @if ($data->perawat_bedah)
+                                            @if ($data->perawat_bedah != 'null')
                                                 @foreach (json_decode($data->perawat_bedah) as $val)
                                                 <div data-repeater-item class="mt-3">
                                                     <div class="form-group row mb-5">
@@ -196,7 +196,7 @@
                                                 </a>
                                             </div>
                                             <!--end::Form group-->
-                                            @if ($data->asisten)
+                                            @if ($data->asisten != 'null')
                                                 @foreach (json_decode($data->asisten) as $val)
                                                 <div data-repeater-item class="mt-3">
                                                     <div class="form-group row mb-5">

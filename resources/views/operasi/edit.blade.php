@@ -142,6 +142,11 @@
                                     <ul class="nav nav-tabs flex-nowrap text-nowrap" role="tablist">
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0 active"
+                                                data-bs-toggle="tab" href="#kt_tab_pane_0" aria-selected="true"
+                                                role="tab">Check List</a>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0 "
                                                 data-bs-toggle="tab" href="#kt_tab_pane_1" aria-selected="true"
                                                 role="tab">Laporan Operasi</a>
                                         </li>
@@ -158,7 +163,99 @@
                                     </ul>
                                 </div>
                                 <div class="tab-content" id="myTabContent">
-                                    <div class="tab-pane fade show active" id="kt_tab_pane_1" role="tabpanel">
+                                    <div class="tab-pane fade show active" id="kt_tab_pane_0" role="tabpanel">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <span class="text-center">
+                                                    <h6 class=" mb-2 mt-2 p-2">Sebelum Induksi Anastesi <br> (SIGN IN)</h6>
+                                                </span>
+                                                
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <td>Item</td>
+                                                            <td width='100'>Ceklis</td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($sign_in as $si)
+                                                            <tr>
+                                                                <td>{{ $si->item_cek }}</td>
+                                                                <td>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                                                                        <label class="form-check-label" for="flexCheckDefault">
+                                                                            Check
+                                                                        </label>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span class="text-center">
+                                                    <h6 class=" mb-2 mt-2 p-2">Sebelum Mengiris Kulit <br> (Time Out)</h6>
+                                                </span>
+                                                
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <td>Item</td>
+                                                            <td width='100'>Ceklis</td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($time_out as $to)
+                                                            <tr>
+                                                                <td>{{ $to->item_cek }}</td>
+                                                                <td>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                                                                        <label class="form-check-label" for="flexCheckDefault">
+                                                                            Check
+                                                                        </label>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span class="text-center">
+                                                    <h6 class=" mb-2 mt-2 p-2">Sebelum Pasien Meninggalkan Ruangan  <br>(SIGN OUT)</h6>
+                                                </span>
+                                                
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <td>Item</td>
+                                                            <td width='100'>Ceklis</td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($sign_out as $so)
+                                                            <tr>
+                                                                <td>{{ $so->item_cek }}</td>
+                                                                <td>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                                                                        <label class="form-check-label" for="flexCheckDefault">
+                                                                            Check
+                                                                        </label>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade " id="kt_tab_pane_1" role="tabpanel">
                                         <div class="rounded border p-5">
                                             <div class="row">
                                                 <div class="col-md-12">
@@ -1344,6 +1441,181 @@
                                                         <!--end::Repeater-->
                                                     </div>
                                                 </div>
+
+                                                {{-- spo2 --}}
+                                                <div class="row mt-3">
+                                                    <div class="col-md-12">
+                                                        <label class="form-label">SPO2</label>
+                                                        <!--begin::Repeater-->
+                                                        <div id="spo2">
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group mt-1">
+                                                                <a href="javascript:;" data-repeater-create class="btn btn-sm btn-light-primary">
+                                                                    <i class="ki-duotone ki-plus fs-3"></i>
+                                                                    Tambah
+                                                                </a>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group">
+                                                                <div data-repeater-list="spo2" class="row">
+                                                                    @if ($catatan->spo2)
+                                                                        @foreach (json_decode($catatan->spo2) as $val)
+                                                                        <div class="col-md-4" data-repeater-item>
+                                                                            <div class="form-group row mb-5">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="text" name="spo2" class="form-control mb-2 mb-md-0 mt-5" placeholder="Per 15 Menit" value="{{ $val->spo2 }}" />
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-6">
+                                                                                        <i class="ki-duotone ki-trash fs-5">
+                                                                                            <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                                                                                        </i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        @endforeach
+                                                                    @else
+                                                                        <div class="col-md-4" data-repeater-item>
+                                                                            <div class="form-group row mb-5">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="text" name="spo2" class="form-control mb-2 mb-md-0 mt-5" placeholder="Per 15 Menit" />
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-6">
+                                                                                        <i class="ki-duotone ki-trash fs-5">
+                                                                                            <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                                                                                        </i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                        </div>
+                                                        <!--end::Repeater-->
+                                                    </div>
+                                                </div>
+                                                {{-- end spo2 --}}
+                                                {{-- Nadi --}}
+                                                <div class="row mt-3">
+                                                    <div class="col-md-12">
+                                                        <label class="form-label">Nadi</label>
+                                                        <!--begin::Repeater-->
+                                                        <div id="nadi">
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group mt-1">
+                                                                <a href="javascript:;" data-repeater-create class="btn btn-sm btn-light-primary">
+                                                                    <i class="ki-duotone ki-plus fs-3"></i>
+                                                                    Tambah
+                                                                </a>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group">
+                                                                <div data-repeater-list="nadi" class="row">
+                                                                    @if ($catatan->nadi)
+                                                                        @foreach (json_decode($catatan->nadi) as $val)
+                                                                        <div class="col-md-4" data-repeater-item>
+                                                                            <div class="form-group row mb-5">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="text" name="nadi" class="form-control mb-2 mb-md-0 mt-5" placeholder="Per 15 Menit" value="{{ $val->nadi }}" />
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-6">
+                                                                                        <i class="ki-duotone ki-trash fs-5">
+                                                                                            <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                                                                                        </i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        @endforeach
+                                                                    @else
+                                                                        <div class="col-md-4" data-repeater-item>
+                                                                            <div class="form-group row mb-5">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="text" name="nadi" class="form-control mb-2 mb-md-0 mt-5" placeholder="Per 15 Menit" />
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-6">
+                                                                                        <i class="ki-duotone ki-trash fs-5">
+                                                                                            <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                                                                                        </i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                        </div>
+                                                        <!--end::Repeater-->
+                                                    </div>
+                                                </div>
+                                                {{-- end Nadi --}}
+                                                {{-- RR --}}
+                                                <div class="row mt-3">
+                                                    <div class="col-md-12">
+                                                        <label class="form-label">RR</label>
+                                                        <!--begin::Repeater-->
+                                                        <div id="rr">
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group mt-1">
+                                                                <a href="javascript:;" data-repeater-create class="btn btn-sm btn-light-primary">
+                                                                    <i class="ki-duotone ki-plus fs-3"></i>
+                                                                    Tambah
+                                                                </a>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                            <!--begin::Form group-->
+                                                            <div class="form-group">
+                                                                <div data-repeater-list="rr" class="row">
+                                                                    @if ($catatan->rr)
+                                                                        @foreach (json_decode($catatan->rr) as $val)
+                                                                        <div class="col-md-4" data-repeater-item>
+                                                                            <div class="form-group row mb-5">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="text" name="rr" class="form-control mb-2 mb-md-0 mt-5" placeholder="Per 15 Menit" value="{{ $val->rr }}" />
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-6">
+                                                                                        <i class="ki-duotone ki-trash fs-5">
+                                                                                            <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                                                                                        </i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        @endforeach
+                                                                    @else
+                                                                        <div class="col-md-4" data-repeater-item>
+                                                                            <div class="form-group row mb-5">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="text" name="rr" class="form-control mb-2 mb-md-0 mt-5" placeholder="Per 15 Menit" />
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-6">
+                                                                                        <i class="ki-duotone ki-trash fs-5">
+                                                                                            <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                                                                                        </i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <!--end::Form group-->
+                                                        </div>
+                                                        <!--end::Repeater-->
+                                                    </div>
+                                                </div>
+                                                {{-- End RR --}}
                                                 <div class="row mt-3">
                                                     <div class="col-md-12">
                                                         <label class="form-label">O2</label>
@@ -2235,6 +2507,39 @@
             }
         });
 
+        $('#spo2').repeater({
+            initEmpty: false,
+
+            show: function() {
+                $(this).slideDown();
+            },
+
+            hide: function(deleteElement) {
+                $(this).slideUp(deleteElement);
+            }
+        });
+        $('#nadi').repeater({
+            initEmpty: false,
+
+            show: function() {
+                $(this).slideDown();
+            },
+
+            hide: function(deleteElement) {
+                $(this).slideUp(deleteElement);
+            }
+        });
+        $('#rr').repeater({
+            initEmpty: false,
+
+            show: function() {
+                $(this).slideDown();
+            },
+
+            hide: function(deleteElement) {
+                $(this).slideUp(deleteElement);
+            }
+        });
         $('#o2').repeater({
             initEmpty: false,
 

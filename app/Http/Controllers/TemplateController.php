@@ -125,6 +125,7 @@ class TemplateController extends Controller
     {
         $data = TemplateOperasi::find($request->template_id);
         $dokter_bedah = '';
+        if($data->dokter_bedah != 'null'){
         foreach(json_decode($data->dokter_bedah) as $val){
             $dokter_bedah .= '<div data-repeater-item> <div class="form-group row mb-5"><div class="col-md-10">
                                         <label class="form-label">Dokter Bedah</label>
@@ -143,9 +144,10 @@ class TemplateController extends Controller
                                 </div>
                             </div>';
         }
-
+    }
 
         $perawat_bedah = '';
+        if($data->perawat_bedah != 'null'):
         foreach(json_decode($data->perawat_bedah) as $val){
             $perawat_bedah .= '<div data-repeater-item><div class="form-group row mb-5"><div class="col-md-10">
                                             <label class="form-label">Perawat Bedah</label>
@@ -164,8 +166,9 @@ class TemplateController extends Controller
                                     </div>
                                 </div>';
         }
-
+    endif;
         $asisten = '';
+        if($data->asisten != 'null'):
         foreach(json_decode($data->asisten) as $val){
         $asisten .= '<div data-repeater-item><div class="form-group row mb-5"><div class="col-md-10">
                                 <label class="form-label">Asisten</label>
@@ -184,7 +187,7 @@ class TemplateController extends Controller
                         </div>
                     </div>';
         }
-
+    endif;
         $isi_tindakan = '';
         foreach(json_decode($data->tindakan_bedah) as $val){
             $isi_tindakan .= '<div data-repeater-item><div class="form-group row mb-5"><div class="col-md-10">
