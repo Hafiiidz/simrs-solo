@@ -343,7 +343,7 @@ class RekapMedisController extends Controller
             //     'bpjs'=>0,
             // ]);
         }else{
-            return back()->with('gagal','Data gagal disalin harap perawat mengisi isiannya terlebih dahulu')
+            return back()->with('gagal','Data gagal disalin harap perawat mengisi isiannya terlebih dahulu');
             $rekap_medis_baru = RekapMedis::create([
                 'idrawat'=>$idrawatbaru,
                 'idkategori'=>$rekap_lama->idkategori,
