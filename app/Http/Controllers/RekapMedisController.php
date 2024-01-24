@@ -378,7 +378,7 @@ class RekapMedisController extends Controller
         // return $originalPost;
         if(!$cek_rekap){
             // return $rekap_medis->id;
-            return back()->with('gagal','Data gagal disalin harap perawat mengisi isiannya terlebihdahulu')
+            return back()->with('gagal','Data gagal disalin harap perawat mengisi isiannya terlebihdahulu');
         }else{
             $pemodal = DetailRekapMedis::where('idrawat', $idrawatbaru)->first();
             
