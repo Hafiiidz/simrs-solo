@@ -112,15 +112,50 @@
                         <tr>
                             <td colspan="2"><b>Anamnesa</b></td>
                         </tr>
-                       
+
                         <tr>
-                            <td>Alasan Masuk Rumah Sakit</td>
+                            <td width=150>Alasan Masuk Rumah Sakit</td>
                             <td>: {{ $data->anamnesa }}</td>
                         </tr>
                         <tr>
                             <td>Anamnesa Dokter</td>
                             <td>: {{ $data->anamnesa_dokter }}</td>
                         </tr>
+                        @if ($rawat->idpoli == 12)
+                            @php
+                                $pemeriksaan_fisio = json_decode($data->pemeriksaan_fisio);
+                            @endphp
+                            <tr>
+                                <td>&nbsp;&nbsp;Pemeriksaan Fisik</td>
+                                <td class="text-start">
+                                    {{ $pemeriksaan_fisio->pemeriksaan_fisik ? $pemeriksaan_fisio->pemeriksaan_fisik : '-' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;&nbsp;Pemeriksaan Uji Fungsi</td>
+                                <td class="text-start">
+                                    {{ $pemeriksaan_fisio->pemeriksaan_uji_fungsi ? $pemeriksaan_fisio->pemeriksaan_uji_fungsi : '-' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;&nbsp;Tata Laksana</td>
+                                <td class="text-start">
+                                    {{ $pemeriksaan_fisio->tata_laksana ? $pemeriksaan_fisio->tata_laksana : '-' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;&nbsp;Anjuran</td>
+                                <td class="text-start">
+                                    {{ $pemeriksaan_fisio->anjuran ? $pemeriksaan_fisio->anjuran : '-' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;&nbsp;evaluasi</td>
+                                <td class="text-start">
+                                    {{ $pemeriksaan_fisio->evaluasi ? $pemeriksaan_fisio->evaluasi : '-' }}
+                                </td>
+                            </tr>
+                        @endif
                         <tr>
                             <td colspan="2"><br></td>
                         </tr>
@@ -251,7 +286,8 @@
                                         <span class="text-end"> </span>
 
                                     </td>
-                                    <td align="right">{{ $val->signa1 }} - {{ $val->signa2 }} - {{ $val->signa3 }}</td>
+                                    <td align="right">{{ $val->signa1 }} - {{ $val->signa2 }} -
+                                        {{ $val->signa3 }}</td>
                                 </tr>
                             @endforeach
                             {{-- @foreach (json_decode($data->terapi_obat) as $val)
@@ -382,23 +418,25 @@
                         </td>
                     </tr>
                 @elseif($tindak_lanjut->tindak_lanjut == 'Interm')
+
                 @elseif($tindak_lanjut->tindak_lanjut == 'Prb')
-                @php
-                    $prb = json_decode($tindak_lanjut->prb);
-                @endphp
-                <tr>
-                    <td colspan="2" style="border: 1px solid black;">
-                        <table>
-                            <tr>
-                                <td colspan="3">Pasien Rujuk Balik</td>
-                            </tr>
-                            <tr>
-                                <td>Nomor </td>
-                                <td>:</td>
-                                <td>NO: {{ $tindak_lanjut->nomor }}/{{ date('m', strtotime($tindak_lanjut->tgl_tindak_lanjut)) }}/{{ date('Y', strtotime($tindak_lanjut->tgl_tindak_lanjut)) }}
-                                </td>
-                            </tr>
-                            {{-- <tr>
+                    @php
+                        $prb = json_decode($tindak_lanjut->prb);
+                    @endphp
+                    <tr>
+                        <td colspan="2" style="border: 1px solid black;">
+                            <table>
+                                <tr>
+                                    <td colspan="3">Pasien Rujuk Balik</td>
+                                </tr>
+                                <tr>
+                                    <td>Nomor </td>
+                                    <td>:</td>
+                                    <td>NO:
+                                        {{ $tindak_lanjut->nomor }}/{{ date('m', strtotime($tindak_lanjut->tgl_tindak_lanjut)) }}/{{ date('Y', strtotime($tindak_lanjut->tgl_tindak_lanjut)) }}
+                                    </td>
+                                </tr>
+                                {{-- <tr>
                                 <td>Diagnosa</td>
                                 <td>:</td>
                                 <td>
@@ -415,46 +453,47 @@
                                 @endif
                                 </td>
                             </tr> --}}
-                            <tr>
-                                <td>Tgl Surat Rujukan </td>
-                                <td>:</td>
-                                <td>{{ date('d F Y',strtotime($tindak_lanjut->created_at)) }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="3">Belum Dapat di kembalikan ke Fasilitas Perujuk dengan alasan</td>
-                            </tr>
-                            <tr style="border:1px solid;">
-                                <td colspan="3">{{ $prb->alasan }}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="3">Rencana Tindak lanjut pada kunjungan selanjutnya</td>
-                            </tr>
-                            <tr style="border:1px solid; padding:10px;">
-                                <td colspan="3">{{ $prb->rencana_selanjutnya }}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="3">Surat Keterangan ini digunakan untuk 1(satu) kali kunjungan dengan diagnosa diatas pada :</td>
-                            </tr>
-                            <tr>
-                                <td width=150>Tanggal</td>
-                                <td>:</td>
-                                <td>{{ date('d F Y',strtotime( $tindak_lanjut->tgl_tindak_lanjut ))}}</td>
-                            </tr>
-                            
-                        </table>
-                    </td>
-                </tr>
+                                <tr>
+                                    <td>Tgl Surat Rujukan </td>
+                                    <td>:</td>
+                                    <td>{{ date('d F Y', strtotime($tindak_lanjut->created_at)) }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">Belum Dapat di kembalikan ke Fasilitas Perujuk dengan alasan</td>
+                                </tr>
+                                <tr style="border:1px solid;">
+                                    <td colspan="3">{{ $prb->alasan }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">Rencana Tindak lanjut pada kunjungan selanjutnya</td>
+                                </tr>
+                                <tr style="border:1px solid; padding:10px;">
+                                    <td colspan="3">{{ $prb->rencana_selanjutnya }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">Surat Keterangan ini digunakan untuk 1(satu) kali kunjungan
+                                        dengan diagnosa diatas pada :</td>
+                                </tr>
+                                <tr>
+                                    <td width=150>Tanggal</td>
+                                    <td>:</td>
+                                    <td>{{ date('d F Y', strtotime($tindak_lanjut->tgl_tindak_lanjut)) }}</td>
+                                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
                 @endif
             @endif
             <tr>
                 <td class="p-2" style="border: 1px solid black;">
 
                 </td>
-                <td class="p-2" style="border: 1px solid black; font-size:14; text-align:center;">
+                <td class="p-2" style="border: 1px solid black; font-size:12; text-align:center;">
                     <p>Surakarta, {{ \Carbon\Carbon::now()->formatLocalized('%A, %d %B %Y') }}</p>
                     <p>DPJP</p>
-                    <img src="data:image/png;base64, {!! base64_encode($qr) !!} ">
+                    <img width="50%" src="data:image/png;base64, {!! base64_encode($qr) !!} ">
                     <p>{{ $rawat->dokter->nama_dokter }}</p>
                 </td>
             </tr>
