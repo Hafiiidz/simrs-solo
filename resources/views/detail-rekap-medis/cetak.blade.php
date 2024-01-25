@@ -112,8 +112,13 @@
                         <tr>
                             <td colspan="2"><b>Anamnesa</b></td>
                         </tr>
+                       
                         <tr>
                             <td>Alasan Masuk Rumah Sakit</td>
+                            <td>: {{ $data->anamnesa }}</td>
+                        </tr>
+                        <tr>
+                            <td>Anamnesa Dokter</td>
                             <td>: {{ $data->anamnesa_dokter }}</td>
                         </tr>
                         <tr>
