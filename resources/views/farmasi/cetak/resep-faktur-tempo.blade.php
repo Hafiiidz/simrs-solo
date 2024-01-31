@@ -300,6 +300,7 @@
                                 @endif
                                 @if ($resep->racikan != null || $resep->racikan != 'null')
                                     @foreach (json_decode($resep->racikan) as $val)
+                                            
                                         @php
                                             $total_racik += 10000;
                                         @endphp

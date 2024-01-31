@@ -240,7 +240,7 @@ class FarmasiController extends Controller
 
         return response()->json([
             'status' => 'true',
-            'total' => $total_obat_racikan + $total_obat + $total_kronis,
+            'total' => $total_obat_racikan + $total_obat,
             'kronis' => $total_kronis
         ]);
     }
@@ -453,6 +453,7 @@ class FarmasiController extends Controller
         $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
         $antrian = AntrianFarmasi::where('idrawat', $id)->first();
         $rekap_medis = RekapMedis::where('idrawat', $id)->first();
+        // return $antrian->obat;
         $obat = Obat::get();
         $transaksi_bayar = DB::table('transaksi_bayar')->where('status',1)->orderBy('urutan', 'asc')->get();
         $takaran = ['-','tablet','kapsul','bungkus','tetes','ml','sendok takar 5ml','sendok takar 15ml','oles'];

@@ -167,7 +167,7 @@
                                 @if ($antrian?->status_antrian == 'Antrian')
                                     <h4>Permintaan Resep</h4>
                                     <h6>Dokter : {{ $rawat->dokter->nama_dokter }}</h6>
-                                   
+
                                     <h4>Racikan</h4>
                                     {{-- Racikan --}}
                                     <form action="" id='formPermintaanobat'>
@@ -364,9 +364,15 @@
                                                         @endforeach
                                                         <tr>
                                                             <td colspan=7>
-                                                                <div class="alert alert-primary d-flex align-items-center p-5 mb-10">
-                                                                    <i class="ki-duotone ki-shield-tick fs-2hx text-primary me-4"><span class="path1"></span><span class="path2"></span></i>                    <div class="d-flex flex-column">
-                                                                        <h4 class="mb-1 text-primary">Klik Update terlebih dahulu untuk dapat menambah obat</h4>
+                                                                <div
+                                                                    class="alert alert-primary d-flex align-items-center p-5 mb-10">
+                                                                    <i
+                                                                        class="ki-duotone ki-shield-tick fs-2hx text-primary me-4"><span
+                                                                            class="path1"></span><span
+                                                                            class="path2"></span></i>
+                                                                    <div class="d-flex flex-column">
+                                                                        <h4 class="mb-1 text-primary">Klik Update terlebih
+                                                                            dahulu untuk dapat menambah obat</h4>
                                                                     </div>
                                                                 </div>
                                                                 <button type="button" data-id="{{ $antrian->id }}"
@@ -444,7 +450,9 @@
                                                     @endphp
                                                     <ol>
                                                         @foreach ($obat_detail as $od)
-                                                            <li>{{ $od->nama_obat }} {{ $od->idbayar == 3 ? '(Kronis)':'' }} ({{ $od->qty }})</li>
+                                                            <li>{{ $od->nama_obat }}
+                                                                {{ $od->idbayar == 3 ? '(Kronis)' : '' }}
+                                                                ({{ $od->qty }})</li>
                                                         @endforeach
                                                     </ol>
                                                 </td>
@@ -605,8 +613,8 @@
 @section('js')
     <script></script>
     <script src="{{ asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
-    <script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js"></script>
+
+
     <script>
         $(function() {
             $('#nama_obat_non').select2({
