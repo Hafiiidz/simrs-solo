@@ -99,10 +99,15 @@
                     <tr>
                         <td>Tgl Resep</td>
                         <td>:</td>
-                        <td>{{ $resep->tgl }}</td>
+                        <td>{{ date('Y/m/d',strtotime($resep->created_at)) }}</td>
                         <td>Poli/Ruangan</td>
                         <td>:</td>
                         <td>Poli {{ $rawat->poli?->poli }}</td>
+                    </tr>
+                    <tr>
+                        <td>Alamat Pasien</td>
+                        <td>:</td>
+                        <td>{{ $alamat?->alamat }}</td>
                     </tr>
                 </table>
             </div>
@@ -254,7 +259,16 @@
                         </tbody>
                     </table>
                 </div>
+                <div style="width: 100%; float:left">
+                    <p>Surakarta, {{ \Carbon\Carbon::now()->formatLocalized('%A, %d %B %Y') }}</p>
+                    <p>DPJP</p>
+                    <img width="50%" src="data:image/png;base64, {!! base64_encode($qr) !!} ">
+                    <p>{{ $rawat->dokter->nama_dokter }}</p>
+                </div>
             </div>
+        </div>
+        <div class="row">
+           
         </div>
     </div>
 

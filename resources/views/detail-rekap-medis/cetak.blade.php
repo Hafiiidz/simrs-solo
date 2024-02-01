@@ -262,7 +262,7 @@
                     </div>
                 </td>
             </tr>
-            <tr>
+            {{-- <tr>
                 <td class="p-1" style="border: 1px solid black;">
                     Terapi
                     <br>
@@ -272,7 +272,6 @@
                     @if ($data->terapi_obat != 'null')
                         <table class="table">
                             @foreach (json_decode($data->terapi_obat) as $val)
-                                {{-- {{ dd($val->terapi_obat_racikan) }} --}}
                                 <tr>
                                     <td width='200'>
                                         (@foreach ($val->terapi_obat_racikan as $data_obat)
@@ -290,22 +289,11 @@
                                         {{ $val->signa3 }}</td>
                                 </tr>
                             @endforeach
-                            {{-- @foreach (json_decode($data->terapi_obat) as $val)
-                                @foreach ($obat as $item)
-                                    @if ($val->obat == $item->id)
-                                        <tr>
-                                            <td class="text-start">R/ {{ $item->nama_obat }} <br>{{ $val->signa1 }} X
-                                                {{ $val->signa2 }}</td>
-                                            <td class="text-end">No. {{ $val->jumlah_obat }} </td>
-                                        </tr>
-                                    @endif
-                                @endforeach
-                            @endforeach --}}
                         </table>
                     @endif
                     <p>{{ $data->terapi }}</p>
                 </td>
-            </tr>
+            </tr> --}}
             @if ($tindak_lanjut)
                 <tr>
                     <td colspan="2" class="text-center" style="border: 1px solid black;">

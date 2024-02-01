@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use PDF;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class FarmasiController extends Controller
 {
@@ -555,6 +556,7 @@ class FarmasiController extends Controller
         
         $rawat = Rawat::find($resep->idrawat);
         $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
+       
         $obat = Obat::get();
         $pdf = PDF::loadview('farmasi.cetak.resep-faktur-tempo', compact('resep', 'rawat', 'pasien', 'obat'));
         $customPaper = array(0, 0, 323.15, 790.866);
@@ -565,10 +567,18 @@ class FarmasiController extends Controller
     {
         $resep = AntrianFarmasi::find($id);
         $rawat = Rawat::find($resep->idrawat);
-        $detail_rekap = DB::table('demo_detail_rekap_medis')->where('id', $rawat->idrekap)->first();
+        $detail_rekap = DB::table('demo_detail_rekap_medis')->where('id', $rawat->idrekap)->first();       
         $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
+        $alamat = DB::table('pasien_alamat')->where('idpasien', $pasien->id)->first();
         $obat = Obat::get();
-        $pdf = PDF::loadview('farmasi.cetak.resep-tempo', compact('resep', 'rawat', 'pasien', 'obat', 'detail_rekap'));
+        $qr = QrCode::size(150)
+        ->backgroundColor(255, 255, 255)
+        ->color(0, 0, 0)
+        ->margin(1)
+        ->generate(
+            '"'.$rawat->dokter->nama_dokter.'"',
+        );
+        $pdf = PDF::loadview('farmasi.cetak.resep-tempo', compact('resep', 'rawat', 'pasien', 'obat', 'detail_rekap', 'alamat','qr'));
         $customPaper =array(0,0,567.00,283.80,'landscape');
         $pdf->setPaper('a5','portrait');
         return $pdf->stream();

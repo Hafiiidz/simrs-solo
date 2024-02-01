@@ -140,7 +140,7 @@ class RekapMedisController extends Controller
                             'catatan'=>$rd->catatan,
                             'idresep'=>$rd->id
                         ];
-                    }else{
+                    }elseif($rd->jenis == 'Non Racik'){
                         $non_racik[] = [
                             'obat'=>$rd->idobat,
                             'takaran'=>$rd->takaran,
