@@ -338,8 +338,8 @@
                                                                 <th rowspan="2">Nama Obat</th>
                                                                 <th rowspan="2" width=100>Jumlah</th>
                                                                 <th rowspan="2" width=100>Dosis</th>
-                                                                <th rowspan="2" width=200>Takaran</th>
-                                                                <th width=50 colspan="4">Signa</th>
+                                                                <th rowspan="2" width=200>Sediaan</th>
+                                                                <th width=50 colspan="4">Aturan Pakai</th>
                                                                 <th rowspan="2" width=100>Diminum</th>
                                                                 <th rowspan="2" width=100>Catatan</th>
                                                             </tr>
@@ -387,7 +387,7 @@
                                                                     <td>
                                                                         <select name="takaran_obat" id='takaran_obat'
                                                                             required class="form-select form-select-sm">
-                                                                            <option value="">Pilih Takaran</option>
+                                                                            <option value="">Pilih Sediaan</option>
                                                                             <option value="-">-</option>
                                                                             <option value="tablet">tablet</option>
                                                                             <option value="kapsul">kapsul</option>
@@ -480,8 +480,8 @@
                                                                 <th rowspan="2" width=100>Dosis</th>
                                                                 <th rowspan="2" width=100>Jumlah</th>
                                                                 <th rowspan="2" width=50>Diberikan</th>
-                                                                <th rowspan="2" width=200>Takaran</th>
-                                                                <th width=50 colspan="4">Signa</th>
+                                                                <th rowspan="2" width=200>Sediaan</th>
+                                                                <th width=50 colspan="4">Aturan Pakai</th>
                                                                 <th rowspan="2" width=100>Diminum</th>
                                                                 <th rowspan="2" width=100>Catatan</th>
                                                             </tr>
@@ -545,7 +545,7 @@
                                                                     <td>
                                                                         <select name="takaran_obat" id='takaran_obat'
                                                                             required class="form-select form-select-sm">
-                                                                            <option value="">Pilih Takaran</option>
+                                                                            <option value="">Pilih Sediaan</option>
                                                                             <option value="-">-</option>
                                                                             <option value="tablet">tablet</option>
                                                                             <option value="kapsul">kapsul</option>
@@ -636,8 +636,8 @@
                                                     <th>Nama Obat</th>
                                                     <th>Jumlah</th>
                                                     <th>Dosis</th>
-                                                    <th>Takaran</th>
-                                                    <th>Signa</th>
+                                                    <th>Sediaan</th>
+                                                    <th>Aturan Pakai</th>
                                                     <th>Diminum</th>
                                                     <th>Catatan</th>
                                                     <th>Aksi</th>
