@@ -28,7 +28,7 @@
                             </li>
                             <!--end::Item-->
                             <!--begin::Item-->
-                            <li class="breadcrumb-item text-muted">Tambah Template Operasi</li>
+                            <li class="breadcrumb-item text-muted">Edit Template Operasi</li>
                             <!--end::Item-->
                         </ul>
                         <!--end::Breadcrumb-->
@@ -48,7 +48,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">
-                            <h5 class="card-title">Tambah Template Catatan Anastesi</h5>
+                            <h5 class="card-title">Tambah Edit Catatan Anastesi</h5>
                         </div>
                         <div class="card-toolbar">
                             <a href="{{ route('index.template-anastesi') }}" class="btn btn-sm btn-secondary">Kembali</a>
@@ -61,19 +61,20 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <label for="" class="form-label">Nama Template</label>
-                                    <input type="text" name="nama" value="" class="form-control tgl">
+                                    <input type="text" name="nama" value="{{ $data->nama }}"
+                                        class="form-control tgl">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="" class="form-label">Status Fisik</label>
                                     <select name="status_fisik" class="form-select" data-control="select2"
                                         data-placeholder="- Pilih -">
                                         <option></option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="E">E</option>
+                                        <option {{ $data->status_fisik == 1 ? 'selected' : '' }} value="1">1</option>
+                                        <option {{ $data->status_fisik == 2 ? 'selected' : '' }} value="2">2</option>
+                                        <option {{ $data->status_fisik == 3 ? 'selected' : '' }} value="3">3</option>
+                                        <option {{ $data->status_fisik == 4 ? 'selected' : '' }} value="4">4</option>
+                                        <option {{ $data->status_fisik == 5 ? 'selected' : '' }} value="5">5</option>
+                                        <option {{ $data->status_fisik == 6 ? 'selected' : '' }} value="E">E</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
@@ -81,20 +82,23 @@
                                     <div class="row mt-3">
                                         <div class="col">
                                             <input class="form-check-input" type="radio" value="LA"
-                                                name="teknik_anestesis" />
+                                                name="teknik_anestesis"
+                                                {{ $data->teknik_anestesi == 'LA' ? 'checked' : '' }} />
                                             <label class="form-check-label" for="flexCheckbox30">
                                                 LA
                                             </label>
                                         </div>
                                         <div class="col">
-                                            <input class="form-check-input" type="radio" value="REGIONAL"
-                                                name="teknik_anestesis" />
+                                            <input class="form-check-input"
+                                                {{ $data->teknik_anestesi == 'REGIONAL' ? 'checked' : '' }} type="radio"
+                                                value="REGIONAL" name="teknik_anestesis" />
                                             <label class="form-check-label" for="flexCheckbox30">
                                                 REGIONAL
                                             </label>
                                         </div>
                                         <div class="col">
-                                            <input class="form-check-input" type="radio" value="GA"
+                                            <input class="form-check-input" type="radio"
+                                                {{ $data->teknik_anestesi == 'GA' ? 'checked' : '' }} value="GA"
                                                 name="teknik_anestesis" />
                                             <label class="form-check-label" for="flexCheckbox30">
                                                 GA
@@ -106,11 +110,11 @@
                             <div class="row mt-5">
                                 <div class="col-md-6">
                                     <label for="" class="form-label">Posisi</label>
-                                    <textarea class="form-control" data-kt-autosize="true" name="posisi"></textarea>
+                                    <textarea class="form-control" data-kt-autosize="true" name="posisi">{{ $data->posisi }}</textarea>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="" class="form-label">Premedikasi</label>
-                                    <textarea class="form-control" data-kt-autosize="true" name="premedikasi"></textarea>
+                                    <textarea class="form-control" data-kt-autosize="true" name="premedikasi">{{ $data->pramedikasi }}</textarea>
                                 </div>
                             </div>
                             <div class="row mt-5">
@@ -119,9 +123,9 @@
                                     <select name="pemberian" id="" class="form-select" data-control="select2"
                                         data-placeholder="- Pilih -">
                                         <option></option>
-                                        <option value="SC">SC</option>
-                                        <option value="IM">IM</option>
-                                        <option value="IV">IV</option>
+                                        <option {{ $data->pemberian == 'SC' ? 'selected' : '' }} value="SC">SC</option>
+                                        <option {{ $data->pemberian == 'IM' ? 'selected' : '' }} value="IM">IM</option>
+                                        <option {{ $data->pemberian == 'IV' ? 'selected' : '' }} value="IV">IV</option>
                                     </select>
                                 </div>
 
@@ -143,27 +147,55 @@
                                         <!--begin::Form group-->
                                         <div class="form-group">
                                             <div data-repeater-list="obat_anestesi_catatan" class="row">
-
-                                                <div class="col-md-4" data-repeater-item>
-                                                    <div class="form-group row mb-5">
-                                                        <div class="col-md-10">
-                                                            <input type="text" name="obat_anestesi_catatan"
-                                                                class="form-control mb-2 mb-md-0 mt-5"
-                                                                placeholder="Masukan Nama Obat" />
+                                                @if ($data->obat_anestesi)
+                                                    
+                                                    @foreach (json_decode($data->obat_anestesi) as $val)
+                                                        {{-- {{ $val->obat_anestesi_catatan }} --}}
+                                                        <div class="col-md-4" data-repeater-item>
+                                                            <div class="form-group row mb-5">
+                                                                <div class="col-md-10">
+                                                                    <input type="text" name="obat_anestesi_catatan" value=" {{ $val->obat_anestesi_catatan }}"
+                                                                        class="form-control mb-2 mb-md-0 mt-5"
+                                                                        placeholder="Masukan Nama Obat" />
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <a href="javascript:;" data-repeater-delete
+                                                                        class="btn btn-sm btn-light-danger mt-6">
+                                                                        <i class="ki-duotone ki-trash fs-5">
+                                                                            <span class="path1"></span><span
+                                                                                class="path2"></span><span
+                                                                                class="path3"></span><span
+                                                                                class="path4"></span><span
+                                                                                class="path5"></span>
+                                                                        </i>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <div class="col-md-2">
-                                                            <a href="javascript:;" data-repeater-delete
-                                                                class="btn btn-sm btn-light-danger mt-6">
-                                                                <i class="ki-duotone ki-trash fs-5">
-                                                                    <span class="path1"></span><span
-                                                                        class="path2"></span><span
-                                                                        class="path3"></span><span
-                                                                        class="path4"></span><span class="path5"></span>
-                                                                </i>
-                                                            </a>
+                                                    @endforeach
+                                                @else
+                                                    <div class="col-md-4" data-repeater-item>
+                                                        <div class="form-group row mb-5">
+                                                            <div class="col-md-10">
+                                                                <input type="text" name="obat_anestesi_catatan"
+                                                                    class="form-control mb-2 mb-md-0 mt-5"
+                                                                    placeholder="Masukan Nama Obat" />
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <a href="javascript:;" data-repeater-delete
+                                                                    class="btn btn-sm btn-light-danger mt-6">
+                                                                    <i class="ki-duotone ki-trash fs-5">
+                                                                        <span class="path1"></span><span
+                                                                            class="path2"></span><span
+                                                                            class="path3"></span><span
+                                                                            class="path4"></span><span
+                                                                            class="path5"></span>
+                                                                    </i>
+                                                                </a>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                @endif
                                             </div>
                                         </div>
                                         <!--end::Form group-->
@@ -172,7 +204,7 @@
                                 </div>
                             </div>
 
-
+                            
                             <div class="row mt-5">
                                 <label for="" class="form-label"><b>Stadia</b></label>
                                 <div class="col-md-4">

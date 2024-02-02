@@ -241,6 +241,7 @@ Route::prefix('/penunjang')->group(function () {
 });
 Route::prefix('/farmasi')->group(function () {
     Route::get('/antrian', [FarmasiController::class, 'antrian_resep'])->middleware('auth')->name('farmasi.antrian-resep');
+    Route::get('/get-edit-farmasi/{id}/{idobat}', [FarmasiController::class, 'get_edit_farmasi'])->middleware('auth')->name('get-edit-farmasi');
     Route::get('/status-rajal/{id}', [FarmasiController::class, 'status_rajal'])->middleware('auth')->name('farmasi.status-rajal');
     Route::get('/status-ranap/{id}', [FarmasiController::class, 'status_ranap'])->middleware('auth')->name('farmasi.status-ranap');
     Route::get('/list-pasien-rawat', [FarmasiController::class, 'list_pasien_rawat'])->middleware('auth')->name('farmasi.list-pasien-rawat');
@@ -257,6 +258,7 @@ Route::prefix('/farmasi')->group(function () {
     Route::get('/cetak-tiket-tempo/{id}', [FarmasiController::class, 'cetakTiketTempo'])->middleware('auth')->name('farmasi.cetak-tiket-tempo');
     Route::get('/hapus-data-resep', [FarmasiController::class, 'hapus_obat'])->middleware('auth')->name('hapus-data-resep');
     Route::post('/tambah-obat', [FarmasiController::class, 'tambah_obat'])->middleware('auth')->name('farmasi.tambah-obat');
+    Route::post('/edit-obat-farmasi', [FarmasiController::class, 'post_edit_farmasi'])->middleware('auth')->name('farmasi.edit-obat-farmasi');
 });
 Route::prefix('/rawat-jalan')->group(function () {
     Route::get('/poli', [PoliklinikController::class, 'index'])->middleware('auth')->name('poliklinik');
@@ -355,6 +357,7 @@ Route::prefix('/pasien')->group(function () {
         Route::post('/store', [TemplateController::class, 'store'])->name('store.template');
         Route::post('/store-anastesi', [TemplateController::class, 'store_anastesi'])->name('store.template-anastesi');
         Route::get('/edit/{id}', [TemplateController::class, 'edit'])->name('edit.template');
+        Route::get('/edit-anastesi/{id}', [TemplateController::class, 'edit_anastesi'])->name('edit.edit_anastesi');
         Route::post('/update/{id}', [TemplateController::class, 'update'])->name('update.template');
         Route::get('/update-status/{id}/{status}', [TemplateController::class, 'updateStatus'])->name('update-status.template');
         Route::get('/show', [TemplateController::class, 'showTemplate'])->name('show.template');

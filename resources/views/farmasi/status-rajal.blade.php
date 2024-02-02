@@ -301,13 +301,17 @@
                                                                                 {!! App\Helpers\VclaimHelper::get_data_obat($val->obat) !!}</button>
                                                                         @else
                                                                             <button type="button"
-                                                                                class="btn btn-light-success btn-sm">
+                                                                                data-id="{{ $antrian->id }}"
+                                                                                data-value="{{ $val->obat }}"
+                                                                                class="btn btn-light-success btn-sm btn-edit-farmasi">
                                                                                 {!! App\Helpers\VclaimHelper::get_data_obat($val->obat) !!}
                                                                             </button>
                                                                         @endif
                                                                     @else
                                                                         <button type="button"
-                                                                            class="btn btn-light-success btn-sm">
+                                                                            data-id="{{ $antrian->id }}"
+                                                                            data-value="{{ $val->obat }}"
+                                                                            class="btn btn-light-success btn-sm btn-edit-farmasi">
                                                                             {!! App\Helpers\VclaimHelper::get_data_obat($val->obat) !!}
                                                                         </button>
                                                                     @endif
@@ -317,16 +321,12 @@
                                                                 <td class="text-center">
                                                                     {{ $val->jumlah }}</td>
                                                                 <td>
-                                                                    {{-- <input type="hidden" value={{ $val->idresep }} name="racikan[idresep][]" class="form-control">
-                                                    <input type="hidden" value={{ $val->obat }} name="racikan[idobat][]" class="form-control"> --}}
                                                                     <input type="text"
                                                                         name="pemberian[{{ $val->idresep }}]"
                                                                         value="{{ isset($val->diberikan) ? $val->diberikan : '' }}"
                                                                         class="form-control form-control-sm">
                                                                 </td>
                                                                 <td>
-                                                                    {{-- <input type="hidden" value={{ $val->idresep }} name="racikan[idresep][]" class="form-control">
-                                                    <input type="hidden" value={{ $val->obat }} name="racikan[idobat][]" class="form-control"> --}}
                                                                     <input type="text"
                                                                         name="kronis[{{ $val->idresep }}]"
                                                                         value="{{ isset($val->kronis) ? $val->kronis : '' }}"
@@ -452,7 +452,8 @@
                                                         @foreach ($obat_detail as $od)
                                                             <li>{{ $od->nama_obat }}
                                                                 {{ $od->idbayar == 3 ? '(Kronis)' : '' }}
-                                                                ({{ $od->qty }})</li>
+                                                                ({{ $od->qty }})
+                                                            </li>
                                                         @endforeach
                                                     </ol>
                                                 </td>
@@ -609,15 +610,42 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" tabindex="-1" id="modal_lihat">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="modal-hasil">
+
+            </div>
+        </div>
+    </div>
 @endsection
 @section('js')
     <script></script>
     <script src="{{ asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
     <script type="text/javascript"
-    src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js"></script>
+        src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js"></script>
 
     <script>
+        $('#id_data_obat').select2({
+            dropdownParent: $('#modal_lihat')
+        });
+        $(document).on('click', '.btn-edit-farmasi', function() {
+            var id = $(this).attr('data-id');
+            var value = $(this).attr('data-value');
+
+
+            var url = '{{ route('get-edit-farmasi', [':b_id', ':p_value']) }}';
+            url = url.replace(':b_id', id);
+            url = url.replace(':p_value', value);
+            $("#modal-hasil").empty();
+            $.get(url).done(function(data) {
+                $("#modal-hasil").html(data);
+                $("#modal_lihat").modal('show');
+                console.log(data);
+            });
+        });
         $(function() {
+
+
             $('#nama_obat_non').select2({
                 dropdownParent: $('#modal_tambah')
             });

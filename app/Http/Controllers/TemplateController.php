@@ -17,6 +17,11 @@ class TemplateController extends Controller
         return view('template.index-anastesi', compact('data'));
     }
 
+    public function edit_anastesi($id)
+    {
+        $data = TemplateAnastesi::find($id);
+        return view('template.edit-anastesi', compact('data'));
+    }
     public function create_anastesi()
     {
         $perawatBedah = PerawatBedah::orderBy('nama','asc')->get();
@@ -166,6 +171,7 @@ class TemplateController extends Controller
     public function showTemplateAnastesi(Request $request){
         $data = TemplateAnastesi::find($request->template_id);
         $obat_anastesi = '';
+        dd($data);
         if($data->obat_anestesi != 'null'){
             foreach(json_decode($data->obat_anestesi) as $val){
             $obat_anastesi .='

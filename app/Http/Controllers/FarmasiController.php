@@ -2,20 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AntrianFarmasi;
+use PDF;
+use App\Models\Rawat;
 use App\Models\Obat\Obat;
+use Illuminate\Http\Request;
 use App\Models\ObatTransaksi;
 use App\Models\Pasien\Pasien;
-use App\Models\Rawat;
-use App\Models\RekapMedis\RekapMedis;
-use Illuminate\Http\Request;
+use App\Models\AntrianFarmasi;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\View;
+use App\Http\Controllers\Controller;
+use App\Models\RekapMedis\RekapMedis;
 use Yajra\DataTables\Facades\DataTables;
-use PDF;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class FarmasiController extends Controller
 {
+   
     public function antrian_resep()
     {
         //     $resep_rajal_umum = AntrianFarmasi::with('pasien','rawat')->where('jenis_rawat',1)->where('idbayar',1)->where('status_antrian','Antrian')->get();
@@ -692,6 +695,59 @@ class FarmasiController extends Controller
             ]);
         }
     }
+
+    public function post_edit_farmasi(Request $request){
+        // return $request->all();
+        $obat = Obat::find($request->id_data_obat);
+        $resep_asal = DB::table('demo_resep_dokter')->where('id', $request->resep_asal)->first();
+        DB::table('demo_resep_dokter')->where('id', $request->resep_asal)->update([
+            'idobat'=>$request->id_data_obat,
+            'nama_obat'=>$obat->nama_obat,
+        ]);
+        $rawat = Rawat::find($resep_asal->idrawat);
+        if($rawat->idbayar == 2){
+            $jenis = 2;
+        }else{
+            $jenis = 1;
+        }
+        $resep = DB::table('demo_resep_dokter')->where('idantrian', $resep_asal->idantrian)->where('jenis','Non Racik')->get();
+        if (count($resep) > 0) {                
+            $non_racik = [];
+            foreach($resep as $rd){
+             
+                    $non_racik[] = [
+                        'obat'=>$rd->idobat,
+                        'takaran'=>$rd->takaran,
+                        'jumlah'=>$rd->jumlah,
+                        'dosis'=>$rd->dosis,
+                        'diberikan'=>$rd->diberikan,
+                        'signa'=>$rd->signa,
+                        'diminum'=>$rd->diminum,
+                        'catatan'=>$rd->catatan,
+                        'idresep'=>$rd->id,
+                        'jenis'=>$jenis,
+                        'tambahan_farmasi'=>$rd->tambahan_farmasi,
+                    ];
+            }
+            
+            
+            DB::table('demo_antrian_resep')->where('id',$resep_asal->idantrian)->update([
+                'obat' => json_encode($non_racik),
+                'updated_at' => now(),
+            ]);
+            // return redirect()->back()->with('berhasil', 'Data Berhasil Di Simpan');
+        }
+        // return $resep;
+        return redirect()->back()->with('berhasil', 'Data Berhasil Di Simpan');
+    }
+    public function get_edit_farmasi($id,$idobat){
+        $antrian = AntrianFarmasi::find($id);
+        $obat = Obat::find($idobat);
+        $resep = DB::table('demo_resep_dokter')->where('idrawat', $antrian->idrawat)->where('idantrian',$id)->where('idobat',$idobat)->first();
+        $list_obat = Obat::get();
+        return View::make('farmasi.modal.edit-obat', compact('antrian', 'obat', 'resep', 'list_obat'));
+    }
+
     public function tambah_obat(Request $request){
         $obat = Obat::find($request->obat_non);
         // return response()->json([

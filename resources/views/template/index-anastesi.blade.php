@@ -77,7 +77,7 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ route('edit.template', $val->id) }}" class="btn btn-success btn-sm">Ubah Data</a>
+                                        <a href="{{ route('edit.edit_anastesi', $val->id) }}" class="btn btn-success btn-sm">Ubah Data</a>
                                         @if ($val->status == 1)
                                             <a href="{{ route('update-status.template', [$val->id,2]) }}" class="btn btn-sm btn-warning">Ubah Status</a>
                                         @else
