@@ -44,6 +44,33 @@ class TemplateController extends Controller
         return view('template.create', compact('perawatBedah','dokter'));
     }
 
+    public function update_anestesi(Request $request, $id)
+    {
+        $stadia = new Collection([
+            'anestesi' => $request->anestesi,
+            'operasi' => $request->operasi,
+            'respirasi' => $request->respirasi
+        ]);
+        $data = TemplateAnastesi::find($id);
+
+        $data->obat_anestesi =  json_encode($request->obat_anestesi_catatan);
+        $data->nama = $request->nama;
+        $data->teknik_anestesi = $request->teknik_anestesis;
+        $data->premedikasi = $request->premedikasi;
+        $data->pemberian = $request->pemberian;
+        $data->posisi = $request->posisi;
+        $data->efek = $request->efek;
+        $data->stadia = $stadia;
+        $data->catatan = $request->catatan;
+        $data->lama_anestesi = $request->lama_anestesi;
+        $data->pra_anestesi = $request->pra_anestesi;
+        $data->post_anestesi = $request->post_anestesi;
+        $data->status = 1;
+        $data->save();
+
+        return redirect()->back()->with('berhasil','Data Berhasil di Ubah!');
+    }
+
     public function store_anastesi(Request $request){
         // return $request->all();
         $stadia = new Collection([
@@ -54,12 +81,13 @@ class TemplateController extends Controller
         $data = new TemplateAnastesi;
         $data->obat_anestesi =  json_encode($request->obat_anestesi_catatan);
         $data->nama = $request->nama;
-        $data->teknik_anestesi = $request->teknik_anestesi;
+        $data->teknik_anestesi = $request->teknik_anestesis;
         $data->premedikasi = $request->premedikasi;
         $data->pemberian = $request->pemberian;
         $data->efek = $request->efek;
         $data->stadia = $stadia;
         $data->catatan = $request->catatan;
+        $data->posisi = $request->posisi;
         $data->lama_anestesi = $request->lama_anestesi;
         $data->pra_anestesi = $request->pra_anestesi;
         $data->post_anestesi = $request->post_anestesi;

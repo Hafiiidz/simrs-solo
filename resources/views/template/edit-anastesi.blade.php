@@ -56,7 +56,7 @@
                     </div>
                     <!--begin::Body-->
                     <div class="card-body p-lg-15">
-                        <form action="{{ route('store.template-anastesi') }}" method="POST">
+                        <form action="{{ route('post-update-anestesi.operasi',$data->id) }}" method="POST">
                             @csrf
                             <div class="row">
                                 <div class="col-md-4">
@@ -114,7 +114,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label for="" class="form-label">Premedikasi</label>
-                                    <textarea class="form-control" data-kt-autosize="true" name="premedikasi">{{ $data->pramedikasi }}</textarea>
+                                    <textarea class="form-control" data-kt-autosize="true" name="premedikasi">{{ $data->premedikasi }}</textarea>
                                 </div>
                             </div>
                             <div class="row mt-5">
@@ -204,20 +204,24 @@
                                 </div>
                             </div>
 
+                            @php
+                                $stadia = json_decode($data->stadia);
+                                // dd($stadia);
+                            @endphp
                             
                             <div class="row mt-5">
                                 <label for="" class="form-label"><b>Stadia</b></label>
                                 <div class="col-md-4">
                                     <label for="" class="form-label">Anestesi</label>
-                                    <textarea class="form-control" data-kt-autosize="true" name="anestesi"></textarea>
+                                    <textarea class="form-control" data-kt-autosize="true" name="anestesi">{{ $stadia != null ? $stadia->anestesi:'' }}</textarea>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="" class="form-label">Operasi</label>
-                                    <textarea class="form-control" data-kt-autosize="true" name="operasi"></textarea>
+                                    <textarea class="form-control" data-kt-autosize="true" name="operasi">{{ $stadia != null ? $stadia->operasi:'' }}</textarea>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="" class="form-label">Respirasi</label>
-                                    <textarea class="form-control" data-kt-autosize="true" name="respirasi"></textarea>
+                                    <textarea class="form-control" data-kt-autosize="true" name="respirasi">{{ $stadia != null ? $stadia->respirasi:'' }}</textarea>
                                 </div>
                             </div>
                             <div class="row mt-5">
@@ -225,23 +229,23 @@
                             <div class="row mt-5">
                                 <div class="col-md-12">
                                     <label for="" class="form-label">Catatan</label>
-                                    <textarea class="form-control" data-kt-autosize="true" name="catatan"></textarea>
+                                    <textarea class="form-control" data-kt-autosize="true" name="catatan">{{ $data->catatan }}</textarea>
                                 </div>
                             </div>
                             <div class="row mt-5">
                                 <div class="col-md-4">
                                     <label for="" class="form-label">Lama Anestesi</label>
-                                    <input type="text" name="lama_anestesi" value="" class="form-control">
+                                    <input type="text" name="lama_anestesi" value="{{ $data->lama_anastesi }}" class="form-control">
                                 </div>
                             </div>
                             <div class="row mt-5">
                                 <div class="col-md-6">
                                     <label for="" class="form-label">Komplikasi Pra Anestesi</label>
-                                    <textarea class="form-control" data-kt-autosize="true" name="pra_anestesi"></textarea>
+                                    <textarea class="form-control" data-kt-autosize="true" name="pra_anestesi">{{ $data->pra_anestesi }}</textarea>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="" class="form-label">Komplikasi Post Anestesi</label>
-                                    <textarea class="form-control" data-kt-autosize="true" name="post_anestesi"></textarea>
+                                    <textarea class="form-control" data-kt-autosize="true" name="post_anestesi">{{ $data->post_anestesi }}</textarea>
                                 </div>
                             </div>
                             <div class="row mt-5">

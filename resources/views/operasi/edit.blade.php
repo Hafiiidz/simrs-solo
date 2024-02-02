@@ -1308,7 +1308,7 @@
                                                                 <div class="col-md-auto">
                                                                     @foreach ($template_anastesi as $val)
                                                                         @if($loop->iteration < 7)
-                                                                            <button type="button" class="btn btn-light-primary btn-sm" onclick="showTemplate({{ $val->id }})">{{ $val->nama }}</button>
+                                                                            <button type="button" class="btn btn-light-primary btn-sm" onclick="showTemplateAnastesi({{ $val->id }})">{{ $val->nama }}</button>
                                                                         @endif
                                                                     @endforeach
                                                                 </div>
@@ -2736,6 +2736,37 @@
 
                     $('#uraian_pembedahan').val(data.template.uraian_pembedahan);
                     $('#instruksi_post_operasi').val(data.template.post_operasi);
+
+                    $.unblockUI();
+                },
+                error: function(data) {
+                    console.log('error');
+                },
+            });
+        }
+        function showTemplateAnastesi(id){
+            $.ajax({
+                type: 'GET',
+                url: '{{ route('show.template-anastesi') }}',
+                data: { template_id : id},
+                beforeSend: function() {
+                    $.blockUI({
+                        css: {
+                            border: 'none',
+                            padding: '15px',
+                            backgroundColor: '#000',
+                            '-webkit-border-radius': '10px',
+                            '-moz-border-radius': '10px',
+                            opacity: .5,
+                            color: '#fff',
+                            fontSize: '16px'
+                        },
+                        message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                        baseZ: 9000,
+                    });
+                },
+                success: function(data) {
+                                       
 
                     $.unblockUI();
                 },

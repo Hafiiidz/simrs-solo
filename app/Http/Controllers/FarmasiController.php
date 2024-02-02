@@ -755,7 +755,7 @@ class FarmasiController extends Controller
         //     'obat'=>$obat
         // ]);
         try{
-            DB::table('demo_resep_dokter')->where('idrawat', $request->idrawat)->whereNotNull('idantrian')->update([
+            DB::table('demo_resep_dokter')->where('idrawat', $request->idrawat)->where('jenis','Non Racik')->whereNotNull('idantrian')->update([
                 'idantrian'=>$request->idtambah,
             ]);
 
