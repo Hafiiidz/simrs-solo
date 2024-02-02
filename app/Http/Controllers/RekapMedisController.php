@@ -771,37 +771,39 @@ class RekapMedisController extends Controller
             </td>';
 
         return response()->json(['status'=>'ok','data'=>$html]);
+        }else{
+            DB::table('demo_resep_dokter')->where('id',$id)->update([
+                'jumlah'=>$request->jumlah_obat,
+                'takaran'=>$request->takaran_obat,
+                'dosis'=>$request->dosis_obat,
+                'signa'=>json_encode($request->diminum),
+                'catatan'=>$request->catatan,
+                'diminum'=>$request->takaran
+            ]);
+    
+            
+    
+            $html ='';
+            $html .= '<tr id="li'.$resep->id.'">';
+            $html .= '<td>'.$resep->nama_obat.'</td>';
+            $html .= '<td role="button" id="'.$resep->id.'">'.$resep->jumlah.'</td>';
+            $html .= '<td>'.$resep->dosis.'</td>';
+            $html .= '<td>'.$resep->takaran.'</td>';
+            $html .= '<td>'.$resep->signa.'</td>';
+            $html .= '<td>'.$resep->diminum.' makan</td>';
+            $html .= '<td>'.$resep->catatan.'</td>';
+            $html .= '<td><a
+            class="btn btn-sm btn-danger btn-hapus"
+            id="'.$resep->id.'" href="javascript:void(0)"
+            style="cursor:pointer;"">Hapus</a>
+            <button data-id="'.$resep->id.'" class="btn btn-sm btn-info btn-edit">Edit</button>   
+            </td>';
+    
+            $html .= '</tr>';
+    
+            return response()->json(['status'=>'ok','data'=>$html]);
         }
-        DB::table('demo_resep_dokter')->where('id',$id)->update([
-            'jumlah'=>$request->jumlah_obat,
-            'takaran'=>$request->takaran_obat,
-            'dosis'=>$request->dosis_obat,
-            'signa'=>json_encode($request->diminum),
-            'catatan'=>$request->catatan,
-            'diminum'=>$request->takaran
-        ]);
 
-        
-
-        $html ='';
-        $html .= '<tr id="li'.$resep->id.'">';
-        $html .= '<td>'.$resep->nama_obat.'</td>';
-        $html .= '<td role="button" id="'.$resep->id.'">'.$resep->jumlah.'</td>';
-        $html .= '<td>'.$resep->dosis.'</td>';
-        $html .= '<td>'.$resep->takaran.'</td>';
-        $html .= '<td>'.$resep->signa.'</td>';
-        $html .= '<td>'.$resep->diminum.' makan</td>';
-        $html .= '<td>'.$resep->catatan.'</td>';
-        $html .= '<td><a
-        class="btn btn-sm btn-danger btn-hapus"
-        id="'.$resep->id.'" href="javascript:void(0)"
-        style="cursor:pointer;"">Hapus</a>
-        <button data-id="'.$resep->id.'" class="btn btn-sm btn-info btn-edit">Edit</button>   
-        </td>';
-
-        $html .= '</tr>';
-
-        return response()->json(['status'=>'ok','data'=>$html]);
     }
     public function post_resep_non_racikan(Request $request,$id){
         // return $request->all();
