@@ -776,7 +776,7 @@ class FarmasiController extends Controller
                 'tambahan_farmasi'=>1,
             ]);
 
-            $resep_dokter = DB::table('demo_resep_dokter')->where('idrawat', $request->idrawat)->where('idantrian',$request->idtambah)->get();
+            $resep_dokter = DB::table('demo_resep_dokter')->where('jenis','Non Racik')->where('idrawat', $request->idrawat)->where('idantrian',$request->idtambah)->get();
             // return $resep_dokter;
             $rekap_medis = RekapMedis::where('idrawat', $request->idrawat)->first();
             $rawat = Rawat::find($request->idrawat);
