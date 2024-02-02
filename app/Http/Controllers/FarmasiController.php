@@ -648,9 +648,9 @@ class FarmasiController extends Controller
         // $antrian = AntrianFarmasi::find($request->antrian);
         // return $antrian;
         try{
-            DB::table('demo_resep_dokter')->where('idantrian', $request->antrian)->where('idobat',$request->idobat)->delete();
+            DB::table('demo_resep_dokter')->where('jenis','Non Racik')->where('idantrian', $request->antrian)->where('idobat',$request->idobat)->delete();
             $antrian = AntrianFarmasi::find($request->antrian);
-            $resep_dokter = DB::table('demo_resep_dokter')->where('idantrian',$request->antrian)->get();
+            $resep_dokter = DB::table('demo_resep_dokter')->where('jenis','Non Racik')->where('idantrian',$request->antrian)->get();
             $rawat = Rawat::find($antrian->idrawat);
             if($rawat->idbayar == 2){
                 $jenis = 2;
