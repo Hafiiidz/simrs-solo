@@ -218,20 +218,24 @@ class RekapMedisController extends Controller
                 //     'updated_at' => now(),
                 //     'limit_program'=>8,
                 // ]);
-                DB::table('demo_permintaan_penunjang')->insert([
-                    'idrawat' => $rekap_medis->idrawat,
-                    'idbayar' => $rekap_medis->rawat->idbayar,
-                    'status_pemeriksaan' => 'Antrian',
-                    'no_rm' => $rekap_medis->rawat->no_rm,
-                    'pemeriksaan_penunjang' => $detail->fisio,
-                    'jenis_penunjang' => 'Fisio',
-                    'peminta' => now(),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                    'peminta' => auth()->user()->id,
-                    'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
-                    'idrekap' => $rekap_medis->id,
-                ]);
+                $cek_antrian_fisio = DB::table('demo_antrian_fisio')->where('idrawat', $rekap_medis->idrawat)->where('status_antrian','Antrian')->first();
+                if(!$cek_antrian_fisio){
+                    DB::table('demo_permintaan_penunjang')->insert([
+                        'idrawat' => $rekap_medis->idrawat,
+                        'idbayar' => $rekap_medis->rawat->idbayar,
+                        'status_pemeriksaan' => 'Antrian',
+                        'no_rm' => $rekap_medis->rawat->no_rm,
+                        'pemeriksaan_penunjang' => $detail->fisio,
+                        'jenis_penunjang' => 'Fisio',
+                        'peminta' => now(),
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                        'peminta' => auth()->user()->id,
+                        'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
+                        'idrekap' => $rekap_medis->id,
+                    ]);
+                }
+                
             }
         }
 
@@ -451,7 +455,7 @@ class RekapMedisController extends Controller
         ->orderBy(DB::raw('COUNT(demo_detail_rekap_medis.diagnosa)'),'DESC')
         // ->orderBy('demo_detail_rekap_medis.created_at','desc')
         ->groupBy('demo_detail_rekap_medis.diagnosa')
-        ->limit(20)
+        ->limit(10)
         ->get();
         // dd($get_template);
         // dd($riwayat_berobat);
