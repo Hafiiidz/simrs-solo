@@ -75,9 +75,11 @@
                         <div class="text-center" style="font-size:14px;">{{ $val->dosis }}
                             {{ $val->takaran == '-' ? '' : $val->takaran }} </div>
                         <div class="text-center">
+                            @if ($val->signa != null || $val->signa != '[]' || $val->signa != 'null')
                             @foreach (json_decode($val->signa) as $signa)
                                 {!! App\Helpers\VclaimHelper::get_signa($signa) . ',' !!}
                             @endforeach
+                            @endif
                         </div>
                         <div class="text-center mt-1" style="text-transform: uppercase">
                             {{ $val->diminum . ' makan' }}
