@@ -174,37 +174,71 @@ class RekapMedisController extends Controller
                 ]);
             }
 
-            if ($detail->laborat != null || $detail->radiologi != 'null' || $detail->radiologi != '') {
-                DB::table('demo_permintaan_penunjang')->insert([
-                    'idrawat' => $rekap_medis->idrawat,
-                    'idbayar' => $rekap_medis->rawat->idbayar,
-                    'status_pemeriksaan' => 'Antrian',
-                    'no_rm' => $rekap_medis->rawat->no_rm,
-                    'pemeriksaan_penunjang' => $detail->radiologi,
-                    'jenis_penunjang' => 'Radiologi',
-                    'peminta' => now(),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                    'peminta' => auth()->user()->id,
-                    'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
-                    'idrekap' => $rekap_medis->id,
-                ]);
+            if ($detail->radiologi != null || $detail->radiologi != 'null' || $detail->radiologi != '') {
+                $cek_permintaan_penunjang_radiologi = DB::table('demo_permintaan_penunjang')->where('idrawat', $rekap_medis->idrawat)->where('jenis_penunjang','Radiologi')->where('status_pemeriksaan','Antrian')->first();
+                if(!$cek_permintaan_penunjang_radiologi){
+                    DB::table('demo_permintaan_penunjang')->insert([
+                        'idrawat' => $rekap_medis->idrawat,
+                        'idbayar' => $rekap_medis->rawat->idbayar,
+                        'status_pemeriksaan' => 'Antrian',
+                        'no_rm' => $rekap_medis->rawat->no_rm,
+                        'pemeriksaan_penunjang' => $detail->radiologi,
+                        'jenis_penunjang' => 'Radiologi',
+                        'peminta' => now(),
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                        'peminta' => auth()->user()->id,
+                        'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
+                        'idrekap' => $rekap_medis->id,
+                    ]);
+                }
+                // DB::table('demo_permintaan_penunjang')->insert([
+                //     'idrawat' => $rekap_medis->idrawat,
+                //     'idbayar' => $rekap_medis->rawat->idbayar,
+                //     'status_pemeriksaan' => 'Antrian',
+                //     'no_rm' => $rekap_medis->rawat->no_rm,
+                //     'pemeriksaan_penunjang' => $detail->radiologi,
+                //     'jenis_penunjang' => 'Radiologi',
+                //     'peminta' => now(),
+                //     'created_at' => now(),
+                //     'updated_at' => now(),
+                //     'peminta' => auth()->user()->id,
+                //     'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
+                //     'idrekap' => $rekap_medis->id,
+                // ]);
             }
             if ($detail->laborat != null || $detail->laborat != 'null' || $detail->laborat != '') {
-                DB::table('demo_permintaan_penunjang')->insert([
-                    'idrawat' => $rekap_medis->idrawat,
-                    'idbayar' => $rekap_medis->rawat->idbayar,
-                    'status_pemeriksaan' => 'Antrian',
-                    'no_rm' => $rekap_medis->rawat->no_rm,
-                    'pemeriksaan_penunjang' => $detail->laborat,
-                    'jenis_penunjang' => 'Lab',
-                    'peminta' => now(),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                    'peminta' => auth()->user()->id,
-                    'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
-                    'idrekap' => $rekap_medis->id,
-                ]);
+                $cek_permintaan_penunjang_lab = DB::table('demo_permintaan_penunjang')->where('idrawat', $rekap_medis->idrawat)->where('jenis_penunjang','Lab')->where('status_pemeriksaan','Antrian')->first();
+                if(!$cek_permintaan_penunjang_lab){
+                    DB::table('demo_permintaan_penunjang')->insert([
+                        'idrawat' => $rekap_medis->idrawat,
+                        'idbayar' => $rekap_medis->rawat->idbayar,
+                        'status_pemeriksaan' => 'Antrian',
+                        'no_rm' => $rekap_medis->rawat->no_rm,
+                        'pemeriksaan_penunjang' => $detail->laborat,
+                        'jenis_penunjang' => 'Lab',
+                        'peminta' => now(),
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                        'peminta' => auth()->user()->id,
+                        'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
+                        'idrekap' => $rekap_medis->id,
+                    ]);
+                }
+                // DB::table('demo_permintaan_penunjang')->insert([
+                //     'idrawat' => $rekap_medis->idrawat,
+                //     'idbayar' => $rekap_medis->rawat->idbayar,
+                //     'status_pemeriksaan' => 'Antrian',
+                //     'no_rm' => $rekap_medis->rawat->no_rm,
+                //     'pemeriksaan_penunjang' => $detail->laborat,
+                //     'jenis_penunjang' => 'Lab',
+                //     'peminta' => now(),
+                //     'created_at' => now(),
+                //     'updated_at' => now(),
+                //     'peminta' => auth()->user()->id,
+                //     'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
+                //     'idrekap' => $rekap_medis->id,
+                // ]);
             }
             if ($detail->fisio != 'null' || $detail->fisio != '' || $detail->fisio != null) {
                 // DB::table('demo_terapi_fisio')->insert([
@@ -218,7 +252,7 @@ class RekapMedisController extends Controller
                 //     'updated_at' => now(),
                 //     'limit_program'=>8,
                 // ]);
-                $cek_antrian_fisio = DB::table('demo_antrian_fisio')->where('idrawat', $rekap_medis->idrawat)->where('status_antrian','Antrian')->first();
+                $cek_antrian_fisio = DB::table('demo_permintaan_penunjang')->where('idrawat', $rekap_medis->idrawat)->where('jenis_penunjang','Fisio')->where('status_antrian','Antrian')->first();
                 if(!$cek_antrian_fisio){
                     DB::table('demo_permintaan_penunjang')->insert([
                         'idrawat' => $rekap_medis->idrawat,
