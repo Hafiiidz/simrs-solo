@@ -71,15 +71,15 @@
                             </table>
                         </div>
                     </div>
-                    <div class="row mb-2 py-2"style="border-bottom: 1px solid black;">
+                    <div class="row mb-1 py-1"style="border-bottom: 1px solid black;">
                         <div class="text-center" style="font-size:14px;">{{ $val->dosis }}
                             {{ $val->takaran == '-' ? '' : $val->takaran }} </div>
                         <div class="text-center">
-                            @if ($val->signa != null || $val->signa != '[]' || $val->signa != "null"|| $val->signa != 0)
-                            {{ $val->signa }}
-                            {{-- @foreach (json_decode($val?->signa) as $signa)
-                                {!! App\Helpers\VclaimHelper::get_signa($signa) . ',' !!}
-                            @endforeach --}}
+                            @if ($val->signa != "null")
+                            {{-- {{ $val->signa }} --}}
+                                @foreach (json_decode($val?->signa) as $signa)
+                                    {!! App\Helpers\VclaimHelper::get_signa($signa) . ',' !!}
+                                @endforeach
                             @endif
                         </div>
                         <div class="text-center mt-1" style="text-transform: uppercase">
