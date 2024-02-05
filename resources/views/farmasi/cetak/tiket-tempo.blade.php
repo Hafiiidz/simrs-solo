@@ -76,9 +76,10 @@
                             {{ $val->takaran == '-' ? '' : $val->takaran }} </div>
                         <div class="text-center">
                             @if ($val->signa != null || $val->signa != '[]' || $val->signa != "null"|| $val->signa != 0)
-                            @foreach (json_decode($val?->signa) as $signa)
+                            {{ $val->signa }}
+                            {{-- @foreach (json_decode($val?->signa) as $signa)
                                 {!! App\Helpers\VclaimHelper::get_signa($signa) . ',' !!}
-                            @endforeach
+                            @endforeach --}}
                             @endif
                         </div>
                         <div class="text-center mt-1" style="text-transform: uppercase">
