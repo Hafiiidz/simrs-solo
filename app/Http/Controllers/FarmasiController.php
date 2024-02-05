@@ -1033,6 +1033,12 @@ class FarmasiController extends Controller
         return redirect(route('farmasi.singkron-resep', $resep->idrawat))->with('berhasil', 'Berhasil');
 
     }
+    public function batalkan_resep($id){
+        $antrian = AntrianFarmasi::find($id);
+        $antrian->status_antrian = 'Batal';
+        $antrian->save();
+        return redirect(route('farmasi.status-rajal', $antrian->idrawat))->with('berhasil', 'Resep Berhasil Di Batalkan');
+    }
     public function post_resep_racikan(Request $request,$id){
         $rawat = Rawat::find($id);
         $antrian = AntrianFarmasi::where('idrawat', $id)->where('status_antrian','Antrian')->first();

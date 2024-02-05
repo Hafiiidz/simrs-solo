@@ -240,6 +240,7 @@ Route::prefix('/penunjang')->group(function () {
     Route::get('/cetak-radiologi/{id}', [PenunjangController::class, 'cetakRadiologi'])->middleware('auth')->name('penunjang.cetak-radiologi');
 });
 Route::prefix('/farmasi')->group(function () {
+    Route::get('/batalkan-resep/{id}', [FarmasiController::class, 'batalkan_resep'])->middleware('auth')->name('farmasi.batalkan-resep');
     Route::get('/tambah-resep/{id}', [FarmasiController::class, 'tambah_resep'])->middleware('auth')->name('farmasi.tambah-resep');
     Route::get('/delete-resep/{id}', [FarmasiController::class, 'delete_racikan'])->middleware('auth')->name('farmasi.delete-resep');
     Route::get('/singkron-resep/{id}', [FarmasiController::class, 'singkron_resep'])->middleware('auth')->name('farmasi.singkron-resep');

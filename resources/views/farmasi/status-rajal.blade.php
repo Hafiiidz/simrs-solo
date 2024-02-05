@@ -440,6 +440,8 @@
                                                     value="{{ $antrian->id }}">
                                                 <button class="btn btn-success mt-10">Simpan Resep</button>
                                             </form>
+                                            <br>
+                                            <a onclick="return confirm('Batalkan Resep?')" href="{{ route('farmasi.batalkan-resep',$antrian->id) }}" class="btn btn-danger"> Batalkan Resep </a>
 
                                         </div>
                                     </div>
