@@ -83,7 +83,7 @@
                             @endif
                         </div>
                         <div class="text-center mt-1" style="text-transform: uppercase">
-                            {{ $val->diminum . ' makan' }}
+                            {{ $val->diminum }} {{ $val->diminum == null ? '':' makan'  }}
                         </div>
                     </div>
                     <div class="row">
