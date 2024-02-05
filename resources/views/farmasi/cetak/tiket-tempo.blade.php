@@ -76,7 +76,7 @@
                             {{ $val->takaran == '-' ? '' : $val->takaran }} </div>
                         <div class="text-center">
                             @if ($val->signa != null || $val->signa != '[]' || $val->signa != 'null')
-                            @foreach (json_decode($val->signa) as $signa)
+                            @foreach (json_decode($val?->signa) as $signa)
                                 {!! App\Helpers\VclaimHelper::get_signa($signa) . ',' !!}
                             @endforeach
                             @endif
