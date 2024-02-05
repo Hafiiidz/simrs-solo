@@ -252,7 +252,7 @@ class RekapMedisController extends Controller
                 //     'updated_at' => now(),
                 //     'limit_program'=>8,
                 // ]);
-                $cek_antrian_fisio = DB::table('demo_permintaan_penunjang')->where('idrawat', $rekap_medis->idrawat)->where('jenis_penunjang','Fisio')->where('status_antrian','Antrian')->first();
+                $cek_antrian_fisio = DB::table('demo_permintaan_penunjang')->where('idrawat', $rekap_medis->idrawat)->where('jenis_penunjang','Fisio')->where('status_pemeriksaan','Antrian')->first();
                 if(!$cek_antrian_fisio){
                     DB::table('demo_permintaan_penunjang')->insert([
                         'idrawat' => $rekap_medis->idrawat,
