@@ -483,6 +483,7 @@
                                                                 <th rowspan="2" width=200>Sediaan</th>
                                                                 <th width=50 colspan="4">Aturan Pakai</th>
                                                                 <th rowspan="2" width=100>Diminum</th>
+                                                                <th rowspan="2" width=10>D.T.D</th>
                                                                 <th rowspan="2" width=100>Catatan</th>
                                                             </tr>
                                                             <tr>
@@ -595,6 +596,9 @@
                                                                             <label class="form-check-label"
                                                                                 for="kapsul">Sesudah</label>
                                                                         </div>
+                                                                    </td>
+                                                                    <td class="text-center" width='10'>
+                                                                        <input name="dtd"  class="form-check-input form-check-input-sm" type="checkbox" value="1" id="dtd" />
                                                                     </td>
                                                                     <td>
                                                                         <input type="text" name="catatan"

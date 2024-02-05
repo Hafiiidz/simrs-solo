@@ -136,6 +136,7 @@ class RekapMedisController extends Controller
                             'takaran'=>$rd->takaran,
                             'dosis'=>$rd->dosis,
                             'signa'=>$rd->signa,
+                            'dtd'=>$rd->dtd,
                             'diminum'=>$rd->diminum,
                             'catatan'=>$rd->catatan,
                             'idresep'=>$rd->id
@@ -689,6 +690,7 @@ class RekapMedisController extends Controller
             'dosis'=>$request->dosis_obat,
             'signa'=>json_encode($request->diminum),
             'catatan'=>$request->catatan,
+            'dtd'=>$request->dtd,
             'diminum'=>$request->takaran,
             'diberikan'=>$request->pemberian
         ]);

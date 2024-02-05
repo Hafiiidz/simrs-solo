@@ -159,7 +159,13 @@
                                     <h5 class="card-title">Resep</h5>
                                 </div>
                                 <div class="card-toolbar">
-                                    <a href="{{ route('farmasi.antrian-resep') }}" class="btn btn-warning">Kembali</a>
+                                    <a href="{{ route('farmasi.antrian-resep') }}" class="btn btn-warning me-3">Kembali</a>
+                                    @if ($antrian?->status_antrian == 'Antrian')
+                                        <a href="{{ route('farmasi.singkron-resep', $rawat->id) }}"
+                                            class="btn btn btn-light-info">Singkronkan Resep</a>
+                                    @else
+                                        <a href="{{ route('farmasi.tambah-resep',$rawat->id) }}" onclick="return confirm('Tambah Resep?')" class="btn btn-info ">Tambah Resep</a>
+                                    @endif
                                 </div>
                             </div>
                             <!--begin::Body-->
@@ -188,6 +194,14 @@
                                                         <td colspan="10" class="fw-bold fs-6 text-gray-800">
                                                             Racikan
                                                         </td>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="10" class="fw-bold fs-6 text-gray-800">
+                                                            <button type="button" data-bs-toggle="modal"
+                                                                data-bs-target="#modal_tambah_racikan"
+                                                                class="btn btn-success btn-sm">Tambah Racikan</button>
+                                                        </td>
                                                     </tr>
                                                     @if ($antrian->racikan != 'null')
                                                         @foreach (json_decode($antrian->racikan) as $val)
@@ -208,7 +222,11 @@
                                                                         @foreach ($val->obat as $ob_racikan)
                                                                             @if ($ob_racikan->obat != null)
                                                                                 <tr>
-                                                                                    <td>{!! App\Helpers\VclaimHelper::get_data_obat($ob_racikan->obat) !!}</td>
+                                                                                    <td>
+                                                                                        <button type="button"
+                                                                                            data-id='{{ $val->idresep }}'
+                                                                                            data-value='{{ $ob_racikan->obat }}'class="btn btn-light-success btn-sm btn-edit-racikan">{!! App\Helpers\VclaimHelper::get_data_obat($ob_racikan->obat) !!}</button>
+                                                                                    </td>
                                                                                     <td>{!! App\Helpers\VclaimHelper::get_harga_obat($ob_racikan->obat, $rawat->idbayar) !!}</td>
                                                                                     <td class="text-center">
                                                                                         {{ $ob_racikan->jumlah_obat }}</td>
@@ -233,7 +251,9 @@
                                                                 </td>
                                                                 <td class="align-middle text-center">{{ $val->dosis }}
                                                                     {{ $val->takaran }} ( {{ $val->signa }} )
-                                                                    {{ $val->diminum . ' makan' }}</td>
+                                                                    {{ $val->diminum . ' makan' }}
+                                                                    <b>{!! $val->dtd == 1 ? '<b> - (DTD)</b>' : '' !!}</b>
+                                                                </td>
                                                                 <td class="align-middle text-center">
                                                                     <select name="jenis_obat[{{ $val->idresep }}]"
                                                                         id="" class="form-select form-select-sm"
@@ -255,6 +275,9 @@
                                                                             @endif
                                                                         @endforeach
                                                                     </select>
+                                                                </td>
+                                                                <td class="align-middle text-center">
+                                                                    <a class="btn btn-danger btn-sm" href="{{ route('farmasi.delete-resep',$val->idresep) }}">Hapus</a>
                                                                 </td>
                                                             </tr>
                                                         @endforeach
@@ -362,25 +385,24 @@
                                                                 </td>
                                                             </tr>
                                                         @endforeach
-                                                        <tr>
-                                                            <td colspan=7>
-                                                                <div
-                                                                    class="alert alert-primary d-flex align-items-center p-5 mb-10">
-                                                                    <i
-                                                                        class="ki-duotone ki-shield-tick fs-2hx text-primary me-4"><span
-                                                                            class="path1"></span><span
-                                                                            class="path2"></span></i>
-                                                                    <div class="d-flex flex-column">
-                                                                        <h4 class="mb-1 text-primary">Klik Update terlebih
-                                                                            dahulu untuk dapat menambah obat</h4>
-                                                                    </div>
-                                                                </div>
-                                                                <button type="button" data-id="{{ $antrian->id }}"
-                                                                    id="modal_tambah_non"
-                                                                    class="btn btn-primary btn-sm">Tambah</button>
-                                                            </td>
-                                                        </tr>
+                                                       
                                                     @endif
+                                                    <tr>
+                                                        <td colspan=7>
+                                                            <div
+                                                                class="alert alert-primary d-flex align-items-center p-5 mb-10">
+                                                                <i
+                                                                    class="ki-duotone ki-shield-tick fs-2hx text-primary me-4"><span
+                                                                        class="path1"></span><span
+                                                                        class="path2"></span></i>
+                                                                <div class="d-flex flex-column">
+                                                                    <h4 class="mb-1 text-primary">Klik Update terlebih
+                                                                        dahulu untuk dapat menambah obat</h4>
+                                                                </div>
+                                                            </div>
+                                                            <button type="button" data-id="{{ $antrian->id }}" id="modal_tambah_non"class="btn btn-primary btn-sm">Tambah</button>
+                                                        </td>
+                                                    </tr>
                                                 @endif
                                             </tbody>
                                         </table>
@@ -617,6 +639,166 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" tabindex="-1" id="modal_tambah_racikan">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Tambah Racikan</h3>
+
+                    <!--begin::Close-->
+                    <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                        aria-label="Close">
+                        <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                    </div>
+                    <!--end::Close-->
+                </div>
+
+                <div class="modal-body">
+                    <table class="table table-bordered fs-9 gs-2 gy-2 gx-2" id="kt_docs_repeater_basic">
+                        <thead class="text-center align-middle">
+                            <tr>
+                                <th rowspan="2">Nama Obat</th>
+                                <th rowspan="2" width=100>Dosis</th>
+                                <th rowspan="2" width=100>Jumlah</th>
+                                <th rowspan="2" width=50>Diberikan</th>
+                                <th rowspan="2" width=200>Sediaan</th>
+                                <th width=50 colspan="4">Aturan Pakai</th>
+                                <th rowspan="2" width=100>Diminum</th>
+                                <th rowspan="2" width=10>D.T.D</th>
+                                <th rowspan="2" width=100>Catatan</th>
+                            </tr>
+                            <tr>
+                                <th width=10>P</th>
+                                <th width=10>S</th>
+                                <th width=10>SO</th>
+                                <th width=10>M</th>
+                            </tr>
+
+                        </thead>
+                        <tbody class="align-middle">
+                            <form id='frmRacikan' action="{{ route('farmasi.post-resep-racikan', $rawat->id) }}"
+                                method="POST">
+                                @csrf
+                                <tr>
+                                    <td>
+                                        @for ($i = 1; $i <= 8; $i++)
+                                            <select name="obat[]" id='nama_obat_racikan{{ $i }}'
+                                                class="form-select form-select-sm select-obat" data-control="select2"
+                                                data-placeholder="Obat {{ $i }}">
+                                                {{-- <option value="1" selected>1</option>
+                                    <option value="2" selected>2</option>
+                                    <option value="3" >3</option> --}}
+                                                <option value=""></option>
+                                                @foreach ($obat as $val)
+                                                    <option value="{{ $val->id }}">
+                                                        {{ $val->nama_obat }} -
+                                                        {{ $val->satuan->satuan }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        @endfor
+
+
+
+                                    </td>
+                                    <td>
+                                        @for ($i = 1; $i <= 8; $i++)
+                                            <input type="text" id='jumlah_obat{{ $i }}'
+                                                name="jumlah_obat[]" class="form-control form-control-sm mb-2 mb-md-0"
+                                                min="0">
+                                        @endfor
+
+                                    </td>
+                                    <td>
+                                        <input type="text" name="dosis_obat" required placeholder=""
+                                            class="form-control form-control-sm  mb-2 mb-md-0" min="0">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="pemberian" required placeholder=""
+                                            class="form-control form-control-sm  mb-2 mb-md-0" min="0">
+                                    </td>
+                                    <td>
+                                        <select name="takaran_obat" id='takaran_obat' required
+                                            class="form-select form-select-sm">
+                                            <option value="">Pilih Sediaan</option>
+                                            <option value="-">-</option>
+                                            <option value="tablet">tablet</option>
+                                            <option value="kapsul">kapsul</option>
+                                            <option value="bungkus">bungkus</option>
+                                            <option value="tetes">tetes</option>
+                                            <option value="ml">ml</option>
+                                            <option value="sendok takar 5ml">sendok takar
+                                                5ml
+                                            </option>
+                                            <option value="sendok takar 15ml">sendok takar
+                                                15ml
+                                            </option>
+                                            <option value="Oles">Oles</option>
+                                        </select>
+
+                                    </td>
+                                    <td class="text-center align-middle"><input name="diminum[]"
+                                            class="form-check-input form-check-input-sm" type="checkbox" value="P"
+                                            id="flexCheckDefault" /></td>
+                                    <td class="text-center align-middle"><input
+                                            class="form-check-input form-check-input-sm" type="checkbox" value="S"
+                                            name="diminum[]" id="flexCheckDefault" /></td>
+                                    <td class="text-center align-middle"><input
+                                            class="form-check-input form-check-input-sm" type="checkbox" value="SO"
+                                            name="diminum[]" id="flexCheckDefault" /></td>
+                                    <td class="text-center align-middle"><input
+                                            class="form-check-input form-check-input-sm" type="checkbox" value="M"
+                                            name="diminum[]" id="flexCheckDefault" /></td>
+                                    <td>
+                                        <div class="form-check form-check-inline mb-2">
+                                            <input class="form-check-input" type="radio" name="takaran" id="kapsul"
+                                                value="sebelum">
+                                            <label class="form-check-label" for="tablet">Sebelum</label>
+                                        </div>
+
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="takaran" id="kapsul"
+                                                value="sesudah">
+                                            <label class="form-check-label" for="kapsul">Sesudah</label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center" width='10'>
+                                        <input name="dtd" class="form-check-input form-check-input-sm"
+                                            type="checkbox" value="1" id="dtd" />
+                                    </td>
+                                    <td>
+                                        <input type="text" name="catatan"
+                                            class="form-control form-control-sm mb-2 mb-md-0" min="0">
+                                    </td>
+                                    <td>
+
+                                        {{-- <button class="btn btn-sm btn-info">Racik</button> --}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th colspan="10">
+                                        <button type="submit" name="upload_racikan" id="upload_racikan"
+                                            class="btn btn-primary btn-sm">
+                                            <span class="indicator-label">
+                                                Simpan Obat
+                                            </span>
+                                            <span class="indicator-progress">
+                                                Prossesing... <span
+                                                    class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                            </span>
+                                        </button>
+                                    </th>
+                                </tr>
+                            </form>
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('js')
     <script></script>
@@ -627,6 +809,21 @@
     <script>
         $('#id_data_obat').select2({
             dropdownParent: $('#modal_lihat')
+        });
+        $(document).on('click', '.btn-edit-racikan', function() {
+            var id = $(this).attr('data-id');
+            var value = $(this).attr('data-value');
+
+
+            var url = '{{ route('get-edit-racikan', [':b_id', ':p_value']) }}';
+            url = url.replace(':b_id', id);
+            url = url.replace(':p_value', value);
+            $("#modal-hasil").empty();
+            $.get(url).done(function(data) {
+                $("#modal-hasil").html(data);
+                $("#modal_lihat").modal('show');
+                console.log(data);
+            });
         });
         $(document).on('click', '.btn-edit-farmasi', function() {
             var id = $(this).attr('data-id');
@@ -644,8 +841,11 @@
             });
         });
         $(function() {
-
-
+            @for ($i = 1; $i <= 8; $i++)
+                $('#nama_obat_racikan{{ $i }}').select2({
+                    dropdownParent: $('#modal_tambah_racikan')
+                });
+            @endfor
             $('#nama_obat_non').select2({
                 dropdownParent: $('#modal_tambah')
             });
@@ -826,5 +1026,40 @@
                 }
             });
         @endif
+
+        $('#frmRacikan').on('submit', function(event) {
+            event.preventDefault();
+            var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+            Swal.fire({
+                title: 'Simpan Data',
+                text: "Apakah Anda yakin akan menyimpan data ini ?",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Simpan Data',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.blockUI({
+                        css: {
+                            border: 'none',
+                            padding: '15px',
+                            backgroundColor: '#000',
+                            '-webkit-border-radius': '10px',
+                            '-moz-border-radius': '10px',
+                            opacity: .5,
+                            color: '#fff',
+                            fontSize: '16px'
+                        },
+                        message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                        baseZ: 9000,
+                    });
+                    this.submit();
+                }
+            });
+
+
+        });
     </script>
 @endsection

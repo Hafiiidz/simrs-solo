@@ -240,8 +240,12 @@ Route::prefix('/penunjang')->group(function () {
     Route::get('/cetak-radiologi/{id}', [PenunjangController::class, 'cetakRadiologi'])->middleware('auth')->name('penunjang.cetak-radiologi');
 });
 Route::prefix('/farmasi')->group(function () {
+    Route::get('/tambah-resep/{id}', [FarmasiController::class, 'tambah_resep'])->middleware('auth')->name('farmasi.tambah-resep');
+    Route::get('/delete-resep/{id}', [FarmasiController::class, 'delete_racikan'])->middleware('auth')->name('farmasi.delete-resep');
+    Route::get('/singkron-resep/{id}', [FarmasiController::class, 'singkron_resep'])->middleware('auth')->name('farmasi.singkron-resep');
     Route::get('/antrian', [FarmasiController::class, 'antrian_resep'])->middleware('auth')->name('farmasi.antrian-resep');
     Route::get('/get-edit-farmasi/{id}/{idobat}', [FarmasiController::class, 'get_edit_farmasi'])->middleware('auth')->name('get-edit-farmasi');
+    Route::get('/get-edit-racikan/{id}/{idobat}', [FarmasiController::class, 'get_edit_racikan'])->middleware('auth')->name('get-edit-racikan');
     Route::get('/status-rajal/{id}', [FarmasiController::class, 'status_rajal'])->middleware('auth')->name('farmasi.status-rajal');
     Route::get('/status-ranap/{id}', [FarmasiController::class, 'status_ranap'])->middleware('auth')->name('farmasi.status-ranap');
     Route::get('/list-pasien-rawat', [FarmasiController::class, 'list_pasien_rawat'])->middleware('auth')->name('farmasi.list-pasien-rawat');
@@ -259,6 +263,8 @@ Route::prefix('/farmasi')->group(function () {
     Route::get('/hapus-data-resep', [FarmasiController::class, 'hapus_obat'])->middleware('auth')->name('hapus-data-resep');
     Route::post('/tambah-obat', [FarmasiController::class, 'tambah_obat'])->middleware('auth')->name('farmasi.tambah-obat');
     Route::post('/edit-obat-farmasi', [FarmasiController::class, 'post_edit_farmasi'])->middleware('auth')->name('farmasi.edit-obat-farmasi');
+    Route::post('/edit-obat-farmasi-racikan', [FarmasiController::class, 'post_edit_farmasi_racikan'])->middleware('auth')->name('farmasi.edit-obat-farmasi-racikan');
+    Route::post('/post-resep-racikan-farmasi/{id}', [FarmasiController::class, 'post_resep_racikan'])->middleware('auth')->name('farmasi.post-resep-racikan');
 });
 Route::prefix('/rawat-jalan')->group(function () {
     Route::get('/poli', [PoliklinikController::class, 'index'])->middleware('auth')->name('poliklinik');
