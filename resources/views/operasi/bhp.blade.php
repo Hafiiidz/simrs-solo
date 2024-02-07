@@ -68,11 +68,14 @@
                                                     <div data-repeater-item>
                                                         <div class="form-group row mb-5">
                                                             {{-- <input type="hidden" name="idtindakan" value="{{ $operasi_tindakan->idtindakan }}" id=""> --}}
-                                                            <div class="col-md-2">
+                                                            <div class="col-md-6">
                                                                 <label class="form-label">Nama Obat</label>
-                                                                <input type="text" required name="nama_obat"
-                                                                    class="form-control mb-2 mb-md-0"
-                                                                    placeholder="Masukan Obat" />
+                                                                <select name="nama_obat" class="form-select"  data-kt-repeater="select22" data-placeholder="-Pilih-"require id="">
+                                                                    <option value=""></option>
+                                                                    @foreach ($list_bhp as $lb)
+                                                                        <option value="{{ $lb->id }}">{{ $lb->nama_barang }} Rp. {{ number_format($lb->harga) }}</option>
+                                                                    @endforeach
+                                                                </select>
                                                             </div>
                                                             <div class="col-md-2">
                                                                 <label class="form-label">Jumlah</label>
@@ -86,12 +89,12 @@
                                                                     class="form-control mb-2 mb-md-0"
                                                                     placeholder="Masukan Obat" />
                                                             </div>
-                                                            <div class="col-md-2">
+                                                            {{-- <div class="col-md-2">
                                                                 <label class="form-label">Harga</label>
                                                                 <input type="text" required name="harga_obat"
                                                                     class="form-control mb-2 mb-md-0"
                                                                     placeholder="Masukan Obat" />
-                                                            </div>
+                                                            </div> --}}
                                                             <div class="col-md-2">
                                                                 <a href="javascript:;" data-repeater-delete
                                                                     class="btn btn-sm btn-light-danger mt-3 mt-md-8">
@@ -197,10 +200,18 @@
             $('#bph_repeater').repeater({
                 initEmpty: false,
                 show: function() {
+                    $('[data-kt-repeater="select22"]').select2({
+                        allowClear: true,
+                    });
                     $(this).slideDown();
                 },
                 hide: function(deleteElement) {
                     $(this).slideUp(deleteElement);
+                },
+                ready: function() {
+                    $('[data-kt-repeater="select22"]').select2({
+                        allowClear: true,
+                    });
                 }
             });
 

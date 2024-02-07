@@ -93,8 +93,9 @@ class LaporanOperasiController extends Controller
         $operasi_tindakan = DB::table('operasi_tindakan')->where('id',$id)->first();
         $rawat = Rawat::find($operasi_tindakan->idrawat);
         $bhp = DB::table('operasi_tindakan_bhp')->where('idoperasi',$operasi_tindakan->id)->get();
+        $list_bhp = DB::table('demo_template_bhp')->get();
         // dd($bhp);
-        return view('operasi.bhp',compact('operasi_tindakan','rawat','bhp'));
+        return view('operasi.bhp',compact('operasi_tindakan','rawat','bhp','list_bhp'));
     }
 
     #create fungsi simpan bhp
@@ -102,14 +103,16 @@ class LaporanOperasiController extends Controller
         $operasi_tindakan = DB::table('operasi_tindakan')->where('id',$id)->first();
         // return $request->all();
         foreach($request->bhp as $bhp){
+            $list_bhp = DB::table('demo_template_bhp')->where('id',$bhp['nama_obat'])->first();
+
             $data = [
                 'idoperasi'=>$operasi_tindakan->id,
                 'idtindakan'=>$operasi_tindakan->idtindakan,
                 'iddokter'=>$operasi_tindakan->iddokter,
-                'nama_obat'=>$bhp['nama_obat'],
+                'nama_obat'=>$list_bhp->nama_barang,
                 'jumlah'=>$bhp['jumlah'],
                 'satuan'=>$bhp['satuan_obat'],
-                'harga'=>$bhp['harga_obat'],
+                'harga'=>$list_bhp->harga,
                 'status'=>1,
                 'tgl'=>date('Y-m-d')
             ];

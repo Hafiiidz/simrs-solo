@@ -199,11 +199,11 @@ class TemplateController extends Controller
     public function showTemplateAnastesi(Request $request){
         $data = TemplateAnastesi::find($request->template_id);
         $obat_anastesi = '';
-        dd($data);
+        // dd($data);
         if($data->obat_anestesi != 'null'){
             foreach(json_decode($data->obat_anestesi) as $val){
             $obat_anastesi .='
-            <div class="col-md-4" data-repeater-item>                                                                       
+            <div class="col-md-4" data-repeater-item>                                                                
                 <div class="form-group row mb-5">
                     <div class="col-md-10">
                         <input type="text"

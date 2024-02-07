@@ -140,20 +140,20 @@
                             <div class="mb-5 hover-scroll-x">
                                 <div class="d-grid">
                                     <ul class="nav nav-tabs flex-nowrap text-nowrap" role="tablist">
-                                        <li class="nav-item" role="presentation">
-                                            <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0 active"
+                                        {{-- <li class="nav-item" role="presentation">
+                                            <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0 "
                                                 data-bs-toggle="tab" href="#kt_tab_pane_0" aria-selected="true"
                                                 role="tab">Check List</a>
-                                        </li>
+                                        </li> --}}
                                         <li class="nav-item" role="presentation">
-                                            <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0 "
+                                            <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0 active"
                                                 data-bs-toggle="tab" href="#kt_tab_pane_1" aria-selected="true"
                                                 role="tab">Laporan Operasi</a>
                                         </li>
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0 "
                                                 data-bs-toggle="tab" href="#kt_tab_pane_2" aria-selected="true"
-                                                role="tab">Tindakan Operasi</a>
+                                                role="tab">Biaya & BHP</a>
                                         </li>
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0 "
@@ -163,99 +163,10 @@
                                     </ul>
                                 </div>
                                 <div class="tab-content" id="myTabContent">
-                                    <div class="tab-pane fade show active" id="kt_tab_pane_0" role="tabpanel">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <span class="text-center">
-                                                    <h6 class=" mb-2 mt-2 p-2">Sebelum Induksi Anastesi <br> (SIGN IN)</h6>
-                                                </span>
-                                                
-                                                <table class="table table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <td>Item</td>
-                                                            <td width='100'>Ceklis</td>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach ($sign_in as $si)
-                                                            <tr>
-                                                                <td>{{ $si->item_cek }}</td>
-                                                                <td>
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                                                                        <label class="form-check-label" for="flexCheckDefault">
-                                                                            Check
-                                                                        </label>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            
-                                                        @endforeach
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <span class="text-center">
-                                                    <h6 class=" mb-2 mt-2 p-2">Sebelum Mengiris Kulit <br> (Time Out)</h6>
-                                                </span>
-                                                
-                                                <table class="table table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <td>Item</td>
-                                                            <td width='100'>Ceklis</td>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach ($time_out as $to)
-                                                            <tr>
-                                                                <td>{{ $to->item_cek }}</td>
-                                                                <td>
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                                                                        <label class="form-check-label" for="flexCheckDefault">
-                                                                            Check
-                                                                        </label>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <span class="text-center">
-                                                    <h6 class=" mb-2 mt-2 p-2">Sebelum Pasien Meninggalkan Ruangan  <br>(SIGN OUT)</h6>
-                                                </span>
-                                                
-                                                <table class="table table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <td>Item</td>
-                                                            <td width='100'>Ceklis</td>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach ($sign_out as $so)
-                                                            <tr>
-                                                                <td>{{ $so->item_cek }}</td>
-                                                                <td>
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                                                                        <label class="form-check-label" for="flexCheckDefault">
-                                                                            Check
-                                                                        </label>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade " id="kt_tab_pane_1" role="tabpanel">
+                                    {{-- <div class="tab-pane fade" id="kt_tab_pane_0" role="tabpanel">
+                                        
+                                    </div> --}}
+                                    <div class="tab-pane fade  show active" id="kt_tab_pane_1" role="tabpanel">
                                         <div class="rounded border p-5">
                                             <div class="row">
                                                 <div class="col-md-12">
@@ -303,6 +214,98 @@
                                                             class="d-inline-block position-absolute h-5px bottom-0 end-0 start-0 bg-success translate rounded"></span>
                                                         <!--end::Line-->
                                                     </span>
+
+                                                    <div class="row mb-5">
+                                                        <div class="col-md-4">
+                                                            <span class="text-center">
+                                                                <h6 class=" mb-2 mt-2 p-2">Sebelum Induksi Anastesi <br> (SIGN IN)</h6>
+                                                            </span>
+                                                            
+                                                            <table class="table table-bordered">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <td>Item</td>
+                                                                        <td width='50'>Ceklis</td>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach ($sign_in as $si)
+                                                                        <tr>
+                                                                            <td>{{ $si->item_cek }}</td>
+                                                                            <td>
+                                                                                <div class="form-check">
+                                                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                                                                                    {{-- <label class="form-check-label" for="flexCheckDefault">
+                                                                                        Check
+                                                                                    </label> --}}
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <span class="text-center">
+                                                                <h6 class=" mb-2 mt-2 p-2">Sebelum Mengiris Kulit <br> (Time Out)</h6>
+                                                            </span>
+                                                            
+                                                            <table class="table table-bordered">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <td>Item</td>
+                                                                        <td width='50'>Ceklis</td>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach ($time_out as $to)
+                                                                        <tr>
+                                                                            <td>{!! $to->item_cek !!}</td>
+                                                                            <td>
+                                                                                <div class="form-check">
+                                                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                                                                                    {{-- <label class="form-check-label" for="flexCheckDefault">
+                                                                                        Check
+                                                                                    </label> --}}
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <span class="text-center">
+                                                                <h6 class=" mb-2 mt-2 p-2">Sebelum Pasien Meninggalkan Ruangan  <br>(SIGN OUT)</h6>
+                                                            </span>
+                                                            
+                                                            <table class="table table-bordered">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <td>Item</td>
+                                                                        <td width='50'>Ceklis</td>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach ($sign_out as $so)
+                                                                        <tr>
+                                                                            <td>{{ $so->item_cek }}</td>
+                                                                            <td>
+                                                                                <div class="form-check">
+                                                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                                                                                    {{-- <label class="form-check-label" for="flexCheckDefault">
+                                                                                        Check
+                                                                                    </label> --}}
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+
                                                     <form id="frm-data" action="{{ route('update.operasi', $data->id) }}"
                                                         method="POST" autocomplete="off">
                                                         @csrf
@@ -1349,7 +1352,7 @@
                                                         <label for="" class="form-label">Jenis / Teknis Anestesis</label>
                                                         <div class="row mt-3">
                                                             <div class="col">
-                                                                <input class="form-check-input" type="radio" value="LA" name="teknik_anestesis" {{ ($catatan->teknik_anestesi == "LA") ? 'checked' : '' }}/>
+                                                                <input class="form-check-input"  type="radio" value="LA" name="teknik_anestesis" {{ ($catatan->teknik_anestesi == "LA") ? 'checked' : '' }}/>
                                                                 <label class="form-check-label" for="flexCheckbox30">
                                                                     LA
                                                                 </label>
@@ -1372,11 +1375,11 @@
                                                 <div class="row mt-5">
                                                     <div class="col-md-6">
                                                         <label for="" class="form-label">Posisi</label>
-                                                        <textarea class="form-control" data-kt-autosize="true" name="posisi">{{ $catatan->posisi }}</textarea>
+                                                        <textarea class="form-control" id='posisi' data-kt-autosize="true" name="posisi">{{ $catatan->posisi }}</textarea>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label for="" class="form-label">Premedikasi</label>
-                                                        <textarea class="form-control" data-kt-autosize="true" name="premedikasi">{{ $catatan->premedikasi }}</textarea>
+                                                        <textarea class="form-control" id='premedikasi' data-kt-autosize="true" name="premedikasi">{{ $catatan->premedikasi }}</textarea>
                                                     </div>
                                                 </div>
                                                 <div class="row mt-5">
@@ -1394,7 +1397,7 @@
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="" class="form-label">Efek</label>
-                                                        <input type="text" name="efek" class="form-control" value="{{ $catatan->efek }}">
+                                                        <input type="text" name="efek" id='efek' class="form-control" value="{{ $catatan->efek }}">
                                                     </div>
                                                 </div>
                                                 <div class="row mt-5">
@@ -1414,7 +1417,7 @@
                                                             <!--begin::Form group-->
                                                             <div class="form-group">
                                                                 <div data-repeater-list="obat_anestesi_catatan" class="row">
-                                                                    
+                                                                    <div class="row" id="template_obat_anastesi"></div>
                                                                     @if ($catatan->obat_anestesi)
                                                                     @foreach (json_decode($catatan->obat_anestesi) as $val)
                                                                         <div class="col-md-4" data-repeater-item>
@@ -1443,10 +1446,10 @@
                                                                         </div>
                                                                     @endforeach
                                                                 @else
-                                                                    <div id="template_obat_anastesi"></div>
+                                                                    
                                                                     
                                                                     <div class="col-md-4" data-repeater-item>
-                                                                       
+                                                                        {{-- <div id="template_obat_anastesi"></div> --}}
                                                                         <div class="form-group row mb-5">
                                                                             <div class="col-md-10">
                                                                                 <input type="text"
@@ -1993,15 +1996,15 @@
                                                     <label for="" class="form-label"><b>Stadia</b></label>
                                                     <div class="col-md-4">
                                                         <label for="" class="form-label">Anestesi</label>
-                                                        <textarea class="form-control" data-kt-autosize="true" name="anestesi">{{ json_decode($catatan?->stadia)->anestesi ?? '' }}</textarea>
+                                                        <textarea class="form-control" id='stadia_anestesi' data-kt-autosize="true" name="anestesi">{{ json_decode($catatan?->stadia)->anestesi ?? '' }}</textarea>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="" class="form-label">Operasi</label>
-                                                        <textarea class="form-control" data-kt-autosize="true" name="operasi">{{ json_decode($catatan?->stadia)->operasi ?? '' }}</textarea>
+                                                        <textarea class="form-control"  id='stadia_operasi' data-kt-autosize="true" name="operasi">{{ json_decode($catatan?->stadia)->operasi ?? '' }}</textarea>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="" class="form-label">Respirasi</label>
-                                                        <textarea class="form-control" data-kt-autosize="true" name="respirasi">{{ json_decode($catatan?->stadia)->respirasi ?? '' }}</textarea>
+                                                        <textarea class="form-control"  id='stadia_respirasi' data-kt-autosize="true" name="respirasi">{{ json_decode($catatan?->stadia)->respirasi ?? '' }}</textarea>
                                                     </div>
                                                 </div>
                                                 <div class="row mt-5">
@@ -2017,7 +2020,7 @@
                                                 <div class="row mt-5">
                                                     <div class="col-md-12">
                                                         <label for="" class="form-label">Catatan</label>
-                                                        <textarea class="form-control" data-kt-autosize="true" name="catatan">{{ $catatan->catatan }}</textarea>
+                                                        <textarea class="form-control"  id='catatan_anestesi' data-kt-autosize="true" name="catatan">{{ $catatan->catatan }}</textarea>
                                                     </div>
                                                 </div>
                                                 <div class="row mt-5">
@@ -2037,11 +2040,11 @@
                                                 <div class="row mt-5">
                                                     <div class="col-md-6">
                                                         <label for="" class="form-label">Komplikasi Pra Anestesi</label>
-                                                        <textarea class="form-control" data-kt-autosize="true" name="pra_anestesi">{{ $catatan->pra_anestesi }}</textarea>
+                                                        <textarea class="form-control" id='pra_anestesi' data-kt-autosize="true" name="pra_anestesi">{{ $catatan->pra_anestesi }}</textarea>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label for="" class="form-label">Komplikasi Post Anestesi</label>
-                                                        <textarea class="form-control" data-kt-autosize="true" name="post_anestesi">{{ $catatan->post_anestesi }}</textarea>
+                                                        <textarea class="form-control"  id='post_anestesi' data-kt-autosize="true" name="post_anestesi">{{ $catatan->post_anestesi }}</textarea>
                                                     </div>
                                                 </div>
                                                 <div class="row mt-5">
@@ -2766,8 +2769,18 @@
                     });
                 },
                 success: function(data) {
-                                       
+                    $('#template_obat_anastesi').html(data.obat_anastesi);
+                    $('#posisi').val(data.template.posisi);
+                    $('#premedikasi').val(data.template.premedikasi);
+                    var stadia = JSON.parse(data.template.stadia);
+                    $('#stadia_anestesi').val(stadia.anestesi);
+                    $('#stadia_operasi').val(stadia.operasi);
+                    $('#stadia_respirasi').val(stadia.respirasi);
+                    $('#pra_anestesi').val(data.template.pra_anestesi);
+                    $('#catatan_anestesi').val(data.template.catatan);
+                    $('#post_anestesi').val(data.template.post_anestesi);
 
+                    console.log(data);
                     $.unblockUI();
                 },
                 error: function(data) {
@@ -2867,7 +2880,7 @@
                     });
                 },
                 success: function(data) {
-                    $('#template_obat_anastesi').html(data.obat_anastesi);
+                  
                     $.unblockUI();
                 },
                 error: function(data) {
