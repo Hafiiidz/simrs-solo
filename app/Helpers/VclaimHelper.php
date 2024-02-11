@@ -234,7 +234,7 @@ class VclaimHelper
             $token = $helper->getToken();
 
             $response = Http::withHeaders($token['signature'])
-                ->withOptions(["verify" =>false])
+                ->withOptions(["verify" =>$token['ssl']])
                 ->post('https://apijkn.bpjs-kesehatan.go.id/wsihs/api/rs/validate', [
                     "param" => $bpjs,
                     "kodedokter" => (int) $id
@@ -356,7 +356,7 @@ class VclaimHelper
         $token = $helper->getTokenAntrol();
         // return $token;
         $response = Http::withHeaders($token['signature'])
-            ->withOptions(["verify" => false])
+            ->withOptions(["verify" => $token['ssl']])
             ->post('https://apijkn.bpjs-kesehatan.go.id/antreanrs/antrean/getlisttask',[
                 'kodebooking'=>'RJ2024542430001'
         ]);
@@ -376,7 +376,7 @@ class VclaimHelper
         $token = $helper->getTokenAntrol();
         // return $token;
         $response = Http::withHeaders($token['signature'])
-            ->withOptions(["verify" => false])
+            ->withOptions(["verify" => $token['ssl']])
             ->post('https://apijkn.bpjs-kesehatan.go.id/antreanrs/antrean/updatewaktu',[
                 'kodebooking'=>'RJ2024542430001',
                 "taskid"=> 5,
