@@ -366,7 +366,7 @@ class VclaimHelper
                 $data_response = json_decode($data_response, true);
                 return $data_response;
             } else {
-                $this->update_task
+                // $this->update_task
                 return $response['metadata'];
             }
     }
