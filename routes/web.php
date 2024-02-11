@@ -122,7 +122,7 @@ Route::get('/obat-tes',function(){
 });
 
 Route::get('/faskes', function (HttpRequest $request) {
-    return VclaimHelper::getFaskes($request->q);
+    return VclaimHelper::getlist_taks();
 })->name('list-faskes');
 
 
@@ -285,6 +285,7 @@ Route::prefix('/rawat-jalan')->group(function () {
         Route::get('/{id_pasien}/show', [RekapMedisController::class, 'index_poli'])->name('rekam-medis-poli');
         Route::get('/{no_rm}/{idrawat}/data-resep', [RekapMedisController::class, 'data_resep_pasien'])->name('rekam-medis-poli.data-resep');
         Route::post('/post-resume', [RekapMedisController::class, 'input_resume_poli'])->name('post.resume-poli');
+        Route::get('/get-icare/{id}/{bpjs}', [RekapMedisController::class, 'get_icare'])->name('get-icare');
         Route::get('/get-hasil/{id}', [RekapMedisController::class, 'get_hasil'])->name('get-hasil');
         Route::get('/get-hasil-rad/{id}', [RekapMedisController::class, 'get_hasil_rad'])->name('get-hasil-rad');
         Route::get('/get-hasil-lab/{id}', [RekapMedisController::class, 'get_hasil_lab'])->name('get-hasil-lab');

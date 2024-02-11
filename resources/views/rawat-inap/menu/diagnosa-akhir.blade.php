@@ -118,7 +118,7 @@
 
                 <!--begin::Form group-->
                 <div class="form-group mt-5">
-                    <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
+                    <a href="javascript:;" {{ $disable }} data-repeater-create class="btn btn-light-primary">
                         <i class="ki-duotone ki-plus fs-3"></i>
                         Tambah ICD X
                     </a>
@@ -223,7 +223,7 @@
 
                 <!--begin::Form group-->
                 <div class="form-group mt-5">
-                    <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
+                    <a  href="javascript:;" data-repeater-create class="btn btn-light-primary ">
                         <i class="ki-duotone ki-plus fs-3"></i>
                         Tambah ICD 9
                     </a>
@@ -233,5 +233,5 @@
         </div>
     </div>
     <br>
-    <button class="btn btn-success">Simpan</button>
+    <button class="btn btn-success"  {{ $disable }}>Simpan</button>
 </form>

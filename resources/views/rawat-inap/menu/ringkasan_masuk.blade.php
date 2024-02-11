@@ -14,7 +14,7 @@
     <div class="row mb-5">
         <div class="col-md-12">
             <label class="form-label fw-bold">Penyakit Utama</label>
-            <textarea name="penyakit_utama" rows="3" class="form-control" placeholder="Penyakit Utama">{{ isset($ringakasan_pasien_masuk) ? $ringakasan_pasien_masuk->penyakit_utama : '' }}</textarea>
+            <textarea name="penyakit_utama" {{ $disable }} rows="3" class="form-control" placeholder="Penyakit Utama">{{ isset($ringakasan_pasien_masuk) ? $ringakasan_pasien_masuk->penyakit_utama : '' }}</textarea>
         </div>
     </div>
     <div class="row mb-5">
@@ -31,7 +31,7 @@
                                         <div class="form-group row mb-5">
                                             <div class="col-md-6">
                                                 <label class="form-label">ICD X</label>
-                                                <select name="diagnosa_icdx" class="form-select"
+                                                <select name="diagnosa_icdx" {{ $disable }} class="form-select"
                                                     data-kt-repeater="select222" data-placeholder="-Pilih-" required>
                                                     <option value="{{ $val2->diagnosa_icdx }}">
                                                         {{ $val2->diagnosa_icdx }}</option>
@@ -40,7 +40,7 @@
                                             <div class="col-md-2">
                                                 <label class="form-label">Jenis Diagnosa</label>
                                                 <div class="input-group mb-5">
-                                                    <select name="jenis_diagnosa" class="form-select" id="">
+                                                    <select name="jenis_diagnosa" {{ $disable }} class="form-select" id="">
                                                         <option value="P">Primer</option>
                                                     </select>
                                                 </div>
@@ -144,7 +144,7 @@
     <div class="row mb-5">
         <div class="col-md-12">
             <label class="form-label fw-bold">Penyakit Tambahan</label>
-            <textarea name="penyakit_tambahan" rows="3" class="form-control" placeholder="Penyakit Tambahan">{{ isset($ringakasan_pasien_masuk) ? $ringakasan_pasien_masuk->penyakit_tambahan : '' }}</textarea>
+            <textarea name="penyakit_tambahan" rows="3" {{ $disable }} class="form-control" placeholder="Penyakit Tambahan">{{ isset($ringakasan_pasien_masuk) ? $ringakasan_pasien_masuk->penyakit_tambahan : '' }}</textarea>
         </div>
     </div>
     <div class="row mb-5">
@@ -260,7 +260,7 @@
                 </div>
                 <!--end::Form group-->
                 <div class="form-group mt-5">
-                    <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
+                    <a href="javascript:;" {{ $disable }} data-repeater-create class="btn btn-light-primary">
                         <i class="ki-duotone ki-plus fs-3"></i>
                         Tambah ICD X
                     </a>
@@ -378,7 +378,7 @@
 
                 <!--begin::Form group-->
                 <div class="form-group mt-5">
-                    <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
+                    <a href="javascript:;" {{ $disable }} data-repeater-create class="btn btn-light-primary">
                         <i class="ki-duotone ki-plus fs-3"></i>
                         Tambah ICD 9
                     </a>
@@ -390,8 +390,8 @@
     <div class="row mb-5">
         <div class="col-md-12">
             <label class="form-label fw-bold">Tindakan</label>
-            <textarea name="tindakan" rows="3" class="form-control" placeholder="Tindakan">{{ isset($ringakasan_pasien_masuk) ? $ringakasan_pasien_masuk->tindakan : '' }}</textarea>
+            <textarea name="tindakan" {{ $disable }} rows="3" class="form-control" placeholder="Tindakan">{{ isset($ringakasan_pasien_masuk) ? $ringakasan_pasien_masuk->tindakan : '' }}</textarea>
         </div>
     </div>
-    <button id='simpan_ringakasan_masuk' class="mt-5 btn btn-primary">Simpan</button>
+    <button id='simpan_ringakasan_masuk' {{ $disable }} class="mt-5 btn btn-primary">Simpan</button>
 </form>

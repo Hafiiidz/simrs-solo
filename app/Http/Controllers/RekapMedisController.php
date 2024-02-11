@@ -26,6 +26,14 @@ use Termwind\Components\Raw;
 
 class RekapMedisController extends Controller
 {
+    public function get_icare($id,$bpjs){
+        $icare = VclaimHelper::postIcare($id,$bpjs);
+        if(!isset($icare['url'])){
+            return response()->json(['status'=>false,'message'=>'Data Tidak Ditemukan']);
+        }
+        // return response()->json(['status'=>true,'url'=>$icare['url']]);
+        return View::make('rekap-medis.icare', compact('icare'));
+    }
     public function get_data_racik_obat($id){
         $resep = DB::table('demo_resep_dokter')->where('id', $id)->first();   
         $takaran = ['-','tablet','kapsul','bungkus','tetes','ml','sendok takar 5ml','sendok takar 15ml','oles'];

@@ -204,6 +204,11 @@ class RawatInapController extends Controller
     public function detail($id)
     {
         $rawat = Rawat::with('pasien', 'bayar')->where('id', $id)->first();
+        if($rawat->status != 2){
+            $disable = 'disabled';
+        }else{
+            $disable = '';
+        }
         $poli = Poli::get();
         $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
         $ringakasan_pasien_masuk = DB::table('demo_ringkasan_masuk')->where('idrawat', $rawat->id)->first();
@@ -224,10 +229,19 @@ class RawatInapController extends Controller
         $implamentasi = DB::table('rawat_implementasi')->where('idrawat', $id)->get();
         $list_tindakan = DB::table('demo_trx_tindakan')->where('idrawat', $id)->get();
         $penunjang = DB::table('demo_permintaan_penunjang')->where('idrawat', $id)->get();
-
+        $kesadaran = DB::table('soap_kesadaran')->get();
+        $anamnesa_pemeriksaan_fisik = DB::table('demo_ranap_awal_pemeriksaan_fisik')->where('idrawat', $id)->first();
+        if($anamnesa_pemeriksaan_fisik){
+            $pemeriksaan_fisik = json_decode($anamnesa_pemeriksaan_fisik->pemeriksaan_fisik);
+            $anamnesa = json_decode($anamnesa_pemeriksaan_fisik->anamnesa);
+        }else{
+            $pemeriksaan_fisik = null;
+            $anamnesa = null;
+        }
+        // dd($pemeriksaan_fisik);
         return view('rawat-inap.detail', [
             'rawat' => $rawat
-        ], compact('pasien', 'ringakasan_pasien_masuk', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'data_operasi','pemberian_obat','order_obat','cppt','implamentasi','list_tindakan','penunjang','diagnosa_akhir','data_pulang','poli','skrining'));
+        ], compact('pasien', 'ringakasan_pasien_masuk', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'data_operasi','pemberian_obat','order_obat','cppt','implamentasi','list_tindakan','penunjang','diagnosa_akhir','data_pulang','poli','skrining','kesadaran','anamnesa','pemeriksaan_fisik','disable'));
     }
     public function postOrderPenunjang(Request $request, $id)
     {
@@ -294,6 +308,7 @@ class RawatInapController extends Controller
             'keluhan_utama' => $request->keluhan_utama,
             'rwt_penyakit_sekarang' => $request->rwt_penyakit_sekarang,
             'rwt_penyakit_dulu' => $request->rwt_penyakit_dulu,
+            
         ]);
         $pemeriksaan_fisik = new Collection([
             'kesadaran' => $request->kesadaran,
@@ -302,7 +317,9 @@ class RawatInapController extends Controller
             'nadi' => $request->nadi,
             'pernapasan' => $request->pernapasan,
             'suhu' => $request->suhu,
+            'status_neurologis' => $request->status_neurologis,
             'keadaan_umum' => $request->keadaan_umum,
+            'leher' => $request->leher,
             'kepala' => $request->kepala,
             'paru' => $request->paru,
             'jantung' => $request->jantung,
@@ -310,7 +327,15 @@ class RawatInapController extends Controller
             'kulit' => $request->kulit,
             'extremitas' => $request->extremitas,
         ]);
-
+        $cek_pemeriksaan_fisik = DB::table('demo_ranap_awal_pemeriksaan_fisik')->where('idrawat', $rawat->id)->first();
+        if ($cek_pemeriksaan_fisik) {
+            DB::table('demo_ranap_awal_pemeriksaan_fisik')->where('idrawat', $rawat->id)->update([
+                'anamnesa' => $anamnesa->toJson(),
+                'pemeriksaan_fisik' => $pemeriksaan_fisik->toJson(),
+                'updated_at' => now(),
+            ]);
+            return redirect()->back()->with('berhasil', 'Data Berhasil Di Update');
+        }else
         DB::table('demo_ranap_awal_pemeriksaan_fisik')->insert([
             'idrawat' => $rawat->id,
             'anamnesa' => $anamnesa->toJson(),

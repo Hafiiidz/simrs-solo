@@ -15,6 +15,7 @@ class VclaimHelper
     protected $userKeyVclaim;
     protected $userKeyAntrol;
     protected $ssl;
+    protected $url_antrian;
 
     public function __construct()
     {
@@ -26,6 +27,7 @@ class VclaimHelper
             $this->userKeyAntrol = config('app.userkey_antrol_prod');
             $this->ssl = true;
             $this->url_icare = config('app.url_icare_prod');
+            $this->url_antrian = config('app.url_antrian_prod');
         } else {
             $this->url = config('app.url_vclaim_dev');
             $this->consId = config('app.consid_vclaim_dev');
@@ -34,6 +36,7 @@ class VclaimHelper
             $this->userKeyAntrol = config('app.userkey_antrol_dev');
             $this->ssl = false;
             $this->url_icare = config('app.url_icare_dev');
+            $this->url_antrian = config('app.url_antrian_dev');
         }
     }
 
@@ -90,6 +93,30 @@ class VclaimHelper
         return \LZCompressor\LZString::decompressFromEncodedURIComponent($string);
     }
 
+    public function getTokenAntrol(){
+        try {
+            date_default_timezone_set('UTC');
+            $tStamp = strval(time() - strtotime('1970-01-01 00:00:00'));
+            $signature = hash_hmac('sha256', $this->consId . "&" . $tStamp, $this->secretKey, true);
+            $encodedSignature = base64_encode($signature);
+
+            return [
+                'signature' => [
+                    'X-cons-id' => $this->consId,
+                    'X-timestamp' => $tStamp,
+                    'X-signature' => $encodedSignature,
+                    'user_key' => $this->userKeyAntrol,
+                ],
+                'ssl' => $this->ssl,
+                'key' => $this->consId . $this->secretKey . $tStamp
+            ];
+        } catch (\Exception $e) {
+            // Handle exception, log or rethrow as needed
+            return [
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
     public function getToken()
     {
         try {
@@ -197,23 +224,30 @@ class VclaimHelper
     }
 
     #icare 
-    public static function postIcare()
+    public static function postIcare($id,$bpjs)
     {
         // $helper = new VclaimHelper();
         // return $helper->url_icare.'/api/rs/validate';
+ 
         try {
             $helper = new VclaimHelper();
             $token = $helper->getToken();
 
             $response = Http::withHeaders($token['signature'])
-                ->withOptions(["verify" => $token['ssl']])
-                ->post($helper->url_icare.'/api/rs/validate', [
-                    "param" => "2200009338321",
-                    "kodedokter" => 11111
+                ->withOptions(["verify" =>false])
+                ->post('https://apijkn.bpjs-kesehatan.go.id/wsihs/api/rs/validate', [
+                    "param" => $bpjs,
+                    "kodedokter" => (int) $id
                 ]);
 
-            return $response;
-
+            if ($response['metaData']['code'] == '200') {
+                $data_response = VclaimHelper::stringDecrypt($token['key'], $response['response']);
+                $data_response = VclaimHelper::decompress($data_response);
+                $data_response = json_decode($data_response, true);
+                return $data_response;
+            } else {
+                return $response['metaData'];
+            }
             // if ($response['metaData']['code'] == '200') {
             //     $data_response = VclaimHelper::stringDecrypt($token['key'], $response['response']);
             //     $data_response = VclaimHelper::decompress($data_response);
@@ -315,5 +349,39 @@ class VclaimHelper
                 'error' => $e->getMessage(),
             ];
         }
+    }
+
+    public static function getlist_taks(){
+        $helper = new VclaimHelper();
+        $token = $helper->getTokenAntrol();
+        // return $token;
+        $response = Http::withHeaders($token['signature'])
+            ->withOptions(["verify" => false])
+            ->post('https://apijkn.bpjs-kesehatan.go.id/antreanrs/antrean/getlisttask',[
+                'kodebooking'=>'RJ2024542430001'
+        ]);
+        if ($response['metadata']['code'] == '200') {
+                $data_response = VclaimHelper::stringDecrypt($token['key'], $response['response']);
+                $data_response = VclaimHelper::decompress($data_response);
+                $data_response = json_decode($data_response, true);
+                return $data_response;
+            } else {
+                $this->update_task
+                return $response['metadata'];
+            }
+    }
+
+    public static function update_task($kode_boking,$taksid,$waktu){
+        $helper = new VclaimHelper();
+        $token = $helper->getTokenAntrol();
+        // return $token;
+        $response = Http::withHeaders($token['signature'])
+            ->withOptions(["verify" => false])
+            ->post('https://apijkn.bpjs-kesehatan.go.id/antreanrs/antrean/updatewaktu',[
+                'kodebooking'=>'RJ2024542430001',
+                "taskid"=> 5,
+                "waktu"=> 1707286846000,
+        ]);
+        return $response;
     }
 }

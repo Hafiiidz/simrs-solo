@@ -598,7 +598,10 @@
                                                                         </div>
                                                                     </td>
                                                                     <td class="text-center" width='10'>
-                                                                        <input name="dtd"  class="form-check-input form-check-input-sm" type="checkbox" value="1" id="dtd" />
+                                                                        <input name="dtd"
+                                                                            class="form-check-input form-check-input-sm"
+                                                                            type="checkbox" value="1"
+                                                                            id="dtd" />
                                                                     </td>
                                                                     <td>
                                                                         <input type="text" name="catatan"
@@ -1668,6 +1671,9 @@
                                     @endif
                                 </div>
                             </div>
+                            <div class="separator separator-dashed border-secondary mb-5"></div>
+                            <button id='icare-view' data-id="{{ $rawat->dokter?->kode_dpjp }}"
+                                data-bpjs="{{ $pasien->no_bpjs }}" class="btn btn-light-success">I CARE</button>
                         </div>
 
                         <div class="separator separator-dashed border-secondary mt-5 mb-5"></div>
@@ -1737,7 +1743,7 @@
         </div>
     </div>
     <div class="modal fade" tabindex="-1" id="modal_lihat">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div id="modal-hasil">
 
@@ -1787,6 +1793,30 @@
 
             });
         @endif
+        $(document).on('click', '#icare-view', function() {
+            var dokter = $(this).attr('data-id');
+            var bpjs = $(this).attr('data-bpjs');
+            var url = '{{ route('get-icare', [':b_id', ':p_value']) }}';
+            url = url.replace(':b_id', dokter);
+            url = url.replace(':p_value', bpjs);
+            $.get(url).done(function(data) {
+                // console.log(data.status);
+                if (data.status == false) {
+                    Swal.fire({
+                        text: 'Data Tidak Ditemukan',
+                        icon: "error",
+                        buttonsStyling: false,
+                        confirmButtonText: "Ok",
+                        customClass: {
+                            confirmButton: "btn btn-primary"
+                        }
+                    });
+                }else{
+                    $("#modal-hasil").html(data);
+                    $("#modal_lihat").modal('show');
+                }
+            });
+        });
         $(document).on('click', '.btn-edit', function() {
             var value = $(this).attr('data-id');
             url = "{{ route('get-data-obat', '') }}" + "/" + value;

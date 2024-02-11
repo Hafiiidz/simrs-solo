@@ -306,39 +306,39 @@
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_2" role="tabpanel">
                                     <button class="btn btn-warning btn-sm mb-5" data-bs-toggle="modal"
-                                        data-bs-target="#modal_cppt">Tambah CPPT</button>
+                                        data-bs-target="#modal_cppt" {{ $disable }}>Tambah CPPT</button>
                                     @include('rawat-inap.menu.cppt-ranap')
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_3" role="tabpanel">
                                     <button class="btn btn-info btn-sm mb-5" data-bs-toggle="modal"
-                                        data-bs-target="#modal_implementasi">Tambah Implementasi</button>
+                                        data-bs-target="#modal_implementasi" {{ $disable }}>Tambah Implementasi</button>
                                     @include('rawat-inap.menu.implementasi')
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_4" role="tabpanel">
                                     <button class="btn btn-info btn-sm mb-5" data-bs-toggle="modal"
-                                        data-bs-target="#modal_tindakan">Tambah Tindakan</button>
+                                        data-bs-target="#modal_tindakan" {{ $disable }}>Tambah Tindakan</button>
                                     @include('rawat-inap.menu.tindakan')
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_5" role="tabpanel">
                                     <button class="btn btn-info btn-sm mb-5" data-bs-toggle="modal"
-                                        data-bs-target="#kt_modal_1">Tambah
+                                        data-bs-target="#kt_modal_1" {{ $disable }}>Tambah
                                         Pemberian Obat</button>
 
                                     <button class="btn btn-success btn-sm mb-5" data-bs-toggle="modal"
-                                        data-bs-target="#modal_obat">Order Obat</button>
+                                        data-bs-target="#modal_obat" {{ $disable }}>Order Obat</button>
 
-                                    <button class="btn btn-danger btn-sm mb-5">Retur Obat</button>
+                                    {{-- <button class="btn btn-danger btn-sm mb-5">Retur Obat</button> --}}
 
                                     @include('rawat-inap.menu.obat')
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_6" role="tabpanel">
                                     <button class="btn btn-info btn-sm mb-5" data-bs-toggle="modal"
-                                        data-bs-target="#modal_penunjang">Tambah Penunjang</button>
+                                        data-bs-target="#modal_penunjang" {{ $disable }}>Tambah Penunjang</button>
                                     @include('rawat-inap.menu.penunjang')
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_7" role="tabpanel">
                                     <button class="btn btn-danger btn-sm mb-5" data-bs-toggle="modal"
-                                        data-bs-target="#modal_operasi">Tambah Operasi</button>
+                                        data-bs-target="#modal_operasi" {{ $disable }}>Tambah Operasi</button>
                                     @include('rawat-inap.menu.operasi')
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_8" role="tabpanel">
@@ -468,7 +468,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3 class="modal-title">Tambah CPPT</h3>
+                        <h3 class="modal-title" {{ $disable }}>Tambah CPPT</h3>
 
                         <!--begin::Close-->
                         <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
@@ -1741,7 +1741,7 @@
                 });
                 $('#icdx_repeater_sekunder').repeater({
                     @if (isset($ringakasan_pasien_masuk))
-                        @if ($ringakasan_pasien_masuk->icd10_sekunder != null)
+                        @if ($ringakasan_pasien_masuk->icd10_sekunder != 'null')
                             initEmpty: false,
                         @else
                             initEmpty: true,
@@ -1816,7 +1816,7 @@
                 });
                 $('#icd9_repeater').repeater({
                     @if (isset($ringakasan_pasien_masuk))
-                        @if ($ringakasan_pasien_masuk->icd9 != null)
+                        @if ($ringakasan_pasien_masuk->icd9 != 'null')
                             initEmpty: false,
                         @else
                             initEmpty: true,

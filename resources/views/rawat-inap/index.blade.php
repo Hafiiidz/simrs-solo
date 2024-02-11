@@ -55,7 +55,7 @@
                                     <th>Kelas</th>
                                     <th>Terisi</th>
                                     <th>Kosong</th>
-                                    <th>Deatil</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="border">
