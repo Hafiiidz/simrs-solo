@@ -82,7 +82,7 @@ class RekapMedisController extends Controller
         // return $transaksi;
         // return $rekap_medis;
         $detail = DetailRekapMedis::where('idrekapmedis', $rekap_medis->id)->first();
-
+        $current_time = round(microtime(true) * 1000); 
 
 
         if ($request->jenis == 'perawat') {
@@ -95,7 +95,8 @@ class RekapMedisController extends Controller
         } else {
             $rekap_medis->dokter = 1;
             $resep_dokter = DB::table('demo_resep_dokter')->where('idrawat', $rawat->id)->get();
-            if (count($resep_dokter) > 0) {                
+            if (count($resep_dokter) > 0) {   
+                VclaimHelper::update_task($rawat->idrawat,6,$current_time);             
                 $non_racik = [];
                 $racikan = [];
                 foreach($resep_dokter as $rd){
