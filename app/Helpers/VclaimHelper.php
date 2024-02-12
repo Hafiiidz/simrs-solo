@@ -410,7 +410,7 @@ class VclaimHelper
                 return $data_response;
             } else {
                 // $this->update_task
-                return $helper->add_antrian($rawat->id);
+                // return $helper->add_antrian($rawat->id);
                 return $response['metadata'];
             }
     }
