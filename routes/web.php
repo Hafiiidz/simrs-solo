@@ -126,6 +126,11 @@ Route::get('/faskes', function (HttpRequest $request) {
     // echo $current_time; 
     return VclaimHelper::getlist_taks($request->kode);
 })->name('list-faskes');
+Route::get('/update-task', function (HttpRequest $request) {
+    $current_time = round(microtime(true) * 1000); 
+    // echo $current_time; 
+    return VclaimHelper::update_task($request->kode,5,$current_time);
+});
 
 
 Route::get('/sarana-faskes/{id}', function ($id) {

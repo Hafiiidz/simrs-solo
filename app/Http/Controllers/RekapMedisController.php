@@ -284,7 +284,7 @@ class RekapMedisController extends Controller
             }
 
             $current_time = round(microtime(true) * 1000); 
-            VclaimHelper::update_task($rawat->idrawat,4,$current_time);
+            VclaimHelper::update_task($rawat->idrawat,5,$current_time);
         }
 
         $rekap_medis->save();

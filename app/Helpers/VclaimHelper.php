@@ -2,10 +2,13 @@
 
 namespace App\Helpers;
 
+use App\Models\Rawat;
 use App\Models\Dokter;
 use App\Models\Obat\Obat;
 use LZCompressor\LZString;
 use App\Helpers\VclaimHelper;
+use App\Models\Pasien\Pasien;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class VclaimHelper
@@ -229,7 +232,32 @@ class VclaimHelper
             ];
         }
     }
+    #rujukan vclaim
+    public static function rujukan_vlaim_one($bpjs)
+    {
+        try {
+            $helper = new VclaimHelper();
+            $token = $helper->getToken();
 
+            $response = Http::withHeaders($token['signature'])
+                ->withOptions(["verify" => $token['ssl']])
+                ->get($helper->url . '/Rujukan/RS/Peserta/'.$bpjs);
+
+            if ($response['metaData']['code'] == '200') {
+                $data_response = VclaimHelper::stringDecrypt($token['key'], $response['response']);
+                $data_response = VclaimHelper::decompress($data_response);
+                $data_response = json_decode($data_response, true);
+                return $data_response;
+            } else {
+                return $response['metaData'];
+            }
+        } catch (\Exception $e) {
+            // Handle exception, log or rethrow as needed
+            return [
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
     #icare 
     public static function postIcare($id,$bpjs)
     {
@@ -359,7 +387,13 @@ class VclaimHelper
     }
 
     public static function getlist_taks($kode){
-        
+        $rawat = Rawat::where('idrawat',$kode)->first();
+        if(!$rawat){
+            return response()->json([
+                'kode'=>201,
+                'message' => 'Rawat Tidak Ditemukan',
+            ], 404);
+        }
         $helper = new VclaimHelper();
         $token = $helper->getTokenAntrol();
         // return  $token['ssl'];
@@ -376,6 +410,7 @@ class VclaimHelper
                 return $data_response;
             } else {
                 // $this->update_task
+                return $helper->add_antrian($rawat->id);
                 return $response['metadata'];
             }
     }
@@ -393,5 +428,138 @@ class VclaimHelper
                 "waktu"=> $waktu,
         ]);
         return $response;
+    }
+    public static function add_antrian($idrawat){
+        $rawat = Rawat::find($idrawat);
+        // return strtotime($rawat->tglmasuk).'000';
+        if(!$rawat){
+            return response()->json([
+                'kode'=>201,
+                'message' => 'Rawat Tidak Ditemukan',
+            ], 404);
+        }
+        
+        try {
+            $helper = new VclaimHelper();
+            $token = $helper->getTokenAntrol();
+            // return $token;
+            
+            $pasien = Pasien::where('no_rm',$rawat->no_rm)->first();
+            return $helper->rujukan_vlaim_one($pasien->no_bpjs);
+            if($rawat->idbayar == 2){
+                $jenis_pasien = 'JKN';
+                $bpjs = $pasien->no_bpjs;
+            }else{
+                $jenis_pasien = 'NON JKN';
+                $bpjs ='';
+            }
+            if($rawat->kunjungan == 1){
+                $kunjungan = 1;
+                $nomorreferensi = '0151B1070622P002358' ;
+            }else{
+                $kunjungan = 3;
+                $nomorreferensi = '0151B1070622P002358';
+                //$pelayanan->no_rujukan = $nomorreferensi;
+            }
+            $dokter_kuota = DB::table('dokter_kuota')->where('iddokter',$rawat->iddokter)->where('tgl',date('Y-m-d',strtotime($rawat->tglmasuk)))->where('idpoli',$rawat->idpoli)->first();
+            $data_json = $helper->get_jadwal_poli($rawat->dokter?->kode_dpjp,$rawat->poli?->kode,date('Y-m-d',strtotime($rawat->tglmasuk)));
+            // return $data_json->jadwal;
+            if(!$data_json){
+                return [
+                    'kode'=>201,
+                    'message' => 'Jadwal Dokter Tidak Ditemukan',
+                ];
+            }
+            // $data_json = json_decode($data_json);
+            $jam = explode("-", $data_json->jadwal);
+            $jam_buka = $jam[0];
+            date_default_timezone_set("Asia/Jakarta");
+            $angantrean = (int) ltrim(substr($rawat->no_antrian,-3), '0');
+            $tambah = (25*$angantrean);
+            date_default_timezone_set("Asia/Jakarta");
+            $tanggalperiksa =date('Y-m-d',strtotime($rawat->tglmasuk));
+            $jam_dilayani = date("H:i:s", strtotime("+".$tambah." minutes", strtotime($jam_buka)));
+            $dilayani = date('Y-m-d H:i:s',strtotime($tanggalperiksa.' '.$jam_dilayani));
+            $fix = strtotime($dilayani,strtotime('-7 hour')).'000';
+            // return $fix;
+            $response = Http::withHeaders($token['signature'])
+                ->withOptions(["verify" => $token['ssl']])
+                ->post('https://apijkn.bpjs-kesehatan.go.id/antreanrs/antrean/add',[
+                    "kodebooking"=> $rawat->idrawat,
+                    "jenispasien"=> $jenis_pasien,
+                    "nomorkartu"=>$bpjs,
+                    "nik"=> $pasien->nik,
+                    "nohp"=> $pasien->nohp,
+                    "kodepoli"=> $rawat->poli->kode,
+                    "namapoli"=> $rawat->poli->poli,
+                    "pasienbaru"=> 0,
+                    "norm"=> $rawat->no_rm,
+                    "tanggalperiksa"=> date('Y-m-d',strtotime($rawat->tglmasuk)),
+                    "kodedokter"=> $rawat->dokter->kode_dpjp,
+                    "namadokter"=> $rawat->dokter->nama_dokter,
+                    "jampraktek"=> $data_json->jadwal,
+                    "jeniskunjungan"=> $kunjungan ,
+                    "nomorreferensi"=> $nomorreferensi,
+                    "nomorantrean"=> $rawat->poli->kode_antrean.'-'.substr($rawat->no_antrian,-3),
+                    "angkaantrean"=> (int) ltrim(substr($rawat->no_antrian,-3), '0'),
+                    "estimasidilayani"=> (int) $fix,
+                    "sisakuotajkn"=>  $dokter_kuota->sisa,
+                    "kuotajkn"=> $dokter_kuota->kuota,
+                    "sisakuotanonjkn"=> $dokter_kuota->sisa,
+                    "kuotanonjkn"=> $dokter_kuota->kuota,
+                    "keterangan"=> "Peserta harap 30 menit lebih awal guna pencatatan administrasi.",
+            ]);
+
+            $taks_id = $helper->update_task($rawat->idrawat,3,strtotime($rawat->tglmasuk).'000');
+            return $response;
+        } catch (\Exception $e) {
+            // Handle exception, log or rethrow as needed
+            return [
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+    public static function searchForId($dokter,$array) {
+		
+        foreach ($array as $key => $val) {
+            if ($val['kodedokter'] == $dokter) {
+                $data_json = json_encode($val, true);
+                return $data_json;
+            }
+        }
+        return false;
+     }
+    
+     
+    public static function get_jadwal_poli($kode_dokter,$kode_poli,$tgl){
+       
+        // return $token;
+        try {
+            $helper = new VclaimHelper();
+            $token = $helper->getTokenAntrol();
+            // return $helper->url;
+            $response = Http::withHeaders($token['signature'])
+                ->withOptions(["verify" => $token['ssl']])
+                ->get('https://apijkn.bpjs-kesehatan.go.id/antreanrs/jadwaldokter/kodepoli/'.$kode_poli.'/tanggal/'.$tgl);
+            // return $response;
+            if ($response['metadata']['code'] == '200') {
+                $data_response = VclaimHelper::stringDecrypt($token['key'], $response['response']);
+                $data_response = VclaimHelper::decompress($data_response);
+                $data_response = json_decode($data_response, true);
+                $hasil =  $helper->searchForId($kode_dokter,$data_response);
+                if($hasil){
+                    return json_decode($hasil);
+                }else{
+                    return false;
+                }
+            } else {
+                return $response['metadata'];
+            }
+        } catch (\Exception $e) {
+            // Handle exception, log or rethrow as needed
+            return [
+                'error' => $e->getMessage(),
+            ];
+        }
     }
 }
