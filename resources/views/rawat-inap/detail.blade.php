@@ -61,8 +61,14 @@
                         <div class="card-toolbar">
                             <a href="{{ route('view.rawat-inap', $rawat->idruangan) }}"
                                 class="btn me-3 btn-sm btn-secondary">Kembali</a>
-                            <button data-bs-toggle="modal" data-bs-target="#modal_pulang"
+                                @if ($rawat->status == 2)
+                                <button data-bs-toggle="modal" data-bs-target="#modal_pulang"
                                 class="btn btn-sm btn-success">Pulang</button>
+                                @elseif($rawat->status == 4)
+                                <a class="btn  me-3 btn-light-primary btn-sm" href="">Ringkasan Pulang</a>
+                                <a class="btn btn-light-success btn-sm" href="">Surat Kontrol</a>
+                                @endif
+                           
                         </div>
                     </div>
                     <!--begin::Body-->
@@ -325,7 +331,7 @@
                                         Pemberian Obat</button>
 
                                     <button class="btn btn-success btn-sm mb-5" data-bs-toggle="modal"
-                                        data-bs-target="#modal_obat" {{ $disable }}>Order Obat</button>
+                                        data-bs-target="#modal_obat" {{ $disable }} {{ $disable_order }}>Order Obat</button>
 
                                     {{-- <button class="btn btn-danger btn-sm mb-5">Retur Obat</button> --}}
 
@@ -714,64 +720,9 @@
                             @csrf
                             <div class="row mb-5">
                                 <!--begin::Repeater-->
-                                <div id="kt_docs_repeater_basic">
-                                    <!--begin::Form group-->
-                                    <div class="form-group">
-                                        <div data-repeater-list="terapi_obat">
-                                            <div data-repeater-item>
-                                                <div class="form-group row mb-5">
-                                                    <div class="col-md-6">
-                                                        <label class="form-label">Obat</label>
-                                                        <select name="obat" class="form-select" id='select-obat'
-                                                            data-kt-repeater="select2" data-placeholder="-Pilih-"
-                                                            required>
-                                                            <option></option>
-                                                            @foreach ($obat as $val)
-                                                                <option value="{{ $val->id }}">{{ $val->nama_obat }}
-                                                                    - {{ $val->satuan->satuan }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <label class="form-label">Signa</label>
-                                                        <div class="input-group mb-5">
-                                                            <input type="text" class="form-control" name='signa1'
-                                                                placeholder="...." aria-label="Username">
-                                                            <span class="input-group-text">X</span>
-                                                            <input type="text" class="form-control" name='signa2'
-                                                                placeholder="...." aria-label="Server">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <label class="form-label">Jumlah Obat</label>
-                                                        <input type="number" name="jumlah_obat"
-                                                            class="form-control mb-5 mb-md-0" min="0" required>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <a href="javascript:;" data-repeater-delete
-                                                            class="btn btn-light-danger mt-3 mt-md-8">
-                                                            <i class="ki-duotone ki-trash fs-5"><span
-                                                                    class="path1"></span><span
-                                                                    class="path2"></span><span
-                                                                    class="path3"></span><span
-                                                                    class="path4"></span><span class="path5"></span></i>
-                                                            Hapus
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!--end::Form group-->
-
-                                    <!--begin::Form group-->
-                                    <div class="form-group mt-5">
-                                        <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
-                                            <i class="ki-duotone ki-plus fs-3"></i>
-                                            Tambah Obat
-                                        </a>
-                                    </div>
-                                    <!--end::Form group-->
+                                <div class="col-md-8">
+                                    <label for="" class="form-label">Petugas Order</label>
+                                <input type="text" class="form-control form-control-solid" readonly value="{{ auth()->user()->detail->nama }}" name="petugas_order" >
                                 </div>
                                 <!--end::Repeater-->
                             </div>
@@ -1181,6 +1132,7 @@
             $("#kt_datepicker_2").flatpickr();
             $("#kt_datepicker_3").flatpickr({
                 enableTime: true,
+                minDate:{{ date('Y-m-d') }},
                 dateFormat: "Y-m-d H:i",
             });
             $(function() {

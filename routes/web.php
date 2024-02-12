@@ -122,7 +122,9 @@ Route::get('/obat-tes',function(){
 });
 
 Route::get('/faskes', function (HttpRequest $request) {
-    return VclaimHelper::getlist_taks();
+    // $current_time = round(microtime(true) * 1000); 
+    // echo $current_time; 
+    return VclaimHelper::getlist_taks($request->kode);
 })->name('list-faskes');
 
 
@@ -301,9 +303,11 @@ Route::prefix('/rawat-jalan')->group(function () {
 Route::prefix('/rawat-inap')->group(function () {
     Route::get('/', [RawatInapController::class, 'index'])->name('index.rawat-inap');
     Route::get('{id}/view', [RawatInapController::class, 'view'])->name('view.rawat-inap');
+    Route::get('{id}/order-obat', [RawatInapController::class, 'orderObat'])->name('view.rawat-inap-order');
     Route::get('{id}/detail', [RawatInapController::class, 'detail'])->name('detail.rawat-inap');
     Route::get('{id}/pengkajian-kebidanan', [RawatInapController::class, 'pengkajian_kebidanan'])->name('detail.rawat-inap.pengkajian-kebidanan');
     Route::post('{id}/ringkasan-masuk', [RawatInapController::class, 'postRingkasan'])->name('postRingkasanmasuk.rawat-inap');
+    Route::get('{id}/delete-tindakan', [RawatInapController::class, 'delete_tindakan'])->name('delete-tindakan.rawat-inap');
     Route::post('{id}/pemeriksaan-fisik', [RawatInapController::class, 'postPemeriksaanFisik'])->name('postPemeriksaanFisik.rawat-inap');
     Route::post('{id}/order-obat', [RawatInapController::class, 'postOrderObat'])->name('postOrderObat.rawat-inap');
     Route::post('{id}/order-penunjang', [RawatInapController::class, 'postOrderPenunjang'])->name('postOrderPenunjang.rawat-inap');
@@ -312,6 +316,7 @@ Route::prefix('/rawat-inap')->group(function () {
     Route::post('{id}/post-diagnosa-akhir', [RawatInapController::class, 'post_diagnosa_akhir'])->name('post-diagnosa-akhir.rawat-inap');
     Route::post('{id}/post-tindakan', [RawatInapController::class, 'post_tindakan'])->name('post_tindakan.rawat-inap');
     Route::post('post-ranap-pulang', [RawatInapController::class, 'postRanap'])->name('post_pulang.rawat-inap');
+    Route::post('post-selesai-resep', [RawatInapController::class, 'postSelesaiObat'])->name('post-selesai-resep.rawat-inap');
 });
 Route::prefix('/pasien')->group(function () {
     Route::get('/', [PasienController::class, 'index'])->name('pasien.index');

@@ -70,6 +70,7 @@
                                 <th>Nama Pasien</th>
                                 <th>Usia Pasien</th>
                                 <th>Tanggal Operasi</th>
+                                <th>Diagnosis Prabedah</th>
                                 <th>Status</th>
                                 <th>Opsi</th>
                             </tr>
@@ -128,6 +129,7 @@
                 { data: 'rawat.pasien.nama_pasien', name: 'rawat.pasien.nama_pasien' },
                 { data: 'rawat.pasien.usia_tahun', name: 'rawat.pasien.usia_tahun' },
                 { data: 'tanggal', name: 'tgl_operasi' },
+                { data: 'diagnosis_prabedah', name: 'diagnosis_prabedah' },
                 { data: 'status', name: 'status' },
                 { data: 'opsi', name: 'opsi', orderable: false, searcheable: false },
             ]

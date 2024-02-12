@@ -2,7 +2,10 @@
 
 namespace App\Helpers;
 
+use App\Models\Dokter;
 use App\Models\Obat\Obat;
+use LZCompressor\LZString;
+use App\Helpers\VclaimHelper;
 use Illuminate\Support\Facades\Http;
 
 class VclaimHelper
@@ -19,7 +22,7 @@ class VclaimHelper
 
     public function __construct()
     {
-        if (config('app.env') == 'local') {
+        if (config('app.env') == 'production') {
             $this->url = config('app.url_vclaim_prod');
             $this->consId = config('app.consid_vclaim_prod');
             $this->secretKey = config('app.secretkey_vclaim_prod');
@@ -29,14 +32,14 @@ class VclaimHelper
             $this->url_icare = config('app.url_icare_prod');
             $this->url_antrian = config('app.url_antrian_prod');
         } else {
-            $this->url = config('app.url_vclaim_dev');
-            $this->consId = config('app.consid_vclaim_dev');
-            $this->secretKey = config('app.secretkey_vclaim_dev');
-            $this->userKeyVclaim = config('app.userkey_vclaim_dev');
-            $this->userKeyAntrol = config('app.userkey_antrol_dev');
+            $this->url = config('app.url_vclaim_prod');
+            $this->consId = config('app.consid_vclaim_prod');
+            $this->secretKey = config('app.secretkey_vclaim_prod');
+            $this->userKeyVclaim = config('app.userkey_vclaim_prod');
+            $this->userKeyAntrol = config('app.userkey_antrol_prod');
             $this->ssl = false;
-            $this->url_icare = config('app.url_icare_dev');
-            $this->url_antrian = config('app.url_antrian_dev');
+            $this->url_icare = config('app.url_icare_prod');
+            $this->url_antrian = config('app.url_antrian_prod');
         }
     }
 
@@ -197,6 +200,10 @@ class VclaimHelper
     }
 
     #get Dokter
+    public static function getDokterSimrs($id){
+        $dokter = Dokter::find($id);
+        return $dokter?->nama_dokter;
+    }
     public static function getDokter($jenis_layanan, $tglPelayanan, $spesialis)
     {
         try {
@@ -351,14 +358,16 @@ class VclaimHelper
         }
     }
 
-    public static function getlist_taks(){
+    public static function getlist_taks($kode){
+        
         $helper = new VclaimHelper();
         $token = $helper->getTokenAntrol();
+        // return  $token['ssl'];
         // return $token;
         $response = Http::withHeaders($token['signature'])
             ->withOptions(["verify" => $token['ssl']])
             ->post('https://apijkn.bpjs-kesehatan.go.id/antreanrs/antrean/getlisttask',[
-                'kodebooking'=>'RJ2024542430001'
+                'kodebooking'=>$kode
         ]);
         if ($response['metadata']['code'] == '200') {
                 $data_response = VclaimHelper::stringDecrypt($token['key'], $response['response']);
@@ -372,15 +381,16 @@ class VclaimHelper
     }
 
     public static function update_task($kode_boking,$taksid,$waktu){
+        // return $kode_boking;
         $helper = new VclaimHelper();
         $token = $helper->getTokenAntrol();
         // return $token;
         $response = Http::withHeaders($token['signature'])
             ->withOptions(["verify" => $token['ssl']])
             ->post('https://apijkn.bpjs-kesehatan.go.id/antreanrs/antrean/updatewaktu',[
-                'kodebooking'=>'RJ2024542430001',
-                "taskid"=> 5,
-                "waktu"=> 1707286846000,
+                'kodebooking'=>$kode_boking,
+                "taskid"=> $taksid,
+                "waktu"=> $waktu,
         ]);
         return $response;
     }

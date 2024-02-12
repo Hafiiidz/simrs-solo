@@ -2,23 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use App\Models\Poli;
 use App\Models\Rawat;
 use App\Models\Dokter;
 use App\Models\Obat\Obat;
 use App\Models\TindakLanjut;
 use Illuminate\Http\Request;
+use App\Models\ObatTransaksi;
 use App\Models\Pasien\Pasien;
+use App\Models\Gizi\SkriningGizi;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\Gizi\SkriningGizi;
-use Yajra\DataTables\Facades\DataTables;
+use App\Models\RekapMedis\RekapMedis;
 use App\Models\Operasi\LaporanOperasi;
-use App\Models\Poli;
+use Yajra\DataTables\Facades\DataTables;
 
 class RawatInapController extends Controller
 {
     public function postRanap(Request $request){
+        return $request->all();
         return redirect()->back()->with('berhasil','Data Berhasil Di Simpan');
     }
     public function index()
@@ -131,6 +135,10 @@ class RawatInapController extends Controller
 
         return redirect()->back()->with('berhasil','Data Berhasil Di Simpan');
     }
+    public function delete_tindakan($id){
+        $tindakan = DB::table('demo_trx_tindakan')->where('id',$id)->delete();
+        return redirect()->back()->with('berhasil','Data Berhasil Di Hapus');
+    }
     public function post_tindakan(Request $request,$id){
         $rawat = Rawat::find($id);
         foreach($request->tindakan_repeater as $tindakan){
@@ -221,6 +229,13 @@ class RawatInapController extends Controller
         $tarif = DB::table('tarif')->where('idjenisrawat', 2)->where('idkelas', $rawat->idkelas)->where('idruangan', $rawat->idruangan)->get();
         // dd($tarif);
         $order_obat = DB::table('demo_antrian_resep')->where('idrawat', $id)->get();
+        $order_antrian = DB::table('demo_antrian_resep')->where('idrawat', $id)->where('status_antrian', 'Antrian')->orderBy('created_at','desc')->get();
+        if(count($order_antrian) >0){
+            $disable_order = 'disabled';
+        }else{
+            $disable_order = '';
+        }
+        // dd($order_obat);
         $skrining = SkriningGizi::where('idrawat', $id)->first();
         $data_operasi = LaporanOperasi::where('idrawat', $rawat->id)->get();
         $pemberian_obat = DB::table('demo_pemberian_obat_inap')->where('idrawat', $id)->get();
@@ -241,7 +256,7 @@ class RawatInapController extends Controller
         // dd($pemeriksaan_fisik);
         return view('rawat-inap.detail', [
             'rawat' => $rawat
-        ], compact('pasien', 'ringakasan_pasien_masuk', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'data_operasi','pemberian_obat','order_obat','cppt','implamentasi','list_tindakan','penunjang','diagnosa_akhir','data_pulang','poli','skrining','kesadaran','anamnesa','pemeriksaan_fisik','disable'));
+        ], compact('pasien', 'ringakasan_pasien_masuk', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'data_operasi','pemberian_obat','order_obat','cppt','implamentasi','list_tindakan','penunjang','diagnosa_akhir','data_pulang','poli','skrining','kesadaran','anamnesa','pemeriksaan_fisik','disable','disable_order'));
     }
     public function postOrderPenunjang(Request $request, $id)
     {
@@ -281,23 +296,142 @@ class RawatInapController extends Controller
         }
         return redirect()->back()->with('berhasil', 'Order Penunjang Di Simpan');
     }
+    public function orderObat($id){
+        $rawat = Rawat::where('id', $id)->first();
+        $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
+        $obat = Obat::with('satuan')->orderBy('obat.nama_obat', 'asc')->where('nama_obat','!=','')->get();
+        $order_obat = DB::table('demo_antrian_resep')->where('idrawat', $id)->get();
+        $resep_antrian = DB::table('demo_antrian_resep')->where('idrawat', $id)->where('status_antrian', 'Antrian')->orderBy('created_at','desc')->first();
+        // dd($resep_antrian);
+        $resep_dokter = DB::table('demo_resep_dokter')->where('idrawat', $rawat->id)->whereNull('idantrian')->get();
+        $resep = ObatTransaksi::where('no_rm', $rawat->no_rm)->get();
+        return view('rawat-inap.order-obat', [
+            'rawat' => $rawat
+        ], compact('obat','order_obat','pasien','resep_antrian','resep_dokter','resep'));
+    }
+    public function postSelesaiObat(Request $request){
+        // return $request->all();
+        $rawat = Rawat::where('id', $request->idrawat)->first();
+        $resep_dokter = DB::table('demo_resep_dokter')->where('idrawat', $rawat->id)->whereNull('idantrian')->get();
+        if (count($resep_dokter) > 0) {                
+            $non_racik = [];
+            $racikan = [];
+            foreach($resep_dokter as $rd){
+                if($rd->jenis == 'Racik'){
+                    $data_obat = [];
+                    $jumlah_obat = [];
+                    $obat = json_decode($rd->nama_obat);
+                    foreach($obat->obat as $o){
+                        $data_obat[] = [
+                            'obat'=>$o,
+                        ];
+                    }
+                    foreach($obat->jumlah as $o){
+                        $jumlah_obat[] = [
+                            'jumlah_obat'=>$o,
+                        ];
+                    }
+        
+                    $obatData= json_encode(array_merge($data_obat,$jumlah_obat));
+                    $data = json_decode($obatData, true);
+        
+                    // Inisialisasi array 2 dimensi
+                    $result = [];
+                    $finalResult = array();
+                    // Mengelompokkan elemen berdasarkan kunci
+                    foreach ($data as $item) {
+                        foreach ($item as $key => $value) {
+                            if (!isset($finalResult[$key])) {
+                                $finalResult[$key] = array();
+                            }
+                            $finalResult[$key][] = $value;
+                        }
+                    }
+                    
+                    // Menggabungkan hasil menjadi array sesuai format yang diinginkan
+                    $combinedArray = array();
+                    for ($i = 0; $i < count($finalResult['obat']); $i++) {
+                        $combinedArray[] = array(
+                            'obat' => $finalResult['obat'][$i],
+                            'jumlah_obat' => $finalResult['jumlah_obat'][$i]
+                        );
+                    }
+                    
+                    // return $combinedArray;
+        
+                    $racikan[] = [
+                        'obat'=>$combinedArray,
+                        'jumlah_obat'=>$jumlah_obat,
+                        'takaran'=>$rd->takaran,
+                        'dosis'=>$rd->dosis,
+                        'signa'=>$rd->signa,
+                        'dtd'=>$rd->dtd,
+                        'diminum'=>$rd->diminum,
+                        'catatan'=>$rd->catatan,
+                        'idresep'=>$rd->id
+                    ];
+                }elseif($rd->jenis == 'Non Racik'){
+                    $non_racik[] = [
+                        'obat'=>$rd->idobat,
+                        'takaran'=>$rd->takaran,
+                        'jumlah'=>$rd->jumlah,
+                        'dosis'=>$rd->dosis,
+                        'signa'=>$rd->signa,
+                        'diminum'=>$rd->diminum,
+                        'catatan'=>$rd->catatan,
+                        'idresep'=>$rd->id
+                    ];
+                }
+            }
+            // return $racikan;
+            $no_antrian = DB::table('demo_antrian_resep')->whereDate('created_at', Carbon::today())->where('jenis_rawat', $rawat->idjenisrawat)->count();
+            $antrian = DB::table('demo_antrian_resep')->where('id',$request->idresep)->update([
+                'obat'=>json_encode($racikan),
+                'racikan' => json_encode($racikan),
+                'obat' => json_encode($non_racik),
+                'updated_at'=>now(),
+            ]);
+            DB::table('demo_resep_dokter')->where('idrawat', $rawat->id)->whereNull('idantrian')->update([
+                'idantrian'=>$request->idresep,
+            ]);
+        }else{
+            return redirect(route('view.rawat-inap-order',$rawat->id))->with('gagal', 'Data Resep Tidak Ada');
+        }
+        return redirect(route('detail.rawat-inap',$rawat->id))->with('berhasil', 'Data Resep Berhasil Di Kirim');
+    }
     public function postOrderObat(Request $request, $id)
     {
         // return $request->all();
         $rawat = Rawat::where('id', $id)->first();
-        // $rekap->terapi_obat = json_encode($request->terapi_obat);
-        DB::table('demo_antrian_resep')->insert([
+        $no_antrian = DB::table('demo_antrian_resep')->whereDate('created_at', Carbon::today())->where('jenis_rawat', $rawat->idjenisrawat)->count();
+        $antrian = DB::table('demo_antrian_resep')->insert([
             'idrawat' => $rawat->id,
+            'racikan' => 'null',
             'idbayar' => $rawat->idbayar,
             'status_antrian' => 'Antrian',
             'no_rm' => $rawat->no_rm,
-            'obat' => json_encode($request->terapi_obat),
+            'idrekap' => '',
+            'no_antrian' => $no_antrian + 1,
+            'obat' => null,
             'jenis_rawat' => $rawat->idjenisrawat,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-
-        return redirect()->back()->with('berhasil', 'Order Obat Berhasil Di Simpan');
+        // $antrian->save();
+        // $rekap = new RekapMedis;
+        // $rekap->terapi_obat = json_encode($request->terapi_obat);
+        // DB::table('demo_antrian_resep')->insert([
+        //     'idrawat' => $rawat->id,
+        //     'idbayar' => $rawat->idbayar,
+        //     'status_antrian' => 'Antrian',
+        //     'no_rm' => $rawat->no_rm,
+        //     'obat' => json_encode($request->terapi_obat),
+        //     'jenis_rawat' => $rawat->idjenisrawat,
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        // ]);
+        return redirect(route('view.rawat-inap-order',$rawat->id))->with('berhasil', 'Order Obat Berhasil Di Simpan');
+        // return redirect()->back()->with('berhasil', 'Silahkan Inputkan');
     }
     #post pemeriksaan fisik pasien
     public function postPemeriksaanFisik(Request $request, $id)
@@ -381,4 +515,13 @@ class RawatInapController extends Controller
 
         return redirect()->back()->with('berhasil', 'Ringkasan Pasien Berhasil Di Disimpan');
     }
+    // public function postRingkasanPulang($id){
+    //     $rawat = Rawat::where('id', $id)->first();
+    //     $ringkasan = DB::table('demo_ringkasan_masuk')->where('idrawat', $rawat->id)->first();
+    //     $diagnosa_akhir = DB::table('demo_ranap_dx')->where('idrawat',$rawat->id)->first();
+    //     $antrian_resep_selesai = DB::table('demo_antrian_resep')->where('idrawat', $rawat->id)->where('status_antrian','Selesai')->get();
+    //     $penunjang = DB::table('demo_permintaan_penunjang')->where('idrawat', $rawat->id)->get();
+    //     $ringkasan_pulang = DB::table('rawat_ringkasanpulang')->first();
+
+    // }
 }

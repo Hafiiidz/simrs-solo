@@ -13,13 +13,23 @@
                 <td>{{ $o->created_at }}</td>
                 <td>{{ $o->status_antrian }}</td>
                 <td>
-                    @foreach (json_decode($o->obat) as $list_obat)
-                        @foreach ($obat as $item)
-                            @if ($list_obat->obat == $item->id)
-                                {{ $item->nama_obat }} - {{ $list_obat->jumlah_obat }} <br>
-                            @endif
+                    @if ($o->obat != 'null')
+                        @foreach (json_decode($o->obat) as $list_obat)
+                            {!! App\Helpers\VclaimHelper::get_data_obat($list_obat->obat) !!} - {{ $list_obat->jumlah }} <br>
                         @endforeach
-                    @endforeach
+                    @endif
+                    @if ($o->racikan != 'null')
+                        @foreach (json_decode($o->racikan) as $list_obat_racikan)
+                            @foreach ($list_obat_racikan->obat as $obat)
+                            @if ($obat->obat != null)
+                            {!! App\Helpers\VclaimHelper::get_data_obat($obat->obat) !!} ({{ $obat->jumlah_obat }} Racik) <br>
+                            @endif
+
+                                
+                            @endforeach
+                        @endforeach
+                    @endif
+
                 </td>
             </tr>
         @endforeach

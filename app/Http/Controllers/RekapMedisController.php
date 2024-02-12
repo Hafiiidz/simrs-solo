@@ -87,6 +87,9 @@ class RekapMedisController extends Controller
 
         if ($request->jenis == 'perawat') {
             $rekap_medis->perawat = 1;
+            // return $rawat->idrawat;
+            $current_time = round(microtime(true) * 1000); 
+            VclaimHelper::update_task($rawat->idrawat,4,$current_time);
         }elseif($request->jenis == 'bpjs'){
             $rekap_medis->bpjs = 1;
         } else {
@@ -279,6 +282,9 @@ class RekapMedisController extends Controller
                 }
                 
             }
+
+            $current_time = round(microtime(true) * 1000); 
+            VclaimHelper::update_task($rawat->idrawat,4,$current_time);
         }
 
         $rekap_medis->save();

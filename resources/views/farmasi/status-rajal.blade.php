@@ -1005,30 +1005,6 @@
                 }
             });
         });
-
-        @if ($message = session('gagal'))
-            Swal.fire({
-                text: '{{ $message }}',
-                icon: "error",
-                buttonsStyling: false,
-                confirmButtonText: "Ok",
-                customClass: {
-                    confirmButton: "btn btn-primary"
-                }
-            });
-        @endif
-        @if ($message = session('berhasil'))
-            Swal.fire({
-                text: '{{ $message }}',
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok",
-                customClass: {
-                    confirmButton: "btn btn-primary"
-                }
-            });
-        @endif
-
         $('#frmRacikan').on('submit', function(event) {
             event.preventDefault();
             var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
@@ -1063,5 +1039,29 @@
 
 
         });
+        @if ($message = session('gagal'))
+            Swal.fire({
+                text: '{{ $message }}',
+                icon: "error",
+                buttonsStyling: false,
+                confirmButtonText: "Ok",
+                customClass: {
+                    confirmButton: "btn btn-primary"
+                }
+            });
+        @endif
+        @if ($message = session('berhasil'))
+            Swal.fire({
+                text: '{{ $message }}',
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok",
+                customClass: {
+                    confirmButton: "btn btn-primary"
+                }
+            });
+        @endif
+
+       
     </script>
 @endsection
