@@ -445,7 +445,7 @@ class VclaimHelper
             // return $token;
             
             $pasien = Pasien::where('no_rm',$rawat->no_rm)->first();
-            return $helper->rujukan_vlaim_one($pasien->no_bpjs);
+            // return $helper->rujukan_vlaim_one($pasien->no_bpjs);
             if($rawat->idbayar == 2){
                 $jenis_pasien = 'JKN';
                 $bpjs = $pasien->no_bpjs;
