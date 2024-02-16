@@ -498,6 +498,7 @@ class RekapMedisController extends Controller
         ->join('demo_detail_rekap_medis','demo_detail_rekap_medis.idrekapmedis','=','demo_rekap_medis.id')
         ->whereRelation('rawat','idpoli',auth()->user()->detail->idpoli)
         ->where('template',1)
+        ->where('idpasien', $pasien->id)
         ->whereRelation('rawat','id','!=',$id_rawat)
         ->whereRelation('rawat','iddokter',$rawat->iddokter)
         ->whereNotNull('diagnosa')
