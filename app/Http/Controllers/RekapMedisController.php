@@ -502,7 +502,7 @@ class RekapMedisController extends Controller
         ->whereRelation('rawat','id','!=',$id_rawat)
         ->whereRelation('rawat','iddokter',$rawat->iddokter)
         ->whereNotNull('diagnosa')
-        ->orderBy('updated_at','desc')
+        // ->orderBy('updated_at','desc')
         ->orderBy(DB::raw('COUNT(demo_detail_rekap_medis.diagnosa)'),'DESC')
         // ->orderBy('demo_detail_rekap_medis.created_at','desc')
         ->groupBy('demo_detail_rekap_medis.diagnosa')
