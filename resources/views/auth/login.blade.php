@@ -19,59 +19,45 @@
 	<!--begin::Body-->
 	<body id="kt_body" class="app-blank bgi-size-cover bgi-attachment-fixed bgi-position-center bgi-no-repeat">
 		<!--begin::Root-->
+		<style>body { background-image: url('assets/media/auth/bg10.jpeg'); } [data-theme="dark"] body { background-image: url('assets/media/auth/bg10-dark.jpeg'); }</style>
 		<div class="d-flex flex-column flex-root" id="kt_app_root">
-			<!--begin::Page bg image-->
-			<style>body { background-image: url('assets/media/auth/bg4.jpg'); } [data-bs-theme="dark"] body { background-image: url('assets/media/auth/bg4-dark.jpg'); }</style>
-			<!--end::Page bg image-->
 			<!--begin::Authentication - Sign-in -->
-			<div class="d-flex flex-column flex-column-fluid flex-lg-row">
-				<!--begin::Aside-->
-				<div class="d-flex flex-center w-lg-50 pt-15 pt-lg-0 px-10">
-					<!--begin::Aside-->
-					<div class="d-flex flex-center flex-lg-start flex-column">
-						<!--begin::Logo-->
-						<a href="#" class="fs-5x ">
-							MEDRONIC
-						</a>
-						<!--end::Logo-->
-						<!--begin::Title-->
-						{{-- <h2 class="text-white fw-normal m-0">Medical Record Electronic</h2> --}}
-						<!--end::Title-->
-					</div>
-					<!--begin::Aside-->
-				</div>
-				<!--begin::Aside-->
+			<div class="d-flex flex-column flex-lg-row flex-column-fluid">
 				<!--begin::Body-->
-				<div class="d-flex flex-column-fluid flex-lg-row-auto justify-content-center justify-content-lg-end p-12 p-lg-20">
-					<!--begin::Card-->
-					<div class="bg-body d-flex flex-column align-items-stretch flex-center rounded-4 w-md-600px p-20">
+				<div class="d-flex flex-column flex-lg-row-fluid w-lg-50 p-10 order-2 order-lg-1">
+					<!--begin::Form-->
+					<div class="d-flex flex-center flex-column flex-lg-row-fluid">
 						<!--begin::Wrapper-->
-						<div class="d-flex flex-center flex-column flex-column-fluid px-lg-10 pb-15 pb-lg-20">
+						<div class="w-lg-500px p-10">
 							<!--begin::Form-->
 							<form class="form w-100" novalidate="novalidate" id="kt_sign_in_form" action="{{ url('/login') }}" method="POST">
-                                @csrf
 								<!--begin::Heading-->
+								@csrf
 								<div class="text-center mb-11">
 									<!--begin::Title-->
-									<h1 class="text-dark fw-bolder mb-3">Login</h1>
+									<h1 class="text-dark fw-bolder mb-3">Masuk</h1>
 									<!--end::Title-->
+									<!--begin::Subtitle-->
+									<div class="text-gray-500 fw-semibold fs-6">Silahkan masukan email dan password anda</div>
+									<!--end::Subtitle=-->
 								</div>
 								<!--begin::Heading-->
+								<!--begin::Login options-->
+								
+								<!--end::Login options-->
 								<!--begin::Separator-->
-								<div class="separator separator-content my-14">
-									<span class="w-125px text-gray-500 fw-semibold fs-7"></span>
-								</div>
+							
 								<!--end::Separator-->
 								<!--begin::Input group=-->
 								<div class="fv-row mb-8">
 									<!--begin::Email-->
-									<input type="text" placeholder="Username" name="username" autocomplete="off" class="form-control bg-transparent" required/>
+									<input type="text" placeholder="Email" name="username" autocomplete="off" class="form-control bg-transparent" />
 									<!--end::Email-->
 								</div>
 								<!--end::Input group=-->
 								<div class="fv-row mb-3">
 									<!--begin::Password-->
-									<input type="password" placeholder="Password" name="password" autocomplete="off" class="form-control bg-transparent" required/>
+									<input type="password" placeholder="Password" name="password" autocomplete="off" class="form-control bg-transparent" />
 									<!--end::Password-->
 								</div>
 								<!--end::Input group=-->
@@ -79,25 +65,61 @@
 								<div class="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">
 									<div></div>
 									<!--begin::Link-->
-									<a href="#" class="link-primary">Forgot Password ?</a>
+									{{-- <a href="../../demo1/dist/authentication/layouts/corporate/reset-password.html" class="link-primary">Forgot Password ?</a> --}}
 									<!--end::Link-->
 								</div>
 								<!--end::Wrapper-->
 								<!--begin::Submit button-->
 								<div class="d-grid mb-10">
-									<button type="submit" id="kt_sign_in_submit" class="btn btn-primary">
-										<span class="indicator-label">Sign In</span>
+									<button type="submit" id="kt_sign_in_submit" class="btn btn-warning">
+										<!--begin::Indicator label-->
+										<span class="indicator-label">Masuk</span>
+										<!--end::Indicator label-->
+										<!--begin::Indicator progress-->
+										<span class="indicator-progress">Harap Tunggu...
+										<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+										<!--end::Indicator progress-->
 									</button>
 								</div>
 								<!--end::Submit button-->
+								<!--begin::Sign up-->
+								<!-- <div class="text-gray-500 text-center fw-semibold fs-6">Not a Member yet?
+								<a href="../../demo1/dist/authentication/layouts/corporate/sign-up.html" class="link-primary">Sign up</a></div> -->
+								<!--end::Sign up-->
 							</form>
 							<!--end::Form-->
 						</div>
 						<!--end::Wrapper-->
 					</div>
-					<!--end::Card-->
+					<!--end::Form-->
+					<!--begin::Footer-->
+					
+					<!--end::Footer-->
 				</div>
 				<!--end::Body-->
+				<!--begin::Aside-->
+				<div class="d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-1 order-lg-2" style="background-image: url(https://lh3.googleusercontent.com/p/AF1QipPhJ5tObSqb5jpLGVhYTuu7vw3WDuUVGNXDldyb=s1360-w1360-h1020)">
+					<!--begin::Content-->
+					<div class="d-flex flex-column flex-center py-7 py-lg-15 px-5 px-md-15 w-100">
+						<!--begin::Logo-->
+						<a href="" class="mb-0 mb-lg-12">
+							<img alt="Logo" src="https://live.simrs.rsaudrsiswanto.co.id//frontend/images/logosiswanto.png" class="h-80px h-lg-300px" />
+						</a>
+						<!--end::Logo-->
+						<!--begin::Image-->
+						<!-- <img class="d-none d-lg-block mx-auto w-275px w-md-50 w-xl-500px mb-10 mb-lg-20" src="assets/media/misc/auth-screens.png" alt="" /> -->
+						<!--end::Image-->
+						<!--begin::Title-->
+						<h1 class="d-none d-lg-block text-white fs-2qx fw-bolder text-center mb-7">Rekammedis Elektronik</h1>
+						<!--end::Title-->
+						<!--begin::Text-->
+						<div class="d-none d-lg-block text-white fs-base text-center">Sistem Informasi Rumah Sakit RSAU dr Siswanto</div>
+						<div class="d-none d-lg-block text-white fs-base text-center">Jl. Tentara Pelajar - Colomadu, Karanganyar</div>
+						<!--end::Text-->
+					</div>
+					<!--end::Content-->
+				</div>
+				<!--end::Aside-->
 			</div>
 			<!--end::Authentication - Sign-in-->
 		</div>
