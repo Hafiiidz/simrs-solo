@@ -52,119 +52,16 @@
         <div id="kt_app_content" class="app-content flex-column-fluid">
             <!--begin::Content container-->
             <div id="kt_app_content_container" class="app-container container-fluid">
-                <div class="card">
-                    <form method="POST" action="{{ route('post_bhp_ok.operasi', $operasi_tindakan->id) }}"
-                        id='frmInputBhp'>
-                        @csrf
-                        <div class="card-body">
-                            <div class="row mt-5">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <!--begin::Repeater-->
-                                        <div id="bph_repeater">
-                                            <!--begin::Form group-->
-                                            <div class="form-group">
-                                                <div data-repeater-list="bhp">
-                                                    <div data-repeater-item>
-                                                        <div class="form-group row mb-5">
-                                                            {{-- <input type="hidden" name="idtindakan" value="{{ $operasi_tindakan->idtindakan }}" id=""> --}}
-                                                            <div class="col-md-6">
-                                                                <label class="form-label">Nama Obat</label>
-                                                                <select name="nama_obat" class="form-select"  data-kt-repeater="select22" data-placeholder="-Pilih-"require id="">
-                                                                    <option value=""></option>
-                                                                    @foreach ($list_bhp as $lb)
-                                                                        <option value="{{ $lb->id }}">{{ $lb->nama_barang }} Rp. {{ number_format($lb->harga) }}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-md-2">
-                                                                <label class="form-label">Jumlah</label>
-                                                                <input type="text" required name="jumlah"
-                                                                    class="form-control mb-2 mb-md-0"
-                                                                    placeholder="Masukan Obat" />
-                                                            </div>
-                                                            <div class="col-md-2">
-                                                                <label class="form-label">Satuan</label>
-                                                                <input type="text" required name="satuan_obat"
-                                                                    class="form-control mb-2 mb-md-0"
-                                                                    placeholder="Masukan Obat" />
-                                                            </div>
-                                                            {{-- <div class="col-md-2">
-                                                                <label class="form-label">Harga</label>
-                                                                <input type="text" required name="harga_obat"
-                                                                    class="form-control mb-2 mb-md-0"
-                                                                    placeholder="Masukan Obat" />
-                                                            </div> --}}
-                                                            <div class="col-md-2">
-                                                                <a href="javascript:;" data-repeater-delete
-                                                                    class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                    <i class="ki-duotone ki-trash fs-5"><span
-                                                                            class="path1"></span><span
-                                                                            class="path2"></span><span
-                                                                            class="path3"></span><span
-                                                                            class="path4"></span><span
-                                                                            class="path5"></span></i>
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!--end::Form group-->
-
-                                            <!--begin::Form group-->
-                                            <div class="form-group mt-5">
-                                                <a href="javascript:;" data-repeater-create
-                                                    class="btn btn-sm btn-light-primary">
-                                                    <i class="ki-duotone ki-plus fs-3"></i>
-                                                    Tambah BHP
-                                                </a>
-                                            </div>
-                                            <!--end::Form group-->
-                                        </div>
-                                        <!--end::Repeater-->
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mt-10">
-                                <div class="col-md-4">
-                                    <button class="btn btn-success">Simpan</button>
-                                </div>
-                            </div>
+               <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h5 class="card-title">Input BHP</h5>
                         </div>
-
-
-                    </form>
-
-                </div>
-                <br>
-                <div class="card">
-                    <div class="card-body">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Nama Barang</th>
-                                    <th>Jumlah</th>
-                                    <th>Harga Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($bhp as $b)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $b->nama_obat }}</td>
-                                        <td>{{ $b->jumlah }}</td>
-                                        <td>{{ $b->harga * $b->jumlah }}</td>
-                                        <td><a href="" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a></td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        <br>
-                        <a href="{{ route('index.operasi') }}" class="btn btn-secondary">Kembali</a>
                     </div>
-                </div>
+                    <div class="card-body">
+                        
+                    </div>
+               </div>
             </div>
         </div>
     </div>

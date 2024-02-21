@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Poli;
 use App\Models\Rawat;
 use App\Models\Dokter;
+use App\Models\Ruangan;
 use App\Models\Obat\Obat;
 use App\Models\TindakLanjut;
 use Illuminate\Http\Request;
@@ -15,14 +16,59 @@ use App\Models\Gizi\SkriningGizi;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Http;
 use App\Models\RekapMedis\RekapMedis;
 use App\Models\Operasi\LaporanOperasi;
 use Yajra\DataTables\Facades\DataTables;
 
 class RawatInapController extends Controller
 {
-    public function postRanap(Request $request){
-        return $request->all();
+    public function get_ruangan($id){
+        $ruangan = Ruangan::where('idkelas',$id)->get();
+        foreach ($ruangan as $key => $value) {
+            echo '<option value="'.$value->id.'">'.$value->nama_ruangan.'</option>';
+        }
+    }
+    public function postRanap(Request $request,$id){
+        // return $request->all();
+        $rawat = Rawat::find($id);
+        $pasien = Pasien::where('no_rm',$rawat->no_rm)->first();
+        $cek_ringakasan = DB::table('rawat_ringkasanpulang')->where('idrawat', $rawat->id)->first();
+        $data_pulang = [
+            'idrawat'=>$rawat->id,
+            'no_rm'=>$rawat->no_rm,
+            'tgl_pulang'=>$request->tgl_pulang,
+            'jam_pulang'=>date('H:i:s',strtotime($request->jam_pulang)),
+            'anjuran'=>$request->anjuran,
+            'terapi'=>$request->terapi,
+            'kondisi_waktupulang'=>$request->kondisi_pulang,
+            'tgl_kontrol'=>$request->tgl_kontrol,
+            'idpoli'=>$request->poli_tujuan,
+        ];
+        if($cek_ringakasan){
+            DB::table('rawat_ringkasanpulang')->where('idrawat', $rawat->id)->update($data_pulang);
+            // $pulang = DB::table('rawat_ringkasanpulang')->where('idrawat', $rawat->id)->first();
+            $pulang = $cek_ringakasan->id;
+        }else{
+            $pulang = DB::table('rawat_ringkasanpulang')->insertGetId($data_pulang);
+        }
+
+        $response = Http::get(env('URL_SIMRS_LAMA').'/rest/pulang?pulang='.$pulang.'&rawat='.$rawat->id);
+        return $response;
+        #cek rawat ruangan 
+        // $rawat_ruangan = DB::table('rawat_ruangan')->where('idrawat',$rawat->id)->where('status',1)->count();
+        // if($rawat_ruangan > 0){
+        //     DB::table('rawat_ruangan')->where('idrawat',$rawat->id)->update([
+        //         'tgl_keluar'=>$request->tgl_pulang,
+        //         'updated_at'=>now(),
+        //     ]);
+        // }
+        // #update tempat tidur 
+        // DB::table('ruangan_bed')->where('id',$rawat->idtempattidur)->update([
+        //     'terisi'=>0,
+        //     'status'=>0,
+        //     'updated_at'=>now(),
+        // ]);
         return redirect()->back()->with('berhasil','Data Berhasil Di Simpan');
     }
     public function index()
@@ -246,6 +292,8 @@ class RawatInapController extends Controller
         $penunjang = DB::table('demo_permintaan_penunjang')->where('idrawat', $id)->get();
         $kesadaran = DB::table('soap_kesadaran')->get();
         $anamnesa_pemeriksaan_fisik = DB::table('demo_ranap_awal_pemeriksaan_fisik')->where('idrawat', $id)->first();
+        $kelas_rawat = DB::table('ruangan_kelas')->where('ket',1)->get();
+        // dd($kelas_rawat);
         if($anamnesa_pemeriksaan_fisik){
             $pemeriksaan_fisik = json_decode($anamnesa_pemeriksaan_fisik->pemeriksaan_fisik);
             $anamnesa = json_decode($anamnesa_pemeriksaan_fisik->anamnesa);
@@ -256,7 +304,7 @@ class RawatInapController extends Controller
         // dd($pemeriksaan_fisik);
         return view('rawat-inap.detail', [
             'rawat' => $rawat
-        ], compact('pasien', 'ringakasan_pasien_masuk', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'data_operasi','pemberian_obat','order_obat','cppt','implamentasi','list_tindakan','penunjang','diagnosa_akhir','data_pulang','poli','skrining','kesadaran','anamnesa','pemeriksaan_fisik','disable','disable_order'));
+        ], compact('pasien', 'ringakasan_pasien_masuk', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'data_operasi','pemberian_obat','order_obat','cppt','implamentasi','list_tindakan','penunjang','diagnosa_akhir','data_pulang','poli','skrining','kesadaran','anamnesa','pemeriksaan_fisik','disable','disable_order','kelas_rawat'));
     }
     public function postOrderPenunjang(Request $request, $id)
     {

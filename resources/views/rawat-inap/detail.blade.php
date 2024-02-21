@@ -61,14 +61,16 @@
                         <div class="card-toolbar">
                             <a href="{{ route('view.rawat-inap', $rawat->idruangan) }}"
                                 class="btn me-3 btn-sm btn-secondary">Kembali</a>
-                                @if ($rawat->status == 2)
+                            @if ($rawat->status == 2)
                                 <button data-bs-toggle="modal" data-bs-target="#modal_pulang"
-                                class="btn btn-sm btn-success">Pulang</button>
-                                @elseif($rawat->status == 4)
+                                    class="btn btn-sm btn-success me-3">Pulang</button>
+                                <button data-bs-toggle="modal" data-bs-target="#modal_pindah"
+                                    class="btn btn-sm btn-primary me-3">Pindah Ruangan</button>
+                            @elseif($rawat->status == 4)
                                 <a class="btn  me-3 btn-light-primary btn-sm" href="">Ringkasan Pulang</a>
                                 <a class="btn btn-light-success btn-sm" href="">Surat Kontrol</a>
-                                @endif
-                           
+                            @endif
+
                         </div>
                     </div>
                     <!--begin::Body-->
@@ -254,7 +256,7 @@
                                                 data-bs-toggle="tab" href="#kt_tab_pane_8" aria-selected="false"
                                                 role="tab" tabindex="-1">Diganosa Akhir</a>
                                         </li>
-                                       
+
                                         {{-- <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
                                                 data-bs-toggle="tab" href="#kt_tab_pane_9" aria-selected="false"
@@ -317,7 +319,8 @@
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_3" role="tabpanel">
                                     <button class="btn btn-info btn-sm mb-5" data-bs-toggle="modal"
-                                        data-bs-target="#modal_implementasi" {{ $disable }}>Tambah Implementasi</button>
+                                        data-bs-target="#modal_implementasi" {{ $disable }}>Tambah
+                                        Implementasi</button>
                                     @include('rawat-inap.menu.implementasi')
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_4" role="tabpanel">
@@ -331,7 +334,8 @@
                                         Pemberian Obat</button>
 
                                     <button class="btn btn-success btn-sm mb-5" data-bs-toggle="modal"
-                                        data-bs-target="#modal_obat" {{ $disable }} {{ $disable_order }}>Order Obat</button>
+                                        data-bs-target="#modal_obat" {{ $disable }} {{ $disable_order }}>Order
+                                        Obat</button>
 
                                     {{-- <button class="btn btn-danger btn-sm mb-5">Retur Obat</button> --}}
 
@@ -355,66 +359,90 @@
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_10" role="tabpanel">
                                     <div class="rounded border p-5">
-                                        <form action="{{ route('store.skrining-gizi') }}" method="POST" autocomplete="off">
+                                        <form action="{{ route('store.skrining-gizi') }}" method="POST"
+                                            autocomplete="off">
                                             @csrf
                                             <input type="hidden" name="idrawat" value="{{ $rawat->id }}">
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <label for="" class="form-label">
-                                                        1. Apakah pasien mengalami penurunan berat badan yang tidak direncanakan / tidak diinginkan dalam 6 bulan terakhir ?
+                                                        1. Apakah pasien mengalami penurunan berat badan yang tidak
+                                                        direncanakan / tidak diinginkan dalam 6 bulan terakhir ?
                                                     </label>
                                                     <div class="mt-5" style="margin-left: 20px;">
-                                                        <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
-                                                            <input class="form-check-input" type="radio" value="1" name="parameter_1" {{ ($skrining) ? ((json_decode($skrining?->skrining)->parameter_1 == 1) ? 'checked' : '') : '' }}/>
+                                                        <div
+                                                            class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                            <input class="form-check-input" type="radio" value="1"
+                                                                name="parameter_1"
+                                                                {{ $skrining ? (json_decode($skrining?->skrining)->parameter_1 == 1 ? 'checked' : '') : '' }} />
                                                             <label class="form-check-label">
                                                                 Tidak ada penurunan berat badan
                                                             </label>
                                                         </div>
                                                     </div>
                                                     <div class="mt-5" style="margin-left: 20px;">
-                                                        <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
-                                                            <input class="form-check-input" type="radio" value="2" name="parameter_1" {{ ($skrining) ? ((json_decode($skrining?->skrining)->parameter_1 == 2) ? 'checked' : '') : '' }}/>
+                                                        <div
+                                                            class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                            <input class="form-check-input" type="radio" value="2"
+                                                                name="parameter_1"
+                                                                {{ $skrining ? (json_decode($skrining?->skrining)->parameter_1 == 2 ? 'checked' : '') : '' }} />
                                                             <label class="form-check-label">
                                                                 Tidak yakin / tidak tahu / terasa baju lebih longgar
                                                             </label>
                                                         </div>
                                                     </div>
                                                     <div class="mt-5" style="margin-left: 20px;">
-                                                        <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
-                                                            <input class="form-check-input" type="radio" value="3" name="parameter_1" {{ ($skrining) ? ((json_decode($skrining?->skrining)->parameter_1 == 3) ? 'checked' : '') : '' }}/>
+                                                        <div
+                                                            class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                            <input class="form-check-input" type="radio" value="3"
+                                                                name="parameter_1"
+                                                                {{ $skrining ? (json_decode($skrining?->skrining)->parameter_1 == 3 ? 'checked' : '') : '' }} />
                                                             <label class="form-check-label">
                                                                 Jika ya, berapa penurunan berat badan tersebut
                                                             </label>
                                                         </div>
                                                     </div>
-                                                    <div id="frm-ya" class="mt-5" style="margin-left: 40px; display: none;">
+                                                    <div id="frm-ya" class="mt-5"
+                                                        style="margin-left: 40px; display: none;">
                                                         <div class="mt-5" style="margin-left: 20px;">
-                                                            <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
-                                                                <input class="form-check-input" type="radio" value="1" name="ya" {{ ($skrining) ? ((json_decode($skrining?->skrining)->ya == 1) ? 'checked' : '') : '' }}/>
+                                                            <div
+                                                                class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                                <input class="form-check-input" type="radio"
+                                                                    value="1" name="ya"
+                                                                    {{ $skrining ? (json_decode($skrining?->skrining)->ya == 1 ? 'checked' : '') : '' }} />
                                                                 <label class="form-check-label">
                                                                     1 – 5 kg
                                                                 </label>
                                                             </div>
                                                         </div>
                                                         <div class="mt-5" style="margin-left: 20px;">
-                                                            <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
-                                                                <input class="form-check-input" type="radio" value="2" name="ya" {{ ($skrining) ? ((json_decode($skrining?->skrining)->ya == 2) ? 'checked' : '') : '' }}/>
+                                                            <div
+                                                                class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                                <input class="form-check-input" type="radio"
+                                                                    value="2" name="ya"
+                                                                    {{ $skrining ? (json_decode($skrining?->skrining)->ya == 2 ? 'checked' : '') : '' }} />
                                                                 <label class="form-check-label">
                                                                     6 – 10 kg
                                                                 </label>
                                                             </div>
                                                         </div>
                                                         <div class="mt-5" style="margin-left: 20px;">
-                                                            <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
-                                                                <input class="form-check-input" type="radio" value="3" name="ya" {{ ($skrining) ? ((json_decode($skrining?->skrining)->ya == 3) ? 'checked' : '') : '' }}/>
+                                                            <div
+                                                                class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                                <input class="form-check-input" type="radio"
+                                                                    value="3" name="ya"
+                                                                    {{ $skrining ? (json_decode($skrining?->skrining)->ya == 3 ? 'checked' : '') : '' }} />
                                                                 <label class="form-check-label">
                                                                     11 – 15 kg
                                                                 </label>
                                                             </div>
                                                         </div>
                                                         <div class="mt-5" style="margin-left: 20px;">
-                                                            <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
-                                                                <input class="form-check-input" type="radio" value="4" name="ya" {{ ($skrining) ? ((json_decode($skrining?->skrining)->ya == 4) ? 'checked' : '') : '' }}/>
+                                                            <div
+                                                                class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                                <input class="form-check-input" type="radio"
+                                                                    value="4" name="ya"
+                                                                    {{ $skrining ? (json_decode($skrining?->skrining)->ya == 4 ? 'checked' : '') : '' }} />
                                                                 <label class="form-check-label">
                                                                     >15 kg
                                                                 </label>
@@ -429,16 +457,22 @@
                                                         2. Apakah asupan makan berkurang karena tidak nafsu makan ?
                                                     </label>
                                                     <div class="mt-5" style="margin-left: 20px;">
-                                                        <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
-                                                            <input class="form-check-input" type="radio" value="1" name="parameter_2" {{ ($skrining) ? ((json_decode($skrining?->skrining)->parameter_2== 1) ? 'checked' : '') : '' }}/>
+                                                        <div
+                                                            class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                            <input class="form-check-input" type="radio" value="1"
+                                                                name="parameter_2"
+                                                                {{ $skrining ? (json_decode($skrining?->skrining)->parameter_2 == 1 ? 'checked' : '') : '' }} />
                                                             <label class="form-check-label">
                                                                 Tidak
                                                             </label>
                                                         </div>
                                                     </div>
                                                     <div class="mt-5" style="margin-left: 20px;">
-                                                        <div class="form-check form-check-custom form-check-solid form-check-sm ml-5">
-                                                            <input class="form-check-input" type="radio" value="2" name="parameter_2" {{ ($skrining) ? ((json_decode($skrining?->skrining)->parameter_2 == 2) ? 'checked' : '') : '' }}/>
+                                                        <div
+                                                            class="form-check form-check-custom form-check-solid form-check-sm ml-5">
+                                                            <input class="form-check-input" type="radio" value="2"
+                                                                name="parameter_2"
+                                                                {{ $skrining ? (json_decode($skrining?->skrining)->parameter_2 == 2 ? 'checked' : '') : '' }} />
                                                             <label class="form-check-label">
                                                                 Ya
                                                             </label>
@@ -722,7 +756,8 @@
                                 <!--begin::Repeater-->
                                 <div class="col-md-8">
                                     <label for="" class="form-label">Petugas Order</label>
-                                <input type="text" class="form-control form-control-solid" readonly value="{{ auth()->user()->detail->nama }}" name="petugas_order" >
+                                    <input type="text" class="form-control form-control-solid" readonly
+                                        value="{{ auth()->user()->detail->nama }}" name="petugas_order">
                                 </div>
                                 <!--end::Repeater-->
                             </div>
@@ -879,7 +914,7 @@
                         </div>
                         <!--end::Close-->
                     </div>
-                    <form action="{{ route('post_pulang.rawat-inap') }}" method="post" id="frmPulang">
+                    <form action="{{ route('post_pulang.rawat-inap', $rawat->id) }}" method="post" id="frmPulang">
                         @csrf
                         <div class="modal-body">
 
@@ -921,6 +956,51 @@
                                     @foreach ($poli as $p)
                                         <option value="{{ $p->id }}">{{ $p->poli }}</option>
                                     @endforeach
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" tabindex="-1" id="modal_pindah">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Pasien Pindah Ruangan</h3>
+
+                        <!--begin::Close-->
+                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span
+                                    class="path2"></span></i>
+                        </div>
+                        <!--end::Close-->
+                    </div>
+                    <form action="{{ route('post_pulang.rawat-inap', $rawat->id) }}" method="post" id="frmPulang">
+                        @csrf
+                        <div class="modal-body">
+
+                            <div class="mb-2">
+                                <label for="" class="form-label">Kelas Rawat</label>
+                                <select onchange="getRuangan()" required name="kelas_rawat" class="form-select" id="kelas_rawat">
+                                    <option value=""></option>
+                                    @foreach ($kelas_rawat as $kr)
+                                        <option value="{{ $kr->id }}">{{ $kr->kelas }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-2">
+                                <label for="" class="form-label">Nama Ruangan</label>
+                                <select required name="nama_ruangan" class="form-select" id="nama_ruangan">
+                                    <option value=""></option>
+                                    
                                 </select>
                             </div>
 
@@ -1128,11 +1208,21 @@
         <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js"></script>
         <script>
+            function getRuangan() {
+                d = document.getElementById("kelas_rawat").value;
+                url = "{{ route('get-ruangan', '') }}" + "/" + d;
+                $.get(url).done(function(data) {
+                    if (data != 0) {
+                        $("select#nama_ruangan").html(data);
+                    }
+
+                });
+            }
             $("#kt_datepicker_1").flatpickr();
             $("#kt_datepicker_2").flatpickr();
             $("#kt_datepicker_3").flatpickr({
                 enableTime: true,
-                minDate:{{ date('Y-m-d') }},
+                minDate: {{ date('Y-m-d') }},
                 dateFormat: "Y-m-d H:i",
             });
             $(function() {

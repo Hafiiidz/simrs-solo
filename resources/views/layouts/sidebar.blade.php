@@ -372,6 +372,18 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+
+                                <a class="menu-link {{ Request::is('pasien/bhp') || Request::is('pasien/bhp') ? 'active' : '' }}"
+                                    href="{{ route('index.bhp') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <span class="menu-title">Master BHP</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
                             <!--end:Menu item-->
                         </div>
                     @endif

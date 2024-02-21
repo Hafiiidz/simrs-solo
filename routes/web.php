@@ -1,29 +1,30 @@
 <?php
 
-use App\Helpers\VclaimHelper;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\PasienController;
-use App\Http\Controllers\LaporanController;
-use App\Http\Controllers\RekapMedisController;
-use App\Http\Controllers\DetailRekapMedisController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\FarmasiController;
-use App\Http\Controllers\FisioTerapiController;
-use App\Http\Controllers\PenunjangController;
-use App\Http\Controllers\PoliklinikController;
-use App\Http\Controllers\RawatInapController;
-use App\Http\Controllers\RuanganController;
-use App\Http\Controllers\RuanganBedController;
-use App\Http\Controllers\TindakLanjutController;
-use App\Http\Controllers\LaporanOperasiController;
-use App\Http\Controllers\GiziController;
-use App\Http\Controllers\LaboratoriumController;
-use App\Http\Controllers\TemplateController;
 use GuzzleHttp\Psr7\Request;
-use Illuminate\Http\Request as HttpRequest;
+use App\Helpers\VclaimHelper;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GiziController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\PasienController;
+use App\Http\Controllers\FarmasiController;
+use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\RuanganController;
+use Illuminate\Http\Request as HttpRequest;
+use App\Http\Controllers\TemplateController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MasterBhpController;
+use App\Http\Controllers\PenunjangController;
+use App\Http\Controllers\RawatInapController;
+use App\Http\Controllers\PoliklinikController;
+use App\Http\Controllers\RekapMedisController;
+use App\Http\Controllers\RuanganBedController;
+use App\Http\Controllers\FisioTerapiController;
+use App\Http\Controllers\LaboratoriumController;
+use App\Http\Controllers\TindakLanjutController;
+use App\Http\Controllers\LaporanOperasiController;
+use App\Http\Controllers\DetailRekapMedisController;
 
 /*
 |--------------------------------------------------------------------------
@@ -307,6 +308,7 @@ Route::prefix('/rawat-jalan')->group(function () {
 });
 Route::prefix('/rawat-inap')->group(function () {
     Route::get('/', [RawatInapController::class, 'index'])->name('index.rawat-inap');
+    Route::get('get-ruangan/{id}', [RawatInapController::class, 'get_ruangan'])->name('get-ruangan');
     Route::get('{id}/view', [RawatInapController::class, 'view'])->name('view.rawat-inap');
     Route::get('{id}/order-obat', [RawatInapController::class, 'orderObat'])->name('view.rawat-inap-order');
     Route::get('{id}/detail', [RawatInapController::class, 'detail'])->name('detail.rawat-inap');
@@ -320,7 +322,7 @@ Route::prefix('/rawat-inap')->group(function () {
     Route::post('{id}/post-implementasi', [RawatInapController::class, 'post_implementasi'])->name('post_implementasi.rawat-inap');
     Route::post('{id}/post-diagnosa-akhir', [RawatInapController::class, 'post_diagnosa_akhir'])->name('post-diagnosa-akhir.rawat-inap');
     Route::post('{id}/post-tindakan', [RawatInapController::class, 'post_tindakan'])->name('post_tindakan.rawat-inap');
-    Route::post('post-ranap-pulang', [RawatInapController::class, 'postRanap'])->name('post_pulang.rawat-inap');
+    Route::post('post-ranap-pulang/{id}', [RawatInapController::class, 'postRanap'])->name('post_pulang.rawat-inap');
     Route::post('post-selesai-resep', [RawatInapController::class, 'postSelesaiObat'])->name('post-selesai-resep.rawat-inap');
 });
 Route::prefix('/pasien')->group(function () {
@@ -349,6 +351,14 @@ Route::prefix('/pasien')->group(function () {
     });
 
     //operasi
+    Route::prefix('/bhp')->group(function () {
+        Route::get('/', [MasterBhpController::class, 'index'])->name('index.bhp');
+        Route::get('/create', [MasterBhpController::class, 'create'])->name('create.bhp');
+        Route::post('/store', [MasterBhpController::class, 'store'])->name('store.bhp');
+        Route::get('/edit/{id}', [MasterBhpController::class, 'edit'])->name('edit.bhp');
+        Route::delete('/delete/{id}', [MasterBhpController::class, 'destroy'])->name('delete.bhp');
+    });
+    
     Route::prefix('/operasi')->group(function () {
         Route::get('/', [LaporanOperasiController::class, 'index'])->name('index.operasi');
         Route::get('/bhp/{id}', [LaporanOperasiController::class, 'bhp'])->name('bhp.operasi');
