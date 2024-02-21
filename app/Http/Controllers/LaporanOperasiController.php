@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use PDF;
+use App\Models\Bhp;
+use App\Models\Rawat;
+use App\Models\Tarif;
 use App\Models\Dokter;
 use Illuminate\Http\Request;
+use App\Models\Pasien\Pasien;
 use Illuminate\Support\Carbon;
-use Yajra\DataTables\Facades\DataTables;
+use App\Models\TemplateAnastesi;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use App\Models\Operasi\LaporanOperasi;
 use App\Models\Operasi\CatatanAnestesi;
 use App\Models\Template\TemplateOperasi;
-use App\Models\TemplateAnastesi;
-use App\Models\Rawat;
-use App\Models\Pasien\Pasien;
-use App\Models\Tarif;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use PDF;
+use Yajra\DataTables\Facades\DataTables;
 
 class LaporanOperasiController extends Controller
 {
@@ -92,14 +94,23 @@ class LaporanOperasiController extends Controller
     public function bhp($id){
         $operasi_tindakan = DB::table('operasi_tindakan')->where('id',$id)->first();
         $rawat = Rawat::find($operasi_tindakan->idrawat);
-        $bhp = DB::table('operasi_tindakan_bhp')->where('idoperasi',$operasi_tindakan->id)->get();
-        $list_bhp = DB::table('demo_template_bhp')->get();
+        // $bhp = DB::table('operasi_tindakan_bhp')->where('idoperasi',$operasi_tindakan->id)->get();
+        // $list_bhp = DB::table('demo_template_bhp')->get();
+        $implan = Bhp::where('jenis','Implan')->get();
+        $bhp = Bhp::where('jenis','BHP')->get();
         // dd($bhp);
-        return view('operasi.bhp',compact('operasi_tindakan','rawat','bhp','list_bhp'));
+        return view('operasi.bhp',compact('operasi_tindakan','rawat','implan','bhp'));
     }
 
     #create fungsi simpan bhp
     public function post_bhp_ok(Request $request,$id){
+        return $request->all();
+        $total_bhp = 0;
+        foreach ($request->bhp as  $item) {
+            $total_bhp .= $item;
+        }
+
+        return "Total jumlah 'bhp' adalah: " . $total_bhp;
         $operasi_tindakan = DB::table('operasi_tindakan')->where('id',$id)->first();
         // return $request->all();
         foreach($request->bhp as $bhp){

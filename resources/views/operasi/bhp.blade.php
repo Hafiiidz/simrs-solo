@@ -52,16 +52,106 @@
         <div id="kt_app_content" class="app-content flex-column-fluid">
             <!--begin::Content container-->
             <div id="kt_app_content_container" class="app-container container-fluid">
-               <div class="card">
+                <div class="card">
                     <div class="card-header">
                         <div class="card-title">
                             <h5 class="card-title">Input BHP</h5>
                         </div>
                     </div>
                     <div class="card-body">
-                        
+                        <div class="d-grid">
+                            <ul class="nav nav-tabs flex-nowrap text-nowrap" role="tablist">
+                                {{-- <li class="nav-item" role="presentation">
+                                    <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0 "
+                                        data-bs-toggle="tab" href="#kt_tab_pane_0" aria-selected="true"
+                                        role="tab">Check List</a>
+                                </li> --}}
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0 active"
+                                        data-bs-toggle="tab" href="#kt_tab_pane_1" aria-selected="true"
+                                        role="tab">BHP</a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0 "
+                                        data-bs-toggle="tab" href="#kt_tab_pane_2" aria-selected="true"
+                                        role="tab">Implan</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <form action="{{ route('post_bhp_ok.operasi',$operasi_tindakan->id) }}" method="POST" id="frmBhp">
+                            @csrf
+                            <div class="tab-content" id="myTabContent">
+
+                                <div class="tab-pane fade  show active" id="kt_tab_pane_1" role="tabpanel">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No</th>
+                                                        <th>Nama BHP</th>
+                                                        <th width=150>Jumlah</th>
+                                                        <th>Satuan</th>
+                                                        <th>Harga</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($bhp as $key => $item)
+                                                        <tr>
+                                                            <td>{{ $key + 1 }}</td>
+                                                            <td>{{ $item->nama_barang }}</td>
+                                                            <td>
+                                                                
+                                                                <input type="text" class="form-control form-control-sm"
+                                                                    name="bhp[{{ $item->id }}]">
+                                                            </td>
+                                                            <td>{{ $item->satuan }}</td>
+                                                            <td>{{ number_format($item->harga) }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="kt_tab_pane_2" role="tabpanel">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No</th>
+                                                        <th>Nama Implan</th>
+                                                        <th width=150>Jumlah</th>
+                                                        <th>Satuan</th>
+                                                        <th>Harga</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($implan as $key => $item)
+                                                        <tr>
+                                                            <td>{{ $key + 1 }}</td>
+                                                            <td>{{ $item->nama_barang }}</td>
+                                                            <td>
+                                                                
+                                                            <input type="text" class="form-control form-control-sm"
+                                                                name="bhp[jumlah][{{ $item->id }}]">
+                                                            </td>
+                                                            <td>{{ $item->satuan }}</td>
+                                                            <td>{{ number_format($item->harga) }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary">Simpan</button>
+                            </div>
+                        </form>
                     </div>
-               </div>
+                </div>
             </div>
         </div>
     </div>
@@ -71,6 +161,39 @@
     <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js"></script>
     <script>
+        //eksekusi frmbhp
+        $("#frmBhp").on("submit", function(event) {
+                event.preventDefault();
+                var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                Swal.fire({
+                    title: 'Simpan Data',
+                    text: "Apakah Anda yakin akan menyimpan data ini ?",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Simpan Data',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.blockUI({
+                            css: {
+                                border: 'none',
+                                padding: '15px',
+                                backgroundColor: '#000',
+                                '-webkit-border-radius': '10px',
+                                '-moz-border-radius': '10px',
+                                opacity: .5,
+                                color: '#fff',
+                                fontSize: '16px'
+                            },
+                            message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                            baseZ: 9000,
+                        });
+                        this.submit();
+                    }
+                });
+            });
         $(document).ready(function() {
             @if ($message = session('gagal'))
                 Swal.fire({
