@@ -1,0 +1,46 @@
+td {
+    vertical-align: middle;
+}
+
+/* Color button main menu */
+.app-sidebar-menu-primary.menu>.menu-item>.menu-link.active {
+    transition: color .2s ease;
+    background-color: #627581 !important;
+    color: white !important;
+    border-right: 5px solid #FF342A;
+}
+
+/* Color button sub menu */
+.app-sidebar-menu-primary.menu>.menu-item .menu-item .menu-link.active {
+    transition: color .2s ease;
+    background-color: #627581 !important;
+    color: white !important;
+}
+
+/* color arrow */
+.app-sidebar-menu-primary.menu>.menu-item>.menu-link .menu-arrow:after, .app-sidebar-menu-primary.menu>.menu-item.hover:not(.here)>.menu-link:not(.disabled):not(.active):not(.here) .menu-arrow:after {
+    background-color: white !important;
+    color: white !important;
+}
+
+/* color font dan icon */
+.app-sidebar-menu-primary.menu>.menu-item>.menu-link .menu-title {
+    color: white !important;
+}
+
+.app-sidebar-menu-primary.menu>.menu-item>.menu-link .menu-icon, .app-sidebar-menu-primary.menu>.menu-item>.menu-link .menu-icon .svg-icon, .app-sidebar-menu-primary.menu>.menu-item>.menu-link .menu-icon i {
+    color: white !important;
+}
+
+.app-sidebar-menu-primary.menu>.menu-item .menu-item.hover:not(.here)>.menu-link:not(.disabled):not(.active):not(.here) .menu-title, .app-sidebar-menu-primary.menu>.menu-item .menu-item:not(.here) .menu-link:hover:not(.disabled):not(.active):not(.here) .menu-title {
+    color: white !important;
+}
+
+.app-sidebar-menu-primary.menu>.menu-item .menu-item .menu-link .menu-title {
+    color: white !important;
+}
+
+/* hr garis */
+.hr-line {
+    border-top: 3px dashed white;
+}
