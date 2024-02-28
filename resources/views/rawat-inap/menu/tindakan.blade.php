@@ -5,6 +5,7 @@
             <th>Tindakan</th>
             <th>Dokter</th>
             <th>Bayar</th>
+            <th>Jumlah</th>
             <th>Aksi</th>
         </tr>
     </thead>
