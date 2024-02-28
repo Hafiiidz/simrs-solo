@@ -21,6 +21,7 @@
                 </td>
                 <td>{{ App\Helpers\VclaimHelper::getDokterSimrs($tindakan->iddokter) }}</td>
                 <td>{{ $rawat->bayar->bayar }}</td>
+                <td>{{ $tindakan->jumlah }}</td>
                 <td>
                     <a href="{{ route('delete-tindakan.rawat-inap',$tindakan->id) }}" onclick="return confirm('Hapus Tindakan ?')" class="btn btn-sm btn-light-danger">Hapus</a>
                 </td>
