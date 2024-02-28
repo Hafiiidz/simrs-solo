@@ -6,6 +6,7 @@ use PDF;
 use App\Models\Rawat;
 use App\Models\Obat\Obat;
 use Illuminate\Http\Request;
+use App\Helpers\VclaimHelper;
 use App\Models\ObatTransaksi;
 use App\Models\Pasien\Pasien;
 use App\Models\AntrianFarmasi;
@@ -246,7 +247,7 @@ class FarmasiController extends Controller
 
         return response()->json([
             'status' => 'true',
-            'total' => $total_obat_racikan + $total_obat,
+            'total' =>  VclaimHelper::IndoCurr($total_obat_racikan + $total_obat),
             'kronis' => $total_kronis
         ]);
     }

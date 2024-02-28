@@ -26,7 +26,8 @@
                                 @else
                                     @foreach ($radiologi as $rad)
                                         @if ($rad->id == $pen->tindakan_rad)
-                                            <li>{{ $rad->nama_tindakan }}</li>
+                                            <li>
+                                                <a href="#" onclick="modalHasilRad('5040')">{{ $rad->nama_tindakan }}</a></li>
                                         @endif
                                     @endforeach
                                 @endif

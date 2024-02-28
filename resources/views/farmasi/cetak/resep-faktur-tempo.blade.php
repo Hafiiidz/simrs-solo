@@ -292,7 +292,7 @@
                                                 <td style="border: 1px solid black;" class="text-center">
                                                     {{ $val->kronis }}</td>
                                                 <td style="border: 1px solid black;" class="text-end">
-                                                    {{ number_format(App\Helpers\VclaimHelper::get_harga_obat($val->obat, $rawat->idbayar) * $val->kronis) }}
+                                                    {{ App\Helpers\VclaimHelper::IndoCurr(App\Helpers\VclaimHelper::get_harga_obat($val->obat, $rawat->idbayar) * $val->kronis) }}
                                                 </td>
                                             </tr>
                                         @endif
@@ -317,7 +317,7 @@
                                                     <td style="border: 1px solid black;" class="text-center">
                                                         {{ $obat->kronis }}</td>
                                                     <td style="border: 1px solid black;" class="text-end">
-                                                        {{ number_format(App\Helpers\VclaimHelper::get_harga_obat($obat->obat, $rawat->idbayar) * $obat->kronis) }}
+                                                        {{ App\Helpers\VclaimHelper::IndoCurr(App\Helpers\VclaimHelper::get_harga_obat($obat->obat, $rawat->idbayar) * $obat->kronis) }}
                                                     </td>
                                                 </tr>
                                             @endif

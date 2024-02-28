@@ -112,7 +112,7 @@
                                         <td style="border: 1px solid black;" class="text-center">{{ $val->qty }}
                                         </td>
                                         <td style="border: 1px solid black;" class="text-end">
-                                            Rp.{{ number_format($val->total) }}</td>
+                                            Rp.{{ App\Helpers\VclaimHelper::IndoCurr($val->total) }}</td>
                                     </tr>
                                 @endif
                             @endforeach
@@ -127,13 +127,13 @@
                                     <td style="border: 1px solid black;" colspan="3" class="text-end">Total Racik
                                     </td>
                                     <td style="border: 1px solid black;" class="text-end">
-                                        Rp.{{ number_format($total_racik) }}
+                                        Rp.{{ App\Helpers\VclaimHelper::IndoCurr($total_racik) }}
                                     </td>
                                 </tr>
                             @endif
                             <tr class="border">
                                 <td style="border: 1px solid black;" colspan="3" class="text-end">Total Harga</td>
-                                <td style="border: 1px solid black;" class="text-end">Rp.{{ number_format($total+$total_racik) }}
+                                <td style="border: 1px solid black;" class="text-end">Rp.{{ App\Helpers\VclaimHelper::IndoCurr($total+$total_racik) }}
                                 </td>
                             </tr>
                         </tbody>
@@ -234,7 +234,7 @@
                                                 {{ $val->qty }}
                                             </td>
                                             <td style="border: 1px solid black;" class="text-end">
-                                                Rp.{{ number_format($val->total) }}</td>
+                                                Rp.{{ App\Helpers\VclaimHelper::IndoCurr($val->total) }}</td>
                                         </tr>
                                     @endif
                                 @endforeach
@@ -243,7 +243,7 @@
                                     <td style="border: 1px solid black;" colspan="3" class="text-end">Total Harga
                                     </td>
                                     <td style="border: 1px solid black;" class="text-end">
-                                        Rp.{{ number_format($total_kronis) }}
+                                        Rp.{{ App\Helpers\VclaimHelper::IndoCurr($total_kronis) }}
                                     </td>
                                 </tr>
                             </tbody>

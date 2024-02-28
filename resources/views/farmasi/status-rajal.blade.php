@@ -227,7 +227,7 @@
                                                                                             data-id='{{ $val->idresep }}'
                                                                                             data-value='{{ $ob_racikan->obat }}'class="btn btn-light-success btn-sm btn-edit-racikan">{!! App\Helpers\VclaimHelper::get_data_obat($ob_racikan->obat) !!}</button>
                                                                                     </td>
-                                                                                    <td>{!! App\Helpers\VclaimHelper::get_harga_obat($ob_racikan->obat, $rawat->idbayar) !!}</td>
+                                                                                    <td>{!! App\Helpers\VclaimHelper::IndoCurr(App\Helpers\VclaimHelper::get_harga_obat($ob_racikan->obat, $rawat->idbayar)) !!}</td>
                                                                                     <td class="text-center">
                                                                                         {{ $ob_racikan->jumlah_obat }}</td>
                                                                                     <td>
@@ -340,7 +340,7 @@
                                                                     @endif
 
                                                                 </td>
-                                                                <td>{!! App\Helpers\VclaimHelper::get_harga_obat($val->obat, $rawat->idbayar) !!}</td>
+                                                                <td>{!! App\Helpers\VclaimHelper::IndoCurr(App\Helpers\VclaimHelper::get_harga_obat($val->obat, $rawat->idbayar)) !!}</td>
                                                                 <td class="text-center">
                                                                     {{ $val->jumlah }}</td>
                                                                 <td>
@@ -481,7 +481,7 @@
                                                         @endforeach
                                                     </ol>
                                                 </td>
-                                                <td>{{ number_format($r->total_harga + $r->jasa_racik) }}</td>
+                                                <td>{{ App\Helpers\VclaimHelper::IndoCurr($r->total_harga + $r->jasa_racik) }}</td>
                                                 <td>
                                                     <a href="{{ route('farmasi.cetak-faktur', $r->id) }}"
                                                         class="btn btn-warning btn-sm" target="_blank">Print</a>

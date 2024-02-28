@@ -642,7 +642,7 @@
             </div>
         </div>
         <div class="modal fade" tabindex="-1" id="modal_tindakan">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h3 class="modal-title">Tambah Tindakan</h3>
@@ -1202,12 +1202,31 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" tabindex="-1" id="modal_lihat">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div id="modal-hasil">
+    
+                    </div>
+                </div>
+            </div>
+        </div>
     @endsection
     @section('js')
         <script src="{{ asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
         <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js"></script>
         <script>
+            function modalHasilRad(id) {
+            // alert(id)
+                url = "{{ route('get-hasil-rad', '') }}" + "/" + id;
+                $("#modal-hasil").empty();
+                $.get(url).done(function(data) {
+                    $("#modal-hasil").html(data);
+                    $("#modal_lihat").modal('show');
+                });
+            }
             function getRuangan() {
                 d = document.getElementById("kelas_rawat").value;
                 url = "{{ route('get-ruangan', '') }}" + "/" + d;

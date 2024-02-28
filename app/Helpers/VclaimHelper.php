@@ -582,4 +582,19 @@ class VclaimHelper
             ];
         }
     }
+    public static function IndoCurr($number){
+        $ratusan = substr($number, -2);
+        if($ratusan > 100){
+            $akhir = $number - $ratusan;
+        }
+        else{
+           if($ratusan < 1){
+               $akhir = $number;
+           }else{
+                $akhir = $number + (100 - $ratusan);
+           }       
+        }
+
+        return number_format($akhir, 2, ',', '.');
+    }
 }
