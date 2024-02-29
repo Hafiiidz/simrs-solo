@@ -164,7 +164,8 @@
                                         <a href="{{ route('farmasi.singkron-resep', $rawat->id) }}"
                                             class="btn btn btn-light-info">Singkronkan Resep</a>
                                     @else
-                                        <a href="{{ route('farmasi.tambah-resep',$rawat->id) }}" onclick="return confirm('Tambah Resep?')" class="btn btn-info ">Tambah Resep</a>
+                                        <a href="{{ route('farmasi.tambah-resep', $rawat->id) }}"
+                                            onclick="return confirm('Tambah Resep?')" class="btn btn-info ">Tambah Resep</a>
                                     @endif
                                 </div>
                             </div>
@@ -227,7 +228,9 @@
                                                                                             data-id='{{ $val->idresep }}'
                                                                                             data-value='{{ $ob_racikan->obat }}'class="btn btn-light-success btn-sm btn-edit-racikan">{!! App\Helpers\VclaimHelper::get_data_obat($ob_racikan->obat) !!}</button>
                                                                                     </td>
-                                                                                    <td>{!! App\Helpers\VclaimHelper::IndoCurr(App\Helpers\VclaimHelper::get_harga_obat($ob_racikan->obat, $rawat->idbayar)) !!}</td>
+                                                                                    <td>{!! App\Helpers\VclaimHelper::IndoCurr(
+                                                                                        App\Helpers\VclaimHelper::get_harga_obat($ob_racikan->obat, $rawat->idbayar),
+                                                                                    ) !!}</td>
                                                                                     <td class="text-center">
                                                                                         {{ $ob_racikan->jumlah_obat }}</td>
                                                                                     <td>
@@ -277,7 +280,8 @@
                                                                     </select>
                                                                 </td>
                                                                 <td class="align-middle text-center">
-                                                                    <a class="btn btn-danger btn-sm" href="{{ route('farmasi.delete-resep',$val->idresep) }}">Hapus</a>
+                                                                    <a class="btn btn-danger btn-sm"
+                                                                        href="{{ route('farmasi.delete-resep', $val->idresep) }}">Hapus</a>
                                                                 </td>
                                                             </tr>
                                                         @endforeach
@@ -385,7 +389,6 @@
                                                                 </td>
                                                             </tr>
                                                         @endforeach
-                                                       
                                                     @endif
                                                     <tr>
                                                         <td colspan=7>
@@ -400,7 +403,8 @@
                                                                         dahulu untuk dapat menambah obat</h4>
                                                                 </div>
                                                             </div>
-                                                            <button type="button" data-id="{{ $antrian->id }}" id="modal_tambah_non"class="btn btn-primary btn-sm">Tambah</button>
+                                                            <button type="button" data-id="{{ $antrian->id }}"
+                                                                id="modal_tambah_non"class="btn btn-primary btn-sm">Tambah</button>
                                                         </td>
                                                     </tr>
                                                 @endif
@@ -441,7 +445,9 @@
                                                 <button class="btn btn-success mt-10">Simpan Resep</button>
                                             </form>
                                             <br>
-                                            <a onclick="return confirm('Batalkan Resep?')" href="{{ route('farmasi.batalkan-resep',$antrian->id) }}" class="btn btn-danger"> Batalkan Resep </a>
+                                            <a onclick="return confirm('Batalkan Resep?')"
+                                                href="{{ route('farmasi.batalkan-resep', $antrian->id) }}"
+                                                class="btn btn-danger"> Batalkan Resep </a>
 
                                         </div>
                                     </div>
@@ -481,12 +487,15 @@
                                                         @endforeach
                                                     </ol>
                                                 </td>
-                                                <td>{{ App\Helpers\VclaimHelper::IndoCurr($r->total_harga + $r->jasa_racik) }}</td>
+                                                <td>{{ App\Helpers\VclaimHelper::IndoCurr($r->total_harga + $r->jasa_racik) }}
+                                                </td>
                                                 <td>
                                                     <a href="{{ route('farmasi.cetak-faktur', $r->id) }}"
                                                         class="btn btn-warning btn-sm" target="_blank">Print</a>
-                                                    {{-- <a href="{{ route('farmasi.cetak-resep', $r->id) }}"
-                                                        class="btn btn-success btn-sm" target="_blank">Print Resep</a> --}}
+                                                    @if ($r->idresep != null)
+                                                        <a href="{{ route('farmasi.cetak-resep-tempo', $r->idresep) }}"
+                                                            class="btn btn-success btn-sm" target="_blank">Print Resep</a>
+                                                    @endif
                                                     <a href="{{ route('farmasi.cetak-tiket', $r->id) }}"
                                                         class="btn btn-info btn-sm" target="_blank">Print Tiket</a>
                                                 </td>
@@ -1061,7 +1070,5 @@
                 }
             });
         @endif
-
-       
     </script>
 @endsection
