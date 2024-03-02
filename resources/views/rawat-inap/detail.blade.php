@@ -1151,6 +1151,7 @@
                                                             <option value="Sublingual">Sublingual</option>
                                                             <option value="Nasal">Nasal</option>
                                                             <option value="Injeksi">Injeksi</option>
+                                                            <option value="Rectal">Rectal</option>
                                                         </select>
                                                         {{-- <input type="text" name='rute'
                                                             class="form-control form-control-sm mb-2 mb-md-0"
