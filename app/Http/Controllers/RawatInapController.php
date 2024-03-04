@@ -54,7 +54,7 @@ class RawatInapController extends Controller
         }
 
         $response = Http::get(env('URL_SIMRS_LAMA').'/rest/pulang?pulang='.$pulang.'&rawat='.$rawat->id);
-        return $response;
+        // return $response;
         #cek rawat ruangan 
         // $rawat_ruangan = DB::table('rawat_ruangan')->where('idrawat',$rawat->id)->where('status',1)->count();
         // if($rawat_ruangan > 0){
@@ -151,13 +151,66 @@ class RawatInapController extends Controller
         ]);
     }
     #detail
+    public function postPengkajianSubjektif(Request $request, $id){
+        $riwayat_mens = new Collection([
+            "usia_menarche"=>$request->usia_menarche,
+            "lama_haid"=>$request->lama_haid,
+            "jumlah_darah_haid"=>$request->jumlah_darah_haid,
+            "flour_albus"=>$request->flour_albus,
+            "hpht"=>$request->hpht,
+            "keluhan_haid"=>$request->keluhan_haid,
+            "tp"=>$request->tp,
+        ]);
+        $riwayat_hamil_ini = new Collection([
+            "keluhan_lainnya"=>$request->keluhan_lainnya,
+            "keluhan_hamil_tua_lainnya"=>$request->keluhan_hamil_tua_lainnya,
+            "gerakan_janin_pertama"=>$request->gerakan_janin_pertama,
+            "gerakan_janin_terakhir"=>$request->gerakan_janin_terakhir,
+            "penyulit_kehamilan"=>$request->penyulit_kehamilan,
+            "obat_jamu_konsumsi"=>$request->obat_jamu_konsumsi,
+            "keluhan_bak"=>$request->keluhan_bak,
+            "keluhan_bab"=>$request->keluhan_bab,
+            "kekhawatiran_khusus"=>$request->kekhawatiran_khusus,
+        ]);
+        $riwayat_kehamilan = new Collection([
+            "gravida"=>$request->g,
+            "partus"=>$request->p,
+            "abortus"=>$request->a,
+            "hidup"=>$request->hidup,
+        ]);
+
+        $data = [
+            "idrawat"=>$id,
+            "keluhan_utama"=>$request->keluhan_utama,
+            "riwayat_men"=>$riwayat_mens->toJson(),
+            "riwayat_hamil"=>$riwayat_hamil_ini->toJson(),
+            "riwayat_kehamilan"=>$riwayat_kehamilan->toJson(),
+            "riwayat_penyakit_operasi"=>$request->riwayat_penyakit_operasi,
+            "riwayat_penyakit_keluarga"=>$request->riwayat_penyakit_keluarga,
+            "status_perkawinan"=>$request->status_perkawinan,
+            "riwayat_psikososial_ekonomi"=>$request->riwayat_psikososial_ekonomi,
+            "riwayat_dan_rencana_kb"=>$request->riwayat_dan_rencana_kb,
+            "riwayat_ginekologi"=>$request->riwayat_ginekologi,
+            "pola_makan"=>$request->pola_makan,
+        ];
+
+        $cek_pengkajian = DB::table('demo_pengkajian_kebidanan')->where('idrawat',$id)->first();
+        if($cek_pengkajian){
+            DB::table('demo_pengkajian_kebidanan')->where('idrawat',$id)->update($data);
+        }else{
+            DB::table('demo_pengkajian_kebidanan')->insert($data);
+        }
+        return redirect()->route('detail.rawat-inap',$id)->with('berhasil','Data Berhasil Di Simpan');
+    }
     public function pengkajian_kebidanan($id)
     {
         $rawat = Rawat::with('pasien', 'bayar')->where('id', $id)->first();
         $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
+        #demo_pengkajian_kebidanan
+        $pengkajian = DB::table('demo_pengkajian_kebidanan')->where('idrawat',$id)->first();
         return view('rawat-inap.pengkajian-kebidanan', [
             'rawat' => $rawat
-        ], compact('pasien'));
+        ], compact('pasien','pengkajian'));
     }
 
     public function post_diagnosa_akhir(Request $request,$id){

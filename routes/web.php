@@ -324,6 +324,7 @@ Route::prefix('/rawat-inap')->group(function () {
     Route::post('{id}/post-tindakan', [RawatInapController::class, 'post_tindakan'])->name('post_tindakan.rawat-inap');
     Route::post('post-ranap-pulang/{id}', [RawatInapController::class, 'postRanap'])->name('post_pulang.rawat-inap');
     Route::post('post-selesai-resep', [RawatInapController::class, 'postSelesaiObat'])->name('post-selesai-resep.rawat-inap');
+    Route::post('post-pengakajian-data-subjektif/{id}', [RawatInapController::class, 'postPengkajianSubjektif'])->name('post.pengakajian-data-subjektif');
 });
 Route::prefix('/pasien')->group(function () {
     Route::get('/', [PasienController::class, 'index'])->name('pasien.index');
