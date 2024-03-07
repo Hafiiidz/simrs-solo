@@ -224,12 +224,12 @@ Route::get('/index', function () {
 })->middleware('auth');
 
 //Dasboard
-Route::prefix('dashboard')->group(function () {
+Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index']);
 });
 
 //Data Master
-Route::prefix('data-master')->group(function () {
+Route::prefix('data-master')->middleware('auth')->group(function () {
     //Ruangan
     Route::prefix('/ruangan')->group(function () {
         Route::get('/', [RuanganController::class, 'index'])->name('index.ruangan');
@@ -244,12 +244,12 @@ Route::prefix('data-master')->group(function () {
 });
 
 //Laporan
-Route::prefix('/laporan')->group(function () {
+Route::prefix('/laporan')->middleware('auth')->group(function () {
     Route::get('/', [LaporanController::class, 'index']);
 });
 
 //lab
-Route::prefix('/laboratorium')->group(function () {
+Route::prefix('/laboratorium')->middleware('auth')->group(function () {
     Route::get('/list-pemeriksaan', [LaboratoriumController::class, 'index'])->middleware('auth')->name('laboratorium.list-pemeriksaan');
     Route::get('/list-pasien', [LaboratoriumController::class, 'pasien'])->middleware('auth')->name('laboratorium.list-pasien');
     Route::get('/view-hasil', [LaboratoriumController::class, 'hasil'])->middleware('auth')->name('laboratorium.view-hasil');
@@ -261,7 +261,7 @@ Route::prefix('/laboratorium')->group(function () {
     Route::post('/hapus-hasil/{id}', [LaboratoriumController::class, 'hapus_hasil'])->middleware('auth')->name('laboratorium.hapus-hasil');
 });
 //fisio
-Route::prefix('/fisio')->group(function () {
+Route::prefix('/fisio')->middleware('auth')->group(function () {
     Route::get('/', [FisioTerapiController::class, 'index'])->middleware('auth')->name('fisio.index');
     Route::get('/input-asesmen/{id}', [FisioTerapiController::class, 'input_asesmen'])->middleware('auth')->name('fisio.input-asesmen');
     Route::get('/show-asesmen/{id}', [FisioTerapiController::class, 'show_asesmen'])->middleware('auth')->name('fisio.show-asesmen');
@@ -270,7 +270,7 @@ Route::prefix('/fisio')->group(function () {
 
 //pasien
 
-Route::prefix('/penunjang')->group(function () {
+Route::prefix('/penunjang')->middleware('auth')->group(function () {
     Route::get('/antrian/{jenis}', [PenunjangController::class, 'antrian'])->middleware('auth')->name('penunjang.antrian');
     Route::get('/detail-penunjang/{id}/{jenis}', [PenunjangController::class, 'detail_penunjang'])->middleware('auth')->name('penunjang.detail');
     Route::get('/input-hasil-radiologi/{id}/{idpemeriksaan}', [PenunjangController::class, 'input_hasil_radiologi'])->middleware('auth')->name('penunjang.input-hasil-radiologi');
@@ -288,7 +288,7 @@ Route::prefix('/penunjang')->group(function () {
     Route::post('/rad-selesai', [PenunjangController::class, 'selesai_pemeriksaan'])->middleware('auth')->name('penunjang.rad-selesai');
     Route::get('/cetak-radiologi/{id}', [PenunjangController::class, 'cetakRadiologi'])->middleware('auth')->name('penunjang.cetak-radiologi');
 });
-Route::prefix('/farmasi')->group(function () {
+Route::prefix('/farmasi')->middleware('auth')->group(function () {
     Route::get('/batalkan-resep/{id}', [FarmasiController::class, 'batalkan_resep'])->middleware('auth')->name('farmasi.batalkan-resep');
     Route::get('/tambah-resep/{id}', [FarmasiController::class, 'tambah_resep'])->middleware('auth')->name('farmasi.tambah-resep');
     Route::get('/delete-resep/{id}', [FarmasiController::class, 'delete_racikan'])->middleware('auth')->name('farmasi.delete-resep');
@@ -316,7 +316,7 @@ Route::prefix('/farmasi')->group(function () {
     Route::post('/edit-obat-farmasi-racikan', [FarmasiController::class, 'post_edit_farmasi_racikan'])->middleware('auth')->name('farmasi.edit-obat-farmasi-racikan');
     Route::post('/post-resep-racikan-farmasi/{id}', [FarmasiController::class, 'post_resep_racikan'])->middleware('auth')->name('farmasi.post-resep-racikan');
 });
-Route::prefix('/rawat-jalan')->group(function () {
+Route::prefix('/rawat-jalan')->middleware('auth')->group(function () {
     Route::get('/poli', [PoliklinikController::class, 'index'])->middleware('auth')->name('poliklinik');
     Route::get('/poli-semua', [PoliklinikController::class, 'index_semua'])->middleware('auth')->name('poliklinik-semua');
     Route::prefix('/tindak-lanjut')->group(function () {
@@ -327,7 +327,7 @@ Route::prefix('/rawat-jalan')->group(function () {
         Route::post('/hapus-tindak-lanjut', [TindakLanjutController::class, 'hapus_tindak_lanjut'])->middleware('auth')->name('tindak-lanjut.hapus_tindak_lanjut');
         Route::post('/edit-tindak-lanjut/{id}', [TindakLanjutController::class, 'post_edit_tindak_lanjut'])->middleware('auth')->name('tindak-lanjut.post_edit_tindak_lanjut');
     });
-    Route::prefix('/rekam-medis')->group(function () {
+    Route::prefix('/rekam-medis')->middleware('auth')->group(function () {
         Route::get('/{idrawat}/{idrawatbaru}/copy-template', [RekapMedisController::class, 'copy_template'])->name('copy-template');
         Route::get('/{id_resep}/{idrawat}/copy-resep', [RekapMedisController::class, 'copy_resep'])->name('copy-resep');
         Route::get('/{id_pasien}/update-template', [RekapMedisController::class, 'update_template'])->name('update-template');
@@ -347,7 +347,7 @@ Route::prefix('/rawat-jalan')->group(function () {
         Route::post('/post-delete-pengantar', [RekapMedisController::class, 'delete_file_pengatar'])->name('post.delete-pengantar');
     });
 });
-Route::prefix('/rawat-inap')->group(function () {
+Route::prefix('/rawat-inap')->middleware('auth')->group(function () {
     Route::get('/', [RawatInapController::class, 'index'])->name('index.rawat-inap');
     Route::get('get-ruangan/{id}', [RawatInapController::class, 'get_ruangan'])->name('get-ruangan');
     Route::get('{id}/view', [RawatInapController::class, 'view'])->name('view.rawat-inap');
@@ -373,13 +373,13 @@ Route::prefix('/rawat-inap')->group(function () {
     Route::post('post-selesai-resep', [RawatInapController::class, 'postSelesaiObat'])->name('post-selesai-resep.rawat-inap');
     Route::post('post-pengakajian-data-subjektif/{id}', [RawatInapController::class, 'postPengkajianSubjektif'])->name('post.pengakajian-data-subjektif');
 });
-Route::prefix('/pasien')->group(function () {
+Route::prefix('/pasien')->middleware('auth')->group(function () {
     Route::get('/', [PasienController::class, 'index'])->name('pasien.index');
     Route::get('/create', [PasienController::class, 'tambah_pasien_baru'])->name('pasien.tambah-pasien');
     Route::get('/cari-kelurahan', [PasienController::class, 'cari_kelurahan'])->name('pasien.cari-kelurahan');
 
     //Rekam Medis
-    Route::prefix('/rekap-medis')->group(function () {
+    Route::prefix('/rekap-medis')->middleware('auth')->group(function () {
         Route::get('/{id_pasien}/show', [RekapMedisController::class, 'index'])->name('rekap-medis-index');
         Route::post('/store}', [RekapMedisController::class, 'store'])->name('rekap-medis-store');
         Route::post('/selesai/{id}', [RekapMedisController::class, 'selesai_poli'])->name('rekap-medis-selesai');
@@ -399,7 +399,7 @@ Route::prefix('/pasien')->group(function () {
     });
 
     //operasi
-    Route::prefix('/bhp')->group(function () {
+    Route::prefix('/bhp')->middleware('auth')->group(function () {
         Route::get('/', [MasterBhpController::class, 'index'])->name('index.bhp');
         Route::get('/create', [MasterBhpController::class, 'create'])->name('create.bhp');
         Route::post('/store', [MasterBhpController::class, 'store'])->name('store.bhp');
@@ -407,7 +407,7 @@ Route::prefix('/pasien')->group(function () {
         Route::delete('/delete/{id}', [MasterBhpController::class, 'destroy'])->name('delete.bhp');
     });
     
-    Route::prefix('/operasi')->group(function () {
+    Route::prefix('/operasi')->middleware('auth')->group(function () {
         Route::get('/', [LaporanOperasiController::class, 'index'])->name('index.operasi');
         Route::get('/bhp/{id}', [LaporanOperasiController::class, 'bhp'])->name('bhp.operasi');
         Route::post('/store', [LaporanOperasiController::class, 'store'])->name('store.operasi');
@@ -426,7 +426,7 @@ Route::prefix('/pasien')->group(function () {
     });
 
     //template
-    Route::prefix('/template')->group(function () {
+    Route::prefix('/template')->middleware('auth')->group(function () {
         Route::get('/', [TemplateController::class, 'index'])->name('index.template');
         Route::get('/template-anastesi', [TemplateController::class, 'index_template_anastesi'])->name('index.template-anastesi');
         Route::get('/create-anastesi', [TemplateController::class, 'create_anastesi'])->name('create.template-anastesi');
@@ -442,7 +442,7 @@ Route::prefix('/pasien')->group(function () {
     });
 
     //gizi
-    Route::prefix('/gizi')->group(function () {
+    Route::prefix('/gizi')->middleware('auth')->group(function () {
         Route::get('/', [GiziController::class, 'index'])->name('index.gizi');
         Route::get('{id}/show', [GiziController::class, 'show'])->name('show.gizi');
         Route::post('/store/evaluasi-gizi', [GiziController::class, 'storeEvaluasi'])->name('store.evaluasi-gizi');
@@ -453,7 +453,7 @@ Route::prefix('/pasien')->group(function () {
 })->middleware('auth');
 
 //Ajax
-Route::prefix('ajax')->group(function () {
+Route::prefix('ajax')->middleware('auth')->group(function () {
     Route::get('bed/edit', [RuanganBedController::class, 'edit'])->name('edit.ruangan-bed-ajax');
     Route::get('get-dokter', [TemplateController::class, 'getDokter'])->name('get-dokter.ajax');
     Route::get('get-perawat', [TemplateController::class, 'getPerawat'])->name('get-perawat.ajax');

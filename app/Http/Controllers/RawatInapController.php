@@ -58,25 +58,25 @@ class RawatInapController extends Controller
 
         #tindakan
         $tindakan = DB::table('demo_trx_tindakan')->where('idrawat',$rawat->id)->get();
-        if (count($tindakan) > 0) {
-            foreach ($tindakan as $tk) {
-                $tarif = Tarif::find($tk->idtindakan);
-                for ($x = 1; $x <= $tk->jumlah; $x++) {
-                    DB::table('transaksi_detail_rinci')->insert([
-                        'idbayar' => $rawat->idbayar,
-                        'iddokter' => $tk->iddokter,
-                        'idpaket' => 0,
-                        'idjenis' => 0,
-                        'idrawat' => $rawat->id,
-                        'idtransaksi' => $transaksi->id,
-                        'idtarif' => $tk->idtindakan,
-                        'tarif' => $tarif->tarif,
-                        'idtindakan' => $tarif->kat_tindakan,
-                        'tgl' => now(),
-                    ]); 
-                }
-            }
-        }
+        // if (count($tindakan) > 0) {
+        //     foreach ($tindakan as $tk) {
+        //         $tarif = Tarif::find($tk->idtindakan);
+        //         for ($x = 1; $x <= $tk->jumlah; $x++) {
+        //             DB::table('transaksi_detail_rinci')->insert([
+        //                 'idbayar' => $rawat->idbayar,
+        //                 'iddokter' => $tk->iddokter,
+        //                 'idpaket' => 0,
+        //                 'idjenis' => 0,
+        //                 'idrawat' => $rawat->id,
+        //                 'idtransaksi' => $transaksi->id,
+        //                 'idtarif' => $tk->idtindakan,
+        //                 'tarif' => $tarif->tarif,
+        //                 'idtindakan' => $tarif->kat_tindakan,
+        //                 'tgl' => now(),
+        //             ]); 
+        //         }
+        //     }
+        // }
 
         $response = Http::get(env('URL_SIMRS_LAMA').'/rest/pulang?pulang='.$pulang.'&rawat='.$rawat->id);
         // return $response;
@@ -260,11 +260,16 @@ class RawatInapController extends Controller
         return redirect()->back()->with('berhasil','Data Berhasil Di Simpan');
     }
     public function delete_tindakan($id){
-        $tindakan = DB::table('demo_trx_tindakan')->where('id',$id)->delete();
+        $tindakan = DB::table('demo_trx_tindakan')->where('id',$id)->first();
+        $rawat = Rawat::find($tindakan->idrawat);
+        $transaksi = DB::table('transaksi')->where('kode_kunjungan', $rawat->idkunjungan)->first();
+        DB::table('transaksi_detail_rinci')->where('idrawat',$rawat->id)->where('idtarif',$tindakan->idtindakan)->where('idtransaksi',$transaksi->id)->delete();
+        DB::table('demo_trx_tindakan')->where('id',$id)->delete();
         return redirect()->back()->with('berhasil','Data Berhasil Di Hapus');
     }
     public function post_tindakan(Request $request,$id){
         $rawat = Rawat::find($id);
+        $transaksi = DB::table('transaksi')->where('kode_kunjungan', $rawat->idkunjungan)->first();
         foreach($request->tindakan_repeater as $tindakan){
             if($tindakan['dokter'] == null){
                 $profesi = 'Perawat';
@@ -273,12 +278,16 @@ class RawatInapController extends Controller
             }
             $cek_tindakan = DB::table('demo_trx_tindakan')->where('idrawat',$rawat->id)->where('idtindakan',$tindakan['tindakan'])->first();
             if($cek_tindakan){
+                DB::table('transaksi_detail_rinci')->where('idrawat',$rawat->id)->where('idtarif',$tindakan['tindakan'])->where('idtransaksi',$transaksi->id)->delete();
+
                 DB::table('demo_trx_tindakan')->where('idrawat',$rawat->id)->where('idtindakan',$tindakan['tindakan'])->update([
                     'jumlah'=>$cek_tindakan->jumlah + $tindakan['jumlah'],
                     'profesi'=>$profesi,
                     'updated_at'=>now(),
                 ]);
-                
+
+               
+
             }else{
                  #insert demo_trx_tindakan
                 DB::table('demo_trx_tindakan')->insert([
@@ -291,7 +300,28 @@ class RawatInapController extends Controller
                     'updated_at'=>now(),
                 ]);
             }
-           
+            #insert transaksi_detail_rinci
+            $tindakan = DB::table('demo_trx_tindakan')->where('idrawat',$rawat->id)->where('idtindakan',$tindakan['tindakan'])->get();
+                
+            if (count($tindakan) > 0) {
+                foreach ($tindakan as $tk) {
+                    $tarif = Tarif::find($tk->idtindakan);
+                    for ($x = 1; $x <= $tk->jumlah; $x++) {
+                        DB::table('transaksi_detail_rinci')->insert([
+                            'idbayar' => $rawat->idbayar,
+                            'iddokter' => $tk->iddokter,
+                            'idpaket' => 0,
+                            'idjenis' => 0,
+                            'idrawat' => $rawat->id,
+                            'idtransaksi' => $transaksi->id,
+                            'idtarif' => $tk->idtindakan,
+                            'tarif' => $tarif->tarif,
+                            'idtindakan' => $tarif->kat_tindakan,
+                            'tgl' => now(),
+                        ]); 
+                    }
+                }
+            }           
            
         }
 
