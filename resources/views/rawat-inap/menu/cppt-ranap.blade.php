@@ -1,6 +1,7 @@
 <table class="table table-bordered">
     <thead>
         <tr>
+            <th>#</th>
             <th>Tanggal</th>
             <th>Profesi (PPA)</th>
             <th>Hasil Asesmen Pasien , Intruksi & Tindak Lanjut</th>
@@ -10,6 +11,14 @@
     <tbody>
         @forelse ($cppt as $val)
         <tr>
+            <td>
+                <button data-id="{{ $val->id }}" class="btn btn-sm btn-light-warning btn-icon btn-edit-cppt">
+                    <i class="fa fa-pencil"></i>
+                </button>
+                <button data-id="{{ $val->id }}" class="btn btn-sm btn-light-danger btn-icon btn-hapus-cppt">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </td>
             <td>
                 {{ \Carbon\Carbon::parse($val->tgl)->translatedFormat('l, d F Y '); }} <br>
                 {{ \Carbon\Carbon::parse($val->jam)->translatedFormat('H:i:s'); }}
@@ -39,7 +48,7 @@
                     </tr>
                 </table>
             </td>
-            <td>{{ $val->idpetugas }}</td>
+            <td>{{ \App\Helpers\VclaimHelper::getDataUser($val->idpetugas) }}</td>
         </tr>
         @empty
         <tr>

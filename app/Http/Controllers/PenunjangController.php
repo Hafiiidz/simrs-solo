@@ -13,6 +13,15 @@ use PDF;
 
 class PenunjangController extends Controller
 {
+    public function selesai_pemeriksaan(Request $request){
+        // return $request->all();
+        $penunjang = PermintaanPenunjang::where('idrawat',$request->id)->where('jenis_penunjang',$request->jenis)->where('status_pemeriksaan', 'Pemeriksaan')->first();
+        if($penunjang){
+            $penunjang->status_pemeriksaan = 'Selesai';
+            $penunjang->save();
+        }
+        return response()->json(['status' => 200, 'message' => 'Berhasil Menyelesaikan Pemeriksaan']);
+    }
     public function antrian($jenis)
     {
 

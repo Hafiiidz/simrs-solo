@@ -158,7 +158,8 @@
                                 <h5 class="card-title">Input Pemeriksaan {{ $tindakan->nama_tindakan }}</h5>
                                 <div class="card-toolbar">
                                     <a href="{{ route('penunjang.detail', [$rawat->id, 'Radiologi']) }}"
-                                        class="btn btn-secondary">Kembali</a>
+                                        class="btn btn-secondary me-3">Kembali</a>
+                                    
                                 </div>
                             </div>
                             <div class="card-body">
@@ -434,6 +435,7 @@
                 $('#kt_modal_1').modal('hide');
             })
 
+            
             $("#frmLabhasil").on("submit", function(event) {
                 event.preventDefault();
                 var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));

@@ -106,6 +106,16 @@
                                 </div>
                                 <div class="row mb-5">
                                     <!--begin::Label-->
+                                    <label class="col-lg-3 fw-semibold text-muted">NO RM</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8">
+                                        <span class="fw-bold fs-6 text-gray-800">{{ $pasien->no_rm }}</span>
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <div class="row mb-5">
+                                    <!--begin::Label-->
                                     <label class="col-lg-3 fw-semibold text-muted">NIK</label>
                                     <!--end::Label-->
                                     <!--begin::Col-->
@@ -334,7 +344,7 @@
                                         Pemberian Obat</button>
 
                                     <button class="btn btn-success btn-sm mb-5" data-bs-toggle="modal"
-                                        data-bs-target="#modal_obat" {{ $disable }} {{ $disable_order }}>Order
+                                        data-bs-target="#modal_obat" {{ $disable }} >Order
                                         Obat</button>
 
                                     {{-- <button class="btn btn-danger btn-sm mb-5">Retur Obat</button> --}}
@@ -799,7 +809,7 @@
                                         <div data-repeater-list="radiologi">
                                             <div data-repeater-item>
                                                 <div class="form-group row mb-5">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-5">
                                                         <label class="form-label">Tindakan Rad</label>
                                                         <select name="tindakan_rad" class="form-select"
                                                             data-kt-repeater="select2radiologi" data-placeholder="-Pilih-"
@@ -811,8 +821,14 @@
                                                             @endforeach
                                                         </select>
                                                     </div>
+                                                    <div class="col-md-5">
+                                                        <label class="form-label">Klinis</label>
+                                                        <input type="text" name="klinis" class="form-control"
+                                                            required />
+                                                    </div>
 
-                                                    <div class="col-md-4">
+
+                                                    <div class="col-md-2">
                                                         <a href="javascript:;" data-repeater-delete
                                                             class="btn btn-sm btn-light-danger mt-3 mt-md-8">
                                                             <i class="ki-duotone ki-trash fs-5"><span
@@ -989,7 +1005,8 @@
 
                             <div class="mb-2">
                                 <label for="" class="form-label">Kelas Rawat</label>
-                                <select onchange="getRuangan()" required name="kelas_rawat" class="form-select" id="kelas_rawat">
+                                <select onchange="getRuangan()" required name="kelas_rawat" class="form-select"
+                                    id="kelas_rawat">
                                     <option value=""></option>
                                     @foreach ($kelas_rawat as $kr)
                                         <option value="{{ $kr->id }}">{{ $kr->kelas }}</option>
@@ -1000,7 +1017,7 @@
                                 <label for="" class="form-label">Nama Ruangan</label>
                                 <select required name="nama_ruangan" class="form-select" id="nama_ruangan">
                                     <option value=""></option>
-                                    
+
                                 </select>
                             </div>
 
@@ -1208,7 +1225,7 @@
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div id="modal-hasil">
-    
+
                     </div>
                 </div>
             </div>
@@ -1219,8 +1236,71 @@
         <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js"></script>
         <script>
+            $(".btn-hapus-cppt").on("click", function(event) {
+                event.preventDefault();
+                var id = $(this).data("id");
+                Swal.fire({
+                    title: 'Hapus Data?',
+                    text: "Hapus Data?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        url = "{{ route('detail.hapus-cppt', '') }}" + "/" + id;
+                        $.get(url).done(function(data) {
+                            location.reload();
+                        });
+                    }
+                });
+            })
+            $(".btn-hapus-implementasi").on("click", function(event) {
+                event.preventDefault();
+                var id = $(this).data("id");
+                Swal.fire({
+                    title: 'Hapus Data?',
+                    text: "Hapus Data?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        url = "{{ route('detail.hapus-implementasi', '') }}" + "/" + id;
+                        $.get(url).done(function(data) {
+                            location.reload();
+                        });
+                    }
+                });
+            })
+            $(".btn-edit-cppt").on("click", function(event) {
+                event.preventDefault();
+                var id = $(this).data("id");
+                url = "{{ route('detail.get-cppt', '') }}" + "/" + id;
+                $("#modal-hasil").empty();
+                $.get(url).done(function(data) {
+                    $("#modal-hasil").html(data);
+                    $("#modal_lihat").modal('show');
+                });
+            });
+            $(".btn-edit-implementasi").on("click", function(event) {
+                event.preventDefault();
+                var id = $(this).data("id");
+                url = "{{ route('detail.get-implementasi', '') }}" + "/" + id;
+                $("#modal-hasil").empty();
+                $.get(url).done(function(data) {
+                    $("#modal-hasil").html(data);
+                    $("#modal_lihat").modal('show');
+                });
+            });
+
             function modalHasilRad(id) {
-            // alert(id)
+                // alert(id)
                 url = "{{ route('get-hasil-rad', '') }}" + "/" + id;
                 $("#modal-hasil").empty();
                 $.get(url).done(function(data) {
@@ -1228,6 +1308,17 @@
                     $("#modal_lihat").modal('show');
                 });
             }
+
+            function modalHasilLab(id) {
+                // alert(id)
+                url = "{{ route('get-hasil-lab', '') }}" + "/" + id;
+                $("#modal-hasil").empty();
+                $.get(url).done(function(data) {
+                    $("#modal-hasil").html(data);
+                    $("#modal_lihat").modal('show');
+                });
+            }
+
             function getRuangan() {
                 d = document.getElementById("kelas_rawat").value;
                 url = "{{ route('get-ruangan', '') }}" + "/" + d;
@@ -1246,6 +1337,7 @@
                 dateFormat: "Y-m-d H:i",
             });
             $(function() {
+
 
 
                 $("#frmPulang").on("submit", function(event) {

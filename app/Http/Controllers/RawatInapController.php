@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Poli;
 use App\Models\Rawat;
+use App\Models\Tarif;
 use App\Models\Dokter;
 use App\Models\Ruangan;
 use App\Models\Obat\Obat;
@@ -17,6 +18,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\View;
 use App\Models\RekapMedis\RekapMedis;
 use App\Models\Operasi\LaporanOperasi;
 use Yajra\DataTables\Facades\DataTables;
@@ -32,6 +34,7 @@ class RawatInapController extends Controller
     public function postRanap(Request $request,$id){
         // return $request->all();
         $rawat = Rawat::find($id);
+        $transaksi = DB::table('transaksi')->where('kode_kunjungan', $rawat->idkunjungan)->first();
         $pasien = Pasien::where('no_rm',$rawat->no_rm)->first();
         $cek_ringakasan = DB::table('rawat_ringkasanpulang')->where('idrawat', $rawat->id)->first();
         $data_pulang = [
@@ -51,6 +54,28 @@ class RawatInapController extends Controller
             $pulang = $cek_ringakasan->id;
         }else{
             $pulang = DB::table('rawat_ringkasanpulang')->insertGetId($data_pulang);
+        }
+
+        #tindakan
+        $tindakan = DB::table('demo_trx_tindakan')->where('idrawat',$rawat->id)->get();
+        if (count($tindakan) > 0) {
+            foreach ($tindakan as $tk) {
+                $tarif = Tarif::find($tk->idtindakan);
+                for ($x = 1; $x <= $tk->jumlah; $x++) {
+                    DB::table('transaksi_detail_rinci')->insert([
+                        'idbayar' => $rawat->idbayar,
+                        'iddokter' => $tk->iddokter,
+                        'idpaket' => 0,
+                        'idjenis' => 0,
+                        'idrawat' => $rawat->id,
+                        'idtransaksi' => $transaksi->id,
+                        'idtarif' => $tk->idtindakan,
+                        'tarif' => $tarif->tarif,
+                        'idtindakan' => $tarif->kat_tindakan,
+                        'tgl' => now(),
+                    ]); 
+                }
+            }
         }
 
         $response = Http::get(env('URL_SIMRS_LAMA').'/rest/pulang?pulang='.$pulang.'&rawat='.$rawat->id);
@@ -308,6 +333,50 @@ class RawatInapController extends Controller
         return redirect()->back()->with('berhasil','Data Berhasil Di Simpan');
     }
 
+    public function hapus_cppt($id){
+        $cppt = DB::table('rawat_cppt')->where('id',$id)->delete();
+        return response()->json(['code'=>200,'status'=>'berhasil','message'=>'Data Berhasil Di Hapus']);
+        // return redirect()->back()->with('berhasil','Data Berhasil Di Hapus');
+    }
+    public function hapus_implementasi($id){
+        $implementasi = DB::table('rawat_implementasi')->where('id',$id)->delete();
+        return response()->json(['code'=>200,'status'=>'berhasil','message'=>'Data Berhasil Di Hapus']);
+        // return redirect()->back()->with('berhasil','Data Berhasil Di Hapus');
+    }
+    public function get_implementasi($id){
+        $implementasi = DB::table('rawat_implementasi')->where('id',$id)->first();
+        return View::make('rawat-inap.menu.edit-implementasi',compact('implementasi'));
+    }
+    public function get_cppt($id){
+       $cppt = DB::table('rawat_cppt')->where('id',$id)->first();
+       $profesi = [
+            ['value'=>'Dokter','text'=>'Dokter'],
+            ['value'=>'Perawat','text'=>'Perawat'],
+            ['value'=>'Bidan','text'=>'Bidan'],
+            ['value'=>'Farmasi','text'=>'Farmasi'],
+            ['value'=>'Gizi','text'=>'Gizi'],
+
+       ];
+       return View::make('rawat-inap.menu.edit-cppt',compact('cppt','profesi'));
+    }
+
+    public function post_edit_implementasi(Request $request,$id){
+        $implementasi = DB::table('rawat_implementasi')->where('id',$id)->update([
+            'jam'=>$request->jam,
+            'implementasi'=>$request->implementasi,
+        ]);
+        return redirect()->back()->with('berhasil','Data Berhasil Di Simpan');
+    }
+    public function post_edit_cppt(Request $request,$id){
+        $cppt = DB::table('rawat_cppt')->where('id',$id)->update([
+            'subjektif'=>$request->subjektif,
+            'objektif'=>$request->objektif,
+            'asesmen'=>$request->asesmen,
+            'plan'=>$request->plan,
+            'profesi'=>$request->profesi
+        ]);
+        return redirect()->back()->with('berhasil','Data Berhasil Di Simpan');
+    }
     public function detail($id)
     {
         $rawat = Rawat::with('pasien', 'bayar')->where('id', $id)->first();

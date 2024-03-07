@@ -351,6 +351,14 @@
                                                         <th colspan="3">Tanggal Pemeriksaan : {{ $pl->tgl_hasil }}</th>
 
                                                     </tr>
+                                                    <tr class="p-5">
+                                                        <td>
+                                                            {{-- @if ($penunjang->status_pemeriksaan == 'Pemeriksaan') --}}
+                                                            <button class="btn-selesai btn btn-sm mb-3 btn-primary" data-id="{{ $pl->idrawat }}">Selesai</button>
+                                                            {{-- @endif --}}
+                                                            
+                                                        </td>
+                                                    </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
@@ -449,7 +457,7 @@
                                                                                 <div class="col-md-2">
                                                                                     <label
                                                                                         class="form-label">Klinis</label>
-                                                                                    <input class="form-control"
+                                                                                    <input class="form-control" value="{{ $val->klinis }}"
                                                                                         name='klinis' required
                                                                                         placeholder="Klinis" />
                                                                                 </div>
@@ -514,6 +522,14 @@
                                                 <thead>
                                                     <tr>
                                                         <th colspan="3">Tanggal Pemeriksaan : {{ $pl->tgl_hasil }}</th>
+                                                    </tr>
+                                                    <tr class="p-5">
+                                                        <td>
+                                                            {{-- @if ($penunjang->status_pemeriksaan == 'Pemeriksaan') --}}
+                                                            <button class="btn-selesai btn btn-sm mb-3 btn-primary" data-id="{{ $pl->idrawat }}">Selesai</button>
+                                                            {{-- @endif --}}
+                                                            
+                                                        </td>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -1271,6 +1287,73 @@
                     });
                 });
             @endif
+            $(".btn-selesai").on("click", function(event) {
+                event.preventDefault();
+                var id = $(this).data('id');
+                var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                Swal.fire({
+                    title: 'Selesai Pemeriksaan',
+                    text: "Apakah Anda yakin akan menyelesaikan pemeriksaan ini ? ",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Selesai',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.blockUI({
+                            css: {
+                                border: 'none',
+                                padding: '15px',
+                                backgroundColor: '#000',
+                                '-webkit-border-radius': '10px',
+                                '-moz-border-radius': '10px',
+                                opacity: .5,
+                                color: '#fff',
+                                fontSize: '16px'
+                            },
+                            message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                            baseZ: 9000,
+                        });
+                        $.ajax({
+                            url: "{{ route('penunjang.rad-selesai') }}",
+                            type: "POST",
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                "id": id,
+                                "jenis": "{{ $jenis }}"
+                            },
+                            success: function(response) {
+                                if (response.status == 200) {
+                                    $.unblockUI();
+                                    Swal.fire({
+                                        text: response.message,
+                                        icon: "success",
+                                        buttonsStyling: false,
+                                        confirmButtonText: "Ok",
+                                        customClass: {
+                                            confirmButton: "btn btn-primary"
+                                        }
+                                    }).then(function() {                                       
+                                        window.location.href = "{{ route('penunjang.detail', [$rawat->id, $jenis]) }}";
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        text: response.message,
+                                        icon: "error",
+                                        buttonsStyling: false,
+                                        confirmButtonText: "Ok",
+                                        customClass: {
+                                            confirmButton: "btn btn-primary"
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                });
+            });
             $("#formPermintaanobat").on("submit", function(event) {
                 event.preventDefault();
                 var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));

@@ -20,14 +20,22 @@
                                 @if ($p->jenis_penunjang == 'Lab')
                                     @foreach ($lab as $l)
                                         @if ($l->id == $pen->tindakan_lab)
-                                            <li>{{ $l->nama_pemeriksaan }}</li>
+                                            <li>{{ $l->nama_pemeriksaan }}  @if($p->status_pemeriksaan == 'Selesai') 
+                                                @php
+                                                    $hasil = DB::table('laboratorium_hasildetail')->where('idpengantar', $p->id)->first();
+                                                @endphp
+                                            <button onclick="modalHasilLab({{ $hasil->idhasil }})" class="btn btn-sm btn-secondary">Lihat Hasil</button> @endif</li>
                                         @endif
                                     @endforeach
                                 @else
                                     @foreach ($radiologi as $rad)
                                         @if ($rad->id == $pen->tindakan_rad)
-                                            <li>
-                                                <a href="#" onclick="modalHasilRad('5040')">{{ $rad->nama_tindakan }}</a></li>
+                                           
+                                            <li>{{ $rad->nama_tindakan }}  @if($p->status_pemeriksaan == 'Selesai') 
+                                                @php
+                                                    $hasil = DB::table('radiologi_hasildetail')->where('idpengantar', $p->id)->first();
+                                                @endphp
+                                            <button onclick="modalHasilRad({{ $hasil->id }})" class="btn btn-sm btn-secondary">Lihat Hasil</button> @endif</li>
                                         @endif
                                     @endforeach
                                 @endif

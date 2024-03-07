@@ -38,7 +38,7 @@
     @foreach ($foto as $f)
     <div class="card card-bordered mt-2 mb-2">
         <div class="card-body fs-5">
-            <img src="{{ asset('storage/foto-rad/'.$f->foto) }}" alt="">
+            <img width="100%" src="{{ asset('storage/foto-rad/'.$f->foto) }}" alt="">
         </div>
     </div>
     @endforeach

@@ -3,8 +3,11 @@
 use GuzzleHttp\Psr7\Request;
 use App\Helpers\VclaimHelper;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\SatusehatAuthHelper;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use App\Helpers\SatusehatPasienHelper;
+use App\Helpers\SatusehatResourceHelper;
 use App\Http\Controllers\GiziController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PasienController;
@@ -36,6 +39,43 @@ use App\Http\Controllers\DetailRekapMedisController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+#SS
+Route::get('/generate-token-ss', function () {
+    return SatusehatAuthHelper::generate_token();
+});
+#Practitioner
+Route::get('/practitioner-nik/{nik}', function ($nik) {
+    return SatusehatResourceHelper::practitioner_nik($nik);
+});
+Route::get('/practitioner-search/{name}/{gender}/{birthdate}', function ($name, $gender, $birthdate) {
+    return SatusehatResourceHelper::practitioner_search($name, $gender, $birthdate);
+});
+Route::get('/practitioner-id/{id}', function ($id) {
+    return SatusehatResourceHelper::practitioner_id($id);
+});
+
+#Organizations
+Route::get('/organizations', function () {
+    return SatusehatResourceHelper::organization_create();
+});
+#Organizations by id
+Route::get('/organizations-id/{id}', function ($id) {
+    return SatusehatResourceHelper::organization_id($id);
+});
+#organization_search_partof
+Route::get('/organizations-search-partof/{name}', function ($name) {
+    return SatusehatResourceHelper::organization_search_partof($name);
+});
+
+#Pasien
+Route::get('/search-pasien-by-nik/{nik}', function ($nik) {
+    return SatusehatPasienHelper::searchPasienByNik($nik);
+});
+#add_pasien
+Route::get('/add-pasien/{id}', function ($id) {
+    return SatusehatPasienHelper::add_pasien($id);
+});
 
 Route::get('/obat-tes',function(){
     $resep_dokter = DB::table('demo_resep_dokter')->where('idrawat', 39070)->get();
@@ -245,6 +285,7 @@ Route::prefix('/penunjang')->group(function () {
     Route::post('/post-rad/{id}', [PenunjangController::class, 'kerjakan_rad'])->middleware('auth')->name('penunjang.rad-post');
     Route::post('/post-fisio/{id}', [PenunjangController::class, 'kerjakan_fisio'])->middleware('auth')->name('penunjang.fisio-post');
     Route::post('/post-foto/{id}', [PenunjangController::class, 'post_foto_rad'])->middleware('auth')->name('penunjang.rad-post-foto');
+    Route::post('/rad-selesai', [PenunjangController::class, 'selesai_pemeriksaan'])->middleware('auth')->name('penunjang.rad-selesai');
     Route::get('/cetak-radiologi/{id}', [PenunjangController::class, 'cetakRadiologi'])->middleware('auth')->name('penunjang.cetak-radiologi');
 });
 Route::prefix('/farmasi')->group(function () {
@@ -312,14 +353,20 @@ Route::prefix('/rawat-inap')->group(function () {
     Route::get('{id}/view', [RawatInapController::class, 'view'])->name('view.rawat-inap');
     Route::get('{id}/order-obat', [RawatInapController::class, 'orderObat'])->name('view.rawat-inap-order');
     Route::get('{id}/detail', [RawatInapController::class, 'detail'])->name('detail.rawat-inap');
+    Route::get('get-cppt/{id}', [RawatInapController::class, 'get_cppt'])->name('detail.get-cppt');
+    Route::get('get-implementasi/{id}', [RawatInapController::class, 'get_implementasi'])->name('detail.get-implementasi');
+    Route::get('get-hapus-cppt/{id}', [RawatInapController::class, 'hapus_cppt'])->name('detail.hapus-cppt');
+    Route::get('get-hapus-implementasi/{id}', [RawatInapController::class, 'hapus_implementasi'])->name('detail.hapus-implementasi');
     Route::get('{id}/pengkajian-kebidanan', [RawatInapController::class, 'pengkajian_kebidanan'])->name('detail.rawat-inap.pengkajian-kebidanan');
     Route::post('{id}/ringkasan-masuk', [RawatInapController::class, 'postRingkasan'])->name('postRingkasanmasuk.rawat-inap');
     Route::get('{id}/delete-tindakan', [RawatInapController::class, 'delete_tindakan'])->name('delete-tindakan.rawat-inap');
     Route::post('{id}/pemeriksaan-fisik', [RawatInapController::class, 'postPemeriksaanFisik'])->name('postPemeriksaanFisik.rawat-inap');
     Route::post('{id}/order-obat', [RawatInapController::class, 'postOrderObat'])->name('postOrderObat.rawat-inap');
     Route::post('{id}/order-penunjang', [RawatInapController::class, 'postOrderPenunjang'])->name('postOrderPenunjang.rawat-inap');
+    Route::post('{id}/post-edit-cppt', [RawatInapController::class, 'post_edit_cppt'])->name('post_edit_cppt.rawat-inap');
     Route::post('{id}/post-cppt', [RawatInapController::class, 'post_cppt'])->name('post_cppt.rawat-inap');
     Route::post('{id}/post-implementasi', [RawatInapController::class, 'post_implementasi'])->name('post_implementasi.rawat-inap');
+    Route::post('{id}/post-edit-implementasi', [RawatInapController::class, 'post_edit_implementasi'])->name('post_edit_implementasi.rawat-inap');
     Route::post('{id}/post-diagnosa-akhir', [RawatInapController::class, 'post_diagnosa_akhir'])->name('post-diagnosa-akhir.rawat-inap');
     Route::post('{id}/post-tindakan', [RawatInapController::class, 'post_tindakan'])->name('post_tindakan.rawat-inap');
     Route::post('post-ranap-pulang/{id}', [RawatInapController::class, 'postRanap'])->name('post_pulang.rawat-inap');

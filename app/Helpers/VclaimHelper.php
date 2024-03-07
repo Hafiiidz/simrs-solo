@@ -2,9 +2,11 @@
 
 namespace App\Helpers;
 
+use App\Models\User;
 use App\Models\Rawat;
 use App\Models\Dokter;
 use App\Models\Obat\Obat;
+use App\Models\UserDetail;
 use LZCompressor\LZString;
 use App\Helpers\VclaimHelper;
 use App\Models\Pasien\Pasien;
@@ -596,5 +598,19 @@ class VclaimHelper
         }
 
         return number_format($akhir, 2, ',', '.');
+    }
+    public static function getKota($id){
+        $kota = DB::table('kabupaten')->where('id_kab',$id)->first();
+        return $kota?->nama;
+    }
+
+    public static function getDataUser($id){
+        $user = User::find($id);
+        if(!$user){
+            return $id;
+        }else{
+            $user_detail = UserDetail::where('kode_user',$user->kode_user)->first();
+            return $user_detail?->nama;
+        }
     }
 }
