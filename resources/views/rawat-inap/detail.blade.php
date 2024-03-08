@@ -67,7 +67,7 @@
                                 {{-- <button data-bs-toggle="modal" data-bs-target="#modal_pindah"
                                     class="btn btn-sm btn-primary me-3">Pindah Ruangan</button> --}}
                             @elseif($rawat->status == 4)
-                                <a class="btn  me-3 btn-light-primary btn-sm" href="">Ringkasan Pulang</a>
+                                <a href="{{ route('index.rawat-inap-cetak-ringkasan-pulang',$rawat->id) }}" class="btn  me-3 btn-light-primary btn-sm" href="">Ringkasan Pulang</a>
                                 <a class="btn btn-light-success btn-sm" href="">Surat Kontrol</a>
                             @endif
 

@@ -223,6 +223,22 @@
                                 </div>
                                 <!--end:Menu item-->
                             </div>
+                            <div class="menu-sub menu-sub-accordion">
+                                <!--begin:Menu item-->
+                                <div class="menu-item">
+                                    <!--begin:Menu link-->
+
+                                    <a class="menu-link {{ Request::is('pasien') || Request::is('pasien/') ? 'active' : '' }}"
+                                        href="{{ route('index.rawat-inap-pulang') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Pasien Pulang</span>
+                                    </a>
+                                    <!--end:Menu link-->
+                                </div>
+                                <!--end:Menu item-->
+                            </div>
                         @endif
                         <!--End User Perawat Ruangan-->
                         <!--User Bidan-->

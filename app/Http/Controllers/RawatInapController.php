@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 use App\Models\RekapMedis\RekapMedis;
 use App\Models\Operasi\LaporanOperasi;
+use PDF;
 use Yajra\DataTables\Facades\DataTables;
 
 class RawatInapController extends Controller
@@ -98,28 +99,7 @@ class RawatInapController extends Controller
     }
     public function index()
     {
-        // return auth()->user()->detail->idruangan;
-        // if(request()->ajax())
-        // {
-        //     $query = DB::table('ruangan')
-        //     ->select('ruangan.*','ruangan_kelas.id as id_kelas','ruangan_kelas.kelas as nama_kelas')
-        //     ->leftJoin('ruangan_kelas','ruangan_kelas.id','=','ruangan.idkelas')
-        //     ->where('status',1)
-        //     ->where('jenis',2)
-        //     ->orderBy('id_kelas','asc');
-        //     return DataTables::query($query)
-        //     ->addColumn('terisi', function($item){
-        //         $rawat_bed = DB::table('ruangan_bed')->where('idruangan',$item->id)->where('status',1)->where('terisi',1)->count();
-        //         return $rawat_bed;
-        //     })
-        //     ->addColumn('action', function($item){
-        //         return '
-        //         <a href="'.route('view.rawat-inap', $item->id).'" class="btn btn-sm btn-primary">Lihat Bed</a>
-        //         ';
-        //     })
-        //     ->rawColumns(['action','terisi'])->make(true);
-        // }
-        // return view('rawat-inap.index');
+       
         if (request()->ajax()) {
             if (auth()->user()->detail->dokter == 1) {
                 $query = Rawat::with('pasien', 'bayar')
@@ -131,6 +111,40 @@ class RawatInapController extends Controller
                     ->where('idjenisrawat', 2)
                     ->whereRelation('ruangan','unit_ruangan', auth()->user()->detail->idruangan)
                     ->where('status', 2);
+            }
+
+            return DataTables::eloquent($query)
+                ->addColumn('dokter', function ($item) {
+                    return $item->dokter->nama_dokter;
+                })
+                ->addColumn('ruangan', function ($item) {
+                    $ruangan = DB::table('ruangan')->where('id', $item->idruangan)->first();
+                    return $ruangan->nama_ruangan;
+                })
+                ->addColumn('action', function ($item) {
+                    return '
+                <a href="' . route('detail.rawat-inap', $item->id) . '" class="btn btn-sm btn-primary">Lihat</a>
+                ';
+                })
+                ->rawColumns(['action', 'terisi', 'ruangan'])
+                ->make(true);
+        }
+        return view('rawat-inap.view');
+    }
+    public function index_pulang()
+    {
+       
+        if (request()->ajax()) {
+            if (auth()->user()->detail->dokter == 1) {
+                $query = Rawat::with('pasien', 'bayar')
+                    ->where('idjenisrawat', 2)
+                    ->where('iddokter', auth()->user()->detail->iddokter)
+                    ->where('status', 2);
+            } else {
+                $query = Rawat::with('pasien', 'bayar' ,'ruangan')
+                    ->where('idjenisrawat', 2)
+                    ->whereRelation('ruangan','unit_ruangan', auth()->user()->detail->idruangan)
+                    ->where('status', 4);
             }
 
             return DataTables::eloquent($query)
@@ -407,9 +421,18 @@ class RawatInapController extends Controller
         ]);
         return redirect()->back()->with('berhasil','Data Berhasil Di Simpan');
     }
+    public function ringkasan_pulang($id){
+        $rawat = Rawat::find($id);
+        $ringakasan_pasien_masuk = DB::table('demo_ringkasan_masuk')->where('idrawat', $id)->first();
+        $diagnosa_akhir = DB::table('demo_ranap_dx')->where('idrawat',$id)->first();
+        $pemeriksaan_penunjang = DB::table('demo_permintaan_penunjang')->where('idrawat',$id)->get();
+        $obat = DB::table('demo_antrian_resep')->where('idrawat',$id)->get();
+        $pdf = PDF::loadview('rawat-inap.cetak-ringakasan-pulang',compact('rawat','ringakasan_pasien_masuk','diagnosa_akhir','pemeriksaan_penunjang','obat'));
+        return $pdf->stream();
+    }
     public function detail($id)
     {
-        $rawat = Rawat::with('pasien', 'bayar')->where('id', $id)->first();
+        $rawat = Rawat::where('id', $id)->first();
         if($rawat->status != 2){
             $disable = 'disabled';
         }else{

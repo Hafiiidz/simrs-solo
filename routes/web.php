@@ -349,6 +349,8 @@ Route::prefix('/rawat-jalan')->middleware('auth')->group(function () {
 });
 Route::prefix('/rawat-inap')->middleware('auth')->group(function () {
     Route::get('/', [RawatInapController::class, 'index'])->name('index.rawat-inap');
+    Route::get('/pasien-pulang', [RawatInapController::class, 'index_pulang'])->name('index.rawat-inap-pulang');
+    Route::get('/cetak-ringakasan-pulang/{id}', [RawatInapController::class, 'ringkasan_pulang'])->name('index.rawat-inap-cetak-ringkasan-pulang');
     Route::get('get-ruangan/{id}', [RawatInapController::class, 'get_ruangan'])->name('get-ruangan');
     Route::get('{id}/view', [RawatInapController::class, 'view'])->name('view.rawat-inap');
     Route::get('{id}/order-obat', [RawatInapController::class, 'orderObat'])->name('view.rawat-inap-order');

@@ -22,7 +22,8 @@
                                         @if ($l->id == $pen->tindakan_lab)
                                             <li>{{ $l->nama_pemeriksaan }}  @if($p->status_pemeriksaan == 'Selesai') 
                                                 @php
-                                                    $hasil = DB::table('laboratorium_hasildetail')->where('idpengantar', $p->id)->first();
+                                                    $hasil = DB::table('laboratorium_hasildetail')->where('no_rm',$rawat->no_rm)->where('idpengantar', $p->id)->first();
+                                                    dd($hasil);
                                                 @endphp
                                             <button onclick="modalHasilLab({{ $hasil->idhasil }})" class="btn btn-sm btn-secondary">Lihat Hasil</button> @endif</li>
                                         @endif
