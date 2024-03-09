@@ -198,7 +198,7 @@
                                                                 <div class="col-md-auto">
                                                                     @foreach ($template as $val)
                                                                         @if($loop->iteration < 7)
-                                                                            <button type="button" class="btn btn-light-primary" onclick="showTemplate({{ $val->id }})">{{ $val->nama }}</button>
+                                                                            <button type="button" class="btn mb-2 btn-light-primary" onclick="showTemplate({{ $val->id }})">{{ $val->nama }}</button>
                                                                         @endif
                                                                     @endforeach
                                                                 </div>
@@ -364,9 +364,7 @@
                                                                                                         class="form-label">Dokter
                                                                                                         Bedah</label>
                                                                                                     <input type="text"
-                                                                                                        name="dokter_bedah"
-                                                                                                        class="form-control mb-2 mb-md-0"
-                                                                                                        placeholder="Masukan Nama"
+                                                                                                        name="dokter_bedah"class="form-control mb-2 mb-md-0"  placeholder="Masukan Nama"
                                                                                                         value="{{ $val->dokter_bedah }}" required/>
                                                                                                 </div>
                                                                                                 <div class="col-md-2">
@@ -392,9 +390,7 @@
                                                                                                 <label class="form-label">Dokter
                                                                                                     Bedah</label>
                                                                                                 <input type="text"
-                                                                                                    name="dokter_bedah"
-                                                                                                    class="form-control mb-2 mb-md-0"
-                                                                                                    placeholder="Masukan Nama" required/>
+                                                                                                    name="dokter_bedah" placeholder="Masukan Nama" required/>
                                                                                             </div>
                                                                                             <div class="col-md-2">
                                                                                                 <a href="javascript:;"

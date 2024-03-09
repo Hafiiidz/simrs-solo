@@ -269,7 +269,7 @@ class LaporanOperasiController extends Controller
             'jaringan_kultur' => $request->jaringan_kultur,
             'macam_jaringan' => ($request->jaringan_kultur == 1) ? $request->macam_jaringan : ''
         ]);
-
+        return $request->all();
         $data = LaporanOperasi::find($id);
         $data->tgl_operasi = $request->tgl_operasi;
         $data->mulai_jam = $request->mulai_jam;

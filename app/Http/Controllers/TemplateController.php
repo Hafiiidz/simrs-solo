@@ -246,7 +246,7 @@ class TemplateController extends Controller
                                     <div class="form-group row mb-5"><div class="col-md-10">
                                         <label class="form-label">Dokter Bedah</label>
                                         <input type="text"
-                                            name="dokter_bedah  "
+                                            name="dokter_bedah"
                                             class="form-control mb-2 mb-md-0"
                                             placeholder="Dokter Bedah" value="'. $val->dokter_bedah .'" required />
                                     </div>
