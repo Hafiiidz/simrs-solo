@@ -94,6 +94,16 @@
                                 </div>
                                 <div class="row mb-5">
                                     <!--begin::Label-->
+                                    <label class="col-lg-3 fw-semibold text-muted">NO RM</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8">
+                                        <span class="fw-bold fs-6 text-gray-800">{{ $data->rawat->pasien->no_rm }}</span>
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <div class="row mb-5">
+                                    <!--begin::Label-->
                                     <label class="col-lg-3 fw-semibold text-muted">NIK</label>
                                     <!--end::Label-->
                                     <!--begin::Col-->
@@ -1168,8 +1178,8 @@
                                                                     <td>{{  number_format($t->harga_bhp,2) }}</td>
                                                                     <td>{{ $t->nama_dokter }}</td>
                                                                     <td>
-                                                                        <a href="{{ route('bhp.operasi',$t->id) }}" class="btn btn-info btn-sm">BHP</a>
-                                                                        <a href="" class="btn btn-danger btn-sm">Hapus</a>
+                                                                        <a href="{{ route('bhp.operasi',[$t->id,$data->id]) }}" class="btn btn-info btn-sm">BHP</a>
+                                                                        <a href="{{ route('delete.operasi',$t->id) }}" onclick="return confirm('Yakin Hapus Data?') " class="btn btn-danger btn-sm">Hapus</a>
                                                                     </td>
                                                                 </tr>
                                                             @endforeach

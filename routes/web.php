@@ -411,7 +411,8 @@ Route::prefix('/pasien')->middleware('auth')->group(function () {
     
     Route::prefix('/operasi')->middleware('auth')->group(function () {
         Route::get('/', [LaporanOperasiController::class, 'index'])->name('index.operasi');
-        Route::get('/bhp/{id}', [LaporanOperasiController::class, 'bhp'])->name('bhp.operasi');
+        Route::get('/delete-ok/{id}', [LaporanOperasiController::class, 'delete_tindakan_ok'])->name('delete.operasi');
+        Route::get('/bhp/{id}/{operasi}', [LaporanOperasiController::class, 'bhp'])->name('bhp.operasi');
         Route::post('/store', [LaporanOperasiController::class, 'store'])->name('store.operasi');
         Route::get('{id}/show', [LaporanOperasiController::class, 'show'])->name('show.operasi');
         Route::get('{id}/edit', [LaporanOperasiController::class, 'edit'])->name('edit.operasi');

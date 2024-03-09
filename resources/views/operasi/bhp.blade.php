@@ -54,6 +54,9 @@
             <div id="kt_app_content_container" class="app-container container-fluid">
                 <div class="card">
                     <div class="card-header">
+                        <div class="card-toolbar">
+                            <h1>Total BHP : {{ number_format($total_bhp) }}</h1>
+                        </div>
                         <div class="card-title">
                             <h5 class="card-title">Input BHP</h5>
                         </div>
@@ -78,77 +81,136 @@
                                 </li>
                             </ul>
                         </div>
-                        <form action="{{ route('post_bhp_ok.operasi',$operasi_tindakan->id) }}" method="POST" id="frmBhp">
+                        <form action="{{ route('post_bhp_ok.operasi', $operasi_tindakan->id) }}" method="POST"
+                            id="frmBhp">
                             @csrf
+                            <div class="d-flex justify-content-end mb-5 mt-5">
+                                <button type="submit" class="btn btn-primary me-3">Simpan</button>
+                                <a href="{{ route('edit.operasi',$data->id) }}" class="btn btn-secondary">Kembali</a>
+                            </div>
                             <div class="tab-content" id="myTabContent">
 
                                 <div class="tab-pane fade  show active" id="kt_tab_pane_1" role="tabpanel">
                                     <div class="row">
-                                        <div class="col-md-12">
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th>No</th>
-                                                        <th>Nama BHP</th>
-                                                        <th width=150>Jumlah</th>
-                                                        <th>Satuan</th>
-                                                        <th>Harga</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($bhp as $key => $item)
-                                                        <tr>
-                                                            <td>{{ $key + 1 }}</td>
-                                                            <td>{{ $item->nama_barang }}</td>
-                                                            <td>
-                                                                
-                                                                <input type="text" class="form-control form-control-sm"
-                                                                    name="bhp[{{ $item->id }}]">
-                                                            </td>
-                                                            <td>{{ $item->satuan }}</td>
-                                                            <td>{{ number_format($item->harga) }}</td>
-                                                        </tr>
-                                                    @endforeach
-                                            </table>
+                                        <div class="form-group">
+                                            <div id="bhp_repeater">
+                                                <div data-repeater-list="bhp">
+                                                    <div class="col-md-12">
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>No</th>
+                                                                    <th>Nama BHP</th>
+                                                                    <th width=150>Jumlah</th>
+                                                                    <th>Satuan</th>
+                                                                    <th>Harga</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach ($bhp as $key => $item)
+                                                                    @php
+                                                                        $cek_bhp = DB::table('operasi_tindakan_bhp')
+                                                                            ->where('nama_obat', $item->nama_barang)
+                                                                            ->where('idoperasi', $operasi_tindakan->id)
+                                                                            ->where(
+                                                                                'idtindakan',
+                                                                                $operasi_tindakan->idtindakan,
+                                                                            )
+                                                                            ->first();
+                                                                    @endphp
+                                                                    <tr>
+                                                                        <td>{{ $key + 1 }}</td>
+                                                                        <td>{{ $item->nama_barang }}</td>
+                                                                        <td>
+                                                                            <div data-repeater-item>
+                                                                                <input type="hidden"
+                                                                                    name='id_bhp'value="{{ $item->id }}">
+                                                                                <input type="hidden"
+                                                                                    name='satuan'value="{{ $item->satuan }}">
+                                                                                <input type="hidden" name='harga'
+                                                                                    value="{{ $item->harga }}">
+                                                                                <input type="hidden" name='nama'
+                                                                                    value="{{ $item->nama_barang }}">
+                                                                                <input type="text"
+                                                                                    class="form-control form-control-sm"
+                                                                                    value="{{ $cek_bhp->jumlah ?? null }}"
+                                                                                    name="jumlah">
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>{{ $item->satuan }}</td>
+                                                                        <td>{{ number_format($item->harga) }}</td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_2" role="tabpanel">
                                     <div class="row">
-                                        <div class="col-md-12">
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th>No</th>
-                                                        <th>Nama Implan</th>
-                                                        <th width=150>Jumlah</th>
-                                                        <th>Satuan</th>
-                                                        <th>Harga</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($implan as $key => $item)
-                                                        <tr>
-                                                            <td>{{ $key + 1 }}</td>
-                                                            <td>{{ $item->nama_barang }}</td>
-                                                            <td>
-                                                                
-                                                            <input type="text" class="form-control form-control-sm"
-                                                                name="bhp[jumlah][{{ $item->id }}]">
-                                                            </td>
-                                                            <td>{{ $item->satuan }}</td>
-                                                            <td>{{ number_format($item->harga) }}</td>
-                                                        </tr>
-                                                    @endforeach
-                                            </table>
+                                        <div class="form-group">
+                                            <div id="implan_repeater">
+                                                <div data-repeater-list="implan">
+                                                    <div class="col-md-12">
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>No</th>
+                                                                    <th>Nama Implan</th>
+                                                                    <th width=150>Jumlah</th>
+                                                                    <th>Satuan</th>
+                                                                    <th>Harga</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach ($implan as $key => $item)
+                                                                    @php
+                                                                        $cek_bhp = DB::table('operasi_tindakan_bhp')
+                                                                            ->where('nama_obat', $item->nama_barang)
+                                                                            ->where('idoperasi', $operasi_tindakan->id)
+                                                                            ->where(
+                                                                                'idtindakan',
+                                                                                $operasi_tindakan->idtindakan,
+                                                                            )
+                                                                            ->first();
+                                                                    @endphp
+                                                                    <tr>
+                                                                        <td>{{ $key + 1 }}</td>
+                                                                        <td>{{ $item->nama_barang }}</td>
+                                                                        <td>
+                                                                            <div data-repeater-item>
+                                                                                <input type="hidden" name='id_bhp'
+                                                                                    value="{{ $item->id }}">
+                                                                                <input type="hidden"
+                                                                                    name='satuan'value="{{ $item->satuan }}">
+                                                                                <input type="hidden" name='harga'
+                                                                                    value="{{ $item->harga }}">
+                                                                                <input type="hidden" name='nama'
+                                                                                    value="{{ $item->nama_barang }}">
+                                                                                <input type="text"
+                                                                                    class="form-control form-control-sm"
+                                                                                    value="{{ $cek_bhp->jumlah ?? null }}"
+                                                                                    name="jumlah">
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>{{ $item->satuan }}</td>
+                                                                        <td>{{ number_format($item->harga) }}</td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
                             </div>
-                            <div class="d-flex justify-content-end">
-                                <button type="submit" class="btn btn-primary">Simpan</button>
-                            </div>
+
                         </form>
                     </div>
                 </div>
@@ -163,37 +225,37 @@
     <script>
         //eksekusi frmbhp
         $("#frmBhp").on("submit", function(event) {
-                event.preventDefault();
-                var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
-                Swal.fire({
-                    title: 'Simpan Data',
-                    text: "Apakah Anda yakin akan menyimpan data ini ?",
-                    icon: 'info',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, Simpan Data',
-                    cancelButtonText: 'Tidak'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.blockUI({
-                            css: {
-                                border: 'none',
-                                padding: '15px',
-                                backgroundColor: '#000',
-                                '-webkit-border-radius': '10px',
-                                '-moz-border-radius': '10px',
-                                opacity: .5,
-                                color: '#fff',
-                                fontSize: '16px'
-                            },
-                            message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
-                            baseZ: 9000,
-                        });
-                        this.submit();
-                    }
-                });
+            event.preventDefault();
+            var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+            Swal.fire({
+                title: 'Simpan Data',
+                text: "Apakah Anda yakin akan menyimpan data ini ?",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Simpan Data',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.blockUI({
+                        css: {
+                            border: 'none',
+                            padding: '15px',
+                            backgroundColor: '#000',
+                            '-webkit-border-radius': '10px',
+                            '-moz-border-radius': '10px',
+                            opacity: .5,
+                            color: '#fff',
+                            fontSize: '16px'
+                        },
+                        message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                        baseZ: 9000,
+                    });
+                    this.submit();
+                }
             });
+        });
         $(document).ready(function() {
             @if ($message = session('gagal'))
                 Swal.fire({
@@ -217,22 +279,25 @@
                     }
                 });
             @endif
-            $('#bph_repeater').repeater({
+            $('#bhp_repeater').repeater({
                 initEmpty: false,
                 show: function() {
-                    $('[data-kt-repeater="select22"]').select2({
-                        allowClear: true,
-                    });
                     $(this).slideDown();
                 },
                 hide: function(deleteElement) {
                     $(this).slideUp(deleteElement);
                 },
-                ready: function() {
-                    $('[data-kt-repeater="select22"]').select2({
-                        allowClear: true,
-                    });
-                }
+                ready: function() {}
+            });
+            $('#implan_repeater').repeater({
+                initEmpty: false,
+                show: function() {
+                    $(this).slideDown();
+                },
+                hide: function(deleteElement) {
+                    $(this).slideUp(deleteElement);
+                },
+                ready: function() {}
             });
 
             $("#frmInputBhp").on("submit", function(event) {
