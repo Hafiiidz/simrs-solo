@@ -47,7 +47,7 @@ class RekapMedisController extends Controller
     public function get_hasil_lab($id)
     {
         $hasil = LabHasil::find($id);
-        $detail = DB::table('laboratorium_hasildetail')->where('idhasil', $id)->first();
+        $detail = DB::table('laboratorium_hasildetail')->where('id', $id)->first();
         $lab_form = DB::table('lab_hasil')->where('idlayanan', $detail->id)->get();
         return View::make('rekap-medis.hasil-lab', compact('hasil', 'detail', 'lab_form'));
     }
