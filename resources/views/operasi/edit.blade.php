@@ -1395,6 +1395,7 @@
                                                             <option></option>
                                                             <option value="SC" {{ ($catatan->pemberian == 'SC') ? 'selected' : '' }}>SC</option>
                                                             <option value="IM" {{ ($catatan->pemberian == 'IM') ? 'selected' : '' }}>IM</option>
+                                                            <option value="IM" {{ ($catatan->pemberian == 'IV') ? 'selected' : '' }}>IV</option>
                                                         </select>
                                                     </div>
                                                     <div class="col-md-4">
