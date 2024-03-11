@@ -37,7 +37,7 @@
                                     @endforeach
                                 @else
                                     @foreach ($radiologi as $rad)
-                                        @if ($rad->id == $pen->tindakan_rad)
+                                        @if ($rad->id == $pen?->tindakan_rad)
                                             <li>{{ $rad->nama_tindakan }} @if ($p->status_pemeriksaan == 'Selesai')
                                                     @php
                                                         $hasil = DB::table('radiologi_hasildetail')
