@@ -1057,7 +1057,7 @@
                                     <!--end::Line-->
                                 </span>
                                 <!--end::Underline-->
-                                <div class="row mb-5">
+                                {{-- <div class="row mb-5">
                                     <div class="col-md-12">
                                         <div id="radiologi_repeater">
                                             <!--begin::Form group-->
@@ -1148,9 +1148,9 @@
                                             <!--end::Form group-->
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
 
-                                <div class="row mb-5">
+                                {{-- <div class="row mb-5">
                                     <div class="col-md-">
                                         <div id="lab_repeater">
                                             <!--begin::Form group-->
@@ -1158,7 +1158,7 @@
                                                 <div data-repeater-list="lab">
 
                                                     @if ($rekap->laborat != 'null')
-                                                        {{-- {{ dd($rekap->laborat) }} --}}
+
                                                         @foreach (json_decode($rekap->laborat) as $val)
                                                             <div data-repeater-item>
                                                                 <div class="form-group row mb-5">
@@ -1236,7 +1236,7 @@
                                             <!--end::Form group-->
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <textarea name="rencana_pemeriksaan" rows="3" class="form-control"

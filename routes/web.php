@@ -355,11 +355,13 @@ Route::prefix('/rawat-inap')->middleware('auth')->group(function () {
     Route::get('{id}/view', [RawatInapController::class, 'view'])->name('view.rawat-inap');
     Route::get('{id}/order-obat', [RawatInapController::class, 'orderObat'])->name('view.rawat-inap-order');
     Route::get('{id}/detail', [RawatInapController::class, 'detail'])->name('detail.rawat-inap');
+    Route::get('get-penunjang/{id}', [RawatInapController::class, 'get_penunjang'])->name('detail.get-penunjang');
     Route::get('get-cppt/{id}', [RawatInapController::class, 'get_cppt'])->name('detail.get-cppt');
     Route::get('get-implementasi/{id}', [RawatInapController::class, 'get_implementasi'])->name('detail.get-implementasi');
     Route::get('get-hapus-cppt/{id}', [RawatInapController::class, 'hapus_cppt'])->name('detail.hapus-cppt');
     Route::get('get-hapus-implementasi/{id}', [RawatInapController::class, 'hapus_implementasi'])->name('detail.hapus-implementasi');
     Route::get('{id}/pengkajian-kebidanan', [RawatInapController::class, 'pengkajian_kebidanan'])->name('detail.rawat-inap.pengkajian-kebidanan');
+    Route::get('hapus-penunjang/{id}', [RawatInapController::class, 'hapus_penunjang'])->name('detail.hapus-penunjang');
     Route::post('{id}/ringkasan-masuk', [RawatInapController::class, 'postRingkasan'])->name('postRingkasanmasuk.rawat-inap');
     Route::get('{id}/delete-tindakan', [RawatInapController::class, 'delete_tindakan'])->name('delete-tindakan.rawat-inap');
     Route::post('{id}/pemeriksaan-fisik', [RawatInapController::class, 'postPemeriksaanFisik'])->name('postPemeriksaanFisik.rawat-inap');
@@ -374,6 +376,8 @@ Route::prefix('/rawat-inap')->middleware('auth')->group(function () {
     Route::post('post-ranap-pulang/{id}', [RawatInapController::class, 'postRanap'])->name('post_pulang.rawat-inap');
     Route::post('post-selesai-resep', [RawatInapController::class, 'postSelesaiObat'])->name('post-selesai-resep.rawat-inap');
     Route::post('post-pengakajian-data-subjektif/{id}', [RawatInapController::class, 'postPengkajianSubjektif'])->name('post.pengakajian-data-subjektif');
+    Route::post('post-update-radiologi/{id}', [RawatInapController::class, 'update_radiologi'])->name('post-ranap.update-radiologi');
+    Route::post('post-update-lab/{id}', [RawatInapController::class, 'update_lab'])->name('post-ranap.update-lab');
 });
 Route::prefix('/pasien')->middleware('auth')->group(function () {
     Route::get('/', [PasienController::class, 'index'])->name('pasien.index');

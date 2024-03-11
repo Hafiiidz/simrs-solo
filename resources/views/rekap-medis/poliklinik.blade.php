@@ -241,6 +241,13 @@
                                                 data-bs-toggle="tab" href="#kt_tab_pane_4" aria-selected="false"
                                                 role="tab" tabindex="-1">Tindakan</a>
                                         </li>
+                                        @if(auth()->user()->idpriv == 7)
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
+                                                data-bs-toggle="tab" href="#kt_tab_pane_61" aria-selected="false"
+                                                role="tab" tabindex="-1">Order Tindakan Penunjang</a>
+                                        </li>
+                                        @endif
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
                                                 data-bs-toggle="tab" href="#kt_tab_pane_5" aria-selected="false"
@@ -769,7 +776,10 @@
                                             <tbody>
                                                 @foreach ($riwayat_berobat as $rb)
                                                     @php
-                                                        $rekap_resume = App\Models\RekapMedis\DetailRekapMedis::where('idrekapmedis', $rb->id)->first();
+                                                        $rekap_resume = App\Models\RekapMedis\DetailRekapMedis::where(
+                                                            'idrekapmedis',
+                                                            $rb->id,
+                                                        )->first();
                                                     @endphp
                                                     <tr data-id="{{ $rb->id }}">
                                                         <td>{{ $rb->created_at }}</td>
@@ -926,7 +936,9 @@
                                                         @php
                                                             $alergi = json_decode($resume_detail->alergi);
                                                             $pfisik = json_decode($resume_detail->pemeriksaan_fisik);
-                                                            $rkesehatan = json_decode($resume_detail->riwayat_kesehatan);
+                                                            $rkesehatan = json_decode(
+                                                                $resume_detail->riwayat_kesehatan,
+                                                            );
 
                                                         @endphp
                                                         <tr>
@@ -961,7 +973,9 @@
                                                                 {{ $resume_detail?->anamnesa_dokter }}
                                                                 @if ($rawat->idpoli == 12)
                                                                     @php
-                                                                        $pemeriksaan_fisio = json_decode($resume_detail->pemeriksaan_fisio);
+                                                                        $pemeriksaan_fisio = json_decode(
+                                                                            $resume_detail->pemeriksaan_fisio,
+                                                                        );
                                                                     @endphp
                                                                     <hr>
                                                                     <table>
@@ -1543,7 +1557,9 @@
                                                         <td>{{ $pl->tgl_hasil }}</td>
                                                         <td>
                                                             @php
-                                                                $pemeriksaan_lab_detail = DB::table('laboratorium_hasildetail')
+                                                                $pemeriksaan_lab_detail = DB::table(
+                                                                    'laboratorium_hasildetail',
+                                                                )
                                                                     ->where('idhasil', $pl->id)
                                                                     ->get();
                                                             @endphp
@@ -1582,7 +1598,9 @@
                                                         <td>{{ $pr->tgl_hasil }}</td>
                                                         <td>
                                                             @php
-                                                                $pemeriksaan_radio_detail = DB::table('radiologi_hasildetail')
+                                                                $pemeriksaan_radio_detail = DB::table(
+                                                                    'radiologi_hasildetail',
+                                                                )
                                                                     ->where('idhasil', $pr->id)
                                                                     ->get();
                                                             @endphp
@@ -1607,6 +1625,11 @@
                                             </tbody>
                                         </table>
                                     @endif
+                                </div>
+                                <div class="tab-pane fade" id="kt_tab_pane_61" role="tabpanel">
+                                    <button class="btn btn-info btn-sm mb-5" data-bs-toggle="modal"
+                                        data-bs-target="#modal_penunjang">Tambah Penunjang</button>
+                                    @include('rawat-inap.menu.penunjang')
                                 </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_6" role="tabpanel">
                                     <h5>Upload Hasil Pemerikasaan Penunjang Luar</h5>
@@ -1752,6 +1775,143 @@
         </div>
     </div>
 
+    <div class="modal fade" tabindex="-1" id="modal_penunjang">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Tambah Tindakan Penunjang</h3>
+
+                    <!--begin::Close-->
+                    <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                        aria-label="Close">
+                        <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                    </div>
+                    <!--end::Close-->
+                </div>
+                <form id='frmpenunjang' action="{{ route('postOrderPenunjang.rawat-inap', $rawat->id) }}"
+                    method="post">
+                    <div class="modal-body">
+
+                        @csrf
+                        <div class="row mb-5">
+                            <!--begin::Repeater-->
+                            <div id="radiologi_repeater">
+                                <!--begin::Form group-->
+                                <div class="form-group">
+                                    <div data-repeater-list="radiologi">
+                                        <div data-repeater-item>
+                                            <div class="form-group row mb-5">
+                                                <div class="col-md-5">
+                                                    <label class="form-label">Tindakan Rad</label>
+                                                    <select name="tindakan_rad" class="form-select"
+                                                        data-kt-repeater="select2radiologi" data-placeholder="-Pilih-"
+                                                        required>
+                                                        <option></option>
+                                                        @foreach ($radiologi as $rad)
+                                                            <option value="{{ $rad->id }}">
+                                                                {{ $rad->nama_tindakan }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Klinis</label>
+                                                    <input type="text" name="klinis" class="form-control" required />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Posisi</label>
+                                                    <select name="posisi" id="posisi" class="form-select">
+                                                        <option value=""></option>
+                                                        <option value="Kanan">Kanan</option>
+                                                        <option value="Kiri">Kiri</option>
+                                                    </select>
+                                                </div>
+
+
+                                                <div class="col-md-1">
+                                                    <a href="javascript:;" data-repeater-delete
+                                                        class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                        <i class="ki-duotone ki-trash fs-5"><span
+                                                                class="path1"></span><span class="path2"></span><span
+                                                                class="path3"></span><span class="path4"></span><span
+                                                                class="path5"></span></i>
+
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--end::Form group-->
+
+                                <!--begin::Form group-->
+                                <div class="form-group mt-5">
+                                    <a href="javascript:;" data-repeater-create class="btn btn-light-success">
+                                        <i class="ki-duotone ki-plus fs-3"></i>
+                                        Tambah Radiologi
+                                    </a>
+                                </div>
+                                <!--end::Form group-->
+                            </div>
+                            <!--end::Repeater-->
+                        </div>
+                        <div class="row mb-5">
+                            <!--begin::Repeater-->
+                            <div id="lab_repeater">
+                                <!--begin::Form group-->
+                                <div class="form-group">
+                                    <div data-repeater-list="lab">
+                                        <div data-repeater-item>
+                                            <div class="form-group row mb-5">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Tindakan Lab</label>
+                                                    <select name="tindakan_lab" class="form-select"
+                                                        data-kt-repeater="select2lab" data-placeholder="-Pilih-" required>
+                                                        <option></option>
+                                                        @foreach ($lab as $lab)
+                                                            <option value="{{ $lab->id }}">
+                                                                {{ $lab->nama_pemeriksaan }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <a href="javascript:;" data-repeater-delete
+                                                        class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                        <i class="ki-duotone ki-trash fs-5"><span
+                                                                class="path1"></span><span class="path2"></span><span
+                                                                class="path3"></span><span class="path4"></span><span
+                                                                class="path5"></span></i>
+                                                        Hapus
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--end::Form group-->
+
+                                <!--begin::Form group-->
+                                <div class="form-group mt-5">
+                                    <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
+                                        <i class="ki-duotone ki-plus fs-3"></i>
+                                        Tambah Lab
+                                    </a>
+                                </div>
+                                <!--end::Form group-->
+                            </div>
+                            <!--end::Repeater-->
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 @endsection
 @section('js')
@@ -1759,6 +1919,85 @@
     <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js"></script>
     <script>
+        $(".btn-edit-penunjang").on("click", function(event) {
+                event.preventDefault();
+                var id = $(this).data("id");
+                url = "{{ route('detail.get-penunjang', '') }}" + "/" + id;
+                $("#modal-hasil").empty();
+                $.get(url).done(function(data) {
+                    $("#modal-hasil").html(data);
+                    $("#modal_lihat").modal('show');
+                });
+            })
+            $(".btn-hapus-penunjang").on("click", function(event) {
+                event.preventDefault();
+                var id = $(this).data("id");
+                Swal.fire({
+                    title: 'Hapus Data?',
+                    text: "Hapus Data?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        url = "{{ route('detail.hapus-penunjang', '') }}" + "/" + id;
+                        $.get(url).done(function(data) {
+                            location.reload();
+                        });
+                    }
+                });
+            })
+        $('#radiologi_repeater').repeater({
+            initEmpty: true,
+
+            show: function() {
+                $(this).slideDown();
+
+                $(this).find('[data-kt-repeater="select2radiologi"]').select2({
+                    allowClear: true,
+                    dropdownParent: $('#modal_penunjang')
+                });
+            },
+
+            hide: function(deleteElement) {
+                $(this).slideUp(deleteElement);
+            },
+
+            ready: function() {
+                $('[data-kt-repeater="select2radiologi"]').select2({
+                    allowClear: true,
+                    dropdownParent: $('#modal_penunjang')
+                });
+            }
+        });
+
+        $('#lab_repeater').repeater({
+            initEmpty: true,
+
+            show: function() {
+                $(this).slideDown();
+
+                $(this).find('[data-kt-repeater="select2lab"]').select2({
+                    allowClear: true,
+                    dropdownParent: $('#modal_penunjang')
+                });
+            },
+
+            hide: function(deleteElement) {
+                $(this).slideUp(deleteElement);
+            },
+
+            ready: function() {
+                $('[data-kt-repeater="select2lab"]').select2({
+                    allowClear: true,
+                    dropdownParent: $('#modal_penunjang')
+                });
+            }
+        });
+
         @if ($resume_medis)
             document.getElementById("confirmButton").addEventListener("click", function() {
                 // Add your confirmation logic here
@@ -1811,7 +2050,7 @@
                             confirmButton: "btn btn-primary"
                         }
                     });
-                }else{
+                } else {
                     $("#modal-hasil").html(data);
                     $("#modal_lihat").modal('show');
                 }

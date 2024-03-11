@@ -481,41 +481,86 @@ class RawatInapController extends Controller
             'rawat' => $rawat
         ], compact('pasien', 'ringakasan_pasien_masuk', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'data_operasi','pemberian_obat','order_obat','cppt','implamentasi','list_tindakan','penunjang','diagnosa_akhir','data_pulang','poli','skrining','kesadaran','anamnesa','pemeriksaan_fisik','disable','disable_order','kelas_rawat'));
     }
+    public function get_penunjang($id){
+        $penunjang = DB::table('demo_permintaan_penunjang')->where('id', $id)->first();
+        if($penunjang->jenis_penunjang == 'Radiologi'){
+            $radiologi = DB::table('radiologi_tindakan')->get();
+            return View::make('rawat-inap.menu.edit-penunjang-radiologi',compact('penunjang','radiologi'));
+        }elseif($penunjang->jenis_penunjang == 'Lab'){
+            $lab = DB::table('laboratorium_pemeriksaan')->get();
+            return View::make('rawat-inap.menu.edit-penunjang-lab',compact('penunjang','lab'));
+        }else{
+            $fisio = DB::table('tarif')->where('idkategori', 8)->get();
+            return View::make('rawat-inap.menu.edit-penunjang-fisio',compact('penunjang','fisio'));
+        }
+            
+    }
+
+    public function hapus_penunjang($id){
+        $penunjang = DB::table('demo_permintaan_penunjang')->where('status_pemeriksaan','Antrian')->where('id', $id)->delete();   
+        return response()->json(['code'=>200,'status'=>'berhasil','message'=>'Data Berhasil Di Hapus']);
+    }
+    public function update_radiologi(Request $request ,$id){
+        $penunjang = DB::table('demo_permintaan_penunjang')->where('id', $id)->first();
+        DB::table('demo_permintaan_penunjang')->where('status_pemeriksaan','Antrian')->where('id',$id)->update([
+            'pemeriksaan_penunjang' => json_encode($request->radiologi),
+            'updated_at' => now(),
+        ]);
+        return redirect()->back()->with('berhasil','Data Berhasil Di Simpan');
+
+    }
+    public function update_lab(Request $request ,$id){
+        $penunjang = DB::table('demo_permintaan_penunjang')->where('id', $id)->first();
+        DB::table('demo_permintaan_penunjang')->where('status_pemeriksaan','Antrian')->where('id',$id)->update([
+            'pemeriksaan_penunjang' => json_encode($request->lab),
+            'updated_at' => now(),
+        ]);
+        return redirect()->back()->with('berhasil','Data Berhasil Di Simpan');
+
+    }
+
     public function postOrderPenunjang(Request $request, $id)
     {
 
+        // return $request->all();
         $rawat = Rawat::where('id', $id)->first();
-        if ($request->radiologi != 'null' || $request->radiologi != '') {
-            DB::table('demo_permintaan_penunjang')->insert([
-                'idrawat' => $rawat->id,
-                'idbayar' => $rawat->idbayar,
-                'status_pemeriksaan' => 'Antrian',
-                'no_rm' => $rawat->no_rm,
-                'pemeriksaan_penunjang' => json_encode($request->radiologi),
-                'jenis_penunjang' => 'Radiologi',
-                'peminta' => now(),
-                'created_at' => now(),
-                'updated_at' => now(),
-                'peminta' => auth()->user()->id,
-                'jenis_rawat' => $rawat->idjenisrawat,
-
-            ]);
+        if ($request->radiologi) {
+            if ($request->radiologi != 'null' || $request->radiologi != '' || $request->lab != null) {
+                DB::table('demo_permintaan_penunjang')->insert([
+                    'idrawat' => $rawat->id,
+                    'idbayar' => $rawat->idbayar,
+                    'status_pemeriksaan' => 'Antrian',
+                    'no_rm' => $rawat->no_rm,
+                    'pemeriksaan_penunjang' => json_encode($request->radiologi),
+                    'jenis_penunjang' => 'Radiologi',
+                    'peminta' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'peminta' => auth()->user()->id,
+                    'jenis_rawat' => $rawat->idjenisrawat,
+    
+                ]);
+            }
         }
-        if ($request->lab != 'null' || $request->lab != '') {
-            DB::table('demo_permintaan_penunjang')->insert([
-                'idrawat' => $rawat->id,
-                'idbayar' => $rawat->idbayar,
-                'status_pemeriksaan' => 'Antrian',
-                'no_rm' => $rawat->no_rm,
-                'pemeriksaan_penunjang' => json_encode($request->lab),
-                'jenis_penunjang' => 'Lab',
-                'peminta' => now(),
-                'created_at' => now(),
-                'updated_at' => now(),
-                'peminta' => auth()->user()->id,
-                'jenis_rawat' => $rawat->idjenisrawat,
-
-            ]);
+        
+        if ($request->lab) {
+            if($request->lab != 'null' || $request->lab != ''){
+                DB::table('demo_permintaan_penunjang')->insert([
+                    'idrawat' => $rawat->id,
+                    'idbayar' => $rawat->idbayar,
+                    'status_pemeriksaan' => 'Antrian',
+                    'no_rm' => $rawat->no_rm,
+                    'pemeriksaan_penunjang' => json_encode($request->lab),
+                    'jenis_penunjang' => 'Lab',
+                    'peminta' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'peminta' => auth()->user()->id,
+                    'jenis_rawat' => $rawat->idjenisrawat,
+    
+                ]);
+            }
+            
         }
         return redirect()->back()->with('berhasil', 'Order Penunjang Di Simpan');
     }

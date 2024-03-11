@@ -185,7 +185,6 @@ class RekapMedisController extends Controller
                     'idantrian'=>$antrian
                 ]);
             }
-
             if ($detail->radiologi != null || $detail->radiologi != 'null' || $detail->radiologi != '') {
                 $cek_permintaan_penunjang_radiologi = DB::table('demo_permintaan_penunjang')->where('idrawat', $rekap_medis->idrawat)->where('jenis_penunjang','Radiologi')->where('status_pemeriksaan','Antrian')->first();
                 if(!$cek_permintaan_penunjang_radiologi){
@@ -492,7 +491,7 @@ class RekapMedisController extends Controller
         $pemeriksaan_radiologi = RadiologiHasil::where('idrawat', $id_rawat)->get();
         $pemeriksaan_luar = DB::table('demo_rekap_medis_file_penunjang')->where('id_rekap', $id_rawat)->get();
         $riwayat_berobat = RekapMedis::where('idpasien', $pasien->id)->where('idrawat', '!=', $id_rawat)->get();
-
+        $penunjang = DB::table('demo_permintaan_penunjang')->where('idrawat', $id_rawat)->get();
         $resep = ObatTransaksi::where('no_rm', $rawat->no_rm)->get();
         $get_template = RekapMedis::with('rawat')
         ->join('demo_detail_rekap_medis','demo_detail_rekap_medis.idrekapmedis','=','demo_rekap_medis.id')
@@ -510,7 +509,7 @@ class RekapMedisController extends Controller
         ->get();
         // dd($get_template);
         // dd($riwayat_berobat);
-        return view('rekap-medis.poliklinik', compact('pasien', 'rawat', 'resume_medis', 'resume_detail', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'soap_tindakan', 'fisio', 'pemeriksaan_lab', 'pemeriksaan_radiologi', 'riwayat_berobat', 'pemeriksaan_luar', 'resep_dokter', 'resep','get_template'));
+        return view('rekap-medis.poliklinik', compact('pasien', 'rawat', 'resume_medis', 'resume_detail', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'soap_tindakan', 'fisio', 'pemeriksaan_lab', 'pemeriksaan_radiologi', 'riwayat_berobat', 'pemeriksaan_luar', 'resep_dokter', 'resep','get_template','penunjang'));
     }
 
     public function copy_data(Request $request, $id)
