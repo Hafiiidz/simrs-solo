@@ -50,6 +50,22 @@
                                             </li>
                                         @endif
                                     @endforeach
+                                @else
+                                    @foreach ($fisio as $f)
+                                        @if ($f->id == $pen?->tindakan_fisio)
+                                            <li>{{ $f->nama_tarif }} 
+                                                @if ($p->status_pemeriksaan == 'Selesai')
+                                                    {{-- @php
+                                                        $hasil = DB::table('radiologi_hasildetail')
+                                                            ->where('idpengantar', $p->id)
+                                                            ->first();
+                                                    @endphp
+                                                    <button onclick="modalHasilRad({{ $hasil->id }})"
+                                                        class="btn btn-sm btn-secondary">Lihat Hasil</button> --}}
+                                                @endif
+                                            </li>
+                                        @endif
+                                    @endforeach
                                 @endif
                             @endforeach
                         @endif
