@@ -35,7 +35,7 @@
                                             </li>
                                         @endif
                                     @endforeach
-                                @else
+                                @elseif($p->jenis_penunjang == 'Radiologi')
                                     @foreach ($radiologi as $rad)
                                         @if ($rad->id == $pen?->tindakan_rad)
                                             <li>{{ $rad->nama_tindakan }} @if ($p->status_pemeriksaan == 'Selesai')
