@@ -224,7 +224,10 @@
                                                             class="d-inline-block position-absolute h-5px bottom-0 end-0 start-0 bg-success translate rounded"></span>
                                                         <!--end::Line-->
                                                     </span>
-
+                                                    <form id="frm-data" action="{{ route('update.operasi', $data->id) }}"
+                                                        method="POST" autocomplete="off">
+                                                        @csrf
+                                                    
                                                     <div class="row mb-5">
                                                         <div class="col-md-4">
                                                             <span class="text-center">
@@ -244,12 +247,13 @@
                                                                             <td>{{ $si->item_cek }}</td>
                                                                             <td>
                                                                                 <div class="form-check">
-                                                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                                                                                    <input class="form-check-input" {!! App\Helpers\VclaimHelper::cek_list_ok($data->id,'sign_in',$si->id) == 1 ? 'checked':'' !!}  type="checkbox" name="sign_in[]" value="{{ $si->id }}"  id="flexCheckDefault" />
                                                                                     {{-- <label class="form-check-label" for="flexCheckDefault">
                                                                                         Check
                                                                                     </label> --}}
                                                                                 </div>
                                                                             </td>
+                                                                            =
                                                                         </tr>
                                                                         
                                                                     @endforeach
@@ -274,10 +278,7 @@
                                                                             <td>{!! $to->item_cek !!}</td>
                                                                             <td>
                                                                                 <div class="form-check">
-                                                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                                                                                    {{-- <label class="form-check-label" for="flexCheckDefault">
-                                                                                        Check
-                                                                                    </label> --}}
+                                                                                    <input class="form-check-input" type="checkbox" name="time_out[]" {!! App\Helpers\VclaimHelper::cek_list_ok($data->id,'time_out',$to->id) == 1 ? 'checked':'' !!} value="{{ $to->id }}" id="flexCheckDefault" />                                                                                   
                                                                                 </div>
                                                                             </td>
                                                                         </tr>
@@ -303,7 +304,7 @@
                                                                             <td>{{ $so->item_cek }}</td>
                                                                             <td>
                                                                                 <div class="form-check">
-                                                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                                                                                    <input class="form-check-input" type="checkbox"{!! App\Helpers\VclaimHelper::cek_list_ok($data->id,'sign_out',$so->id) == 1 ? 'checked':'' !!}  name="sign_out[]" value="{{ $so->id }}" id="flexCheckDefault" />
                                                                                     {{-- <label class="form-check-label" for="flexCheckDefault">
                                                                                         Check
                                                                                     </label> --}}
@@ -316,9 +317,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <form id="frm-data" action="{{ route('update.operasi', $data->id) }}"
-                                                        method="POST" autocomplete="off">
-                                                        @csrf
+                                                   
                                                         <div class="row">
                                                             <div class="col-md-3">
                                                                 <label for="" class="form-label">Tanggal Operasi</label>
@@ -364,7 +363,7 @@
                                                                                                         class="form-label">Dokter
                                                                                                         Bedah</label>
                                                                                                     <input type="text"
-                                                                                                        name="dokter_bedah"class="form-control mb-2 mb-md-0"  placeholder="Masukan Nama"
+                                                                                                        name="dokter_bedah" class="form-control mb-2 mb-md-0"  placeholder="Masukan Nama"
                                                                                                         value="{{ $val->dokter_bedah }}" required/>
                                                                                                 </div>
                                                                                                 <div class="col-md-2">
@@ -390,7 +389,7 @@
                                                                                                 <label class="form-label">Dokter
                                                                                                     Bedah</label>
                                                                                                 <input type="text"
-                                                                                                    name="dokter_bedah" placeholder="Masukan Nama" required/>
+                                                                                                    name="dokter_bedah" class="form-control mb-2 mb-md-0" placeholder="Masukan Nama" required/>
                                                                                             </div>
                                                                                             <div class="col-md-2">
                                                                                                 <a href="javascript:;"

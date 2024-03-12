@@ -613,4 +613,19 @@ class VclaimHelper
             return $user_detail?->nama;
         }
     }
+
+    public static function cek_list_ok($id,$type,$data_value){
+        #demo_laporan_operasi
+        $data = DB::table('demo_laporan_operasi')->where('id',$id)->first();
+        if($data->checklist != null){
+            $data_d =  json_decode($data->checklist)->$type;
+            foreach ($data_d as $key => $value) {
+                if($value == $data_value){
+                    return true;
+                }
+            }
+            return false;
+        }
+        return false;
+    }
 }
