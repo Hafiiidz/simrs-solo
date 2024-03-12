@@ -190,6 +190,7 @@ class FarmasiController extends Controller
                     'signa'=>$rd->signa,
                     'diminum'=>$rd->diminum,
                     'catatan'=>$rd->catatan,
+                    'dtd'=>$rd->dtd,
                     'idresep'=>$rd->id,
                     'jenis'=>$request->jenis_obat_non_racikan[$rd->id],
                     'tambahan_farmasi'=>$rd->tambahan_farmasi

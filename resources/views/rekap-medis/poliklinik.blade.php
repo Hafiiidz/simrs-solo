@@ -952,7 +952,9 @@
                                                                     <ul>
                                                                         @foreach (json_decode($resume_detail?->icdx) as $val)
                                                                             <li>{{ $val->diagnosa_icdx }}
+                                                                                @if (isset($val->jenis_diagnosa))
                                                                                 (<b>{{ $val->jenis_diagnosa == 'P' ? 'Primer' : 'Sekunder' }}</b>)
+                                                                                @endif
                                                                             </li>
                                                                         @endforeach
                                                                     </ul>

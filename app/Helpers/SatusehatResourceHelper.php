@@ -14,14 +14,12 @@ use Illuminate\Support\Facades\Http;
 
 class SatusehatResourceHelper
 {
-
-    
     #Practitioner
     #NIK
     public static function practitioner_nik($nik){
         $get_token = SatusehatAuthHelper::generate_token();
         $token = $get_token['access_token'];
-        $url = env('PROD_BASE_URL_SS');
+        $url = env('STG_BASE_URL_SS');
         // return $url;
         $response = Http::withOptions(["verify" => false])
         ->withHeaders([
@@ -146,7 +144,7 @@ class SatusehatResourceHelper
         // return $data;
         $get_token = SatusehatAuthHelper::generate_token();
         $token = $get_token['access_token'];
-        $url = env('PROD_BASE_URL_SS');
+        $url = env('STG_BASE_URL_SS');
         // return $url;
         $response = Http::withOptions(["verify" => false])
         ->withHeaders([
@@ -161,7 +159,7 @@ class SatusehatResourceHelper
     public static function organization_id($id){
         $get_token = SatusehatAuthHelper::generate_token();
         $token = $get_token['access_token'];
-        $url = env('PROD_BASE_URL_SS');
+        $url = env('STG_BASE_URL_SS');
         // return $url;
         $response = Http::withOptions(["verify" => false])
         ->withHeaders([
@@ -176,7 +174,7 @@ class SatusehatResourceHelper
     public static function organization_search_partof($partof){
         $get_token = SatusehatAuthHelper::generate_token();
         $token = $get_token['access_token'];
-        $url = env('PROD_BASE_URL_SS');
+        $url = env('STG_BASE_URL_SS');
         // return $url;
         $response = Http::withOptions(["verify" => false])
         ->withHeaders([

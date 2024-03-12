@@ -255,7 +255,11 @@
                                                                 <td class="align-middle text-center">{{ $val->dosis }}
                                                                     {{ $val->takaran }} ( {{ $val->signa }} )
                                                                     {{ $val->diminum . ' makan' }}
+                                                                    @if(isset($val->dtd))
                                                                     <b>{!! $val->dtd == 1 ? '<b> - (DTD)</b>' : '' !!}</b>
+                                                                    @endif
+                                                                    <br>
+                                                                    <pre> <b>{{ $val->catatan }}</b> </pre> 
                                                                 </td>
                                                                 <td class="align-middle text-center">
                                                                     <select name="jenis_obat[{{ $val->idresep }}]"
@@ -304,7 +308,7 @@
                                                     <th rowspan="2">Jumlah</th>
                                                     <th rowspan="2" width=100>Pemberian</th>
                                                     <th rowspan="2" width=100>Kronis</th>
-                                                    <th rowspan="2">Dosis / Takaran Obat</th>
+                                                    <th rowspan="2">Dosis / Takaran Obat / Catatan</th>
                                                     <th rowspan="2">Jenis Obat</th>
                                                 </tr>
 
@@ -342,7 +346,7 @@
                                                                             {!! App\Helpers\VclaimHelper::get_data_obat($val->obat) !!}
                                                                         </button>
                                                                     @endif
-
+                                                                   
                                                                 </td>
                                                                 <td>{!! App\Helpers\VclaimHelper::IndoCurr(App\Helpers\VclaimHelper::get_harga_obat($val->obat, $rawat->idbayar)) !!}</td>
                                                                 <td class="text-center">
@@ -363,6 +367,8 @@
                                                                     {{ $val->dosis }}
                                                                     {{ $val->takaran }} ( {{ $val->signa }} )
                                                                     {{ $val->diminum . ' makan' }}
+                                                                    <br>
+                                                                   <pre>{{ $val->catatan }}</pre> 
                                                                 </td>
                                                                 <td class="align-middle text-center">
                                                                     <select
