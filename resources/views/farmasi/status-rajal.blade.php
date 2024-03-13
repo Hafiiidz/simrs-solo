@@ -226,7 +226,7 @@
                                                                                     <td>
                                                                                         <button type="button"
                                                                                             data-id='{{ $val->idresep }}'
-                                                                                            data-value='{{ $ob_racikan->obat }}'class="btn btn-light-success btn-sm btn-edit-racikan">{!! App\Helpers\VclaimHelper::get_data_obat($ob_racikan->obat) !!}</button>
+                                                                                            data-value='{{ $ob_racikan->obat }}'class="btn btn-light-success btn-sm btn-edit-racikan">{!! $ob_racika->obat) !!}</button>
                                                                                     </td>
                                                                                     <td>{!! App\Helpers\VclaimHelper::IndoCurr(
                                                                                         App\Helpers\VclaimHelper::get_harga_obat($ob_racikan->obat, $rawat->idbayar),
@@ -329,13 +329,13 @@
                                                                                 data-id="{{ $antrian->id }}"
                                                                                 data-value="{{ $val->obat }}"
                                                                                 class="btn btn-light-danger btn-sm btn-hapus-farmasi">
-                                                                                {!! App\Helpers\VclaimHelper::get_data_obat($val->obat) !!}</button>
+                                                                                {!! $val->obat !!}</button>
                                                                         @else
                                                                             <button type="button"
                                                                                 data-id="{{ $antrian->id }}"
                                                                                 data-value="{{ $val->obat }}"
                                                                                 class="btn btn-light-success btn-sm btn-edit-farmasi">
-                                                                                {!! App\Helpers\VclaimHelper::get_data_obat($val->obat) !!}
+                                                                                {!! $val->obat !!}
                                                                             </button>
                                                                         @endif
                                                                     @else
@@ -343,7 +343,7 @@
                                                                             data-id="{{ $antrian->id }}"
                                                                             data-value="{{ $val->obat }}"
                                                                             class="btn btn-light-success btn-sm btn-edit-farmasi">
-                                                                            {!! App\Helpers\VclaimHelper::get_data_obat($val->obat) !!}
+                                                                            {!! $val->obat !!}
                                                                         </button>
                                                                     @endif
                                                                    
