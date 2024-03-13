@@ -478,8 +478,8 @@ class FarmasiController extends Controller
         $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
         $antrian = AntrianFarmasi::where('idrawat', $id)->where('status_antrian', 'Antrian')->first();
 
-        $obat = Obat::where('nama_obat','!=','')->orderBy('nama_obat', 'asc')->get();
-        dd($obat);
+        $obat = Obat::where('nama_obat','!=','')->get();
+        return $obat;
         $transaksi_bayar = DB::table('transaksi_bayar')->orderBy('urutan', 'asc')->get();
         $pemberian_obat = DB::table('demo_pemberian_obat_inap')->where('idrawat', $id)->get();
         $pemberian_obat_injeksi = DB::table('demo_pemberian_obat_inap')->where('idrawat', $id)->where('jenis', 'Injeksi')->get();
