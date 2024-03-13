@@ -1026,7 +1026,7 @@ class FarmasiController extends Controller
             'no_rm' => $rekap_medis->rawat->no_rm,
             'idrekap' => $rekap_medis->id,
             'no_antrian' => $no_antrian + 1,
-            'obat' => null,
+            'obat' => 'null',
             'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
             'created_at' => now(),
             'updated_at' => now(),
