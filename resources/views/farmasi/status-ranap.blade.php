@@ -796,9 +796,9 @@
                                                                 <td>{{ $val->rute }}</td>
                                                                 <td>{{ $val->signa }}</td>
                                                                 <td>
-                                                                    @foreach ($val->obat_obatan as $obat)
-                                                                        Jam :{{ $obat->jam }} <br>
-                                                                        Initial :{{ $obat->initial }}<br>
+                                                                    @foreach ($val->obat_obatan as $ob)
+                                                                        Jam :{{ $ob->jam }} <br>
+                                                                        Initial :{{ $ob->initial }}<br>
                                                                         <div
                                                                             class="separator separator-dashed border-secondary mt-5 mb-5">
                                                                         </div>
@@ -899,9 +899,9 @@
                                                                 <td>{{ $val->rute }}</td>
                                                                 <td>{{ $val->signa }}</td>
                                                                 <td>
-                                                                    @foreach ($val->obat_obatan as $obat)
-                                                                        Jam :{{ $obat->jam }} <br>
-                                                                        Initial :{{ $obat->initial }}<br>
+                                                                    @foreach ($val->obat_obatan as $ob)
+                                                                        Jam :{{ $ob->jam }} <br>
+                                                                        Initial :{{ $ob->initial }}<br>
                                                                         <div
                                                                             class="separator separator-dashed border-secondary mt-5 mb-5">
                                                                         </div>
