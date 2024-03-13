@@ -228,11 +228,12 @@
                                                                                             data-id='{{ $val->idresep }}'
                                                                                             data-value='{{ $ob_racikan->obat }}'class="btn btn-light-success btn-sm btn-edit-racikan">{!! App\Helpers\VclaimHelper::get_data_obat($ob_racikan->obat) !!}</button>
                                                                                     </td>
-                                                                                    <td>{!! 
-                                                                                    // App\Helpers\VclaimHelper::IndoCurr(
-                                                                                    //     App\Helpers\VclaimHelper::get_harga_obat($ob_racikan->obat, $rawat->idbayar),
-                                                                                    // ) 
-                                                                                    !!}</td>
+                                                                                    <td>
+                                                                                        {{-- {!! 
+                                                                                    App\Helpers\VclaimHelper::IndoCurr(
+                                                                                        App\Helpers\VclaimHelper::get_harga_obat($ob_racikan->obat, $rawat->idbayar),
+                                                                                    ) !!} --}}
+                                                                                    </td>
                                                                                     <td class="text-center">
                                                                                         {{ $ob_racikan->jumlah_obat }}</td>
                                                                                     <td>
