@@ -226,7 +226,7 @@
                                                                                     <td>
                                                                                         <button type="button"
                                                                                             data-id='{{ $val->idresep }}'
-                                                                                            data-value='{{ $ob_racikan->obat }}'class="btn btn-light-success btn-sm btn-edit-racikan">{!! $ob_racika->obat) !!}</button>
+                                                                                            data-value='{{ $ob_racikan->obat }}'class="btn btn-light-success btn-sm btn-edit-racikan">{!! $ob_racikan->obat !!}</button>
                                                                                     </td>
                                                                                     <td>{!! App\Helpers\VclaimHelper::IndoCurr(
                                                                                         App\Helpers\VclaimHelper::get_harga_obat($ob_racikan->obat, $rawat->idbayar),
