@@ -1177,10 +1177,10 @@
                                         <select name="obat_non" id='nama_obat_non' class="form-select form-select-sm"
                                             data-control="select2" data-placeholder="-Pilih-" required>
                                             <option value=""></option>
-                                            @foreach ($obat as $val)
-                                                <option value="{{ $val->id }}">
-                                                    {{ $val->nama_obat }} -
-                                                    {{ $val->satuan->satuan }}
+                                            @foreach ($obat as $o)
+                                                <option value="{{ $o->id }}">
+                                                    {{ $o->nama_obat }} -
+                                                    {{ $o->satuan->satuan }}
                                                 </option>
                                             @endforeach
                                         </select>
