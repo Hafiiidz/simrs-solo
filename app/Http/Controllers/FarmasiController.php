@@ -466,7 +466,7 @@ class FarmasiController extends Controller
         $antrian = AntrianFarmasi::where('idrawat', $id)->where('status_antrian','Antrian')->first();
         $rekap_medis = RekapMedis::where('idrawat', $id)->first();
         // return $antrian->obat;
-        $obat = Obat::get();
+        $obat = Obat::where('nama_obat','!=','')->orderBy('nama_obat', 'asc')->get();
         $transaksi_bayar = DB::table('transaksi_bayar')->where('status',1)->orderBy('urutan', 'asc')->get();
         $takaran = ['-','tablet','kapsul','bungkus','tetes','ml','sendok takar 5ml','sendok takar 15ml','oles'];
         $resep = ObatTransaksi::where('idrawat', $id)->get();
@@ -478,7 +478,7 @@ class FarmasiController extends Controller
         $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
         $antrian = AntrianFarmasi::where('idrawat', $id)->where('status_antrian', 'Antrian')->first();
 
-        $obat = Obat::get();
+        $obat = Obat::where('nama_obat','!=','')->orderBy('nama_obat', 'asc')->get();
         $transaksi_bayar = DB::table('transaksi_bayar')->orderBy('urutan', 'asc')->get();
         $pemberian_obat = DB::table('demo_pemberian_obat_inap')->where('idrawat', $id)->get();
         $pemberian_obat_injeksi = DB::table('demo_pemberian_obat_inap')->where('idrawat', $id)->where('jenis', 'Injeksi')->get();
