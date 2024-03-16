@@ -589,6 +589,7 @@
                                     <input type="hidden" name="idresep" value="{{ $resep_antrian->id }}">
                                     <input type="hidden" name="idrawat" value="{{ $rawat->id }}">
                                     <button class="btn btn-success btn-sm">Selesai</button>
+                                    <a href="{{ route('farmasi.batalkan-resep',$resep_antrian->id) }}" class="btn btn-danger btn-sm">Batalkan</a>
                                 </form>
                                 {{-- @endif --}}
                                 

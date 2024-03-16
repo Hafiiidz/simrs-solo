@@ -53,6 +53,18 @@
             <!--begin::Content container-->
             <div id="kt_app_content_container" class="app-container container-fluid">
                 <!--begin::FAQ card-->
+                @if(count($order_obat_null) > 0)
+                <div class="alert alert-danger d-flex align-items-center p-5 mb-10">
+                    <i class="ki-duotone ki-shield-tick fs-2hx text-danger me-4"><span class="path1"></span><span class="path2"></span></i>                    
+                    <div class="d-flex flex-column">
+                        <h4 class="mb-1 text-danger">Selesaikan order Resep</h4>
+                        <span>Terdapat Resep yang belum diselesaikan</span>
+                        <span>
+                            <a href="{{ route('view.rawat-inap-order',$rawat->id) }}">Klik Untuk menyelesaikan</a>
+                        </span>
+                    </div>
+                </div>
+                @endif
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">

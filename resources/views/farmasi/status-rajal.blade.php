@@ -549,7 +549,7 @@
                                 <input type="hidden" name="idrawat" id="id_rawat" value="{{ $rawat->id }}">
                                 <div class="row mb-5">
                                     <div class="col-md-12">
-                                        <label >Obat</label>
+                                        <label class="form-label" >Obat</label>
                                         <select name="obat_non" id='nama_obat_non' class="form-select form-select-sm"
                                             data-control="select2" data-placeholder="-Pilih-" required>
                                             <option value=""></option>
