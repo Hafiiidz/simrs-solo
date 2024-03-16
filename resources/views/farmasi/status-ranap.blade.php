@@ -532,7 +532,9 @@
                                                                                 {{ $val->takaran }} ( {{ $val->signa }}
                                                                                 )
                                                                                 {{ $val->diminum . ' makan' }}
+                                                                                @if(isset($val->dtd))
                                                                                 <b>{!! $val->dtd == 1 ? '<b> - (DTD)</b>' : '' !!}</b>
+                                                                                @endif
                                                                             </td>
                                                                             <td class="align-middle text-center">
                                                                                 <select
