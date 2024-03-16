@@ -15,20 +15,20 @@ use Illuminate\Support\Facades\Http;
 class SatusehatResourceHelper
 {
 
-    
+
     #Practitioner
     #NIK
     public static function practitioner_nik($nik){
         $get_token = SatusehatAuthHelper::generate_token();
         $token = $get_token['access_token'];
-        $url = env('PROD_BASE_URL_SS');
+        $url = env('STG_BASE_URL_SS');
         // return $url;
         $response = Http::withOptions(["verify" => false])
         ->withHeaders([
             'Authorization' => 'Bearer '.$token,
         ])
         ->get($url.'/Practitioner?identifier=https://fhir.kemkes.go.id/id/nik|'.$nik);
-        
+
         return $response->json();
     }
 
@@ -43,7 +43,7 @@ class SatusehatResourceHelper
             'Authorization' => 'Bearer '.$token,
         ])
         ->get($url.'/Practitioner?name='.$name.'&gender='.$gender.'&birthdate='.$birthdate);
-        
+
         return $response->json();
     }
 
@@ -58,7 +58,7 @@ class SatusehatResourceHelper
             'Authorization' => 'Bearer '.$token,
         ])
         ->get($url.'/Practitioner/'.$id);
-        
+
         return $response->json();
     }
 
@@ -146,14 +146,14 @@ class SatusehatResourceHelper
         // return $data;
         $get_token = SatusehatAuthHelper::generate_token();
         $token = $get_token['access_token'];
-        $url = env('PROD_BASE_URL_SS');
+        $url = env('STG_BASE_URL_SS');
         // return $url;
         $response = Http::withOptions(["verify" => false])
         ->withHeaders([
             'Authorization' => 'Bearer '.$token,
         ])
         ->post($url.'/Organization', $data);
-        
+
         return $response->json();
     }
 
@@ -161,14 +161,14 @@ class SatusehatResourceHelper
     public static function organization_id($id){
         $get_token = SatusehatAuthHelper::generate_token();
         $token = $get_token['access_token'];
-        $url = env('PROD_BASE_URL_SS');
+        $url = env('STG_BASE_URL_SS');
         // return $url;
         $response = Http::withOptions(["verify" => false])
         ->withHeaders([
             'Authorization' => 'Bearer '.$token,
         ])
         ->get($url.'/Organization/'.$id);
-        
+
         return $response->json();
     }
 
@@ -176,14 +176,14 @@ class SatusehatResourceHelper
     public static function organization_search_partof($partof){
         $get_token = SatusehatAuthHelper::generate_token();
         $token = $get_token['access_token'];
-        $url = env('PROD_BASE_URL_SS');
+        $url = env('STG_BASE_URL_SS');
         // return $url;
         $response = Http::withOptions(["verify" => false])
         ->withHeaders([
             'Authorization' => 'Bearer '.$token,
         ])
         ->get($url.'/Organization?partof='.$partof);
-        
+
         return $response->json();
     }
 }

@@ -14,11 +14,11 @@ use Illuminate\Support\Facades\Http;
 class SatusehatAuthHelper
 {
     public static function generate_token(){
-        $url = env('PROD_AUTH_URL_SS');
+        $url = env('STG_AUTH_URL_SS');
         // return $url;
         $response = Http::asForm()->withOptions(["verify" => false])->post($url.'/accesstoken?grant_type=client_credentials', [
-            'client_id' =>env('PROD_CLIENT_ID_SS'),
-            'client_secret' =>env('PROD_CLIENT_SECRET_SS')
+            'client_id' =>env('STG_CLIENT_ID_SS'),
+            'client_secret' =>env('STG_CLIENT_SECRET_SS')
         ]);
         return $response->json();
     }
