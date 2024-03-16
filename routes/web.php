@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use App\Helpers\SatusehatPasienHelper;
 use App\Helpers\SatusehatResourceHelper;
+use App\Helpers\Satusehat\Resource\LocationHelper;
+use App\Helpers\Satusehat\Resource\EncounterHelper;
+use App\Helpers\Satusehat\Resource\PatientHelper;
 use App\Http\Controllers\GiziController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PasienController;
@@ -75,6 +78,66 @@ Route::get('/search-pasien-by-nik/{nik}', function ($nik) {
 #add_pasien
 Route::get('/add-pasien/{id}', function ($id) {
     return SatusehatPasienHelper::add_pasien($id);
+});
+
+#Location
+Route::prefix('location')->group(function () {
+    Route::get('/create', function () {
+        return LocationHelper::create();
+    });
+    Route::get('/search-org-id', function () {
+        $id = 100026489; //organization id
+        return LocationHelper::searchOrgId($id);
+    });
+    Route::get('/search-id', function () {
+        $id = '07db4207-060a-41ca-b037-a4a852fd0a40'; //location id
+        return LocationHelper::searchId($id);
+    });
+    Route::get('/update', function () {
+        $id = '07db4207-060a-41ca-b037-a4a852fd0a40'; //location id
+        return LocationHelper::update($id);
+    });
+});
+
+#Encounter
+Route::prefix('encounter')->group(function () {
+    Route::get('/create', function () {
+        return EncounterHelper::create();
+    });
+});
+
+#Patient
+Route::prefix('patient')->group(function () {
+    Route::get('/create-nik', function () {
+        return PatientHelper::createNik();
+    });
+    Route::get('/search-nik', function () {
+        $nik = 123214213; //example nik
+        return PatientHelper::searchNik($nik);
+    });
+    Route::get('/search-name-birth-nik', function () {
+        $nik = 123214213; //example nik
+        $nama = 'John';
+        $birth = '1945-11-17';
+        return PatientHelper::searchNameBirthNik($nama,$birth,$nik);
+    });
+    Route::get('/search-name-birth-gender', function () {
+        $gender = 'female';
+        $nama = 'John';
+        $birth = '1945-11-17';
+        return PatientHelper::searchNameBirthGender($nama,$birth,$gender);
+    });
+    Route::get('/search-id', function () {
+        $id = 'P02029412619'; //example nik
+        return PatientHelper::searchId($id);
+    });
+    Route::get('/create-mother-nik', function () {
+        return PatientHelper::createMotherNik();
+    });
+    Route::get('/search-mother-nik', function () {
+        $nik = 123214213; //example nik
+        return PatientHelper::searchMotherNik($nik);
+    });
 });
 
 Route::get('/obat-tes',function(){
@@ -163,13 +226,13 @@ Route::get('/obat-tes',function(){
 });
 
 Route::get('/faskes', function (HttpRequest $request) {
-    // $current_time = round(microtime(true) * 1000); 
-    // echo $current_time; 
+    // $current_time = round(microtime(true) * 1000);
+    // echo $current_time;
     return VclaimHelper::getlist_taks($request->kode);
 })->name('list-faskes');
 Route::get('/update-task', function (HttpRequest $request) {
-    $current_time = round(microtime(true) * 1000); 
-    // echo $current_time; 
+    $current_time = round(microtime(true) * 1000);
+    // echo $current_time;
     return VclaimHelper::update_task($request->kode,5,$current_time);
 });
 
@@ -412,7 +475,7 @@ Route::prefix('/pasien')->middleware('auth')->group(function () {
         Route::get('/edit/{id}', [MasterBhpController::class, 'edit'])->name('edit.bhp');
         Route::delete('/delete/{id}', [MasterBhpController::class, 'destroy'])->name('delete.bhp');
     });
-    
+
     Route::prefix('/operasi')->middleware('auth')->group(function () {
         Route::get('/', [LaporanOperasiController::class, 'index'])->name('index.operasi');
         Route::get('/delete-ok/{id}', [LaporanOperasiController::class, 'delete_tindakan_ok'])->name('delete.operasi');

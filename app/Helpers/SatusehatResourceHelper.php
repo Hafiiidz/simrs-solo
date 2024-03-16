@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Http;
 
 class SatusehatResourceHelper
 {
+
+
     #Practitioner
     #NIK
     public static function practitioner_nik($nik){
@@ -26,7 +28,7 @@ class SatusehatResourceHelper
             'Authorization' => 'Bearer '.$token,
         ])
         ->get($url.'/Practitioner?identifier=https://fhir.kemkes.go.id/id/nik|'.$nik);
-        
+
         return $response->json();
     }
 
@@ -41,7 +43,7 @@ class SatusehatResourceHelper
             'Authorization' => 'Bearer '.$token,
         ])
         ->get($url.'/Practitioner?name='.$name.'&gender='.$gender.'&birthdate='.$birthdate);
-        
+
         return $response->json();
     }
 
@@ -56,7 +58,7 @@ class SatusehatResourceHelper
             'Authorization' => 'Bearer '.$token,
         ])
         ->get($url.'/Practitioner/'.$id);
-        
+
         return $response->json();
     }
 
@@ -151,7 +153,7 @@ class SatusehatResourceHelper
             'Authorization' => 'Bearer '.$token,
         ])
         ->post($url.'/Organization', $data);
-        
+
         return $response->json();
     }
 
@@ -166,7 +168,7 @@ class SatusehatResourceHelper
             'Authorization' => 'Bearer '.$token,
         ])
         ->get($url.'/Organization/'.$id);
-        
+
         return $response->json();
     }
 
@@ -181,7 +183,7 @@ class SatusehatResourceHelper
             'Authorization' => 'Bearer '.$token,
         ])
         ->get($url.'/Organization?partof='.$partof);
-        
+
         return $response->json();
     }
 }
