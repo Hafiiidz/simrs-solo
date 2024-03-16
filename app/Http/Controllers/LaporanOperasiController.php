@@ -237,6 +237,7 @@ class LaporanOperasiController extends Controller
     public function edit($id)
     {
         $data = LaporanOperasi::with('rawat','rawat.pasien')->where('id', $id)->first();
+        
         $dokter = Dokter::get();
         $tarif = Tarif::get();
         $tindakan = DB::table('operasi_tindakan')
@@ -265,10 +266,21 @@ class LaporanOperasiController extends Controller
 
     public function update(Request $request, $id)
     {
+        // return $request->all();
         $jaringan = new Collection([
             'jaringan_kultur' => $request->jaringan_kultur,
             'macam_jaringan' => ($request->jaringan_kultur == 1) ? $request->macam_jaringan : ''
         ]);
+        $time_out  = $request->time_out;
+        $sign_in = $request->sign_in;
+        $sign_out = $request->sign_out;
+        
+        $checklist = new Collection([
+            'time_out' => $time_out,
+            'sign_in' => $sign_in,
+            'sign_out' => $sign_out
+        ]);
+        // return $checklist;
         // return $request->all();
         $data = LaporanOperasi::find($id);
         $data->tgl_operasi = $request->tgl_operasi;
@@ -298,6 +310,7 @@ class LaporanOperasiController extends Controller
         $data->jaringan = $jaringan;
         $data->komplikasi = $request->komplikasi;
         $data->desinfektan_kulit = $request->desinfektan_kulit;
+        $data->checklist = $checklist;
         $data->save();
 
         if($request->nama_template){

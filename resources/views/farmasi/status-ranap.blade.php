@@ -445,157 +445,175 @@
                                                 @endif
                                             @endif --}}
                                             @if ($antrian?->status_antrian == 'Antrian')
-                                            <h4>Permintaan Resep</h4>
-                                            <h6>Dokter : {{ $rawat->dokter->nama_dokter }}</h6>
-        
-                                            <h4>Racikan</h4>
-                                            {{-- Racikan --}}
-                                            <form action="" id='formPermintaanobat'>
-                                                <table class="table table-bordered fs-7 gs-2 gy-2 gx-2" id="kt_docs_repeater_basic">
-                                                    <thead class="text-center align-middle">
-                                                        <tr>
-                                                            <th rowspan="2">Nama Obat</th>
-                                                            {{-- <th rowspan="2" width=100>Jumlah Pemberian</th> --}}
-                                                            <th rowspan="2" width=500>Pemberian Obat</th>
-                                                            <th rowspan="2">Jenis Obat</th>
-                                                        </tr>
-        
-                                                    </thead>
-                                                    <tbody>
-                                                        {{-- {{ dd($antrian->racikan) }} --}}
-                                                        @if ($antrian->racikan != 'null' || $antrian->racikan != '' || $antrian->racikan != '[]' || $antrian->racikan != null)
+                                                <h4>Permintaan Resep</h4>
+                                                <h6>Dokter : {{ $rawat->dokter->nama_dokter }}</h6>
+
+                                                <h4>Racikan</h4>
+                                                {{-- Racikan --}}
+                                                <form action="" id='formPermintaanobat'>
+                                                    <table class="table table-bordered fs-7 gs-2 gy-2 gx-2"
+                                                        id="kt_docs_repeater_basic">
+                                                        <thead class="text-center align-middle">
                                                             <tr>
-                                                                <td colspan="10" class="fw-bold fs-6 text-gray-800">
-                                                                    Racikan
-                                                                </td>
-        
+                                                                <th rowspan="2">Nama Obat</th>
+                                                                {{-- <th rowspan="2" width=100>Jumlah Pemberian</th> --}}
+                                                                <th rowspan="2" width=500>Pemberian Obat</th>
+                                                                <th rowspan="2">Jenis Obat</th>
                                                             </tr>
-                                                            <tr>
-                                                                <td colspan="10" class="fw-bold fs-6 text-gray-800">
-                                                                    <button type="button" data-bs-toggle="modal"
-                                                                        data-bs-target="#modal_tambah_racikan"
-                                                                        class="btn btn-success btn-sm">Tambah Racikan</button>
-                                                                </td>
-                                                            </tr>
-                                                            @if ($antrian->racikan != 'null')
-                                                                @foreach (json_decode($antrian->racikan) as $val)
-                                                                    <input type="hidden" value="{{ $val->idresep }}"
-                                                                        name='idresep'>
-                                                                    <input type="hidden" value="{{ $antrian->id }}"
-                                                                        name='idantrian'>
-                                                                    <tr>
-                                                                        <td>
-                                                                            <table>
-                                                                                <tr>
-                                                                                    <th>Obat</th>
-                                                                                    <th>Harga</th>
-                                                                                    <th>Jumlah</th>
-                                                                                    <th width=50>Pemberian</th>
-                                                                                    <th width=50>Kronis</th>
-                                                                                </tr>
-                                                                                @foreach ($val->obat as $ob_racikan)
-                                                                                    @if ($ob_racikan->obat != null)
-                                                                                        <tr>
-                                                                                            <td>
-                                                                                                <button type="button"
-                                                                                                    data-id='{{ $val->idresep }}'
-                                                                                                    data-value='{{ $ob_racikan->obat }}'class="btn btn-light-success btn-sm btn-edit-racikan">{!! App\Helpers\VclaimHelper::get_data_obat($ob_racikan->obat) !!}</button>
-                                                                                            </td>
-                                                                                            <td>{!! App\Helpers\VclaimHelper::get_harga_obat($ob_racikan->obat, $rawat->idbayar) !!}</td>
-                                                                                            <td class="text-center">
-                                                                                                {{ $ob_racikan->jumlah_obat }}</td>
-                                                                                            <td>
-        
-                                                                                                <input type="text"
-                                                                                                    name="racikan[pemberian][{{ $val->idresep }}][]"
-                                                                                                    value="{{ isset($ob_racikan->diberikan) ? $ob_racikan->diberikan : '' }}"
-                                                                                                    class="form-control form-control-sm">
-        
-                                                                                            </td>
-                                                                                            <td>
-                                                                                                <input type="text"
-                                                                                                    name="racikan[pemberian_kronis][{{ $val->idresep }}][]"
-                                                                                                    value="{{ isset($ob_racikan->kronis) ? $ob_racikan->kronis : '' }}"
-                                                                                                    class="form-control form-control-sm">
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    @endif
-                                                                                @endforeach
-                                                                            </table>
-                                                                        </td>
-                                                                        <td class="align-middle text-center">{{ $val->dosis }}
-                                                                            {{ $val->takaran }} ( {{ $val->signa }} )
-                                                                            {{ $val->diminum . ' makan' }}
-                                                                            <b>{!! $val->dtd == 1 ? '<b> - (DTD)</b>' : '' !!}</b>
-                                                                        </td>
-                                                                        <td class="align-middle text-center">
-                                                                            <select name="jenis_obat[{{ $val->idresep }}]"
-                                                                                id="" class="form-select form-select-sm"
-                                                                                required>
-                                                                                <option value="">- Jenis Obat
-                                                                                    -
-                                                                                </option>
-                                                                                @foreach ($transaksi_bayar as $tb)
-                                                                                    @if (isset($val->jenis))
-                                                                                        <option
-                                                                                            {{ $val->jenis == $tb->id ? 'selected' : '' }}
-                                                                                            value="{{ $tb->id }}">
-                                                                                            {{ $tb->bayar }}
-                                                                                        </option>
-                                                                                    @else
-                                                                                        <option value="{{ $tb->id }}">
-                                                                                            {{ $tb->bayar }}
-                                                                                        </option>
-                                                                                    @endif
-                                                                                @endforeach
-                                                                            </select>
-                                                                        </td>
-                                                                        <td class="align-middle text-center">
-                                                                            <a class="btn btn-danger btn-sm" href="{{ route('farmasi.delete-resep',$val->idresep) }}">Hapus</a>
-                                                                        </td>
-                                                                    </tr>
-                                                                @endforeach
+
+                                                        </thead>
+                                                        <tbody>
+                                                            {{-- {{ dd($antrian->racikan) }} --}}
+                                                            @if ($antrian->racikan != 'null' || $antrian->racikan != '' || $antrian->racikan != '[]' || $antrian->racikan != null)
+                                                                <tr>
+                                                                    <td colspan="10" class="fw-bold fs-6 text-gray-800">
+                                                                        Racikan
+                                                                    </td>
+
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colspan="10" class="fw-bold fs-6 text-gray-800">
+                                                                        <button type="button" data-bs-toggle="modal"
+                                                                            data-bs-target="#modal_tambah_racikan"
+                                                                            class="btn btn-success btn-sm">Tambah
+                                                                            Racikan</button>
+                                                                    </td>
+                                                                </tr>
+                                                                @if ($antrian->racikan != 'null')
+                                                                    @foreach (json_decode($antrian->racikan) as $val)
+                                                                        <input type="hidden" value="{{ $val->idresep }}"
+                                                                            name='idresep'>
+                                                                        <input type="hidden" value="{{ $antrian->id }}"
+                                                                            name='idantrian'>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <table>
+                                                                                    <tr>
+                                                                                        <th>Obat</th>
+                                                                                        <th>Harga</th>
+                                                                                        <th>Jumlah</th>
+                                                                                        <th width=50>Pemberian</th>
+                                                                                        <th width=50>Kronis</th>
+                                                                                    </tr>
+                                                                                    @foreach ($val->obat as $ob_racikan)
+                                                                                        @if ($ob_racikan->obat != null)
+                                                                                            <tr>
+                                                                                                <td>
+                                                                                                    <button type="button"
+                                                                                                        data-id='{{ $val->idresep }}'
+                                                                                                        data-value='{{ $ob_racikan->obat }}'class="btn btn-light-success btn-sm btn-edit-racikan">{!! App\Helpers\VclaimHelper::get_data_obat($ob_racikan->obat) !!}</button>
+                                                                                                </td>
+                                                                                                <td>{!! App\Helpers\VclaimHelper::get_harga_obat($ob_racikan->obat, $rawat->idbayar) !!}
+                                                                                                </td>
+                                                                                                <td class="text-center">
+                                                                                                    {{ $ob_racikan->jumlah_obat }}
+                                                                                                </td>
+                                                                                                <td>
+
+                                                                                                    <input type="text"
+                                                                                                        name="racikan[pemberian][{{ $val->idresep }}][]"
+                                                                                                        value="{{ isset($ob_racikan->diberikan) ? $ob_racikan->diberikan : '' }}"
+                                                                                                        class="form-control form-control-sm">
+
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <input type="text"
+                                                                                                        name="racikan[pemberian_kronis][{{ $val->idresep }}][]"
+                                                                                                        value="{{ isset($ob_racikan->kronis) ? $ob_racikan->kronis : '' }}"
+                                                                                                        class="form-control form-control-sm">
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        @endif
+                                                                                    @endforeach
+                                                                                </table>
+                                                                            </td>
+                                                                            <td class="align-middle text-center">
+                                                                                {{ $val->dosis }}
+                                                                                {{ $val->takaran }} ( {{ $val->signa }}
+                                                                                )
+                                                                                {{ $val->diminum . ' makan' }}
+                                                                                <b>{!! $val->dtd == 1 ? '<b> - (DTD)</b>' : '' !!}</b>
+                                                                            </td>
+                                                                            <td class="align-middle text-center">
+                                                                                <select
+                                                                                    name="jenis_obat[{{ $val->idresep }}]"
+                                                                                    id=""
+                                                                                    class="form-select form-select-sm"
+                                                                                    required>
+                                                                                    <option value="">- Jenis Obat
+                                                                                        -
+                                                                                    </option>
+                                                                                    @foreach ($transaksi_bayar as $tb)
+                                                                                        @if (isset($val->jenis))
+                                                                                            <option
+                                                                                                {{ $val->jenis == $tb->id ? 'selected' : '' }}
+                                                                                                value="{{ $tb->id }}">
+                                                                                                {{ $tb->bayar }}
+                                                                                            </option>
+                                                                                        @else
+                                                                                            <option
+                                                                                                value="{{ $tb->id }}">
+                                                                                                {{ $tb->bayar }}
+                                                                                            </option>
+                                                                                        @endif
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </td>
+                                                                            <td class="align-middle text-center">
+                                                                                <a class="btn btn-danger btn-sm"
+                                                                                    href="{{ route('farmasi.delete-resep', $val->idresep) }}">Hapus</a>
+                                                                            </td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                @endif
                                                             @endif
-                                                        @endif
-                                                        {{-- Non Racikan --}}
-                                                    </tbody>
-                                                </table>
-        
-        
-                                                <hr>
-                                                <h4>Non Racikan</h4>
-                                                <table class="table table-bordered fs-7 gs-2 gy-2 gx-2"
-                                                    id="kt_docs_repeater_basic">
-                                                    <thead class="text-center align-middle">
-                                                        <tr>
-                                                            <th rowspan="2">Nama Obat</th>
-                                                            {{-- <th rowspan="2" width=100>Jumlah Pemberian</th> --}}
-                                                            <th rowspan="2">Harga</th>
-                                                            <th rowspan="2">Jumlah</th>
-                                                            <th rowspan="2" width=100>Pemberian</th>
-                                                            <th rowspan="2" width=100>Kronis</th>
-                                                            <th rowspan="2">Dosis / Takaran Obat</th>
-                                                            <th rowspan="2">Jenis Obat</th>
-                                                        </tr>
-        
-                                                    </thead>
-                                                    <tbody class="align-middle">
-                                                        @if ($antrian->obat != 'null' || $antrian->obat != '' || $antrian->obat != '[]')
-                                                            @if ($antrian->obat != 'null')
-                                                                @foreach (json_decode($antrian->obat) as $val)
-                                                                    <input type="hidden" value="{{ $val->idresep }}"
-                                                                        name='idresep_non_racikan[]'>
-                                                                    <input type="hidden" value="{{ $antrian->id }}"
-                                                                        name='idantrian'>
-                                                                    <tr>
-                                                                        <td>
-                                                                            @if (isset($val->tambahan_farmasi))
-                                                                                @if ($val->tambahan_farmasi != null)
-                                                                                    <button type="button"
-                                                                                        data-id="{{ $antrian->id }}"
-                                                                                        data-value="{{ $val->obat }}"
-                                                                                        class="btn btn-light-danger btn-sm btn-hapus-farmasi">
-                                                                                        {!! App\Helpers\VclaimHelper::get_data_obat($val->obat) !!}</button>
+                                                            {{-- Non Racikan --}}
+                                                        </tbody>
+                                                    </table>
+
+
+                                                    <hr>
+                                                    <h4>Non Racikan</h4>
+                                                    <table class="table table-bordered fs-7 gs-2 gy-2 gx-2"
+                                                        id="kt_docs_repeater_basic">
+                                                        <thead class="text-center align-middle">
+                                                            <tr>
+                                                                <th rowspan="2">Nama Obat</th>
+                                                                {{-- <th rowspan="2" width=100>Jumlah Pemberian</th> --}}
+                                                                <th rowspan="2">Harga</th>
+                                                                <th rowspan="2">Jumlah</th>
+                                                                <th rowspan="2" width=100>Pemberian</th>
+                                                                <th rowspan="2" width=100>Kronis</th>
+                                                                <th rowspan="2">Dosis / Takaran Obat</th>
+                                                                <th rowspan="2">Jenis Obat</th>
+                                                            </tr>
+
+                                                        </thead>
+                                                        <tbody class="align-middle">
+                                                            @if ($antrian->obat != 'null' || $antrian->obat != '' || $antrian->obat != '[]')
+                                                                @if ($antrian->obat != 'null')
+                                                                    @foreach (json_decode($antrian->obat) as $val)
+                                                                        <input type="hidden" value="{{ $val->idresep }}"
+                                                                            name='idresep_non_racikan[]'>
+                                                                        <input type="hidden" value="{{ $antrian->id }}"
+                                                                            name='idantrian'>
+                                                                        <tr>
+                                                                            <td>
+                                                                                @if (isset($val->tambahan_farmasi))
+                                                                                    @if ($val->tambahan_farmasi != null)
+                                                                                        <button type="button"
+                                                                                            data-id="{{ $antrian->id }}"
+                                                                                            data-value="{{ $val->obat }}"
+                                                                                            class="btn btn-light-danger btn-sm btn-hapus-farmasi">
+                                                                                            {!! App\Helpers\VclaimHelper::get_data_obat($val->obat) !!}</button>
+                                                                                    @else
+                                                                                        <button type="button"
+                                                                                            data-id="{{ $antrian->id }}"
+                                                                                            data-value="{{ $val->obat }}"
+                                                                                            class="btn btn-light-success btn-sm btn-edit-farmasi">
+                                                                                            {!! App\Helpers\VclaimHelper::get_data_obat($val->obat) !!}
+                                                                                        </button>
+                                                                                    @endif
                                                                                 @else
                                                                                     <button type="button"
                                                                                         data-id="{{ $antrian->id }}"
@@ -604,122 +622,122 @@
                                                                                         {!! App\Helpers\VclaimHelper::get_data_obat($val->obat) !!}
                                                                                     </button>
                                                                                 @endif
-                                                                            @else
-                                                                                <button type="button"
-                                                                                    data-id="{{ $antrian->id }}"
-                                                                                    data-value="{{ $val->obat }}"
-                                                                                    class="btn btn-light-success btn-sm btn-edit-farmasi">
-                                                                                    {!! App\Helpers\VclaimHelper::get_data_obat($val->obat) !!}
-                                                                                </button>
-                                                                            @endif
-        
-                                                                        </td>
-                                                                        <td>{!! App\Helpers\VclaimHelper::get_harga_obat($val->obat, $rawat->idbayar) !!}</td>
-                                                                        <td class="text-center">
-                                                                            {{ $val->jumlah }}</td>
-                                                                        <td>
-                                                                            <input type="text"
-                                                                                name="pemberian[{{ $val->idresep }}]"
-                                                                                value="{{ isset($val->diberikan) ? $val->diberikan : '' }}"
-                                                                                class="form-control form-control-sm">
-                                                                        </td>
-                                                                        <td>
-                                                                            <input type="text"
-                                                                                name="kronis[{{ $val->idresep }}]"
-                                                                                value="{{ isset($val->kronis) ? $val->kronis : '' }}"
-                                                                                class="form-control form-control-sm">
-                                                                        </td>
-                                                                        <td class="text-center">
-                                                                            {{ $val->dosis }}
-                                                                            {{ $val->takaran }} ( {{ $val->signa }} )
-                                                                            {{ $val->diminum . ' makan' }}
-                                                                        </td>
-                                                                        <td class="align-middle text-center">
-                                                                            <select
-                                                                                name="jenis_obat_non_racikan[{{ $val->idresep }}]"
-                                                                                id="" class="form-select form-select-sm"
-                                                                                required>
-                                                                                <option value="">- Jenis Obat
-                                                                                    -
-                                                                                </option>
-                                                                                @foreach ($transaksi_bayar as $tb)
-                                                                                    @if (isset($val->jenis))
-                                                                                        <option
-                                                                                            {{ $val->jenis == $tb->id ? 'selected' : '' }}
-                                                                                            value="{{ $tb->id }}">
-                                                                                            {{ $tb->bayar }}
-                                                                                        </option>
-                                                                                    @else
-                                                                                        <option value="{{ $tb->id }}">
-                                                                                            {{ $tb->bayar }}
-                                                                                        </option>
-                                                                                    @endif
-                                                                                @endforeach
-                                                                            </select>
-                                                                        </td>
-                                                                    </tr>
-                                                                @endforeach
-                                                               
-                                                            @endif
-                                                            <tr>
-                                                                <td colspan=7>
-                                                                    <div
-                                                                        class="alert alert-primary d-flex align-items-center p-5 mb-10">
-                                                                        <i
-                                                                            class="ki-duotone ki-shield-tick fs-2hx text-primary me-4"><span
-                                                                                class="path1"></span><span
-                                                                                class="path2"></span></i>
-                                                                        <div class="d-flex flex-column">
-                                                                            <h4 class="mb-1 text-primary">Klik Update terlebih
-                                                                                dahulu untuk dapat menambah obat</h4>
+
+                                                                            </td>
+                                                                            <td>{!! App\Helpers\VclaimHelper::get_harga_obat($val->obat, $rawat->idbayar) !!}</td>
+                                                                            <td class="text-center">
+                                                                                {{ $val->jumlah }}</td>
+                                                                            <td>
+                                                                                <input type="text"
+                                                                                    name="pemberian[{{ $val->idresep }}]"
+                                                                                    value="{{ isset($val->diberikan) ? $val->diberikan : '' }}"
+                                                                                    class="form-control form-control-sm">
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="text"
+                                                                                    name="kronis[{{ $val->idresep }}]"
+                                                                                    value="{{ isset($val->kronis) ? $val->kronis : '' }}"
+                                                                                    class="form-control form-control-sm">
+                                                                            </td>
+                                                                            <td class="text-center">
+                                                                                {{ $val->dosis }}
+                                                                                {{ $val->takaran }} ( {{ $val->signa }}
+                                                                                )
+                                                                                {{ $val->diminum . ' makan' }}
+                                                                            </td>
+                                                                            <td class="align-middle text-center">
+                                                                                <select
+                                                                                    name="jenis_obat_non_racikan[{{ $val->idresep }}]"
+                                                                                    id=""
+                                                                                    class="form-select form-select-sm"
+                                                                                    required>
+                                                                                    <option value="">- Jenis Obat
+                                                                                        -
+                                                                                    </option>
+                                                                                    @foreach ($transaksi_bayar as $tb)
+                                                                                        @if (isset($val->jenis))
+                                                                                            <option
+                                                                                                {{ $val->jenis == $tb->id ? 'selected' : '' }}
+                                                                                                value="{{ $tb->id }}">
+                                                                                                {{ $tb->bayar }}
+                                                                                            </option>
+                                                                                        @else
+                                                                                            <option
+                                                                                                value="{{ $tb->id }}">
+                                                                                                {{ $tb->bayar }}
+                                                                                            </option>
+                                                                                        @endif
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                @endif
+                                                                <tr>
+                                                                    <td colspan=7>
+                                                                        <div
+                                                                            class="alert alert-primary d-flex align-items-center p-5 mb-10">
+                                                                            <i
+                                                                                class="ki-duotone ki-shield-tick fs-2hx text-primary me-4"><span
+                                                                                    class="path1"></span><span
+                                                                                    class="path2"></span></i>
+                                                                            <div class="d-flex flex-column">
+                                                                                <h4 class="mb-1 text-primary">Klik Update
+                                                                                    terlebih
+                                                                                    dahulu untuk dapat menambah obat</h4>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                    <button type="button" data-id="{{ $antrian->id }}" id="modal_tambah_non"class="btn btn-primary btn-sm">Tambah</button>
-                                                                </td>
-                                                            </tr>
-                                                        @endif
-                                                    </tbody>
-                                                </table>
-                                            </form>
-                                            <div class="row mt-5">
-                                                <div class="col-md-2">
-                                                    <label class="form-label">Total Resep</label>
-                                                    <input type="text" name="total_resep" id="total_resep"
-                                                        class="form-control form-control-solid" readonly>
+                                                                        <button type="button"
+                                                                            data-id="{{ $antrian->id }}"
+                                                                            id="modal_tambah_non"class="btn btn-primary btn-sm">Tambah</button>
+                                                                    </td>
+                                                                </tr>
+                                                            @endif
+                                                        </tbody>
+                                                    </table>
+                                                </form>
+                                                <div class="row mt-5">
+                                                    <div class="col-md-2">
+                                                        <label class="form-label">Total Resep</label>
+                                                        <input type="text" name="total_resep" id="total_resep"
+                                                            class="form-control form-control-solid" readonly>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label class="form-label">&nbsp;</label>
+                                                        <br>
+                                                        <button type="button" class="btn btn-primary"
+                                                            id="btn-resep">Update
+                                                            Resep</button>
+                                                    </div>
+
                                                 </div>
-                                                <div class="col">
-                                                    <label class="form-label">&nbsp;</label>
-                                                    <br>
-                                                    <button type="button" class="btn btn-primary" id="btn-resep">Update
-                                                        Resep</button>
+                                                <div class="row">
+                                                    <div class="col">
+
+                                                        <form action="{{ route('farmasi.post-resep', $antrian->id) }}"
+                                                            id='formPermintaanobatSelesai' method="post">
+                                                            @csrf
+                                                            <a target="_blank" class="btn btn-warning mt-10"
+                                                                href="{{ route('farmasi.cetak-resep-tempo', $antrian->id) }}">Print
+                                                                Resep</a>
+                                                            <a target="_blank" class="btn btn-light-info mt-10"
+                                                                href="{{ route('farmasi.cetak-faktur-tempo', $antrian->id) }}">Print
+                                                                Faktur</a>
+                                                            <a target="_blank" class="btn btn-light-danger mt-10"
+                                                                href="{{ route('farmasi.cetak-tiket-tempo', $antrian->id) }}">E
+                                                                Tiket</a>
+                                                            <input type="hidden" name="idantrian" id=""
+                                                                value="{{ $antrian->id }}">
+                                                            <button class="btn btn-success mt-10">Simpan Resep</button>
+                                                        </form>
+                                                        <br>
+                                                        <a onclick="return confirm('Batalkan Resep?')"
+                                                            href="{{ route('farmasi.batalkan-resep', $antrian->id) }}"
+                                                            class="btn btn-danger"> Batalkan Resep </a>
+
+                                                    </div>
                                                 </div>
-        
-                                            </div>
-                                            <div class="row">
-                                                <div class="col">
-        
-                                                    <form action="{{ route('farmasi.post-resep', $antrian->id) }}"
-                                                        id='formPermintaanobatSelesai' method="post">
-                                                        @csrf
-                                                        <a target="_blank" class="btn btn-warning mt-10"
-                                                            href="{{ route('farmasi.cetak-resep-tempo', $antrian->id) }}">Print
-                                                            Resep</a>
-                                                        <a target="_blank" class="btn btn-light-info mt-10"
-                                                            href="{{ route('farmasi.cetak-faktur-tempo', $antrian->id) }}">Print
-                                                            Faktur</a>
-                                                        <a target="_blank" class="btn btn-light-danger mt-10"
-                                                            href="{{ route('farmasi.cetak-tiket-tempo', $antrian->id) }}">E
-                                                            Tiket</a>
-                                                        <input type="hidden" name="idantrian" id=""
-                                                            value="{{ $antrian->id }}">
-                                                        <button class="btn btn-success mt-10">Simpan Resep</button>
-                                                    </form>
-                                                    <br>
-                                                    <a onclick="return confirm('Batalkan Resep?')" href="{{ route('farmasi.batalkan-resep',$antrian->id) }}" class="btn btn-danger"> Batalkan Resep </a>
-        
-                                                </div>
-                                            </div>
-                                        @endif
+                                            @endif
 
                                             <table class="table table-bordered mt-10">
                                                 <thead>
@@ -755,6 +773,11 @@
                                                             <td>
                                                                 <a href="{{ route('farmasi.cetak-resep', $r->id) }}"
                                                                     class="btn btn-info btn-sm" target="_blank">Print</a>
+                                                                @if ($r->idresep != null)
+                                                                    <a href="{{ route('farmasi.cetak-resep-tempo', $r->idresep) }}"
+                                                                        class="btn btn-success btn-sm"
+                                                                        target="_blank">Print Resep</a>
+                                                                @endif
                                                                 <a href="{{ route('farmasi.cetak-tiket', $r->id) }}"
                                                                     class="btn btn-info btn-sm" target="_blank">Print
                                                                     Tiket</a>
@@ -796,9 +819,9 @@
                                                                 <td>{{ $val->rute }}</td>
                                                                 <td>{{ $val->signa }}</td>
                                                                 <td>
-                                                                    @foreach ($val->obat_obatan as $obat)
-                                                                        Jam :{{ $obat->jam }} <br>
-                                                                        Initial :{{ $obat->initial }}<br>
+                                                                    @foreach ($val->obat_obatan as $ob)
+                                                                        Jam :{{ $ob->jam }} <br>
+                                                                        Initial :{{ $ob->initial }}<br>
                                                                         <div
                                                                             class="separator separator-dashed border-secondary mt-5 mb-5">
                                                                         </div>
@@ -899,9 +922,9 @@
                                                                 <td>{{ $val->rute }}</td>
                                                                 <td>{{ $val->signa }}</td>
                                                                 <td>
-                                                                    @foreach ($val->obat_obatan as $obat)
-                                                                        Jam :{{ $obat->jam }} <br>
-                                                                        Initial :{{ $obat->initial }}<br>
+                                                                    @foreach ($val->obat_obatan as $ob)
+                                                                        Jam :{{ $ob->jam }} <br>
+                                                                        Initial :{{ $ob->initial }}<br>
                                                                         <div
                                                                             class="separator separator-dashed border-secondary mt-5 mb-5">
                                                                         </div>
@@ -1177,10 +1200,10 @@
                                         <select name="obat_non" id='nama_obat_non' class="form-select form-select-sm"
                                             data-control="select2" data-placeholder="-Pilih-" required>
                                             <option value=""></option>
-                                            @foreach ($obat as $val)
-                                                <option value="{{ $val->id }}">
-                                                    {{ $val->nama_obat }} -
-                                                    {{ $val->satuan->satuan }}
+                                            @foreach ($obat as $o)
+                                                <option value="{{ $o->id }}">
+                                                    {{ $o->nama_obat }} -
+                                                    {{ $o->satuan->satuan }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -1219,7 +1242,8 @@
                                                     class="form-select form-select-sm">
                                                     <option value="">Pilih Takaran</option>
                                                     @foreach ($takaran as $t)
-                                                        <option value="{{ $t }}">{{ $t }}</option>
+                                                        <option value="{{ $t }}">{{ $t }}
+                                                        </option>
                                                     @endforeach
                                                 </select>
 
@@ -1450,37 +1474,37 @@
         $("#kt_datepicker_1").flatpickr();
         $(function() {
             $("#frmCppt").on("submit", function(event) {
-                    event.preventDefault();
-                    var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
-                    Swal.fire({
-                        title: 'Simpan Data',
-                        text: "Apakah Anda yakin akan menyimpan data CPPT ?",
-                        icon: 'info',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Ya, Simpan Data',
-                        cancelButtonText: 'Tidak'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.blockUI({
-                                css: {
-                                    border: 'none',
-                                    padding: '15px',
-                                    backgroundColor: '#000',
-                                    '-webkit-border-radius': '10px',
-                                    '-moz-border-radius': '10px',
-                                    opacity: .5,
-                                    color: '#fff',
-                                    fontSize: '16px'
-                                },
-                                message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
-                                baseZ: 9000,
-                            });
-                            this.submit();
-                        }
-                    });
+                event.preventDefault();
+                var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                Swal.fire({
+                    title: 'Simpan Data',
+                    text: "Apakah Anda yakin akan menyimpan data CPPT ?",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Simpan Data',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.blockUI({
+                            css: {
+                                border: 'none',
+                                padding: '15px',
+                                backgroundColor: '#000',
+                                '-webkit-border-radius': '10px',
+                                '-moz-border-radius': '10px',
+                                opacity: .5,
+                                color: '#fff',
+                                fontSize: '16px'
+                            },
+                            message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                            baseZ: 9000,
+                        });
+                        this.submit();
+                    }
                 });
+            });
             $("#formPermintaanobat").on("submit", function(event) {
                 event.preventDefault();
                 var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
@@ -1621,210 +1645,90 @@
             });
         });
     </script>
-        <script>
-            $('#id_data_obat').select2({
-                dropdownParent: $('#modal_lihat')
+    <script>
+        $('#id_data_obat').select2({
+            dropdownParent: $('#modal_lihat')
+        });
+        $(document).on('click', '.btn-edit-racikan', function() {
+            var id = $(this).attr('data-id');
+            var value = $(this).attr('data-value');
+
+
+            var url = '{{ route('get-edit-racikan', [':b_id', ':p_value']) }}';
+            url = url.replace(':b_id', id);
+            url = url.replace(':p_value', value);
+            $("#modal-hasil").empty();
+            $.get(url).done(function(data) {
+                $("#modal-hasil").html(data);
+                $("#modal_lihat").modal('show');
+                console.log(data);
             });
-            $(document).on('click', '.btn-edit-racikan', function() {
-                var id = $(this).attr('data-id');
-                var value = $(this).attr('data-value');
-    
-    
-                var url = '{{ route('get-edit-racikan', [':b_id', ':p_value']) }}';
-                url = url.replace(':b_id', id);
-                url = url.replace(':p_value', value);
-                $("#modal-hasil").empty();
-                $.get(url).done(function(data) {
-                    $("#modal-hasil").html(data);
-                    $("#modal_lihat").modal('show');
-                    console.log(data);
-                });
+        });
+        $(document).on('click', '.btn-edit-farmasi', function() {
+            var id = $(this).attr('data-id');
+            var value = $(this).attr('data-value');
+
+
+            var url = '{{ route('get-edit-farmasi', [':b_id', ':p_value']) }}';
+            url = url.replace(':b_id', id);
+            url = url.replace(':p_value', value);
+            $("#modal-hasil").empty();
+            $.get(url).done(function(data) {
+                $("#modal-hasil").html(data);
+                $("#modal_lihat").modal('show');
+                console.log(data);
             });
-            $(document).on('click', '.btn-edit-farmasi', function() {
-                var id = $(this).attr('data-id');
-                var value = $(this).attr('data-value');
-    
-    
-                var url = '{{ route('get-edit-farmasi', [':b_id', ':p_value']) }}';
-                url = url.replace(':b_id', id);
-                url = url.replace(':p_value', value);
-                $("#modal-hasil").empty();
-                $.get(url).done(function(data) {
-                    $("#modal-hasil").html(data);
-                    $("#modal_lihat").modal('show');
-                    console.log(data);
+        });
+        $(function() {
+            @for ($i = 1; $i <= 8; $i++)
+                $('#nama_obat_racikan{{ $i }}').select2({
+                    dropdownParent: $('#modal_tambah_racikan')
                 });
+            @endfor
+            $('#nama_obat_non').select2({
+                dropdownParent: $('#modal_tambah')
             });
-            $(function() {
-                @for ($i = 1; $i <= 8; $i++)
-                    $('#nama_obat_racikan{{ $i }}').select2({
-                        dropdownParent: $('#modal_tambah_racikan')
-                    });
-                @endfor
-                $('#nama_obat_non').select2({
-                    dropdownParent: $('#modal_tambah')
-                });
-                $('#kt_docs_repeater_basic').repeater({
-                    initEmpty: false,
-                    repeaters: [{
-                        selector: '.inner-repeater',
-                        show: function() {
-                            $(this).slideDown();
-                            $(this).find('[data-kt-repeater="select2"]').select2();
-                        },
-    
-                        hide: function(deleteElement) {
-                            $(this).slideUp(deleteElement);
-                        }
-                    }],
+            $('#kt_docs_repeater_basic').repeater({
+                initEmpty: false,
+                repeaters: [{
+                    selector: '.inner-repeater',
                     show: function() {
                         $(this).slideDown();
-    
                         $(this).find('[data-kt-repeater="select2"]').select2();
                     },
-    
+
                     hide: function(deleteElement) {
                         $(this).slideUp(deleteElement);
-                    },
-    
-                    ready: function() {
-                        $('[data-kt-repeater="select2"]').select2();
                     }
-                });
-                
-    
-                $("#modal_tambah_non").on("click", function(event) {
-                    var id = $(this).data('id');
-                    $('#modal_tambah').modal('show');
-                    $('#id_tambah').val(id);
-    
-                })
-                $("#formPermintaanobatSelesai").on("submit", function(event) {
-                    event.preventDefault();
-                    var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
-                    Swal.fire({
-                        title: 'Simpan Data',
-                        text: "Apakah Anda yakin akan menyimpan data ini ? data yang sudah di simpan tidak dapat di hapus kembali",
-                        icon: 'info',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Ya, Simpan Data',
-                        cancelButtonText: 'Tidak'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.blockUI({
-                                css: {
-                                    border: 'none',
-                                    padding: '15px',
-                                    backgroundColor: '#000',
-                                    '-webkit-border-radius': '10px',
-                                    '-moz-border-radius': '10px',
-                                    opacity: .5,
-                                    color: '#fff',
-                                    fontSize: '16px'
-                                },
-                                message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
-                                baseZ: 9000,
-                            });
-                            this.submit();
-                        }
-                    });
-                });
-                $(".btn-hapus-farmasi").on("click", function(event) {
-                    var idantrian = $(this).data('id');
-                    var idobat = $(this).data('value');
-                    event.preventDefault();
-                    var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
-                    Swal.fire({
-                        title: 'Hapus Data',
-                        text: "Apakah Anda yakin akan menghapus data ini ?",
-                        icon: 'info',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Ya, Hapus Data',
-                        cancelButtonText: 'Tidak'
-                    }).then((result) => {
-                        $.ajax({
-                                method: "GET",
-                                url: "{{ route('hapus-data-resep') }}",
-                                data: {
-                                    antrian: idantrian,
-                                    idobat: idobat
-                                }
-                            })
-                            .done(function(msg) {
-                                //reload page
-                                console.log(msg);
-                                Swal.fire({
-                                    text: 'Data berhasil di hapus',
-                                    icon: "success",
-                                    buttonsStyling: false,
-                                    confirmButtonText: "Ok",
-                                    customClass: {
-                                        confirmButton: "btn btn-primary"
-                                    }
-                                });
-                                location.reload();
-                            });
-                    });
-    
-    
-                })
-                $("#updNonracikan").on("submit", function(event) {
-                    event.preventDefault();
-                    var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
-                    Swal.fire({
-                        title: 'Simpan Data',
-                        text: "Apakah Anda yakin akan menyimpan data ini ? data yang sudah di simpan tidak dapat di hapus kembali",
-                        icon: 'info',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Ya, Simpan Data',
-                        cancelButtonText: 'Tidak'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.blockUI({
-                                css: {
-                                    border: 'none',
-                                    padding: '15px',
-                                    backgroundColor: '#000',
-                                    '-webkit-border-radius': '10px',
-                                    '-moz-border-radius': '10px',
-                                    opacity: .5,
-                                    color: '#fff',
-                                    fontSize: '16px'
-                                },
-                                message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
-                                baseZ: 9000,
-                            });
-                            this.submit();
-                        }
-                    });
-                });
-            })
-    
-            $("#btn-resep").on("click", function() {
-                var formData = $("#formPermintaanobat").serialize();
-                // console.log(formData)
-                $.ajax({
-                    type: "GET",
-                    url: '{{ route('farmasi.update-resep') }}',
-                    data: formData,
-                    success: function(response) {
-                        console.log(response);
-                        $('#total_resep').val('Rp.' + response.total);
-                    }
-                });
+                }],
+                show: function() {
+                    $(this).slideDown();
+
+                    $(this).find('[data-kt-repeater="select2"]').select2();
+                },
+
+                hide: function(deleteElement) {
+                    $(this).slideUp(deleteElement);
+                },
+
+                ready: function() {
+                    $('[data-kt-repeater="select2"]').select2();
+                }
             });
-            $('#frmRacikan').on('submit', function(event) {
+
+
+            $("#modal_tambah_non").on("click", function(event) {
+                var id = $(this).data('id');
+                $('#modal_tambah').modal('show');
+                $('#id_tambah').val(id);
+
+            })
+            $("#formPermintaanobatSelesai").on("submit", function(event) {
                 event.preventDefault();
                 var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
                 Swal.fire({
                     title: 'Simpan Data',
-                    text: "Apakah Anda yakin akan menyimpan data ini ?",
+                    text: "Apakah Anda yakin akan menyimpan data ini ? data yang sudah di simpan tidak dapat di hapus kembali",
                     icon: 'info',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -1850,8 +1754,128 @@
                         this.submit();
                     }
                 });
-    
-    
             });
-        </script>
+            $(".btn-hapus-farmasi").on("click", function(event) {
+                var idantrian = $(this).data('id');
+                var idobat = $(this).data('value');
+                event.preventDefault();
+                var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                Swal.fire({
+                    title: 'Hapus Data',
+                    text: "Apakah Anda yakin akan menghapus data ini ?",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Hapus Data',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    $.ajax({
+                            method: "GET",
+                            url: "{{ route('hapus-data-resep') }}",
+                            data: {
+                                antrian: idantrian,
+                                idobat: idobat
+                            }
+                        })
+                        .done(function(msg) {
+                            //reload page
+                            console.log(msg);
+                            Swal.fire({
+                                text: 'Data berhasil di hapus',
+                                icon: "success",
+                                buttonsStyling: false,
+                                confirmButtonText: "Ok",
+                                customClass: {
+                                    confirmButton: "btn btn-primary"
+                                }
+                            });
+                            location.reload();
+                        });
+                });
+
+
+            })
+            $("#updNonracikan").on("submit", function(event) {
+                event.preventDefault();
+                var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+                Swal.fire({
+                    title: 'Simpan Data',
+                    text: "Apakah Anda yakin akan menyimpan data ini ? data yang sudah di simpan tidak dapat di hapus kembali",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Simpan Data',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.blockUI({
+                            css: {
+                                border: 'none',
+                                padding: '15px',
+                                backgroundColor: '#000',
+                                '-webkit-border-radius': '10px',
+                                '-moz-border-radius': '10px',
+                                opacity: .5,
+                                color: '#fff',
+                                fontSize: '16px'
+                            },
+                            message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                            baseZ: 9000,
+                        });
+                        this.submit();
+                    }
+                });
+            });
+        })
+
+        $("#btn-resep").on("click", function() {
+            var formData = $("#formPermintaanobat").serialize();
+            // console.log(formData)
+            $.ajax({
+                type: "GET",
+                url: '{{ route('farmasi.update-resep') }}',
+                data: formData,
+                success: function(response) {
+                    console.log(response);
+                    $('#total_resep').val('Rp.' + response.total);
+                }
+            });
+        });
+        $('#frmRacikan').on('submit', function(event) {
+            event.preventDefault();
+            var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+            Swal.fire({
+                title: 'Simpan Data',
+                text: "Apakah Anda yakin akan menyimpan data ini ?",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Simpan Data',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.blockUI({
+                        css: {
+                            border: 'none',
+                            padding: '15px',
+                            backgroundColor: '#000',
+                            '-webkit-border-radius': '10px',
+                            '-moz-border-radius': '10px',
+                            opacity: .5,
+                            color: '#fff',
+                            fontSize: '16px'
+                        },
+                        message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                        baseZ: 9000,
+                    });
+                    this.submit();
+                }
+            });
+
+
+        });
+    </script>
 @endsection

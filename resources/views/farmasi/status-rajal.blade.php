@@ -256,6 +256,8 @@
                                                                     {{ $val->takaran }} ( {{ $val->signa }} )
                                                                     {{ $val->diminum . ' makan' }}
                                                                     <b>{!! $val->dtd == 1 ? '<b> - (DTD)</b>' : '' !!}</b>
+                                                                    <br>
+                                                                    <pre>{{ $val->catatan  }}</pre>
                                                                 </td>
                                                                 <td class="align-middle text-center">
                                                                     <select name="jenis_obat[{{ $val->idresep }}]"
@@ -304,7 +306,7 @@
                                                     <th rowspan="2">Jumlah</th>
                                                     <th rowspan="2" width=100>Pemberian</th>
                                                     <th rowspan="2" width=100>Kronis</th>
-                                                    <th rowspan="2">Dosis / Takaran Obat</th>
+                                                    <th rowspan="2">Dosis / Takaran Obat / Catatan</th>
                                                     <th rowspan="2">Jenis Obat</th>
                                                 </tr>
 
@@ -342,9 +344,11 @@
                                                                             {!! App\Helpers\VclaimHelper::get_data_obat($val->obat) !!}
                                                                         </button>
                                                                     @endif
-
+                                                                   
                                                                 </td>
-                                                                <td>{!! App\Helpers\VclaimHelper::IndoCurr(App\Helpers\VclaimHelper::get_harga_obat($val->obat, $rawat->idbayar)) !!}</td>
+                                                                <td>
+                                                                    {!! App\Helpers\VclaimHelper::IndoCurr(App\Helpers\VclaimHelper::get_harga_obat($val->obat, $rawat->idbayar)) !!}
+                                                                </td>
                                                                 <td class="text-center">
                                                                     {{ $val->jumlah }}</td>
                                                                 <td>
@@ -363,6 +367,8 @@
                                                                     {{ $val->dosis }}
                                                                     {{ $val->takaran }} ( {{ $val->signa }} )
                                                                     {{ $val->diminum . ' makan' }}
+                                                                    <br>
+                                                                    <pre>{{ $val->catatan  }}</pre>
                                                                 </td>
                                                                 <td class="align-middle text-center">
                                                                     <select
@@ -538,12 +544,12 @@
 
                             <form id='updNonracikan' action="{{ route('farmasi.tambah-obat') }}" method="POST">
                                 @csrf
-                                {{-- <label for="">aaa</label> --}}
+                                {{-- <label >aaa</label> --}}
                                 <input type="hidden" name="idtambah" id="id_tambah">
                                 <input type="hidden" name="idrawat" id="id_rawat" value="{{ $rawat->id }}">
                                 <div class="row mb-5">
                                     <div class="col-md-12">
-                                        <label for="">Obat</label>
+                                        <label class="form-label" >Obat</label>
                                         <select name="obat_non" id='nama_obat_non' class="form-select form-select-sm"
                                             data-control="select2" data-placeholder="-Pilih-" required>
                                             <option value=""></option>
@@ -610,13 +616,13 @@
                                                 <div class="form-check form-check-inline mb-2">
                                                     <input class="form-check-input" type="radio" name="takaran"
                                                         id="kapsul" value="sebelum">
-                                                    <label class="form-check-label" for="tablet">Sebelum</label>
+                                                    <label class="form-check-label" >Sebelum</label>
                                                 </div>
 
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="radio" name="takaran"
                                                         id="kapsul" value="sesudah">
-                                                    <label class="form-check-label" for="kapsul">Sesudah</label>
+                                                    <label class="form-check-label" >Sesudah</label>
                                                 </div>
                                             </td>
 
@@ -765,13 +771,13 @@
                                         <div class="form-check form-check-inline mb-2">
                                             <input class="form-check-input" type="radio" name="takaran" id="kapsul"
                                                 value="sebelum">
-                                            <label class="form-check-label" for="tablet">Sebelum</label>
+                                            <label class="form-check-label" >Sebelum</label>
                                         </div>
 
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="takaran" id="kapsul"
                                                 value="sesudah">
-                                            <label class="form-check-label" for="kapsul">Sesudah</label>
+                                            <label class="form-check-label" >Sesudah</label>
                                         </div>
                                     </td>
                                     <td class="text-center" width='10'>

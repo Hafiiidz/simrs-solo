@@ -690,7 +690,7 @@
                             @endif
                             @if (auth()->user()->idpriv == 7)
                                 <!--begin::Underline-->
-                                <span class="d-inline-block position-relative mb-7">
+                                {{-- <span class="d-inline-block position-relative mb-7">
                                     <!--begin::Label-->
                                     <span class="d-inline-block mb-2 fs-4 fw-bold">
                                         Rencana Pemeriksaan
@@ -806,7 +806,7 @@
                                         <!--end::Form group-->
                                     </div>
                                     <!--end::Repeater-->
-                                </div>
+                                </div> --}}
                                 @if ($rawat->idpoli == 12)
                                 @endif
                                 <div class="row mb-5">
@@ -816,7 +816,7 @@
                                     </div>
                                 </div>
                                 <!--begin::Underline-->
-                                <span class="d-inline-block position-relative mb-7">
+                                {{-- <span class="d-inline-block position-relative mb-7">
                                     <!--begin::Label-->
                                     <span class="d-inline-block mb-2 fs-4 fw-bold">
                                         Terapi
@@ -827,7 +827,7 @@
                                     <span
                                         class="d-inline-block position-absolute h-5px bottom-0 end-0 start-0 bg-success translate rounded"></span>
                                     <!--end::Line-->
-                                </span>
+                                </span> --}}
                                 <!--end::Underline-->
                                 <div class="row mb-5">
                                     {{-- <table class="table table-bordered fs-9 gs-2 gy-2 gx-2" id="kt_docs_repeater_basic">

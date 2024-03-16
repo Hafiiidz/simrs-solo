@@ -29,7 +29,7 @@
                                                             ->first();
                                                         // dd($hasil);
                                                     @endphp
-                                                    <button onclick="modalHasilLab({{ $hasil->idhasil }})"
+                                                    <button onclick="modalHasilLab({{ $hasil?->idhasil }})"
                                                         class="btn btn-sm btn-secondary">Lihat Hasil</button>
                                                 @endif
                                             </li>
@@ -44,7 +44,7 @@
                                                             ->where('idpengantar', $p->id)
                                                             ->first();
                                                     @endphp
-                                                    <button onclick="modalHasilRad({{ $hasil->id }})"
+                                                    <button onclick="modalHasilRad({{ $hasil?->id }})"
                                                         class="btn btn-sm btn-secondary">Lihat Hasil</button>
                                                 @endif
                                             </li>
