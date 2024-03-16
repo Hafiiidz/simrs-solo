@@ -20,7 +20,7 @@ class EncounterHelper
     }
 
     public static function url(){
-        return env('STG_BASE_URL_SS');
+        return env('PROD_BASE_URL_SS');
     }
 
     public static function orgId(){
@@ -31,15 +31,21 @@ class EncounterHelper
 
         $data = [
             "resourceType"=> "Encounter",
+            "identifier"=> [
+                [
+                    "system"=> "http://sys-ids.kemkes.go.id/encounter/100026489",
+                    "value"=> "RJL2024009"
+                ]
+            ],
             "status"=> "arrived",
             "class"=> [
-                "system"=> "http=>//terminology.hl7.org/CodeSystem/v3-ActCode",
+                "system"=> "http://terminology.hl7.org/CodeSystem/v3-ActCode",
                 "code"=> "AMB",
                 "display"=> "ambulatory"
             ],
             "subject"=> [
-                "reference"=> "Patient/100000030009",
-                "display"=> "Budi Santoso"
+                "reference"=> "Patient/P01133936352",
+                "display"=> "Fikri Ramadhan"
             ],
             "participant"=> [
                 [
@@ -47,7 +53,7 @@ class EncounterHelper
                         [
                             "coding"=> [
                                 [
-                                    "system"=> "http=>//terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                                    "system"=> "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
                                     "code"=> "ATND",
                                     "display"=> "attender"
                                 ]
@@ -55,19 +61,19 @@ class EncounterHelper
                         ]
                     ],
                     "individual"=> [
-                        "reference"=> "Practitioner/N10000001",
-                        "display"=> "Dokter Bronsig"
+                        "reference"=> "Practitioner/10010107883",
+                        "display"=> "INDITO ADJIE"
                     ]
                 ]
             ],
             "period"=> [
-                "start"=> "2022-06-14T07:00:00+07:00"
+                "start"=> date('Y-m-d')."T".date('H:i:s')."+07:00"
             ],
             "location"=> [
                 [
                     "location"=> [
-                        "reference"=> "Location/b017aa54-f1df-4ec2-9d84-8823815d7228",
-                        "display"=> "Ruang 1A, Poliklinik Bedah Rawat Jalan Terpadu, Lantai 2, Gedung G"
+                        "reference"=> "Location/359f5ff7-61cc-4d43-b11b-b947c3ff450e",
+                        "display"=> "MINMED"
                     ]
                 ]
             ],
@@ -75,19 +81,14 @@ class EncounterHelper
                 [
                     "status"=> "arrived",
                     "period"=> [
-                        "start"=> "2022-06-14T07:00:00+07:00"
+                        "start"=> date('Y-m-d')."T".date('H:i:s')."+07:00"
                     ]
                 ]
             ],
             "serviceProvider"=> [
-                "reference"=> "Organization/" . EncounterHelper::orgId()
+                "reference"=> "Organization/100026489"
             ],
-            "identifier"=> [
-                [
-                    "system"=> "http=>//sys-ids.kemkes.go.id/encounter/" . EncounterHelper::orgId(),
-                    "value"=> "P20240001"
-                ]
-            ]
+           
         ];
 
         $response = Http::withOptions(["verify" => false])

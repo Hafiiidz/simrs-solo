@@ -94,8 +94,12 @@ Route::prefix('location')->group(function () {
         return LocationHelper::searchId($id);
     });
     Route::get('/update', function () {
-        $id = '07db4207-060a-41ca-b037-a4a852fd0a40'; //location id
-        return LocationHelper::update($id);
+        $id = '359f5ff7-61cc-4d43-b11b-b947c3ff450e'; //location id
+        $data = DB::table('organisasi_satusehat')->get();
+        foreach($data as $d){
+            LocationHelper::update($d->id_location);
+        }
+        return 'success';
     });
 });
 

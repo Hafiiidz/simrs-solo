@@ -19,7 +19,7 @@ class SatusehatPasienHelper
     public static function searchPasienByNik($nik){
         $get_token = SatusehatAuthHelper::generate_token();
         $token = $get_token['access_token'];
-        $url = env('STG_BASE_URL_SS');
+        $url = env('PROD_BASE_URL_SS');
         $response = Http::withOptions(["verify" => false])
         ->withHeaders([
             'Authorization' => 'Bearer '.$token,
@@ -32,7 +32,7 @@ class SatusehatPasienHelper
     public static function searchPasien($name, $gender, $birthdate){
         $get_token = SatusehatAuthHelper::generate_token();
         $token = $get_token['access_token'];
-        $url = env('STG_BASE_URL_SS');
+        $url = env('PROD_BASE_URL_SS');
         $response = Http::withOptions(["verify" => false])
         ->withHeaders([
             "Authorization" => "Bearer ".$token,
@@ -45,7 +45,7 @@ class SatusehatPasienHelper
     public static function pasien_id($id){
         $get_token = SatusehatAuthHelper::generate_token();
         $token = $get_token['access_token'];
-        $url = env('STG_BASE_URL_SS');
+        $url = env('PROD_BASE_URL_SS');
         $response = Http::withOptions(["verify" => false])
         ->withHeaders([
             "Authorization" => "Bearer ".$token,
@@ -57,11 +57,11 @@ class SatusehatPasienHelper
     public static function add_pasien($id){
         $get_token = SatusehatAuthHelper::generate_token();
         $token = $get_token['access_token'];
-        $url = env('STG_BASE_URL_SS');
+        $url = env('PROD_BASE_URL_SS');
         $pasien = Pasien::where('no_rm',$id)->first();
         $pasien_alamat = DB::table('pasien_alamat')->where('idpasien',$pasien->id)->first();
         if(!$pasien){
-            return false;
+            return 'Data tidak ada';
         }else{
             if($pasien->jenis_kelamin == 'L'){
                 $jenis_kelamin = 'male';

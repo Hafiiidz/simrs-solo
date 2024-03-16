@@ -20,7 +20,7 @@ class LocationHelper
     }
 
     public static function url(){
-        return env('STG_BASE_URL_SS');
+        return env('PROD_BASE_URL_SS');
     }
 
     public static function orgId(){
@@ -28,106 +28,110 @@ class LocationHelper
     }
 
     public static function create(){
-
-        $data = [
-            "resourceType"=> "Location",
-            // "identifier"=> [
-            //     [
-            //         "system"=> "http=>//sys-ids.kemkes.go.id/location/" . LocationHelper::orgId(),
-            //         "value"=> "1"
-            //     ]
-            // ],
-            "status"=> "active",
-            "name"=> "Ruangan-1",
-            "description"=> "Deskripsi dummy",
-            "mode"=> "instance",
-            "telecom"=> [
-                [
-                    "system"=> "phone",
-                    "value"=> "2328",
-                    "use"=> "work"
-                ],
-                [
-                    "system"=> "fax",
-                    "value"=> "2329",
-                    "use"=> "work"
-                ],
-                [
-                    "system"=> "email",
-                    "value"=> "second wing admissions"
-                ],
-                [
-                    "system"=> "url",
-                    "value"=> "http=>//sampleorg.com/southwing",
-                    "use"=> "work"
-                ]
-            ],
-            "address"=> [
-                "use"=> "work",
-                "line"=> [
-                    "Gd. Prof. Dr. Sujudi Lt.5, Jl. H.R. Rasuna Said Blok X5 Kav. 4-9 Kuningan"
-                ],
-                "city"=> "Jakarta",
-                "postalCode"=> "12950",
-                "country"=> "ID",
-                "extension"=> [
+        $organisasi = DB::table('organisasi_satusehat')->whereNull('id_location')->get();
+        $data_id = [];
+        foreach ($organisasi as $o) {
+            $data = [
+                "resourceType"=> "Location",
+                "status"=> "active",
+                "name"=> $o->nama_organisasi,
+                "description"=>  $o->nama_organisasi,
+                "mode"=> "instance",
+                "telecom"=> [
                     [
-                        "url"=> "https=>//fhir.kemkes.go.id/r4/StructureDefinition/administrativeCode",
-                        "extension"=> [
-                            [
-                                "url"=> "province",
-                                "valueCode"=> "10"
-                            ],
-                            [
-                                "url"=> "city",
-                                "valueCode"=> "1010"
-                            ],
-                            [
-                                "url"=> "district",
-                                "valueCode"=> "1010101"
-                            ],
-                            [
-                                "url"=> "village",
-                                "valueCode"=> "1010101101"
-                            ],
-                            [
-                                "url"=> "rt",
-                                "valueCode"=> "1"
-                            ],
-                            [
-                                "url"=> "rw",
-                                "valueCode"=> "2"
+                        "system" => "phone",
+                        "value" => "+622717791112",
+                        "use" => "work"
+                    ],
+                    [
+                        "system" => "email",
+                        "value" => "komitemedikrsaudrsiswanto@gmail.com",
+                        "use" => "work"
+                    ],
+                    [
+                        "system" => "url",
+                        "value" => "www.komitemedikrsaudrsiswanto@gmail.com",
+                        "use" => "work"
+                    ],
+                    [
+                        "system"=> "fax",
+                        "value"=> "622717791112",
+                        "use"=> "work"
+                    ]
+                ],
+                "address"=> [
+                    "use"=> "work",
+                    "line"=> [
+                        "Jl. Tentara Pelajar"
+                    ],
+                    "city"=> "Kabupaten Karanganyar",
+                    "postalCode"=> "57178",
+                    "country"=> "ID",
+                    "extension"=> [
+                        [
+                            "url"=> "https=>//fhir.kemkes.go.id/r4/StructureDefinition/administrativeCode",
+                            "extension"=> [
+                                [
+                                    "url" => "province",
+                                    "valueCode" => "33"
+                                ],
+                                [
+                                    "url" => "city",
+                                    "valueCode" => "3372"
+                                ],
+                                [
+                                    "url" => "district",
+                                    "valueCode" => "331312"
+                                ],
+                                [
+                                    "url" => "village",
+                                    "valueCode" => "3313122002"
+                                ],
+                                [
+                                    "url"=> "rt",
+                                    "valueCode"=> "1"
+                                ],
+                                [
+                                    "url"=> "rw",
+                                    "valueCode"=> "2"
+                                ]
                             ]
                         ]
                     ]
+                ],
+                "physicalType"=> [
+                    "coding"=> [
+                        [
+                            "system"=> "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                            "code"=> "ro",
+                            "display"=> "Room"
+                        ]
+                    ]
+                ],
+                "position"=> [
+                    "longitude"=> -6.23115426275766,
+                    "latitude"=> 106.83239885393944,
+                    "altitude"=> 0
+                ],
+                "managingOrganization"=> [
+                    "reference"=> "Organization/" . LocationHelper::orgId()
                 ]
-            ],
-            // "physicalType"=> [
-            //     "coding"=> [
-            //         [
-            //             "system"=> "http=>//terminology.hl7.org/CodeSystem/location-physical-type",
-            //             "code"=> "ro",
-            //             "display"=> "Room"
-            //         ]
-            //     ]
-            // ],
-            "position"=> [
-                "longitude"=> -6.23115426275766,
-                "latitude"=> 106.83239885393944,
-                "altitude"=> 0
-            ],
-            "managingOrganization"=> [
-                "reference"=> "Organization/" . LocationHelper::orgId()
-            ]
-        ];
+            ];
+    
+            $response = Http::withOptions(["verify" => false])
+            ->withHeaders([
+                'Authorization' => 'Bearer '.LocationHelper::token(),
+            ])
+            ->post(LocationHelper::url().'/Location', $data);
 
-        $response = Http::withOptions(["verify" => false])
-        ->withHeaders([
-            'Authorization' => 'Bearer '.LocationHelper::token(),
-        ])
-        ->post(LocationHelper::url().'/Location', $data);
+            DB::table('organisasi_satusehat')->where('id',$o->id)->update([
+                'id_location'=>$response->json()['id']
+            ]);
 
-        return $response->json();
+            $data_id[] = $response->json()['id'];
+        }      
+
+        return $data_id;
     }
 
     public static function searchOrgId($id){
@@ -152,67 +156,69 @@ class LocationHelper
     }
 
     public static function update($id){
+        $organisasi = DB::table('organisasi_satusehat')->where('id_location',$id)->first();
         $data = [
             "resourceType"=> "Location",
             "id"=> $id,
-            // "identifier"=> [
-            //     [
-            //         "system"=> "http=>//sys-ids.kemkes.go.id/location/" . LocationHelper::orgId(),
-            //         "value"=> "1"
-            //     ]
-            // ],
+            "identifier"=> [
+                [
+                    "system"=> "http://sys-ids.kemkes.go.id/location/". LocationHelper::orgId(),
+                    "value"=> $organisasi->nama_organisasi,
+                ]
+            ],
             "status"=> "active",
-            "name"=> "Ruangan-UPDATE",
-            "description"=> "Deskripsi dummy",
+            "name"=> $organisasi->nama_organisasi,
+            "description"=> $organisasi->nama_organisasi,
             "mode"=> "instance",
             "telecom"=> [
                 [
-                    "system"=> "phone",
-                    "value"=> "2328",
-                    "use"=> "work"
+                    "system" => "phone",
+                    "value" => "+622717791112",
+                    "use" => "work"
+                ],
+                [
+                    "system" => "email",
+                    "value" => "komitemedikrsaudrsiswanto@gmail.com",
+                    "use" => "work"
+                ],
+                [
+                    "system" => "url",
+                    "value" => "www.komitemedikrsaudrsiswanto@gmail.com",
+                    "use" => "work"
                 ],
                 [
                     "system"=> "fax",
-                    "value"=> "2329",
-                    "use"=> "work"
-                ],
-                [
-                    "system"=> "email",
-                    "value"=> "second wing admissions"
-                ],
-                [
-                    "system"=> "url",
-                    "value"=> "http=>//sampleorg.com/southwing",
+                    "value"=> "622717791112",
                     "use"=> "work"
                 ]
             ],
             "address"=> [
                 "use"=> "work",
                 "line"=> [
-                    "Gd. Prof. Dr. Sujudi Lt.5, Jl. H.R. Rasuna Said Blok X5 Kav. 4-9 Kuningan"
+                    "Jl. Tentara Pelajar"
                 ],
-                "city"=> "Jakarta",
-                "postalCode"=> "12950",
+                "city"=> "Kabupaten Karanganyar",
+                "postalCode"=> "57178",
                 "country"=> "ID",
                 "extension"=> [
                     [
                         "url"=> "https=>//fhir.kemkes.go.id/r4/StructureDefinition/administrativeCode",
                         "extension"=> [
                             [
-                                "url"=> "province",
-                                "valueCode"=> "10"
+                                "url" => "province",
+                                "valueCode" => "33"
                             ],
                             [
-                                "url"=> "city",
-                                "valueCode"=> "1010"
+                                "url" => "city",
+                                "valueCode" => "3372"
                             ],
                             [
-                                "url"=> "district",
-                                "valueCode"=> "1010101"
+                                "url" => "district",
+                                "valueCode" => "331312"
                             ],
                             [
-                                "url"=> "village",
-                                "valueCode"=> "1010101101"
+                                "url" => "village",
+                                "valueCode" => "3313122002"
                             ],
                             [
                                 "url"=> "rt",
@@ -226,25 +232,25 @@ class LocationHelper
                     ]
                 ]
             ],
-            // "physicalType"=> [
-            //     "coding"=> [
-            //         [
-            //             "system"=> "http=>//terminology.hl7.org/CodeSystem/location-physical-type",
-            //             "code"=> "ro",
-            //             "display"=> "Room"
-            //         ]
-            //     ]
-            // ],
+            "physicalType"=> [
+                "coding"=> [
+                    [
+                        "system"=> "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                        "code"=> $organisasi->type,
+                        "display"=> "Room"
+                    ]
+                ]
+            ],
             "position"=> [
-                "longitude"=> -6.23115426275766,
-                "latitude"=> 106.83239885393944,
+                "longitude"=> (float) $organisasi->longitude,
+                "latitude"=> (float)  $organisasi->latitude,
                 "altitude"=> 0
             ],
             "managingOrganization"=> [
                 "reference"=> "Organization/" . LocationHelper::orgId()
             ]
         ];
-
+        // return $data;
         $response = Http::withOptions(["verify" => false])
         ->withHeaders([
             'Authorization' => 'Bearer '.LocationHelper::token(),

@@ -20,7 +20,7 @@ class PatientHelper
     }
 
     public static function url(){
-        return env('STG_BASE_URL_SS');
+        return env('PROD_BASE_URL_SS');
     }
 
     public static function orgId(){
