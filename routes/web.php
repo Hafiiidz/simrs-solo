@@ -112,7 +112,7 @@ Route::prefix('encounter')->group(function () {
     });
     Route::get('/find-id', function (Request $request) {
         $idrawat = $request->idrawat;
-        $rawat = Rawat::find($id)
+        $rawat = Rawat::find($id);
         return EncounterHelper::searchId($rawat->id_encounter);
     });
     Route::get('/find-subject', function (Request $request) {
@@ -122,7 +122,7 @@ Route::prefix('encounter')->group(function () {
     });
     Route::get('/update-in-progres', function (Request $request) {
         $idrawat = $request->idrawat;
-        $rawat = Rawat::find($id)
+        $rawat = Rawat::find($id);
         return EncounterHelper::updateInProgress($rawat->id_encounter);
     });
     
