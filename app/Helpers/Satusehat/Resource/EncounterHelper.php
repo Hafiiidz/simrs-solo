@@ -47,7 +47,7 @@ class EncounterHelper
         }else{
             $organisasi_lokasi = DB::table('organisasi_satusehat')->where('id_ruangan', $rawat->poli->kode)->first();
         }
-        
+
         // return $organisasi_lokasi;
 
         $data = [
@@ -109,7 +109,7 @@ class EncounterHelper
             "serviceProvider"=> [
                 "reference"=> "Organization/100026489"
             ],
-           
+
         ];
 
         $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
