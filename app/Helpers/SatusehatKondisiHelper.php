@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use Carbon\Carbon;
 use App\Models\Rawat;
 use App\Models\Dokter;
 use App\Models\Obat\Obat;
@@ -9,10 +10,20 @@ use LZCompressor\LZString;
 use App\Helpers\VclaimHelper;
 use App\Models\Pasien\Pasien;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\SatusehatAuthHelper;
 use Illuminate\Support\Facades\Http;
 
 class SatusehatKondisiHelper
 {
+
+    public static function ssl(){
+        if (config('app.env') == 'production') {
+            return true;
+        } else {
+            return false;        }
+
+    }
+
    public static function create_kondisi($id){
     $rawat = Rawat::find($id);
     $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
@@ -69,7 +80,7 @@ class SatusehatKondisiHelper
     // return $url;
     $get_token = SatusehatAuthHelper::generate_token();
     $token = $get_token['access_token'];
-    $response = Http::withOptions(["verify" => false])
+    $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             'Authorization' => 'Bearer '.$token,
         ])->post($url.'/Condition',$data);

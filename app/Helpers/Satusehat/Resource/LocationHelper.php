@@ -27,6 +27,14 @@ class LocationHelper
         return 100026489;
     }
 
+    public static function ssl(){
+        if (config('app.env') == 'production') {
+            return true;
+        } else {
+            return false;        }
+
+    }
+
     public static function create(){
         $organisasi = DB::table('organisasi_satusehat')->whereNull('id_location')->get();
         $data_id = [];
@@ -118,7 +126,7 @@ class LocationHelper
                 ]
             ];
     
-            $response = Http::withOptions(["verify" => false])
+            $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
             ->withHeaders([
                 'Authorization' => 'Bearer '.LocationHelper::token(),
             ])
@@ -136,7 +144,7 @@ class LocationHelper
 
     public static function searchOrgId($id){
 
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             'Authorization' => 'Bearer '.LocationHelper::token(),
         ])
@@ -146,7 +154,7 @@ class LocationHelper
     }
 
     public static function searchId($id){
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             'Authorization' => 'Bearer '.LocationHelper::token(),
         ])
@@ -251,7 +259,7 @@ class LocationHelper
             ]
         ];
         // return $data;
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             'Authorization' => 'Bearer '.LocationHelper::token(),
         ])

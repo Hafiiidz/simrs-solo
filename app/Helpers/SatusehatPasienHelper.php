@@ -16,12 +16,19 @@ class SatusehatPasienHelper
 {
     #Pasien
     #search by nik
+    public static function ssl(){
+        if (config('app.env') == 'production') {
+            return true;
+        } else {
+            return false;        }
+
+    }
     public static function searchPasienByNik($nik){
         $pasien = Pasien::where('nik',$nik)->first();
         $get_token = SatusehatAuthHelper::generate_token();
         $token = $get_token['access_token'];
         $url = env('PROD_BASE_URL_SS');
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             'Authorization' => 'Bearer '.$token,
         ])
@@ -40,7 +47,7 @@ class SatusehatPasienHelper
         $get_token = SatusehatAuthHelper::generate_token();
         $token = $get_token['access_token'];
         $url = env('PROD_BASE_URL_SS');
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             "Authorization" => "Bearer ".$token,
         ])
@@ -53,7 +60,7 @@ class SatusehatPasienHelper
         $get_token = SatusehatAuthHelper::generate_token();
         $token = $get_token['access_token'];
         $url = env('PROD_BASE_URL_SS');
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             "Authorization" => "Bearer ".$token,
         ])
@@ -262,7 +269,7 @@ class SatusehatPasienHelper
                 'Content-Type' => 'application/json',
                 "Authorization" => "Bearer ".$token,
                 // Add any additional headers if needed
-            ])->withOptions(["verify" => false])->post($url.'/Patient', $data);
+            ])->withOptions(["verify" => SatusehatAuthHelper::ssl()])->post($url.'/Patient', $data);
             return $response->json();
         }
     }

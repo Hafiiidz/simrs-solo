@@ -24,7 +24,13 @@ class EncounterHelper
     public static function url(){
         return env('PROD_BASE_URL_SS');
     }
+    public static function ssl(){
+        if (config('app.env') == 'production') {
+            return true;
+        } else {
+            return false;        }
 
+    }
     public static function orgId(){
         return 100026489;
     }
@@ -105,7 +111,7 @@ class EncounterHelper
            
         ];
 
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             'Authorization' => 'Bearer '.EncounterHelper::token(),
         ])
@@ -116,7 +122,7 @@ class EncounterHelper
 
     #search by id
     public static function searchId($id){
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders(['Authorization'=> 'Bearer '.EncounterHelper::token()])
         ->get(EncounterHelper::url().'/Encounter/'.$id);
         return $response->json();
@@ -124,7 +130,7 @@ class EncounterHelper
 
     #search by subject
     public static function searchSubject($id){
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders(['Authorization'=> 'Bearer '.EncounterHelper::token()])
         ->get(EncounterHelper::url().'/Encounter?subject='.$id);
         return $response->json();
@@ -210,7 +216,7 @@ class EncounterHelper
             ]
         ];
 
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders(['Authorization'=> 'Bearer '.EncounterHelper::token()])
         ->put(EncounterHelper::url().'/Encounter/'.$id, $data);
         return $response->json();
