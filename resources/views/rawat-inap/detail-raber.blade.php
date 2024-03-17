@@ -76,7 +76,7 @@
                                 class="btn me-3 btn-sm btn-secondary">Kembali</a>
                             @if ($rawat->status == 2)
                                 <button data-bs-toggle="modal" data-bs-target="#modal_pulang"
-                                    class="btn btn-sm btn-success me-3">Pulang</button>
+                                    class="btn btn-sm btn-success me-3">Selesai</button>
                                 {{-- <button data-bs-toggle="modal" data-bs-target="#modal_pindah"
                                     class="btn btn-sm btn-primary me-3">Pindah Ruangan</button> --}}
                             @elseif($rawat->status == 4)
