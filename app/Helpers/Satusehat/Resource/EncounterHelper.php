@@ -38,7 +38,8 @@ class EncounterHelper
     public static function create($idrawat){
         $rawat = Rawat::find($idrawat);
         $pasien = Pasien::where('no_rm',$rawat->no_rm)->first();
-        SatusehatPasienHelper::searchPasienByNik($pasien->nik);
+        // return $pasien;
+        // SatusehatPasienHelper::searchPasienByNik($pasien->nik);
         // return $rawat;
         #get_lokasi rawat
         if($rawat->idjenisrawat == 2){
@@ -116,7 +117,8 @@ class EncounterHelper
             'Authorization' => 'Bearer '.EncounterHelper::token(),
         ])
         ->post(EncounterHelper::url().'/Encounter', $data);
-
+        $rawat->id_encounter = $response->json()['id'];
+        $rawat->save();
         return $response->json();
     }
 
@@ -130,9 +132,11 @@ class EncounterHelper
 
     #search by subject
     public static function searchSubject($id){
+        $rawat = Rawat::where('id',$id)->first();
+        $pasien = Pasien::where('no_rm',$rawat->no_rm)->first();
         $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders(['Authorization'=> 'Bearer '.EncounterHelper::token()])
-        ->get(EncounterHelper::url().'/Encounter?subject='.$id);
+        ->get(EncounterHelper::url().'/Encounter?subject='.$pasien->ihs);
         return $response->json();
     }
 

@@ -197,7 +197,7 @@
                                 </div>
                                 <div class="row mb-5">
                                     <!--begin::Label-->
-                                    <label class="col-lg-3 fw-semibold text-muted">DPJP</label>
+                                    <label class="col-lg-3 fw-semibold text-muted">DPJP 1</label>
                                     <!--end::Label-->
                                     <!--begin::Col-->
                                     <div class="col-lg-8">
@@ -207,6 +207,16 @@
                                 </div>
                                 <div class="row mb-5">
                                     <!--begin::Label-->
+                                    <label class="col-lg-3 fw-semibold text-muted">DPJP 2</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8">
+                                        <span class="fw-bold fs-6 text-gray-800">{{ $raber->nama_dokter }}</span>
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                {{-- <div class="row mb-5">
+                                    <!--begin::Label-->
                                     <label class="col-lg-3 fw-semibold text-muted">Diagnosa Masuk</label>
                                     <!--end::Label-->
                                     <!--begin::Col-->
@@ -214,7 +224,7 @@
                                         <span class="fw-bold fs-6 text-gray-800">{{ $rawat->icdx }}</span>
                                     </div>
                                     <!--end::Col-->
-                                </div>
+                                </div> --}}
                             </div>
 
                         </div>
@@ -281,11 +291,11 @@
                                                 data-bs-toggle="tab" href="#kt_tab_pane_8" aria-selected="false"
                                                 role="tab" tabindex="-1">Diganosa Akhir</a>
                                         </li>
-                                        <li class="nav-item" role="presentation">
+                                        {{-- <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
                                                 data-bs-toggle="tab" href="#kt_tab_pane_raber" aria-selected="false"
                                                 role="tab" tabindex="-1">Rawat Bersama</a>
-                                        </li>
+                                        </li> --}}
 
                                         {{-- <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
@@ -298,11 +308,11 @@
                                 </div>
                             </div>
                             <div class="tab-content" id="myTabContent">
-                                <div class="tab-pane fade" id="kt_tab_pane_raber" role="tabpanel">
+                                {{-- <div class="tab-pane fade" id="kt_tab_pane_raber" role="tabpanel">
                                     <button class="btn btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#model_raber">Tambah Raber</button>
                                     @include('rawat-inap.menu.raber')
-                                </div>
+                                </div> --}}
                                 <div class="tab-pane fade" id="kt_tab_pane_bidan" role="tabpanel">
                                     <a class="btn btn-warning btn-sm mb-5"
                                         href="{{ route('detail.rawat-inap.pengkajian-kebidanan', $rawat->id) }}">Pengkajian</a>

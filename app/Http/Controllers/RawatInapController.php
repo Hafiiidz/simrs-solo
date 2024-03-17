@@ -443,17 +443,22 @@ class RawatInapController extends Controller
         $ringakasan_pasien_masuk = DB::table('demo_ringkasan_masuk')->where('idrawat', $rawat->id)->first();
         $data_pulang = DB::table('data_pulang')->get();
         $obat = Obat::with('satuan')->orderBy('obat.nama_obat', 'asc')->get();
-        $tindak_lanjut = TindakLanjut::where('idrawat', $rawat->idrawat)->first();
+        $tindak_lanjut = TindakLanjut::where('idrawat', $rawat->id)->first();
         $radiologi = DB::table('radiologi_tindakan')->get();
         $lab = DB::table('laboratorium_pemeriksaan')->get();
         $dokter = Dokter::get();
+        $dokter_dpjp = Dokter::whereNotNull('idspesialis')->where('status',1)->where('id','!=',$rawat->iddokter)->get();
         $tarif = DB::table('tarif')->where('idjenisrawat', 2)->where('idkelas', $rawat->idkelas)->where('idruangan', $rawat->idruangan)->get();
         // dd($tarif);
         $order_obat = DB::table('demo_antrian_resep')->where('idrawat', $id)->whereNotNull('obat')->get();
         $order_obat_null = DB::table('demo_antrian_resep')->whereNull('obat')->where('status_antrian','!=','Batal')->where('idrawat', $id)->get();
         // dd($order_obat);
         $order_antrian = DB::table('demo_antrian_resep')->where('idrawat', $id)->where('status_antrian', 'Antrian')->orderBy('created_at','desc')->get();
-        $raber = DB::table('demo_rawat_bersama')->where('idrawat',$id)->get();
+        $raber = DB::table('demo_rawat_bersama')->leftjoin('dokter','demo_rawat_bersama.id_dokter','=','dokter.id')
+        ->select([
+            'demo_rawat_bersama.*',
+            'dokter.nama_dokter'
+        ])->where('demo_rawat_bersama.idrawat',$id)->get();
         if(count($order_antrian) >0){
             $disable_order = 'disabled';
         }else{
@@ -482,7 +487,70 @@ class RawatInapController extends Controller
         // dd($pemeriksaan_fisik);
         return view('rawat-inap.detail', [
             'rawat' => $rawat
-        ], compact('pasien', 'ringakasan_pasien_masuk', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'data_operasi','pemberian_obat','order_obat','cppt','implamentasi','list_tindakan','penunjang','diagnosa_akhir','data_pulang','poli','skrining','kesadaran','anamnesa','pemeriksaan_fisik','disable','disable_order','kelas_rawat','order_obat_null'));
+        ], compact('pasien', 'ringakasan_pasien_masuk', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'data_operasi','pemberian_obat','order_obat','cppt','implamentasi','list_tindakan','penunjang','diagnosa_akhir','data_pulang','poli','skrining','kesadaran','anamnesa','pemeriksaan_fisik','disable','disable_order','kelas_rawat','order_obat_null','dokter_dpjp','raber'));
+    }
+    public function detail_raber($id)
+    {
+        $raber = DB::table('demo_rawat_bersama')->leftjoin('dokter','demo_rawat_bersama.id_dokter','=','dokter.id') ->select([
+            'demo_rawat_bersama.*',
+            'dokter.nama_dokter'
+        ])->where('demo_rawat_bersama.id',$id)->first();
+        $rawat = Rawat::where('id', $raber->idrawat)->first();
+        if($rawat->status != 2){
+            $disable = 'disabled';
+        }else{
+            $disable = '';
+        }
+        $poli = Poli::get();
+        $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
+        $ringakasan_pasien_masuk = DB::table('demo_ringkasan_masuk')->where('idrawat', $rawat->id)->where('id_raber',$id)->first();
+        $data_pulang = DB::table('data_pulang')->get();
+        $obat = Obat::with('satuan')->orderBy('obat.nama_obat', 'asc')->get();
+        $tindak_lanjut = TindakLanjut::where('idrawat', $rawat->id)->first();
+        $radiologi = DB::table('radiologi_tindakan')->get();
+        $lab = DB::table('laboratorium_pemeriksaan')->get();
+        $dokter = Dokter::get();
+        $dokter_dpjp = Dokter::whereNotNull('idspesialis')->where('status',1)->where('id','!=',$rawat->iddokter)->get();
+        $tarif = DB::table('tarif')->where('idjenisrawat', 2)->where('idkelas', $rawat->idkelas)->where('idruangan', $rawat->idruangan)->get();
+        // dd($tarif);
+        $order_obat = DB::table('demo_antrian_resep')->where('idrawat', $rawat->id)->where('id_raber',$id)->whereNotNull('obat')->get();
+        $order_obat_null = DB::table('demo_antrian_resep')->whereNull('obat')->where('status_antrian','!=','Batal')->where('idrawat', $rawat->id)->where('id_raber',$id)->get();
+        // dd($order_obat);
+        $order_antrian = DB::table('demo_antrian_resep')->where('idrawat', $rawat->id)->where('id_raber',$id)->where('status_antrian', 'Antrian')->orderBy('created_at','desc')->get();
+        // $raber = DB::table('demo_rawat_bersama')->leftjoin('dokter','demo_rawat_bersama.id_dokter','=','dokter.id')
+        // ->select([
+        //     'demo_rawat_bersama.*',
+        //     'dokter.nama_dokter'
+        // ])->where('demo_rawat_bersama.idrawat',$id)->get();
+        if(count($order_antrian) >0){
+            $disable_order = 'disabled';
+        }else{
+            $disable_order = '';
+        }
+        // dd($order_obat);
+        $skrining = SkriningGizi::where('idrawat', $id)->first();
+        $data_operasi = LaporanOperasi::where('idrawat', $rawat->id)->get();
+        $pemberian_obat = DB::table('demo_pemberian_obat_inap')->where('idrawat', $rawat->id)->where('id_raber',$id)->get();
+        $diagnosa_akhir = DB::table('demo_ranap_dx')->where('idrawat',$rawat->id)->first();
+        $cppt = DB::table('rawat_cppt')->where('idrawat', $rawat->id)->where('id_raber',$id)->get();
+        $implamentasi = DB::table('rawat_implementasi')->where('idrawat', $rawat->id)->where('id_raber',$id)->get();
+        $list_tindakan = DB::table('demo_trx_tindakan')->where('idrawat', $rawat->id)->where('id_raber',$id)->get();
+        $penunjang = DB::table('demo_permintaan_penunjang')->where('idrawat', $rawat->id)->where('id_raber',$id)->get();
+        $kesadaran = DB::table('soap_kesadaran')->get();
+        $anamnesa_pemeriksaan_fisik = DB::table('demo_ranap_awal_pemeriksaan_fisik')->where('idrawat', $rawat->id)->where('id_raber',$id)->first();
+        $kelas_rawat = DB::table('ruangan_kelas')->where('ket',1)->get();
+        // dd($kelas_rawat);
+        if($anamnesa_pemeriksaan_fisik){
+            $pemeriksaan_fisik = json_decode($anamnesa_pemeriksaan_fisik->pemeriksaan_fisik);
+            $anamnesa = json_decode($anamnesa_pemeriksaan_fisik->anamnesa);
+        }else{
+            $pemeriksaan_fisik = null;
+            $anamnesa = null;
+        }
+        // dd($pemeriksaan_fisik);
+        return view('rawat-inap.detail-raber', [
+            'rawat' => $rawat
+        ], compact('pasien', 'ringakasan_pasien_masuk', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'data_operasi','pemberian_obat','order_obat','cppt','implamentasi','list_tindakan','penunjang','diagnosa_akhir','data_pulang','poli','skrining','kesadaran','anamnesa','pemeriksaan_fisik','disable','disable_order','kelas_rawat','order_obat_null','dokter_dpjp','raber'));
     }
     public function get_penunjang($id){
         $penunjang = DB::table('demo_permintaan_penunjang')->where('id', $id)->first();
@@ -792,6 +860,21 @@ class RawatInapController extends Controller
     
     public function raber($id){
         $raber = DB::table('demo_rawat_bersama',$id);
+    }
+    public function post_raber(Request $request , $id){
+        $rawat = Rawat::where('id', $id)->first();
+        $cek_raber = DB::table('demo_rawat_bersama')->where('idrawat', $rawat->id)->where('id_dokter',$rawat->id_dokter)->first();
+        if($cek_raber){
+            return redirect()->back()->with('gagal', 'Data Sudah Ada');
+        }else{
+            DB::table('demo_rawat_bersama')->insert([
+                'idrawat' => $rawat->id,
+                'id_dokter' => $request->id_dokter,
+                'tgl_mulai'=>now(),
+                'status'=>1
+            ]);
+        }
+        return redirect()->back()->with('berhasil', 'Data Berhasil Di Simpan');
     }
     // public function postRingkasanPulang($id){
     //     $rawat = Rawat::where('id', $id)->first();

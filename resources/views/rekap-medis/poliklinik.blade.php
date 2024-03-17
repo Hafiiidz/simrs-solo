@@ -210,7 +210,7 @@
                         <div class="rounded border p-5">
                             <div class="mb-5 hover-scroll-x">
                                 <div class="d-grid">
-                                    <ul class="nav nav-tabs flex-nowrap text-nowrap" role="tablist">
+                                    <ul class="nav nav-tabs text-nowrap font-weight-bold" role="tablist" style="font-weight: bold">
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0 active"
                                                 data-bs-toggle="tab" href="#kt_tab_pane_1" aria-selected="true"

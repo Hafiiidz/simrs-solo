@@ -34,6 +34,9 @@ class SatusehatPasienHelper
         ])
         ->get($url.'/Patient?identifier=https://fhir.kemkes.go.id/id/nik|'.$nik);
         if($response['total'] > 0){
+            
+            // $consent = SatusehatResourceHelper::consent_update($pasien->ihs);
+            return $consent;
             if($pasien){
                 $pasien->ihs = $response['entry'][0]['resource']['id'];
                 $pasien->save();

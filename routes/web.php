@@ -1,7 +1,10 @@
 <?php
 
-use GuzzleHttp\Psr7\Request;
+// use GuzzleHttp\Psr7\Request;
+use App\Models\Rawat;
+use Illuminate\Http\Request;
 use App\Helpers\VclaimHelper;
+use App\Models\Pasien\Pasien;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\SatusehatAuthHelper;
 use Illuminate\Support\Facades\Hash;
@@ -15,7 +18,6 @@ use App\Http\Controllers\PasienController;
 use App\Http\Controllers\FarmasiController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\RuanganController;
-use Illuminate\Http\Request as HttpRequest;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MasterBhpController;
@@ -108,21 +110,26 @@ Route::prefix('location')->group(function () {
 Route::prefix('encounter')->group(function () {
     Route::get('/create', function (Request $request) {
         $idrawat = $request->idrawat;
+        $rawat = Rawat::find($idrawat);
+        $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
+        $consent = SatusehatResourceHelper::consent_read($pasien->ihs);
+        // return $consent;
         return EncounterHelper::create($idrawat);
     });
     Route::get('/find-id', function (Request $request) {
         $idrawat = $request->idrawat;
-        $rawat = Rawat::find($id);
+        $rawat = Rawat::find($idrawat);
         return EncounterHelper::searchId($rawat->id_encounter);
     });
     Route::get('/find-subject', function (Request $request) {
-        $no_rm = $request->no_rm;
-        $pasien = Pasien::where('no_rm',$request->no_rm)->first();
-        return EncounterHelper::searchSubject($pasien->ihs);
+        $idrawat = $request->idrawat;
+        $rawat = Rawat::find($idrawat);
+        return EncounterHelper::searchSubject($rawat->id);
     });
     Route::get('/update-in-progres', function (Request $request) {
         $idrawat = $request->idrawat;
-        $rawat = Rawat::find($id);
+        $rawat = Rawat::find($idrawat);
+        // return $rawat->id_encounter;
         return EncounterHelper::updateInProgress($rawat->id_encounter);
     });
     
@@ -448,6 +455,7 @@ Route::prefix('/rawat-inap')->middleware('auth')->group(function () {
     Route::get('{id}/view', [RawatInapController::class, 'view'])->name('view.rawat-inap');
     Route::get('{id}/order-obat', [RawatInapController::class, 'orderObat'])->name('view.rawat-inap-order');
     Route::get('{id}/detail', [RawatInapController::class, 'detail'])->name('detail.rawat-inap');
+    Route::get('{id}/detail-raber', [RawatInapController::class, 'detail_raber'])->name('detail.rawat-bersama');
     Route::get('get-penunjang/{id}', [RawatInapController::class, 'get_penunjang'])->name('detail.get-penunjang');
     Route::get('get-cppt/{id}', [RawatInapController::class, 'get_cppt'])->name('detail.get-cppt');
     Route::get('get-implementasi/{id}', [RawatInapController::class, 'get_implementasi'])->name('detail.get-implementasi');
@@ -471,6 +479,7 @@ Route::prefix('/rawat-inap')->middleware('auth')->group(function () {
     Route::post('post-pengakajian-data-subjektif/{id}', [RawatInapController::class, 'postPengkajianSubjektif'])->name('post.pengakajian-data-subjektif');
     Route::post('post-update-radiologi/{id}', [RawatInapController::class, 'update_radiologi'])->name('post-ranap.update-radiologi');
     Route::post('post-update-lab/{id}', [RawatInapController::class, 'update_lab'])->name('post-ranap.update-lab');
+    Route::post('post-raber/{id}', [RawatInapController::class, 'post_raber'])->name('post-raber');
 });
 Route::prefix('/pasien')->middleware('auth')->group(function () {
     Route::get('/', [PasienController::class, 'index'])->name('pasien.index');

@@ -210,4 +210,37 @@ class SatusehatResourceHelper
 
         return $response->json();
     }
+
+    #Consent - Read Consent Service
+
+    public static function consent_read($id){
+        $get_token = SatusehatAuthHelper::generate_token();
+        $token = $get_token['access_token'];
+        $url = env('PROD_CONSENT_URL_SS');
+        // return $url;
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
+            ->withHeaders([
+                'Authorization' => 'Bearer '.$token,
+            ])->get($url.'/Consent?patient_id='.$id);
+        return $response->json();
+    }
+
+    #Consent Update
+    public static function consent_update($id){
+        $data = [
+            "patient_id"=> $id,
+            "action"=> "OPTIN",
+            "agent"=> "Fikri Ramadhan"
+        ];
+        // return $data;
+        $url = env('PROD_CONSENT_URL_SS');
+        // return $url;
+        $get_token = SatusehatAuthHelper::generate_token();
+        $token = $get_token['access_token'];
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
+            ->withHeaders([
+                'Authorization' => 'Bearer '.$token,
+            ])->post($url.'/Consent',$data);
+        return $response->json();
+    }
 }
