@@ -13,13 +13,21 @@ use Illuminate\Support\Facades\Http;
 
 class SatusehatAuthHelper
 {
+    public static function ssl(){
+        if (config('app.env') == 'production') {
+            return true;
+        } else {
+            return false;        }
+
+    }
     public static function generate_token(){
         $url = env('PROD_AUTH_URL_SS');
         // return $url;
-        $response = Http::asForm()->withOptions(["verify" => false])->post($url.'/accesstoken?grant_type=client_credentials', [
+        $response = Http::asForm()->post($url.'/accesstoken?grant_type=client_credentials', [
             'client_id' =>env('PROD_CLIENT_ID_SS'),
             'client_secret' =>env('PROD_CLIENT_SECRET_SS')
         ]);
+
         return $response->json();
     }
 }

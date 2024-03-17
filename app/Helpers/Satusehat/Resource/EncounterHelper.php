@@ -9,8 +9,10 @@ use LZCompressor\LZString;
 use App\Helpers\VclaimHelper;
 use App\Models\Pasien\Pasien;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use App\Helpers\SatusehatAuthHelper;
+use Illuminate\Support\Facades\Http;
+use App\Helpers\SatusehatPasienHelper;
+use App\Helpers\Satusehat\Resource\EncounterHelper;
 
 class EncounterHelper
 {
@@ -22,19 +24,37 @@ class EncounterHelper
     public static function url(){
         return env('PROD_BASE_URL_SS');
     }
+    public static function ssl(){
+        if (config('app.env') == 'production') {
+            return true;
+        } else {
+            return false;        }
 
+    }
     public static function orgId(){
         return 100026489;
     }
 
-    public static function create(){
+    public static function create($idrawat){
+        $rawat = Rawat::find($idrawat);
+        $pasien = Pasien::where('no_rm',$rawat->no_rm)->first();
+        SatusehatPasienHelper::searchPasienByNik($pasien->nik);
+        // return $rawat;
+        #get_lokasi rawat
+        if($rawat->idjenisrawat == 2){
+            $organisasi_lokasi = DB::table('organisasi_satusehat')->where('id_ruangan', $rawat->ruangan?->unit_ruangan)->first();
+        }else{
+            $organisasi_lokasi = DB::table('organisasi_satusehat')->where('id_ruangan', $rawat->poli->kode)->first();
+        }
+
+        // return $organisasi_lokasi;
 
         $data = [
             "resourceType"=> "Encounter",
             "identifier"=> [
                 [
                     "system"=> "http://sys-ids.kemkes.go.id/encounter/100026489",
-                    "value"=> "RJL2024009"
+                    "value"=> $rawat->idrawat
                 ]
             ],
             "status"=> "arrived",
@@ -44,8 +64,8 @@ class EncounterHelper
                 "display"=> "ambulatory"
             ],
             "subject"=> [
-                "reference"=> "Patient/P01133936352",
-                "display"=> "Fikri Ramadhan"
+                "reference"=> "Patient/".$pasien?->ihs,
+                "display"=> $pasien?->nama_pasien
             ],
             "participant"=> [
                 [
@@ -61,8 +81,8 @@ class EncounterHelper
                         ]
                     ],
                     "individual"=> [
-                        "reference"=> "Practitioner/10010107883",
-                        "display"=> "INDITO ADJIE"
+                        "reference"=> "Practitioner/".$rawat->dokter?->kode_ihs,
+                        "display"=> $rawat->dokter?->nama_dokter
                     ]
                 ]
             ],
@@ -72,8 +92,8 @@ class EncounterHelper
             "location"=> [
                 [
                     "location"=> [
-                        "reference"=> "Location/359f5ff7-61cc-4d43-b11b-b947c3ff450e",
-                        "display"=> "MINMED"
+                        "reference"=> "Location/".$organisasi_lokasi->id_location,
+                        "display"=> $organisasi_lokasi->nama_organisasi
                     ]
                 ]
             ],
@@ -91,7 +111,7 @@ class EncounterHelper
 
         ];
 
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             'Authorization' => 'Bearer '.EncounterHelper::token(),
         ])
@@ -100,321 +120,106 @@ class EncounterHelper
         return $response->json();
     }
 
+    #search by id
     public static function searchId($id){
-        $response = Http::withOptions(["verify" => false])
-        ->withHeaders([
-            'Authorization' => 'Bearer '.EncounterHelper::token(),
-        ])
-        ->get(EncounterHelper::url().'/Encounter/' . $id);
-
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
+        ->withHeaders(['Authorization'=> 'Bearer '.EncounterHelper::token()])
+        ->get(EncounterHelper::url().'/Encounter/'.$id);
         return $response->json();
     }
 
-    public static function searchSubject($subject){
-        $response = Http::withOptions(["verify" => false])
-        ->withHeaders([
-            'Authorization' => 'Bearer '.EncounterHelper::token(),
-        ])
-        ->get(EncounterHelper::url().'/Encounter?subject=' . $subject);
-
+    #search by subject
+    public static function searchSubject($id){
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
+        ->withHeaders(['Authorization'=> 'Bearer '.EncounterHelper::token()])
+        ->get(EncounterHelper::url().'/Encounter?subject='.$id);
         return $response->json();
     }
 
-    public static function updateInprogress($id){
+    #update progress
+    public static function updateInProgress($id){
+        $rawat = Rawat::where('id_encounter',$id)->first();
+        $pasien = Pasien::where('no_rm',$rawat->no_rm)->first();
+        if($rawat->idjenisrawat == 2){
+            $organisasi_lokasi = DB::table('organisasi_satusehat')->where('id_ruangan', $rawat->ruangan?->unit_ruangan)->first();
+        }else{
+            $organisasi_lokasi = DB::table('organisasi_satusehat')->where('id_ruangan', $rawat->poli->kode)->first();
+        }
         $data = [
-            "resourceType" => "Encounter",
-            "id" => $id,
-            "identifier" => [
-              [
-                "system" => "http://sys-ids.kemkes.go.id/encounter/" . EncounterHelper::orgId(),
-                "value" => "P20240001"
-              ]
-            ],
-            "status" => "in-progress",
-            "class" => [
-              "system" => "http://terminology.hl7.org/CodeSystem/v3-ActCode",
-              "code" => "AMB",
-              "display" => "ambulatory"
-            ],
-            "subject" => [
-              "reference" => "Patient/100000030009",
-              "display" => "Budi Santoso"
-            ],
-            "participant" => [
-              [
-                "type" => [
-                  [
-                    "coding" => [
-                      [
-                        "system" => "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
-                        "code" => "ATND",
-                        "display" => "attender"
-                      ]
-                    ]
-                  ]
-                ],
-                "individual" => [
-                  "reference" => "Practitioner/N10000001",
-                  "display" => "Dokter Bronsig"
-                ]
-              ]
-            ],
-            "period" => [
-              "start" => "2022-06-14T07:00:00+07:00",
-              "end" => "2022-06-14T09:00:00+07:00"
-            ],
-            "location" => [
-              [
-                "location" => [
-                  "reference" => "Location/ef011065-38c9-46f8-9c35-d1fe68966a3e",
-                  "display" => "Ruang 1A, Poliklinik Rawat Jalan"
-                ]
-              ]
-            ],
-            "statusHistory" => [
-              [
-                "status" => "arrived",
-                "period" => [
-                  "start" => "2022-06-14T07:00:00+07:00",
-                  "end" => "2022-06-14T08:00:00+07:00"
-                ]
-              ],
-              [
-                "status" => "in-progress",
-                "period" => [
-                  "start" => "2022-06-14T08:00:00+07:00",
-                  "end" => "2022-06-14T09:00:00+07:00"
-                ]
-              ]
-            ],
-            "serviceProvider" => [
-              "reference" =>"Organization/". EncounterHelper::orgId()
-            ]
-        ];
-
-        $response = Http::withOptions(["verify" => false])
-        ->withHeaders([
-            'Authorization' => 'Bearer '.EncounterHelper::token(),
-        ])
-        ->post(EncounterHelper::url().'/Encounter/' . $id, $data);
-
-        return $response->json();
-    }
-
-    public static function updateDischarge($id){
-
-        $data = [
-            "resourceType" => "Encounter",
-            "id" => $id,
-            "identifier" => [
+            'resourceType' => 'Encounter',
+            'id' => $id,
+            "identifier"=> [
                 [
-                    "system" => "http://sys-ids.kemkes.go.id/encounter/" . EncounterHelper::orgId(),
-                    "value" => "P20240001"
+                    "system"=> "http://sys-ids.kemkes.go.id/encounter/100026489",
+                    "value"=> $rawat->idrawat
                 ]
             ],
-            "status" => "in-progress",
-            "class" => [
-                "system" => "http://terminology.hl7.org/CodeSystem/v3-ActCode",
-                "code" => "AMB",
-                "display" => "ambulatory"
+            "status"=> "arrived",
+            "class"=> [
+                "system"=> "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                "code"=> "AMB",
+                "display"=> "ambulatory"
             ],
-            "subject" => [
-                "reference" => "Patient/100000030009",
-                "display" => "Budi Santoso"
+            "subject"=> [
+                "reference"=> "Patient/".$pasien?->ihs,
+                "display"=> $pasien?->nama_pasien
             ],
-            "participant" => [
+            "participant"=> [
                 [
-                    "type" => [
+                    "type"=> [
                         [
-                            "coding" => [
+                            "coding"=> [
                                 [
-                                    "system" => "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
-                                    "code" => "ATND",
-                                    "display" => "attender"
+                                    "system"=> "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                                    "code"=> "ATND",
+                                    "display"=> "attender"
                                 ]
                             ]
                         ]
                     ],
-                    "individual" => [
-                        "reference" => "Practitioner/N10000001",
-                        "display" => "Dokter Bronsig"
+                    "individual"=> [
+                        "reference"=> "Practitioner/".$rawat->dokter?->kode_ihs,
+                        "display"=> $rawat->dokter?->nama_dokter
                     ]
                 ]
             ],
-            "period" => [
-                "start" => "2022-06-14T07:00:00+07:00",
-                "end" => "2022-06-14T09:00:00+07:00"
-            ],
-            "location" => [
-                [
-                    "location" => [
-                        "reference" => "Location/ef011065-38c9-46f8-9c35-d1fe68966a3e",
-                        "display" => "Ruang 1A, Poliklinik Rawat Jalan"
-                    ]
-                ]
-            ],
-            "statusHistory" => [
-                [
-                    "status" => "arrived",
-                    "period" => [
-                        "start" => "2022-06-14T07:00:00+07:00",
-                        "end" => "2022-06-14T08:00:00+07:00"
-                    ]
-                ],
-                [
-                    "status" => "in-progress",
-                    "period" => [
-                        "start" => "2022-06-14T08:00:00+07:00",
-                        "end" => "2022-06-14T09:00:00+07:00"
-                    ]
-                ]
-            ],
-            "hospitalization" => [
-                "dischargeDisposition" => [
-                    "coding" => [
-                        [
-                            "system" => "http://terminology.hl7.org/CodeSystem/discharge-disposition",
-                            "code" => "home",
-                            "display" => "Home"
-                        ]
-                    ],
-                    "text" => "Anjuran dokter untuk pulang dan kontrol kembali 1 bulan setelah minum obat"
-                ]
-            ],
-            "serviceProvider" => [
-                "reference" => "Organization/" . EncounterHelper::orgId()
-            ]
-        ];
-
-        $response = Http::withOptions(["verify" => false])
-        ->withHeaders([
-            'Authorization' => 'Bearer '.EncounterHelper::token(),
-        ])
-        ->post(EncounterHelper::url().'/Encounter/' . $id, $data);
-
-        return $response->json();
-    }
-
-    public static function updateFinished($id){
-
-        $data = [
-            "resourceType"=> "Encounter",
-            "id"=> $id,
-            "identifier"=> [
-              [
-                "system"=> "http://sys-ids.kemkes.go.id/encounter/" . EncounterHelper::orgId(),
-                "value"=> "P20240001"
-              ]
-            ],
-            "status"=> "finished",
-            "class"=> [
-              "system"=> "http://terminology.hl7.org/CodeSystem/v3-ActCode",
-              "code"=> "AMB",
-              "display"=> "ambulatory"
-            ],
-            "subject"=> [
-              "reference"=> "Patient/100000030009",
-              "display"=> "Budi Santoso"
-            ],
-            "participant"=> [
-              [
-                "type"=> [
-                  [
-                    "coding"=> [
-                      [
-                        "system"=> "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
-                        "code"=> "ATND",
-                        "display"=> "attender"
-                      ]
-                    ]
-                  ]
-                ],
-                "individual"=> [
-                  "reference"=> "Practitioner/N10000001",
-                  "display"=> "Dokter Bronsig"
-                ]
-              ]
-            ],
-            "period"=> [
-              "start"=> "2022-06-14T07:00:00+07:00",
-              "end"=> "2022-06-14T09:00:00+07:00"
+            'period' => [
+                'start' =>  date('Y-m-d')."T".date('H:i:s')."+07:00",
+                'end' =>  date('Y-m-d')."T".date('H:i:s')."+07:00"
             ],
             "location"=> [
-              [
-                "location"=> [
-                  "reference"=> "Location/ef011065-38c9-46f8-9c35-d1fe68966a3e",
-                  "display"=> "Ruang 1A, Poliklinik Rawat Jalan"
-                ]
-              ]
-            ],
-            "diagnosis"=> [
-              [
-                "condition"=> [
-                  "reference"=> "Condition/4bbbe654-14f5-4ab3-a36e-a1e307f67bb8",
-                  "display"=> "Tuberculosis of lung, confirmed by sputum microscopy with or without culture"
-                ],
-                "use"=> [
-                  "coding"=> [
-                    [
-                      "system"=> "http://terminology.hl7.org/CodeSystem/diagnosis-role",
-                      "code"=> "DD",
-                      "display"=> "Discharge diagnosis"
+                [
+                    "location"=> [
+                        "reference"=> "Location/".$organisasi_lokasi->id_location,
+                        "display"=> $organisasi_lokasi->nama_organisasi
                     ]
-                  ]
-                ],
-                "rank"=> 1
-              ],
-              [
-                "condition"=> [
-                  "reference"=> "Condition/666970c2-d79f-4242-89f9-d0ffab9e36cf",
-                  "display"=> "Non-insulin-dependent diabetes mellitus without complications"
-                ],
-                "use"=> [
-                  "coding"=> [
-                    [
-                      "system"=> "http://terminology.hl7.org/CodeSystem/diagnosis-role",
-                      "code"=> "DD",
-                      "display"=> "Discharge diagnosis"
+                ]
+            ],
+            'statusHistory' => [
+                // [
+                //     'status' => 'arrived',
+                //     'period' => [
+                //         'start' => '2022-06-14T07:00:00+07:00',
+                //         'end' => '2022-06-14T08:00:00+07:00'
+                //     ]
+                // ],
+                [
+                    'status' => 'in-progress',
+                    'period' => [
+                        'start' => date('Y-m-d')."T".date('H:i:s')."+07:00",
+                        'end' =>  date('Y-m-d')."T".date('H:i:s')."+07:00"
                     ]
-                  ]
-                ],
-                "rank"=> 2
-              ]
+                ]
             ],
-            "statusHistory"=> [
-              [
-                "status"=> "arrived",
-                "period"=> [
-                  "start"=> "2022-06-14T07:00:00+07:00",
-                  "end"=> "2022-06-14T08:00:00+07:00"
-                ]
-              ],
-              [
-                "status"=> "in-progress",
-                "period"=> [
-                  "start"=> "2022-06-14T08:00:00+07:00",
-                  "end"=> "2022-06-14T09:00:00+07:00"
-                ]
-              ],
-              [
-                "status"=> "finished",
-                "period"=> [
-                  "start"=> "2022-06-14T09:00:00+07:00",
-                  "end"=> "2022-06-14T09:00:00+07:00"
-                ]
-              ]
-            ],
-            "serviceProvider"=> [
-              "reference"=>"Organization/"  . EncounterHelper::orgId()
+            'serviceProvider' => [
+                'reference' => 'Organization/100026489'
             ]
         ];
 
-        $response = Http::withOptions(["verify" => false])
-        ->withHeaders([
-            'Authorization' => 'Bearer '.EncounterHelper::token(),
-        ])
-        ->post(EncounterHelper::url().'/Encounter/' . $id, $data);
-
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
+        ->withHeaders(['Authorization'=> 'Bearer '.EncounterHelper::token()])
+        ->put(EncounterHelper::url().'/Encounter/'.$id, $data);
         return $response->json();
     }
+
 }

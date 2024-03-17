@@ -278,6 +278,11 @@
                                                 data-bs-toggle="tab" href="#kt_tab_pane_8" aria-selected="false"
                                                 role="tab" tabindex="-1">Diganosa Akhir</a>
                                         </li>
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
+                                                data-bs-toggle="tab" href="#kt_tab_pane_raber" aria-selected="false"
+                                                role="tab" tabindex="-1">Rawat Bersama</a>
+                                        </li>
 
                                         {{-- <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
@@ -290,6 +295,11 @@
                                 </div>
                             </div>
                             <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade" id="kt_tab_pane_raber" role="tabpanel">
+                                    <a class="btn btn-warning btn-sm mb-5"
+                                        href="{{ route('detail.rawat-inap.pengkajian-kebidanan', $rawat->id) }}">Pengkajian</a>
+                                    @include('rawat-inap.menu.raber')
+                                </div>
                                 <div class="tab-pane fade" id="kt_tab_pane_bidan" role="tabpanel">
                                     <a class="btn btn-warning btn-sm mb-5"
                                         href="{{ route('detail.rawat-inap.pengkajian-kebidanan', $rawat->id) }}">Pengkajian</a>

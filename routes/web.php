@@ -7,10 +7,8 @@ use App\Helpers\SatusehatAuthHelper;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use App\Helpers\SatusehatPasienHelper;
+use App\Helpers\SatusehatKondisiHelper;
 use App\Helpers\SatusehatResourceHelper;
-use App\Helpers\Satusehat\Resource\LocationHelper;
-use App\Helpers\Satusehat\Resource\EncounterHelper;
-use App\Helpers\Satusehat\Resource\PatientHelper;
 use App\Http\Controllers\GiziController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PasienController;
@@ -29,7 +27,10 @@ use App\Http\Controllers\RuanganBedController;
 use App\Http\Controllers\FisioTerapiController;
 use App\Http\Controllers\LaboratoriumController;
 use App\Http\Controllers\TindakLanjutController;
+use App\Helpers\Satusehat\Resource\PatientHelper;
+use App\Helpers\Satusehat\Resource\LocationHelper;
 use App\Http\Controllers\LaporanOperasiController;
+use App\Helpers\Satusehat\Resource\EncounterHelper;
 use App\Http\Controllers\DetailRekapMedisController;
 
 /*
@@ -105,9 +106,34 @@ Route::prefix('location')->group(function () {
 
 #Encounter
 Route::prefix('encounter')->group(function () {
-    Route::get('/create', function () {
-        return EncounterHelper::create();
+    Route::get('/create', function (Request $request) {
+        $idrawat = $request->idrawat;
+        return EncounterHelper::create($idrawat);
     });
+    Route::get('/find-id', function (Request $request) {
+        $idrawat = $request->idrawat;
+        $rawat = Rawat::find($id);
+        return EncounterHelper::searchId($rawat->id_encounter);
+    });
+    Route::get('/find-subject', function (Request $request) {
+        $no_rm = $request->no_rm;
+        $pasien = Pasien::where('no_rm',$request->no_rm)->first();
+        return EncounterHelper::searchSubject($pasien->ihs);
+    });
+    Route::get('/update-in-progres', function (Request $request) {
+        $idrawat = $request->idrawat;
+        $rawat = Rawat::find($id);
+        return EncounterHelper::updateInProgress($rawat->id_encounter);
+    });
+    
+});
+#Kondisi
+Route::prefix('condition')->group(function () {
+    Route::get('/create', function (Request $request) {
+        $idrawat = $request->idrawat;
+        return SatusehatKondisiHelper::create_kondisi($idrawat);
+    });
+   
 });
 
 #Patient

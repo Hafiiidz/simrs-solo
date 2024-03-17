@@ -453,6 +453,7 @@ class RawatInapController extends Controller
         $order_obat_null = DB::table('demo_antrian_resep')->whereNull('obat')->where('status_antrian','!=','Batal')->where('idrawat', $id)->get();
         // dd($order_obat);
         $order_antrian = DB::table('demo_antrian_resep')->where('idrawat', $id)->where('status_antrian', 'Antrian')->orderBy('created_at','desc')->get();
+        $raber = DB::table('demo_rawat_bersama')->where('idrawat',$id)->get();
         if(count($order_antrian) >0){
             $disable_order = 'disabled';
         }else{
@@ -787,6 +788,10 @@ class RawatInapController extends Controller
         ]);
 
         return redirect()->back()->with('berhasil', 'Ringkasan Pasien Berhasil Di Disimpan');
+    }
+    
+    public function raber($id){
+        $raber = DB::table('demo_rawat_bersama',$id);
     }
     // public function postRingkasanPulang($id){
     //     $rawat = Rawat::where('id', $id)->first();

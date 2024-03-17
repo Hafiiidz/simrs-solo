@@ -26,6 +26,13 @@ class PatientHelper
     public static function orgId(){
         return 100026489;
     }
+    public static function ssl(){
+        if (config('app.env') == 'production') {
+            return true;
+        } else {
+            return false;        }
+
+    }
 
     public static function createNik(){
 
@@ -188,7 +195,7 @@ class PatientHelper
             ]
         ];
 
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             'Authorization' => 'Bearer '.PatientHelper::token(),
         ])
@@ -198,7 +205,7 @@ class PatientHelper
     }
 
     public static function searchNik($nik){
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             'Authorization' => 'Bearer '.PatientHelper::token(),
         ])
@@ -208,7 +215,7 @@ class PatientHelper
     }
 
     public static function searchNameBirthNik($nama, $tanggal, $nik){
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             'Authorization' => 'Bearer '.PatientHelper::token(),
         ])
@@ -218,7 +225,7 @@ class PatientHelper
     }
 
     public static function searchNameBirthGender($nama, $tanggal, $gender){
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             'Authorization' => 'Bearer '.PatientHelper::token(),
         ])
@@ -228,7 +235,7 @@ class PatientHelper
     }
 
     public static function searchId($id){
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             'Authorization' => 'Bearer '.PatientHelper::token(),
         ])
@@ -387,7 +394,7 @@ class PatientHelper
             ]
         ];
 
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             'Authorization' => 'Bearer '.PatientHelper::token(),
         ])
@@ -397,7 +404,7 @@ class PatientHelper
     }
 
     public static function searchMotherNik($nik){
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             'Authorization' => 'Bearer '.PatientHelper::token(),
         ])

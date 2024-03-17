@@ -15,7 +15,13 @@ use Illuminate\Support\Facades\Http;
 class SatusehatResourceHelper
 {
 
+    public static function ssl(){
+        if (config('app.env') == 'production') {
+            return true;
+        } else {
+            return false;        }
 
+    }
     #Practitioner
     #NIK
     public static function practitioner_nik($nik){
@@ -23,12 +29,19 @@ class SatusehatResourceHelper
         $token = $get_token['access_token'];
         $url = env('PROD_BASE_URL_SS');
         // return $url;
-        $response = Http::withOptions(["verify" => false])
+        $dokter = Dokter::where('nik',$nik)->first();
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             'Authorization' => 'Bearer '.$token,
         ])
         ->get($url.'/Practitioner?identifier=https://fhir.kemkes.go.id/id/nik|'.$nik);
-
+        // if($dokter)
+        if($response['total'] > 0){
+            if($dokter){
+                $dokter->kode_ihs = $response['entry'][0]['resource']['id'];
+                $dokter->save();
+            }
+        }
         return $response->json();
     }
 
@@ -38,7 +51,7 @@ class SatusehatResourceHelper
         $token = $get_token['access_token'];
         $url = env('PROD_BASE_URL_SS');
         // return $url;
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             'Authorization' => 'Bearer '.$token,
         ])
@@ -53,7 +66,7 @@ class SatusehatResourceHelper
         $token = $get_token['access_token'];
         $url = env('PROD_BASE_URL_SS');
         // return $url;
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             'Authorization' => 'Bearer '.$token,
         ])
@@ -152,7 +165,7 @@ class SatusehatResourceHelper
             $token = $get_token['access_token'];
             $url = env('PROD_BASE_URL_SS');
             // return $url;
-            $response = Http::withOptions(["verify" => false])
+            $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
             ->withHeaders([
                 'Authorization' => 'Bearer '.$token,
             ])
@@ -174,7 +187,7 @@ class SatusehatResourceHelper
         $token = $get_token['access_token'];
         $url = env('PROD_BASE_URL_SS');
         // return $url;
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             'Authorization' => 'Bearer '.$token,
         ])
@@ -189,7 +202,7 @@ class SatusehatResourceHelper
         $token = $get_token['access_token'];
         $url = env('PROD_BASE_URL_SS');
         // return $url;
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             'Authorization' => 'Bearer '.$token,
         ])

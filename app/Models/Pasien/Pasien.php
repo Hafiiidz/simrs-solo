@@ -17,6 +17,7 @@ class Pasien extends Model
     protected $table = 'pasien';
     protected $primaryKey = 'id';
     protected $guarded = ['id'];
+    public $timestamps = false;
 
     /**
      * Get the user associated with the Pasien

@@ -16,16 +16,30 @@ class SatusehatPasienHelper
 {
     #Pasien
     #search by nik
+    public static function ssl(){
+        if (config('app.env') == 'production') {
+            return true;
+        } else {
+            return false;        }
+
+    }
     public static function searchPasienByNik($nik){
+        $pasien = Pasien::where('nik',$nik)->first();
         $get_token = SatusehatAuthHelper::generate_token();
         $token = $get_token['access_token'];
         $url = env('PROD_BASE_URL_SS');
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             'Authorization' => 'Bearer '.$token,
         ])
         ->get($url.'/Patient?identifier=https://fhir.kemkes.go.id/id/nik|'.$nik);
-
+        if($response['total'] > 0){
+            if($pasien){
+                $pasien->ihs = $response['entry'][0]['resource']['id'];
+                $pasien->save();
+            }
+        }
+       
         return $response->json();
     }
     #Patient - Search Name, Gender, Birthdate
@@ -33,7 +47,7 @@ class SatusehatPasienHelper
         $get_token = SatusehatAuthHelper::generate_token();
         $token = $get_token['access_token'];
         $url = env('PROD_BASE_URL_SS');
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             "Authorization" => "Bearer ".$token,
         ])
@@ -46,7 +60,7 @@ class SatusehatPasienHelper
         $get_token = SatusehatAuthHelper::generate_token();
         $token = $get_token['access_token'];
         $url = env('PROD_BASE_URL_SS');
-        $response = Http::withOptions(["verify" => false])
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             "Authorization" => "Bearer ".$token,
         ])
@@ -255,7 +269,7 @@ class SatusehatPasienHelper
                 'Content-Type' => 'application/json',
                 "Authorization" => "Bearer ".$token,
                 // Add any additional headers if needed
-            ])->withOptions(["verify" => false])->post($url.'/Patient', $data);
+            ])->withOptions(["verify" => SatusehatAuthHelper::ssl()])->post($url.'/Patient', $data);
             return $response->json();
         }
     }

@@ -72,7 +72,12 @@
                         <td>{{ $resep->tgl }}</td>
                         <td>Poli/Ruangan</td>
                         <td>:</td>
+                        @if($rawat->idjenisrawat == 2)
+                        <td>{{ $rawat->ruangan?->nama_ruangan }}</td>
+                        @else
                         <td>Poli {{ $rawat->poli?->poli }}</td>
+                        @endif
+                       
                     </tr>
                 </table>
             </div>
