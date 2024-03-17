@@ -7,10 +7,8 @@ use App\Helpers\SatusehatAuthHelper;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use App\Helpers\SatusehatPasienHelper;
+use App\Helpers\SatusehatKondisiHelper;
 use App\Helpers\SatusehatResourceHelper;
-use App\Helpers\Satusehat\Resource\LocationHelper;
-use App\Helpers\Satusehat\Resource\EncounterHelper;
-use App\Helpers\Satusehat\Resource\PatientHelper;
 use App\Http\Controllers\GiziController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PasienController;
@@ -29,7 +27,10 @@ use App\Http\Controllers\RuanganBedController;
 use App\Http\Controllers\FisioTerapiController;
 use App\Http\Controllers\LaboratoriumController;
 use App\Http\Controllers\TindakLanjutController;
+use App\Helpers\Satusehat\Resource\PatientHelper;
+use App\Helpers\Satusehat\Resource\LocationHelper;
 use App\Http\Controllers\LaporanOperasiController;
+use App\Helpers\Satusehat\Resource\EncounterHelper;
 use App\Http\Controllers\DetailRekapMedisController;
 
 /*
@@ -106,8 +107,25 @@ Route::prefix('location')->group(function () {
 #Encounter
 Route::prefix('encounter')->group(function () {
     Route::get('/create', function () {
-        return EncounterHelper::create();
+        return EncounterHelper::create(63919);
     });
+    Route::get('/find-id', function () {
+        return EncounterHelper::searchId('c46629dc-27b9-4d0e-853a-54bfd0437f5d');
+    });
+    Route::get('/find-subject', function () {
+        return EncounterHelper::searchSubject('P02552132860');
+    });
+    Route::get('/update-in-progres', function () {
+        return EncounterHelper::updateInProgress('c46629dc-27b9-4d0e-853a-54bfd0437f5d');
+    });
+    
+});
+#Kondisi
+Route::prefix('condition')->group(function () {
+    Route::get('/create', function () {
+        return SatusehatKondisiHelper::create_kondisi(63919);
+    });
+   
 });
 
 #Patient

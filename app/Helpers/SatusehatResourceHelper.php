@@ -23,12 +23,19 @@ class SatusehatResourceHelper
         $token = $get_token['access_token'];
         $url = env('PROD_BASE_URL_SS');
         // return $url;
+        $dokter = Dokter::where('nik',$nik)->first();
         $response = Http::withOptions(["verify" => false])
         ->withHeaders([
             'Authorization' => 'Bearer '.$token,
         ])
         ->get($url.'/Practitioner?identifier=https://fhir.kemkes.go.id/id/nik|'.$nik);
-
+        // if($dokter)
+        if($response['total'] > 0){
+            if($dokter){
+                $dokter->kode_ihs = $response['entry'][0]['resource']['id'];
+                $dokter->save();
+            }
+        }
         return $response->json();
     }
 

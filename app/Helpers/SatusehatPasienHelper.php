@@ -17,6 +17,7 @@ class SatusehatPasienHelper
     #Pasien
     #search by nik
     public static function searchPasienByNik($nik){
+        $pasien = Pasien::where('nik',$nik)->first();
         $get_token = SatusehatAuthHelper::generate_token();
         $token = $get_token['access_token'];
         $url = env('PROD_BASE_URL_SS');
@@ -25,7 +26,13 @@ class SatusehatPasienHelper
             'Authorization' => 'Bearer '.$token,
         ])
         ->get($url.'/Patient?identifier=https://fhir.kemkes.go.id/id/nik|'.$nik);
-
+        if($response['total'] > 0){
+            if($pasien){
+                $pasien->ihs = $response['entry'][0]['resource']['id'];
+                $pasien->save();
+            }
+        }
+       
         return $response->json();
     }
     #Patient - Search Name, Gender, Birthdate

@@ -16,7 +16,7 @@
                             <tr>
                                 <th rowspan="2" width=200>Dosis</th>
                                 <th rowspan="2" width=100>Jumlah</th>
-                                <th rowspan="2" width=50>Diberikan</th>
+                                <th rowspan="2" width=50>Signa</th>
                                 <th rowspan="2" width=100>Takaran</th>
                                 <th width=50 colspan="4">Signa</th>
                                 <th rowspan="2" width=100>Diminum</th>
