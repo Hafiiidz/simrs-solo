@@ -106,24 +106,32 @@ Route::prefix('location')->group(function () {
 
 #Encounter
 Route::prefix('encounter')->group(function () {
-    Route::get('/create', function () {
-        return EncounterHelper::create(63919);
+    Route::get('/create', function (Request $request) {
+        $idrawat = $request->idrawat;
+        return EncounterHelper::create($idrawat);
     });
-    Route::get('/find-id', function () {
-        return EncounterHelper::searchId('c46629dc-27b9-4d0e-853a-54bfd0437f5d');
+    Route::get('/find-id', function (Request $request) {
+        $idrawat = $request->idrawat;
+        $rawat = Rawat::find($id)
+        return EncounterHelper::searchId($rawat->id_encounter);
     });
-    Route::get('/find-subject', function () {
-        return EncounterHelper::searchSubject('P02552132860');
+    Route::get('/find-subject', function (Request $request) {
+        $no_rm = $request->no_rm;
+        $pasien = Pasien::where('no_rm',$request->no_rm)->first();
+        return EncounterHelper::searchSubject($pasien->ihs);
     });
-    Route::get('/update-in-progres', function () {
-        return EncounterHelper::updateInProgress('c46629dc-27b9-4d0e-853a-54bfd0437f5d');
+    Route::get('/update-in-progres', function (Request $request) {
+        $idrawat = $request->idrawat;
+        $rawat = Rawat::find($id)
+        return EncounterHelper::updateInProgress($rawat->id_encounter);
     });
     
 });
 #Kondisi
 Route::prefix('condition')->group(function () {
-    Route::get('/create', function () {
-        return SatusehatKondisiHelper::create_kondisi(63919);
+    Route::get('/create', function (Request $request) {
+        $idrawat = $request->idrawat;
+        return SatusehatKondisiHelper::create_kondisi($idrawat);
     });
    
 });
