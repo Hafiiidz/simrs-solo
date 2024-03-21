@@ -95,193 +95,196 @@ class RekapMedisController extends Controller
         } else {
             $rekap_medis->dokter = 1;
             $resep_dokter = DB::table('demo_resep_dokter')->where('idrawat', $rawat->id)->get();
-            if (count($resep_dokter) > 0) {   
-                VclaimHelper::update_task($rawat->idrawat,6,$current_time);             
-                $non_racik = [];
-                $racikan = [];
-                foreach($resep_dokter as $rd){
-                    if($rd->jenis == 'Racik'){
-                        $data_obat = [];
-                        $jumlah_obat = [];
-                        $obat = json_decode($rd->nama_obat);
-                        foreach($obat->obat as $o){
-                            $data_obat[] = [
-                                'obat'=>$o,
-                            ];
-                        }
-                        foreach($obat->jumlah as $o){
-                            $jumlah_obat[] = [
-                                'jumlah_obat'=>$o,
-                            ];
-                        }
-            
-                        $obatData= json_encode(array_merge($data_obat,$jumlah_obat));
-                        $data = json_decode($obatData, true);
-            
-                        // Inisialisasi array 2 dimensi
-                        $result = [];
-                        $finalResult = array();
-                        // Mengelompokkan elemen berdasarkan kunci
-                        foreach ($data as $item) {
-                            foreach ($item as $key => $value) {
-                                if (!isset($finalResult[$key])) {
-                                    $finalResult[$key] = array();
-                                }
-                                $finalResult[$key][] = $value;
+            if($rekap_medis->dokter == null){
+                if (count($resep_dokter) > 0) {   
+                    VclaimHelper::update_task($rawat->idrawat,6,$current_time);             
+                    $non_racik = [];
+                    $racikan = [];
+                    foreach($resep_dokter as $rd){
+                        if($rd->jenis == 'Racik'){
+                            $data_obat = [];
+                            $jumlah_obat = [];
+                            $obat = json_decode($rd->nama_obat);
+                            foreach($obat->obat as $o){
+                                $data_obat[] = [
+                                    'obat'=>$o,
+                                ];
                             }
-                        }
-                        
-                        // Menggabungkan hasil menjadi array sesuai format yang diinginkan
-                        $combinedArray = array();
-                        for ($i = 0; $i < count($finalResult['obat']); $i++) {
-                            $combinedArray[] = array(
-                                'obat' => $finalResult['obat'][$i],
-                                'jumlah_obat' => $finalResult['jumlah_obat'][$i]
-                            );
-                        }
-                        
-                        // return $combinedArray;
-            
-                        $racikan[] = [
-                            'obat'=>$combinedArray,
-                            'jumlah_obat'=>$jumlah_obat,
-                            'takaran'=>$rd->takaran,
-                            'dosis'=>$rd->dosis,
-                            'signa'=>$rd->signa,
-                            'dtd'=>$rd->dtd,
-                            'diminum'=>$rd->diminum,
-                            'catatan'=>$rd->catatan,
-                            'idresep'=>$rd->id
-                        ];
-                    }elseif($rd->jenis == 'Non Racik'){
-                        $non_racik[] = [
-                            'obat'=>$rd->idobat,
-                            'takaran'=>$rd->takaran,
-                            'jumlah'=>$rd->jumlah,
-                            'dosis'=>$rd->dosis,
-                            'signa'=>$rd->signa,
-                            'diminum'=>$rd->diminum,
-                            'catatan'=>$rd->catatan,
-                            'idresep'=>$rd->id
-                        ];
-                    }
-                }
-                // return $racikan;
-                $no_antrian = DB::table('demo_antrian_resep')->whereDate('created_at', Carbon::today())->where('jenis_rawat', $rawat->idjenisrawat)->count();
-                $antrian = DB::table('demo_antrian_resep')->insertGetId([
-                    'idrawat' => $rekap_medis->idrawat,
-                    'racikan' => json_encode($racikan),
-                    'idbayar' => $rekap_medis->rawat->idbayar,
-                    'status_antrian' => 'Antrian',
-                    'no_rm' => $rekap_medis->rawat->no_rm,
-                    'idrekap' => $rekap_medis->id,
-                    'no_antrian' => $no_antrian + 1,
-                    'obat' => json_encode($non_racik),
-                    'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-                DB::table('demo_resep_dokter')->where('idrawat', $rawat->id)->whereNull('idantrian')->update([
-                    'idantrian'=>$antrian
-                ]);
-            }
-            if ($detail->radiologi != null || $detail->radiologi != 'null' || $detail->radiologi != '') {
-                $cek_permintaan_penunjang_radiologi = DB::table('demo_permintaan_penunjang')->where('idrawat', $rekap_medis->idrawat)->where('jenis_penunjang','Radiologi')->where('status_pemeriksaan','Antrian')->first();
-                if(!$cek_permintaan_penunjang_radiologi){
-                    DB::table('demo_permintaan_penunjang')->insert([
-                        'idrawat' => $rekap_medis->idrawat,
-                        'idbayar' => $rekap_medis->rawat->idbayar,
-                        'status_pemeriksaan' => 'Antrian',
-                        'no_rm' => $rekap_medis->rawat->no_rm,
-                        'pemeriksaan_penunjang' => $detail->radiologi,
-                        'jenis_penunjang' => 'Radiologi',
-                        'peminta' => now(),
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                        'peminta' => auth()->user()->id,
-                        'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
-                        'idrekap' => $rekap_medis->id,
-                    ]);
-                }
-                // DB::table('demo_permintaan_penunjang')->insert([
-                //     'idrawat' => $rekap_medis->idrawat,
-                //     'idbayar' => $rekap_medis->rawat->idbayar,
-                //     'status_pemeriksaan' => 'Antrian',
-                //     'no_rm' => $rekap_medis->rawat->no_rm,
-                //     'pemeriksaan_penunjang' => $detail->radiologi,
-                //     'jenis_penunjang' => 'Radiologi',
-                //     'peminta' => now(),
-                //     'created_at' => now(),
-                //     'updated_at' => now(),
-                //     'peminta' => auth()->user()->id,
-                //     'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
-                //     'idrekap' => $rekap_medis->id,
-                // ]);
-            }
-            if ($detail->laborat != null || $detail->laborat != 'null' || $detail->laborat != '') {
-                $cek_permintaan_penunjang_lab = DB::table('demo_permintaan_penunjang')->where('idrawat', $rekap_medis->idrawat)->where('jenis_penunjang','Lab')->where('status_pemeriksaan','Antrian')->first();
-                if(!$cek_permintaan_penunjang_lab){
-                    DB::table('demo_permintaan_penunjang')->insert([
-                        'idrawat' => $rekap_medis->idrawat,
-                        'idbayar' => $rekap_medis->rawat->idbayar,
-                        'status_pemeriksaan' => 'Antrian',
-                        'no_rm' => $rekap_medis->rawat->no_rm,
-                        'pemeriksaan_penunjang' => $detail->laborat,
-                        'jenis_penunjang' => 'Lab',
-                        'peminta' => now(),
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                        'peminta' => auth()->user()->id,
-                        'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
-                        'idrekap' => $rekap_medis->id,
-                    ]);
-                }
-                // DB::table('demo_permintaan_penunjang')->insert([
-                //     'idrawat' => $rekap_medis->idrawat,
-                //     'idbayar' => $rekap_medis->rawat->idbayar,
-                //     'status_pemeriksaan' => 'Antrian',
-                //     'no_rm' => $rekap_medis->rawat->no_rm,
-                //     'pemeriksaan_penunjang' => $detail->laborat,
-                //     'jenis_penunjang' => 'Lab',
-                //     'peminta' => now(),
-                //     'created_at' => now(),
-                //     'updated_at' => now(),
-                //     'peminta' => auth()->user()->id,
-                //     'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
-                //     'idrekap' => $rekap_medis->id,
-                // ]);
-            }
-            if ($detail->fisio != 'null' || $detail->fisio != '' || $detail->fisio != null) {
-                // DB::table('demo_terapi_fisio')->insert([
-                //     'idrekap' => $rekap_medis->id,
-                //     'idrawat' => $rekap_medis->idrawat,
-                //     'idbayar' => $rekap_medis->rawat->idbayar,
-                //     'no_rm' => $rekap_medis->rawat->no_rm,
-                //     'terapi' => $detail->fisio,
-                //     'iddokter'=>$rekap_medis->rawat->iddokter,
-                //     'created_at' => now(),
-                //     'updated_at' => now(),
-                //     'limit_program'=>8,
-                // ]);
-                $cek_antrian_fisio = DB::table('demo_permintaan_penunjang')->where('idrawat', $rekap_medis->idrawat)->where('jenis_penunjang','Fisio')->where('status_pemeriksaan','Antrian')->first();
-                if(!$cek_antrian_fisio){
-                    DB::table('demo_permintaan_penunjang')->insert([
-                        'idrawat' => $rekap_medis->idrawat,
-                        'idbayar' => $rekap_medis->rawat->idbayar,
-                        'status_pemeriksaan' => 'Antrian',
-                        'no_rm' => $rekap_medis->rawat->no_rm,
-                        'pemeriksaan_penunjang' => $detail->fisio,
-                        'jenis_penunjang' => 'Fisio',
-                        'peminta' => now(),
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                        'peminta' => auth()->user()->id,
-                        'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
-                        'idrekap' => $rekap_medis->id,
-                    ]);
-                }
+                            foreach($obat->jumlah as $o){
+                                $jumlah_obat[] = [
+                                    'jumlah_obat'=>$o,
+                                ];
+                            }
                 
+                            $obatData= json_encode(array_merge($data_obat,$jumlah_obat));
+                            $data = json_decode($obatData, true);
+                
+                            // Inisialisasi array 2 dimensi
+                            $result = [];
+                            $finalResult = array();
+                            // Mengelompokkan elemen berdasarkan kunci
+                            foreach ($data as $item) {
+                                foreach ($item as $key => $value) {
+                                    if (!isset($finalResult[$key])) {
+                                        $finalResult[$key] = array();
+                                    }
+                                    $finalResult[$key][] = $value;
+                                }
+                            }
+                            
+                            // Menggabungkan hasil menjadi array sesuai format yang diinginkan
+                            $combinedArray = array();
+                            for ($i = 0; $i < count($finalResult['obat']); $i++) {
+                                $combinedArray[] = array(
+                                    'obat' => $finalResult['obat'][$i],
+                                    'jumlah_obat' => $finalResult['jumlah_obat'][$i]
+                                );
+                            }
+                            
+                            // return $combinedArray;
+                
+                            $racikan[] = [
+                                'obat'=>$combinedArray,
+                                'jumlah_obat'=>$jumlah_obat,
+                                'takaran'=>$rd->takaran,
+                                'dosis'=>$rd->dosis,
+                                'signa'=>$rd->signa,
+                                'dtd'=>$rd->dtd,
+                                'diminum'=>$rd->diminum,
+                                'catatan'=>$rd->catatan,
+                                'idresep'=>$rd->id
+                            ];
+                        }elseif($rd->jenis == 'Non Racik'){
+                            $non_racik[] = [
+                                'obat'=>$rd->idobat,
+                                'takaran'=>$rd->takaran,
+                                'jumlah'=>$rd->jumlah,
+                                'dosis'=>$rd->dosis,
+                                'signa'=>$rd->signa,
+                                'diminum'=>$rd->diminum,
+                                'catatan'=>$rd->catatan,
+                                'idresep'=>$rd->id
+                            ];
+                        }
+                    }
+                    // return $racikan;
+                    $no_antrian = DB::table('demo_antrian_resep')->whereDate('created_at', Carbon::today())->where('jenis_rawat', $rawat->idjenisrawat)->count();
+                    $antrian = DB::table('demo_antrian_resep')->insertGetId([
+                        'idrawat' => $rekap_medis->idrawat,
+                        'racikan' => json_encode($racikan),
+                        'idbayar' => $rekap_medis->rawat->idbayar,
+                        'status_antrian' => 'Antrian',
+                        'no_rm' => $rekap_medis->rawat->no_rm,
+                        'idrekap' => $rekap_medis->id,
+                        'no_antrian' => $no_antrian + 1,
+                        'obat' => json_encode($non_racik),
+                        'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                    DB::table('demo_resep_dokter')->where('idrawat', $rawat->id)->whereNull('idantrian')->update([
+                        'idantrian'=>$antrian
+                    ]);
+                }
+                if ($detail->radiologi != null || $detail->radiologi != 'null' || $detail->radiologi != '') {
+                    $cek_permintaan_penunjang_radiologi = DB::table('demo_permintaan_penunjang')->where('idrawat', $rekap_medis->idrawat)->where('jenis_penunjang','Radiologi')->where('status_pemeriksaan','Antrian')->first();
+                    if(!$cek_permintaan_penunjang_radiologi){
+                        DB::table('demo_permintaan_penunjang')->insert([
+                            'idrawat' => $rekap_medis->idrawat,
+                            'idbayar' => $rekap_medis->rawat->idbayar,
+                            'status_pemeriksaan' => 'Antrian',
+                            'no_rm' => $rekap_medis->rawat->no_rm,
+                            'pemeriksaan_penunjang' => $detail->radiologi,
+                            'jenis_penunjang' => 'Radiologi',
+                            'peminta' => now(),
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                            'peminta' => auth()->user()->id,
+                            'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
+                            'idrekap' => $rekap_medis->id,
+                        ]);
+                    }
+                    // DB::table('demo_permintaan_penunjang')->insert([
+                    //     'idrawat' => $rekap_medis->idrawat,
+                    //     'idbayar' => $rekap_medis->rawat->idbayar,
+                    //     'status_pemeriksaan' => 'Antrian',
+                    //     'no_rm' => $rekap_medis->rawat->no_rm,
+                    //     'pemeriksaan_penunjang' => $detail->radiologi,
+                    //     'jenis_penunjang' => 'Radiologi',
+                    //     'peminta' => now(),
+                    //     'created_at' => now(),
+                    //     'updated_at' => now(),
+                    //     'peminta' => auth()->user()->id,
+                    //     'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
+                    //     'idrekap' => $rekap_medis->id,
+                    // ]);
+                }
+                if ($detail->laborat != null || $detail->laborat != 'null' || $detail->laborat != '') {
+                    $cek_permintaan_penunjang_lab = DB::table('demo_permintaan_penunjang')->where('idrawat', $rekap_medis->idrawat)->where('jenis_penunjang','Lab')->where('status_pemeriksaan','Antrian')->first();
+                    if(!$cek_permintaan_penunjang_lab){
+                        DB::table('demo_permintaan_penunjang')->insert([
+                            'idrawat' => $rekap_medis->idrawat,
+                            'idbayar' => $rekap_medis->rawat->idbayar,
+                            'status_pemeriksaan' => 'Antrian',
+                            'no_rm' => $rekap_medis->rawat->no_rm,
+                            'pemeriksaan_penunjang' => $detail->laborat,
+                            'jenis_penunjang' => 'Lab',
+                            'peminta' => now(),
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                            'peminta' => auth()->user()->id,
+                            'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
+                            'idrekap' => $rekap_medis->id,
+                        ]);
+                    }
+                    // DB::table('demo_permintaan_penunjang')->insert([
+                    //     'idrawat' => $rekap_medis->idrawat,
+                    //     'idbayar' => $rekap_medis->rawat->idbayar,
+                    //     'status_pemeriksaan' => 'Antrian',
+                    //     'no_rm' => $rekap_medis->rawat->no_rm,
+                    //     'pemeriksaan_penunjang' => $detail->laborat,
+                    //     'jenis_penunjang' => 'Lab',
+                    //     'peminta' => now(),
+                    //     'created_at' => now(),
+                    //     'updated_at' => now(),
+                    //     'peminta' => auth()->user()->id,
+                    //     'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
+                    //     'idrekap' => $rekap_medis->id,
+                    // ]);
+                }
+                if ($detail->fisio != 'null' || $detail->fisio != '' || $detail->fisio != null) {
+                    // DB::table('demo_terapi_fisio')->insert([
+                    //     'idrekap' => $rekap_medis->id,
+                    //     'idrawat' => $rekap_medis->idrawat,
+                    //     'idbayar' => $rekap_medis->rawat->idbayar,
+                    //     'no_rm' => $rekap_medis->rawat->no_rm,
+                    //     'terapi' => $detail->fisio,
+                    //     'iddokter'=>$rekap_medis->rawat->iddokter,
+                    //     'created_at' => now(),
+                    //     'updated_at' => now(),
+                    //     'limit_program'=>8,
+                    // ]);
+                    $cek_antrian_fisio = DB::table('demo_permintaan_penunjang')->where('idrawat', $rekap_medis->idrawat)->where('jenis_penunjang','Fisio')->where('status_pemeriksaan','Antrian')->first();
+                    if(!$cek_antrian_fisio){
+                        DB::table('demo_permintaan_penunjang')->insert([
+                            'idrawat' => $rekap_medis->idrawat,
+                            'idbayar' => $rekap_medis->rawat->idbayar,
+                            'status_pemeriksaan' => 'Antrian',
+                            'no_rm' => $rekap_medis->rawat->no_rm,
+                            'pemeriksaan_penunjang' => $detail->fisio,
+                            'jenis_penunjang' => 'Fisio',
+                            'peminta' => now(),
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                            'peminta' => auth()->user()->id,
+                            'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
+                            'idrekap' => $rekap_medis->id,
+                        ]);
+                    }
+                    
+                }
             }
+           
 
             $current_time = round(microtime(true) * 1000); 
             VclaimHelper::update_task($rawat->idrawat,5,$current_time);
