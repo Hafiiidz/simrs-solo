@@ -11,12 +11,12 @@ class RadiologiController extends Controller
     #list pemeriksaan radiologi
     public function antrian_radiologi(){
         $query = DB::table('demo_permintaan_penunjang')
-        ->join('rawat','rawat.id','=','demo_permintaan_penunjang.idrawat')
-        ->join('pasien','pasien.no_rm','=','rawat.no_rm')
-        ->join('rawat_jenis','rawat_jenis.id','=','rawat.idjenisrawat')
+        ->leftjoin('rawat','rawat.id','=','demo_permintaan_penunjang.idrawat')
+        ->leftjoin('pasien','pasien.no_rm','=','rawat.no_rm')
+        ->leftjoin('rawat_jenis','rawat_jenis.id','=','rawat.idjenisrawat')
         ->leftjoin('poli','poli.id','=','rawat.idpoli')
         ->leftjoin('ruangan','ruangan.id','=','rawat.idruangan')
-        ->join('dokter','dokter.id','=','demo_permintaan_penunjang.peminta')
+        ->leftjoin('dokter','dokter.id','=','demo_permintaan_penunjang.peminta')
         ->select([
             'demo_permintaan_penunjang.*',
             'pasien.nama_pasien',
