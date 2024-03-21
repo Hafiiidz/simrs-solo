@@ -707,7 +707,7 @@ class RawatInapController extends Controller
                         'takaran'=>$rd->takaran,
                         'dosis'=>$rd->dosis,
                         'signa'=>$rd->signa,
-                        'dtd'=>$rd->dtd,
+                        'dtd'=>'null',
                         'diminum'=>$rd->diminum,
                         'catatan'=>$rd->catatan,
                         'idresep'=>$rd->id
