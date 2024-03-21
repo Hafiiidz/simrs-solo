@@ -168,23 +168,34 @@ class RekapMedisController extends Controller
                         }
                     }
                     // return $racikan;
-                    $no_antrian = DB::table('demo_antrian_resep')->whereDate('created_at', Carbon::today())->where('jenis_rawat', $rawat->idjenisrawat)->count();
-                    $antrian = DB::table('demo_antrian_resep')->insertGetId([
-                        'idrawat' => $rekap_medis->idrawat,
-                        'racikan' => json_encode($racikan),
-                        'idbayar' => $rekap_medis->rawat->idbayar,
-                        'status_antrian' => 'Antrian',
-                        'no_rm' => $rekap_medis->rawat->no_rm,
-                        'idrekap' => $rekap_medis->id,
-                        'no_antrian' => $no_antrian + 1,
-                        'obat' => json_encode($non_racik),
-                        'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
-                    DB::table('demo_resep_dokter')->where('idrawat', $rawat->id)->whereNull('idantrian')->update([
-                        'idantrian'=>$antrian
-                    ]);
+                    $cek_antrian = DB::table('demo_antrian_resep')->where('idrawat', $rawat->id)->where('jenis_rawat', $rawat->idjenisrawat)->first();
+                    if($cek_antrian){
+                        $no_antrian = DB::table('demo_antrian_resep')->whereDate('created_at', Carbon::today())->where('jenis_rawat', $rawat->idjenisrawat)->count();
+                        $antrian = DB::table('demo_antrian_resep')->where('idrawat', $rawat->id)->where('status_antrian', 'Antrian')->update([
+                            'racikan' => json_encode($racikan),
+                            'obat' => json_encode($non_racik),
+                            'updated_at' => now(),
+                        ]);
+                    }else{
+                        $no_antrian = DB::table('demo_antrian_resep')->whereDate('created_at', Carbon::today())->where('jenis_rawat', $rawat->idjenisrawat)->count();
+                        $antrian = DB::table('demo_antrian_resep')->insertGetId([
+                            'idrawat' => $rekap_medis->idrawat,
+                            'racikan' => json_encode($racikan),
+                            'idbayar' => $rekap_medis->rawat->idbayar,
+                            'status_antrian' => 'Antrian',
+                            'no_rm' => $rekap_medis->rawat->no_rm,
+                            'idrekap' => $rekap_medis->id,
+                            'no_antrian' => $no_antrian + 1,
+                            'obat' => json_encode($non_racik),
+                            'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                        DB::table('demo_resep_dokter')->where('idrawat', $rawat->id)->whereNull('idantrian')->update([
+                            'idantrian'=>$antrian
+                        ]);
+                    }
+                    
                 }
                 if ($detail->radiologi != null || $detail->radiologi != 'null' || $detail->radiologi != '') {
                     $cek_permintaan_penunjang_radiologi = DB::table('demo_permintaan_penunjang')->where('idrawat', $rekap_medis->idrawat)->where('jenis_penunjang','Radiologi')->where('status_pemeriksaan','Antrian')->first();
