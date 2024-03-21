@@ -160,6 +160,16 @@
                                         <span class="menu-title">Antrian Radiologi</span>
                                     </a>
                                 </div>
+                                <div class="menu-item">
+                                    <!--begin:Menu link-->
+                                    <a class="menu-link {{ Request::is('farmasi') || Request::is('farmasi/') ? 'active' : '' }}"
+                                        href="{{ route('radiologi.index') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">List Hasil Radiologi</span>
+                                    </a>
+                                </div>
                                 <!--end:Menu item-->
                             </div>
                         @endif

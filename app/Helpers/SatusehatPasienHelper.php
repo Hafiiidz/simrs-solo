@@ -36,7 +36,7 @@ class SatusehatPasienHelper
         if($response['total'] > 0){
             
             // $consent = SatusehatResourceHelper::consent_update($pasien->ihs);
-            return $consent;
+            // return $consent;
             if($pasien){
                 $pasien->ihs = $response['entry'][0]['resource']['id'];
                 $pasien->save();

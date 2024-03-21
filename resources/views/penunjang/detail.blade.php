@@ -433,6 +433,7 @@
                                                             <!--begin::Form group-->
                                                             <div class="form-group">
                                                                 <div data-repeater-list="radiologi">
+                                                                    @if ($penunjang->pemeriksaan_penunjang != 'null')
                                                                     @foreach (json_decode($penunjang->pemeriksaan_penunjang) as $val)
                                                                         <div data-repeater-item>
                                                                             <div class="form-group row mb-5">
@@ -486,6 +487,7 @@
                                                                             </div>
                                                                         </div>
                                                                     @endforeach
+                                                                    @endif
                                                                 </div>
 
 

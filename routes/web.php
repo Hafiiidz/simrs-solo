@@ -22,6 +22,7 @@ use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MasterBhpController;
 use App\Http\Controllers\PenunjangController;
+use App\Http\Controllers\RadiologiController;
 use App\Http\Controllers\RawatInapController;
 use App\Http\Controllers\PoliklinikController;
 use App\Http\Controllers\RekapMedisController;
@@ -111,6 +112,7 @@ Route::prefix('encounter')->group(function () {
     Route::get('/create', function (Request $request) {
         $idrawat = $request->idrawat;
         $rawat = Rawat::find($idrawat);
+        // return $rawat;
         $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
         $consent = SatusehatResourceHelper::consent_read($pasien->ihs);
         // return $consent;
@@ -370,6 +372,10 @@ Route::prefix('/fisio')->middleware('auth')->group(function () {
 
 //pasien
 
+Route::prefix('/radiologi')->middleware('auth')->group(function () {
+    #index
+    Route::get('/', [RadiologiController::class, 'index_radiologi'])->name('radiologi.index');
+});
 Route::prefix('/penunjang')->middleware('auth')->group(function () {
     Route::get('/antrian/{jenis}', [PenunjangController::class, 'antrian'])->middleware('auth')->name('penunjang.antrian');
     Route::get('/detail-penunjang/{id}/{jenis}', [PenunjangController::class, 'detail_penunjang'])->middleware('auth')->name('penunjang.detail');
