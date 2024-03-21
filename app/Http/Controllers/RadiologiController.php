@@ -37,7 +37,7 @@ class RadiologiController extends Controller
             })
             ->addColumn('pemeriksaan',function($query){
                
-                 if($query->pemeriksaan_penunjang != 'null'){
+                 if($query->pemeriksaan_penunjang != 'null' || $query->pemeriksaan_penunjang != null || $query->pemeriksaan_penunjang != ''){
                     $pemeriksaan = json_decode($query->pemeriksaan_penunjang);
                     $html = '<ol>';
                     foreach($pemeriksaan as $p){
