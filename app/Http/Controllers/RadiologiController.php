@@ -36,18 +36,18 @@ class RadiologiController extends Controller
                 return '<a href="'.route('penunjang.detail',[$query->idrawat,'Radiologi']).'" class="btn btn-sm btn-icon btn-light-info"><i class="fa fa-pencil"></i></a>';
             })
             ->addColumn('pemeriksaan',function($query){
-               
-                 if($query->pemeriksaan_penunjang != 'null' || $query->pemeriksaan_penunjang != null || $query->pemeriksaan_penunjang != ''){
-                    $pemeriksaan = json_decode($query->pemeriksaan_penunjang);
-                    $html = '<ol>';
-                    foreach($pemeriksaan as $p){
-                        $radiologi_tindakan = DB::table('radiologi_tindakan')->where('id',$p->tindakan_rad)->first();
-                        $html .= '<li>'.$radiologi_tindakan?->nama_tindakan.'</li>';
-                    }
-                    $html .= '</ol>';
-                    return $html;
-                 }
-                 return '-';
+                return $query->pemeriksaan_penunjang;
+                //  if($query->pemeriksaan_penunjang != 'null' || $query->pemeriksaan_penunjang != null || $query->pemeriksaan_penunjang != ''){
+                //     $pemeriksaan = json_decode($query->pemeriksaan_penunjang);
+                //     $html = '<ol>';
+                //     foreach($pemeriksaan as $p){
+                //         $radiologi_tindakan = DB::table('radiologi_tindakan')->where('id',$p->tindakan_rad)->first();
+                //         $html .= '<li>'.$radiologi_tindakan?->nama_tindakan.'</li>';
+                //     }
+                //     $html .= '</ol>';
+                //     return $html;
+                //  }
+                //  return '-';
             })
             ->addColumn('status', function($query){
                 if($query->status_pemeriksaan == 'Antrian'){
