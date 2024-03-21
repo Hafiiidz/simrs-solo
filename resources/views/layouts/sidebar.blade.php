@@ -153,7 +153,7 @@
                                 <div class="menu-item">
                                     <!--begin:Menu link-->
                                     <a class="menu-link {{ Request::is('farmasi') || Request::is('farmasi/') ? 'active' : '' }}"
-                                        href="{{ route('penunjang.antrian', 'Radiologi') }}">
+                                        href="{{ route('radiologi.antrian') }}">
                                         <span class="menu-bullet">
                                             <span class="bullet bullet-dot"></span>
                                         </span>

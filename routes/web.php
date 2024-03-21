@@ -375,6 +375,7 @@ Route::prefix('/fisio')->middleware('auth')->group(function () {
 Route::prefix('/radiologi')->middleware('auth')->group(function () {
     #index
     Route::get('/', [RadiologiController::class, 'index_radiologi'])->name('radiologi.index');
+    Route::get('/antrian-radiologi', [RadiologiController::class, 'antrian_radiologi'])->name('radiologi.antrian');
 });
 Route::prefix('/penunjang')->middleware('auth')->group(function () {
     Route::get('/antrian/{jenis}', [PenunjangController::class, 'antrian'])->middleware('auth')->name('penunjang.antrian');

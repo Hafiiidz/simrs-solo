@@ -9,6 +9,67 @@ use Yajra\DataTables\Facades\DataTables;
 class RadiologiController extends Controller
 {
     #list pemeriksaan radiologi
+    public function antrian_radiologi(){
+        $query = DB::table('demo_permintaan_penunjang')
+        ->join('rawat','rawat.id','=','demo_permintaan_penunjang.idrawat')
+        ->join('pasien','pasien.no_rm','=','rawat.no_rm')
+        ->join('rawat_jenis','rawat_jenis.id','=','rawat.idjenisrawat')
+        ->leftjoin('poli','poli.id','=','rawat.idpoli')
+        ->leftjoin('ruangan','ruangan.id','=','rawat.idruangan')
+        ->join('dokter','dokter.id','=','demo_permintaan_penunjang.peminta')
+        ->select([
+            'demo_permintaan_penunjang.*',
+            'pasien.nama_pasien',
+            'rawat_jenis.jenis',
+            'poli.id as idpoli',
+            'poli.poli',
+            'ruangan.nama_ruangan',
+            'dokter.nama_dokter',
+            'rawat.idjenisrawat',
+
+        ])
+        ->where('demo_permintaan_penunjang.jenis_penunjang','Radiologi')->orderBy('demo_permintaan_penunjang.id','desc');
+        if(request()->ajax()){
+            return DataTables::of($query)
+            ->addColumn('action', function($query){
+                return '<a href="'.route('penunjang.detail',[$query->idrawat,'Radiologi']).'" class="btn btn-sm btn-icon btn-light-info"><i class="fa fa-pencil"></i></a>';
+            })
+            ->addColumn('pemeriksaan',function($query){
+               
+                 if($query->pemeriksaan_penunjang != 'null'){
+                    $pemeriksaan = json_decode($query->pemeriksaan_penunjang);
+                    $html = '<ol>';
+                    foreach($pemeriksaan as $p){
+                        $radiologi_tindakan = DB::table('radiologi_tindakan')->where('id',$p->tindakan_rad)->first();
+                        $html .= '<li>'.$radiologi_tindakan?->nama_tindakan.'</li>';
+                    }
+                    $html .= '</ol>';
+                    return $html;
+                 }
+                 return '-';
+            })
+            ->addColumn('status', function($query){
+                if($query->status_pemeriksaan == 'Antrian'){
+                    return '<span class="badge badge-success">Antrian</span>';
+                }else if($query->status_pemeriksaan == 'Pemeriksaan'){
+                    return '<span class="badge badge-warning">Pemeriksaan</span>';
+                }else if($query->status_pemeriksaan == 'Selesai'){
+                    return '<span class="badge badge-primary">Selesai</span>';
+                }
+            })
+            ->addColumn('poliruangan', function($query){
+                if($query->idjenisrawat == 2){
+                    return $query->nama_ruangan;
+                }else{
+                    return $query->poli;
+                }
+            })
+            ->addIndexColumn()
+            ->rawColumns(['action','pemeriksaan','status','poliruangan'])
+            ->make(true);
+        }
+        return view('radiologi.antrian');
+    }   
     public function index_radiologi(){
         $query = DB::table('soap_radiologi')
         ->join('radiologi_tindakan','radiologi_tindakan.id','=','soap_radiologi.idtindakan')
