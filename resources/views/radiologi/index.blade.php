@@ -108,13 +108,13 @@
             },
             ajax: '{{ url()->current() }}',
             columns: [
-                { data: 'no_rm', name: 'no_rm' },
-                { data: 'nama_pasien', name: 'nama_pasien' },
-                { data: 'tgl_permintaan', name: 'tgl_permintaan' },
-                { data: 'tgl_hasil', name: 'tgl_hasil' },
-                { data: 'jenis', name: 'tempat_lahir' },
-                { data: 'nama_tindakan', name: 'nama_tindakan' },
-                { data: 'nama_dokter', name: 'nama_dokter' },
+                { data: 'no_rm', name: 'rawat.no_rm' },
+                { data: 'nama_pasien', name: 'pasien.nama_pasien' },
+                { data: 'tgl_permintaan', name: 'soap_radiologi.tgl_permintaan' },
+                { data: 'tgl_hasil', name: 'radiologi_hasildetail.tgl_hasil' },
+                { data: 'jenis', name: 'rawat_jenis.jenis' },
+                { data: 'nama_tindakan', name: 'radiologi_tindakan.nama_tindakan' },
+                { data: 'nama_dokter', name: 'dokter.nama_dokter' },
                 { data: 'action', name: 'action', orderable: false, searcheable: false },
             ]
         });
