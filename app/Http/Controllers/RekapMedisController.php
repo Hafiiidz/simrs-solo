@@ -95,7 +95,7 @@ class RekapMedisController extends Controller
         } else {
             $rekap_medis->dokter = 1;
             $resep_dokter = DB::table('demo_resep_dokter')->where('idrawat', $rawat->id)->get();
-            if($rekap_medis->dokter == null){
+            // if($rekap_medis->dokter == null){
                 if (count($resep_dokter) > 0) {   
                     VclaimHelper::update_task($rawat->idrawat,6,$current_time);             
                     $non_racik = [];
@@ -283,7 +283,7 @@ class RekapMedisController extends Controller
                     }
                     
                 }
-            }
+            // }
            
 
             $current_time = round(microtime(true) * 1000); 
