@@ -28,6 +28,7 @@ class RadiologiController extends Controller
             'rawat.idjenisrawat',
 
         ])
+        ->where('demo_permintaan_penunjang.pemeriksaan_penunjang','!=','null')
         ->where('demo_permintaan_penunjang.jenis_penunjang','Radiologi')->orderBy('demo_permintaan_penunjang.id','desc');
         if(request()->ajax()){
             return DataTables::of($query)
