@@ -367,9 +367,9 @@
                                     <button class="btn btn-info btn-sm mb-5" data-bs-toggle="modal"
                                         data-bs-target="#kt_modal_1" {{ $disable }}>Tambah
                                         Pemberian Obat</button>
-
+                                    
                                     <button class="btn btn-success btn-sm mb-5" data-bs-toggle="modal"
-                                        data-bs-target="#modal_obat" {{ $disable }}>Order
+                                        data-bs-target="#modal_obat" {{ $disable_order }}>Order
                                         Obat</button>
 
                                     {{-- <button class="btn btn-danger btn-sm mb-5">Retur Obat</button> --}}

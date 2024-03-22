@@ -459,12 +459,12 @@ class RawatInapController extends Controller
             'demo_rawat_bersama.*',
             'dokter.nama_dokter'
         ])->where('demo_rawat_bersama.idrawat',$id)->get();
-        if(count($order_antrian) >0){
+        if(count($order_antrian) > 0){
             $disable_order = 'disabled';
         }else{
             $disable_order = '';
         }
-        // dd($order_obat);
+        // dd($disable_order);
         $skrining = SkriningGizi::where('idrawat', $id)->first();
         $data_operasi = LaporanOperasi::where('idrawat', $rawat->id)->get();
         $pemberian_obat = DB::table('demo_pemberian_obat_inap')->where('idrawat', $id)->get();

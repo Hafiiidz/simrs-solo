@@ -255,7 +255,9 @@
                                                                 <td class="align-middle text-center">{{ $val->dosis }}
                                                                     {{ $val->takaran }} ( {{ $val->signa }} )
                                                                     {{ $val->diminum . ' makan' }}
+                                                                    @if(isset($val->dtd))
                                                                     <b>{!! $val->dtd == 1 ? '<b> - (DTD)</b>' : '' !!}</b>
+                                                                    @endif
                                                                     <br>
                                                                     <pre>{{ $val->catatan  }}</pre>
                                                                 </td>
