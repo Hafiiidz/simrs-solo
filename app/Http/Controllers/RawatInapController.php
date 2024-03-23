@@ -427,7 +427,17 @@ class RawatInapController extends Controller
         $diagnosa_akhir = DB::table('demo_ranap_dx')->where('idrawat',$id)->first();
         $pemeriksaan_penunjang = DB::table('demo_permintaan_penunjang')->where('idrawat',$id)->get();
         $obat = DB::table('demo_antrian_resep')->where('idrawat',$id)->get();
-        $pdf = PDF::loadview('rawat-inap.cetak-ringakasan-pulang',compact('rawat','ringakasan_pasien_masuk','diagnosa_akhir','pemeriksaan_penunjang','obat'));
+        $anamnesa_pemeriksaan_fisik = DB::table('demo_ranap_awal_pemeriksaan_fisik')->where('idrawat', $id)->first();
+        $soap_radiologi = DB::table('soap_radiologi')->whereNotNull('idhasil')->where('idrawat',$id)->get();
+        // dd($kelas_rawat);
+        if($anamnesa_pemeriksaan_fisik){
+            $pemeriksaan_fisik = json_decode($anamnesa_pemeriksaan_fisik->pemeriksaan_fisik);
+            $anamnesa = json_decode($anamnesa_pemeriksaan_fisik->anamnesa);
+        }else{
+            $pemeriksaan_fisik = null;
+            $anamnesa = null;
+        }
+        $pdf = PDF::loadview('rawat-inap.cetak-ringakasan-pulang',compact('rawat','ringakasan_pasien_masuk','diagnosa_akhir','pemeriksaan_penunjang','obat','pemeriksaan_fisik','anamnesa','soap_radiologi'));
         return $pdf->stream();
     }
     public function detail($id)
@@ -449,6 +459,7 @@ class RawatInapController extends Controller
         $dokter = Dokter::get();
         $dokter_dpjp = Dokter::whereNotNull('idspesialis')->where('status',1)->where('id','!=',$rawat->iddokter)->get();
         $tarif = DB::table('tarif')->where('idjenisrawat', 2)->where('idkelas', $rawat->idkelas)->where('idruangan', $rawat->idruangan)->get();
+        $fisio_tindakan = DB::table('tarif')->where('idkategori', 8)->get();
         // dd($tarif);
         $order_obat = DB::table('demo_antrian_resep')->where('idrawat', $id)->whereNotNull('obat')->get();
         $order_obat_null = DB::table('demo_antrian_resep')->whereNull('obat')->where('status_antrian','!=','Batal')->where('idrawat', $id)->get();
@@ -487,7 +498,7 @@ class RawatInapController extends Controller
         // dd($pemeriksaan_fisik);
         return view('rawat-inap.detail', [
             'rawat' => $rawat
-        ], compact('pasien', 'ringakasan_pasien_masuk', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'data_operasi','pemberian_obat','order_obat','cppt','implamentasi','list_tindakan','penunjang','diagnosa_akhir','data_pulang','poli','skrining','kesadaran','anamnesa','pemeriksaan_fisik','disable','disable_order','kelas_rawat','order_obat_null','dokter_dpjp','raber'));
+        ], compact('pasien', 'ringakasan_pasien_masuk', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'data_operasi','pemberian_obat','order_obat','cppt','implamentasi','list_tindakan','penunjang','diagnosa_akhir','data_pulang','poli','skrining','kesadaran','anamnesa','pemeriksaan_fisik','disable','disable_order','kelas_rawat','order_obat_null','dokter_dpjp','raber','anamnesa_pemeriksaan_fisik','fisio_tindakan'));
     }
     public function detail_raber($id)
     {
@@ -596,7 +607,7 @@ class RawatInapController extends Controller
         // return $request->all();
         $rawat = Rawat::where('id', $id)->first();
         if ($request->radiologi) {
-            if ($request->radiologi != 'null' || $request->radiologi != '' || $request->lab != null) {
+            if ($request->radiologi != 'null' || $request->radiologi != '' || $request->radiologi != null) {
                 DB::table('demo_permintaan_penunjang')->insert([
                     'idrawat' => $rawat->id,
                     'idbayar' => $rawat->idbayar,
@@ -615,7 +626,7 @@ class RawatInapController extends Controller
         }
         
         if ($request->lab) {
-            if($request->lab != 'null' || $request->lab != ''){
+            if($request->lab != 'null' || $request->lab != ''  || $request->lab != null){
                 DB::table('demo_permintaan_penunjang')->insert([
                     'idrawat' => $rawat->id,
                     'idbayar' => $rawat->idbayar,
@@ -623,6 +634,25 @@ class RawatInapController extends Controller
                     'no_rm' => $rawat->no_rm,
                     'pemeriksaan_penunjang' => json_encode($request->lab),
                     'jenis_penunjang' => 'Lab',
+                    'peminta' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'peminta' => auth()->user()->id,
+                    'jenis_rawat' => $rawat->idjenisrawat,
+    
+                ]);
+            }
+            
+        }
+        if ($request->fisio) {
+            if($request->fisio != 'null' || $request->fisio != '' || $request->fisio != null){
+                DB::table('demo_permintaan_penunjang')->insert([
+                    'idrawat' => $rawat->id,
+                    'idbayar' => $rawat->idbayar,
+                    'status_pemeriksaan' => 'Antrian',
+                    'no_rm' => $rawat->no_rm,
+                    'pemeriksaan_penunjang' => json_encode($request->fisio),
+                    'jenis_penunjang' => 'Fisio',
                     'peminta' => now(),
                     'created_at' => now(),
                     'updated_at' => now(),

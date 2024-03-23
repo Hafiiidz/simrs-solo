@@ -51,7 +51,7 @@
                                         @endif
                                     @endforeach
                                 @else
-                                    @foreach ($fisio as $f)
+                                    @foreach ($fisio_tindakan as $f)
                                         @if ($f->id == $pen?->tindakan_fisio)
                                             <li>{{ $f->nama_tarif }} 
                                                 @if ($p->status_pemeriksaan == 'Selesai')

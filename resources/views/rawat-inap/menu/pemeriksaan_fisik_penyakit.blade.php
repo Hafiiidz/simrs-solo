@@ -15,15 +15,13 @@
     <div class="row mb-5">
         <div class="col-md-12">
             <label class="form-label fw-bold">Keluhan Utama</label>
-            <textarea name="keluhan_utama" rows="3" class="form-control" {{ $disable }} placeholder="Keluhan Utama">{{ $anamnesa != null ? $anamnesa->keluhan_utama :'' }}
-            </textarea>
+            <textarea name="keluhan_utama" rows="3" class="form-control" {{ $disable }} placeholder="Keluhan Utama">{{ $anamnesa != null ? $anamnesa->keluhan_utama :'' }}</textarea>
         </div>
     </div>
     <div class="row mb-5">
         <div class="col-md-12">
             <label class="form-label fw-bold">Riwayat Penyakit Sekarang</label>
-            <textarea name="rwt_penyakit_sekarang" rows="3" class="form-control" {{ $disable }} placeholder="Riwayat Penyakit Sekarang">{{ $anamnesa != null ? $anamnesa->rwt_penyakit_sekarang:''}}
-            </textarea>
+            <textarea name="rwt_penyakit_sekarang" rows="3" class="form-control" {{ $disable }} placeholder="Riwayat Penyakit Sekarang">{{ $anamnesa != null ? $anamnesa->rwt_penyakit_sekarang:''}}</textarea>
         </div>
     </div>
     <div class="row mb-5">

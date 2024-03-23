@@ -225,7 +225,7 @@
                                     <ul class="nav nav-tabs text-nowrap font-weight-bold" role="tablist"
                                         style="font-weight: bold">
                                         <li class="nav-item" role="presentation">
-                                            <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0 active"
+                                            <a class="nav-link btn btn-active-light @if (!$ringakasan_pasien_masuk) text-danger @elseif(!$anamnesa_pemeriksaan_fisik) text-danger @endif btn-color-gray-600 btn-active-color-primary rounded-bottom-0 active"
                                                 data-bs-toggle="tab" href="#kt_tab_pane_1" aria-selected="true"
                                                 role="tab">Asesmen Awal</a>
                                         </li>
@@ -367,7 +367,7 @@
                                     <button class="btn btn-info btn-sm mb-5" data-bs-toggle="modal"
                                         data-bs-target="#kt_modal_1" {{ $disable }}>Tambah
                                         Pemberian Obat</button>
-                                    
+
                                     <button class="btn btn-success btn-sm mb-5" data-bs-toggle="modal"
                                         data-bs-target="#modal_obat" {{ $disable_order }}>Order
                                         Obat</button>
@@ -932,6 +932,55 @@
                                         <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
                                             <i class="ki-duotone ki-plus fs-3"></i>
                                             Tambah Lab
+                                        </a>
+                                    </div>
+                                    <!--end::Form group-->
+                                </div>
+                                <!--end::Repeater-->
+                            </div>
+                            <div class="row mb-5">
+                                <!--begin::Repeater-->
+                                <div id="fisio_repeater">
+                                    <!--begin::Form group-->
+                                    <div class="form-group">
+                                        <div data-repeater-list="fisio">
+                                            <div data-repeater-item>
+                                                <div class="form-group row mb-5">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Tindakan Fisio</label>
+                                                        <select name="tindakan_fisio" class="form-select"
+                                                            data-kt-repeater="select2fisio" data-placeholder="-Pilih-"
+                                                            required>
+                                                            <option></option>
+                                                            @foreach ($fisio_tindakan as $fs)
+                                                                <option value="{{ $fs->id }}">
+                                                                    {{ $fs->nama_tarif }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="col-md-4">
+                                                        <a href="javascript:;" data-repeater-delete
+                                                            class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                            <i class="ki-duotone ki-trash fs-5"><span
+                                                                    class="path1"></span><span
+                                                                    class="path2"></span><span
+                                                                    class="path3"></span><span
+                                                                    class="path4"></span><span class="path5"></span></i>
+                                                            Hapus
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--end::Form group-->
+
+                                    <!--begin::Form group-->
+                                    <div class="form-group mt-5">
+                                        <a href="javascript:;" data-repeater-create class="btn btn-light-info">
+                                            <i class="ki-duotone ki-plus fs-3"></i>
+                                            Tambah Fisio
                                         </a>
                                     </div>
                                     <!--end::Form group-->
@@ -1897,6 +1946,29 @@
 
                     ready: function() {
                         $('[data-kt-repeater="select2radiologi"]').select2({
+                            allowClear: true,
+                            dropdownParent: $('#modal_penunjang')
+                        });
+                    }
+                });
+                $('#fisio_repeater').repeater({
+                    initEmpty: true,
+
+                    show: function() {
+                        $(this).slideDown();
+
+                        $(this).find('[data-kt-repeater="select2fisio"]').select2({
+                            allowClear: true,
+                            dropdownParent: $('#modal_penunjang')
+                        });
+                    },
+
+                    hide: function(deleteElement) {
+                        $(this).slideUp(deleteElement);
+                    },
+
+                    ready: function() {
+                        $('[data-kt-repeater="select2fisio"]').select2({
                             allowClear: true,
                             dropdownParent: $('#modal_penunjang')
                         });

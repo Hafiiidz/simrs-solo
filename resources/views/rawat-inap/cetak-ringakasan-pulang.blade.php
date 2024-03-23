@@ -86,10 +86,24 @@
             <td colspan="3">
                 <p>Riwayat Singkat Penyakit dan Pemeriksaan Fisik </p>
                     <ol>
-                        <li>Alasan dirawat (keluhan utama) : </li>
-                        <li>Riwayat Penyakit Dahulu </li>
-                        <li>Riwayat Sosial </li>
-                        <li> </li>
+                        <li>Alasan dirawat (keluhan utama) : {{ $ringakasan_pasien_masuk?->penyakit_utama }}</li>
+                        <li>Riwayat Penyakit Dahulu : {{ $ringakasan_pasien_masuk?->penyakit_utama }} </li>
+                        <li>Riwayat Sosial :</li>
+                        <li>Penemuan Fisik Pentiing : </li>
+                    </ol>
+            </td>
+        </tr>
+        <tr style="border: 1px solid black; text-align:left;">
+            <td colspan="3">
+                <p>Pemeriksaan Penunjang </p>
+                    <ol>
+                    <li>Laboratorium : <br>  </li>
+                        <li>Radiologi : <br>
+                            @foreach ($soap_radiologi as $sr)
+                                {{ $sr->idtindakan.',' }} 
+                            @endforeach
+                        </li>
+                        <li>Lain - Lain</li>
                     </ol>
             </td>
         </tr>
