@@ -593,7 +593,7 @@
                                                         </thead>
                                                         <tbody class="align-middle">
                                                             @if ($antrian->obat != 'null' || $antrian->obat != '' || $antrian->obat != '[]')
-                                                                @if ($antrian->obat != null)
+                                                                @if ($antrian->obat != null || $antrian->obat != 'null')
                                                                     @foreach (json_decode($antrian->obat) as $val)
                                                                         <input type="hidden" value="{{ $val->idresep }}"
                                                                             name='idresep_non_racikan[]'>
