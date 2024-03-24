@@ -501,6 +501,7 @@ class RekapMedisController extends Controller
         $dokter = Dokter::where('status',1)->where('kode_dpjp','!=',NULL)->get();
         $tarif = DB::table('tarif')->whereNull('idjenisrawat')->orWhere('idjenisrawat', $rawat->id_jenis_rawat)->whereNull('idpoli')->orWhereIn('idpoli', [auth()->user()->detail->idpoli])->get();
         $soap_tindakan = SoapRajalTindakan::where('idrawat', $id_rawat)->get();
+        $tarif_all =  DB::table('tarif')->get();
         $resep_dokter = DB::table('demo_resep_dokter')->where('idrawat', $id_rawat)->get();
         $pemeriksaan_lab = LabHasil::where('idrawat', $id_rawat)->get();
         $pemeriksaan_radiologi = RadiologiHasil::where('idrawat', $id_rawat)->get();
@@ -524,7 +525,7 @@ class RekapMedisController extends Controller
         ->get();
         // dd($get_template);
         // dd($riwayat_berobat);
-        return view('rekap-medis.poliklinik', compact('pasien', 'rawat', 'resume_medis', 'resume_detail', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'soap_tindakan', 'fisio', 'pemeriksaan_lab', 'pemeriksaan_radiologi', 'riwayat_berobat', 'pemeriksaan_luar', 'resep_dokter', 'resep','get_template','penunjang','fisio_tindakan'));
+        return view('rekap-medis.poliklinik', compact('pasien', 'rawat', 'resume_medis', 'resume_detail', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'soap_tindakan', 'fisio', 'pemeriksaan_lab', 'pemeriksaan_radiologi', 'riwayat_berobat', 'pemeriksaan_luar', 'resep_dokter', 'resep','get_template','penunjang','fisio_tindakan','tarif_all'));
     }
 
     public function copy_data(Request $request, $id)

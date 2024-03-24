@@ -1346,7 +1346,7 @@
                                                             <tr>
                                                                 <td>{{ $loop->iteration }}</td>
                                                                 <td>
-                                                                    @foreach ($tarif as $val)
+                                                                    @foreach ($tarif_all as $val)
                                                                         @if ($st->tindakan == $val->id)
                                                                             {{ $val->nama_tarif }}
                                                                         @endif
