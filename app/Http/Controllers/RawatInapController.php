@@ -464,6 +464,7 @@ class RawatInapController extends Controller
         $order_obat = DB::table('demo_antrian_resep')->where('idrawat', $id)->whereNotNull('obat')->get();
         $order_obat_null = DB::table('demo_antrian_resep')->whereNull('obat')->where('status_antrian','!=','Batal')->where('idrawat', $id)->get();
         // dd($order_obat);
+        $tarif_all =  DB::table('tarif')->get();
         $order_antrian = DB::table('demo_antrian_resep')->where('idrawat', $id)->where('status_antrian', 'Antrian')->orderBy('created_at','desc')->get();
         $raber = DB::table('demo_rawat_bersama')->leftjoin('dokter','demo_rawat_bersama.id_dokter','=','dokter.id')
         ->select([
@@ -498,7 +499,7 @@ class RawatInapController extends Controller
         // dd($pemeriksaan_fisik);
         return view('rawat-inap.detail', [
             'rawat' => $rawat
-        ], compact('pasien', 'ringakasan_pasien_masuk', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'data_operasi','pemberian_obat','order_obat','cppt','implamentasi','list_tindakan','penunjang','diagnosa_akhir','data_pulang','poli','skrining','kesadaran','anamnesa','pemeriksaan_fisik','disable','disable_order','kelas_rawat','order_obat_null','dokter_dpjp','raber','anamnesa_pemeriksaan_fisik','fisio_tindakan'));
+        ], compact('pasien', 'ringakasan_pasien_masuk', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'data_operasi','pemberian_obat','order_obat','cppt','implamentasi','list_tindakan','penunjang','diagnosa_akhir','data_pulang','poli','skrining','kesadaran','anamnesa','pemeriksaan_fisik','disable','disable_order','kelas_rawat','order_obat_null','dokter_dpjp','raber','anamnesa_pemeriksaan_fisik','fisio_tindakan','tarif_all'));
     }
     public function detail_raber($id)
     {
