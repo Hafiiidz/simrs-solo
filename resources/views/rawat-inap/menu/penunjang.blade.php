@@ -10,6 +10,7 @@
     </thead>
     <tbody>
         @foreach ($penunjang as $p)
+            @if ($p->pemeriksaan_penunjang != 'null')
             <tr>
                 <td>{{ $p->created_at }}</td>
                 <td>{{ $p->jenis_penunjang }}</td>
@@ -80,6 +81,8 @@
                     @endif
                 </td>
             </tr>
+            @endif
+            
         @endforeach
     </tbody>
 </table>
