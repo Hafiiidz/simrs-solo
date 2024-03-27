@@ -27,10 +27,11 @@
                                                         $hasil = DB::table('laboratorium_hasildetail')
                                                             ->where('no_rm', $rawat->no_rm)
                                                             ->where('idpengantar', $p->id)
+                                                            ->where('idpemeriksaan', $pen->tindakan_lab)
                                                             ->first();
                                                         // dd($hasil);
                                                     @endphp
-                                                    <button onclick="modalHasilLab({{ $hasil?->idhasil }})"
+                                                    <button onclick="modalHasilLab({{ $hasil?->id }})"
                                                         class="btn btn-sm btn-secondary">Lihat Hasil</button>
                                                 @endif
                                             </li>
