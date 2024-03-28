@@ -445,6 +445,7 @@ Route::prefix('/rawat-jalan')->middleware('auth')->group(function () {
         Route::get('/get-hasil/{id}', [RekapMedisController::class, 'get_hasil'])->name('get-hasil');
         Route::get('/get-hasil-rad/{id}', [RekapMedisController::class, 'get_hasil_rad'])->name('get-hasil-rad');
         Route::get('/get-hasil-lab/{id}', [RekapMedisController::class, 'get_hasil_lab'])->name('get-hasil-lab');
+        Route::get('/get-hasil-lab-dua/{id}', [RekapMedisController::class, 'get_hasil_lab_dua'])->name('get-hasil-lab-dua');
         Route::get('/get-data-obat/{id}', [RekapMedisController::class, 'get_data_obat'])->name('get-data-obat');
         Route::get('/get-data-racik-obat/{id}', [RekapMedisController::class, 'get_data_racik_obat'])->name('get-data-racik-obat');
         Route::post('/post-tindakan/{id}', [RekapMedisController::class, 'input_tindakan'])->name('post.tindakan');
@@ -456,6 +457,7 @@ Route::prefix('/rawat-jalan')->middleware('auth')->group(function () {
 });
 Route::prefix('/rawat-inap')->middleware('auth')->group(function () {
     Route::get('/', [RawatInapController::class, 'index'])->name('index.rawat-inap');
+    Route::get('/raber', [RawatInapController::class, 'index_raber'])->name('index.rawat-bersama');
     Route::get('/pasien-pulang', [RawatInapController::class, 'index_pulang'])->name('index.rawat-inap-pulang');
     Route::get('/cetak-ringakasan-pulang/{id}', [RawatInapController::class, 'ringkasan_pulang'])->name('index.rawat-inap-cetak-ringkasan-pulang');
     Route::get('get-ruangan/{id}', [RawatInapController::class, 'get_ruangan'])->name('get-ruangan');

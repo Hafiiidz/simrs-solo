@@ -355,6 +355,22 @@
                                 </div>
                                 <!--end:Menu item-->
                             </div>
+                            <div class="menu-sub menu-sub-accordion">
+                                <!--begin:Menu item-->
+                                <div class="menu-item">
+                                    <!--begin:Menu link-->
+
+                                    <a class="menu-link {{ Request::is('rawat-jalan') || Request::is('rawat-jalan/poli-semua') ? 'active' : '' }}"
+                                        href="{{ route('index.rawat-bersama') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Pasien Raber</span>
+                                    </a>
+                                    <!--end:Menu link-->
+                                </div>
+                                <!--end:Menu item-->
+                            </div>
                         @endif
                     @endif
                     @if (auth()->user()->idpriv == 13)

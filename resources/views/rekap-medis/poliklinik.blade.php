@@ -1564,6 +1564,7 @@
                                                                 )
                                                                     ->where('idhasil', $pl->id)
                                                                     ->get();
+                                                                // dd($pemeriksaan_lab_detail)
                                                             @endphp
                                                             <ol>
                                                                 @foreach ($pemeriksaan_lab_detail as $plb)

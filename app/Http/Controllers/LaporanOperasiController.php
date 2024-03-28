@@ -55,6 +55,9 @@ class LaporanOperasiController extends Controller
     public function store(Request $request)
     {
         $operasi = new LaporanOperasi;
+        if(isset($request->id_raber)){
+         $operasi->id_raber = $request->id_raber;   
+        }
         $operasi->idrawat = $request->idrawat;
         $operasi->tgl_operasi = $request->tgl_operasi;
         $operasi->diagnosis_prabedah = $request->diagnosis_prabedah;

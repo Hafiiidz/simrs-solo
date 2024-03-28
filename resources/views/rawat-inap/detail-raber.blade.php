@@ -239,11 +239,11 @@
                                                 data-bs-toggle="tab" href="#kt_tab_pane_1" aria-selected="true"
                                                 role="tab">Asesmen Awal</a>
                                         </li>
-                                        <li class="nav-item" role="presentation">
+                                        {{-- <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
                                                 data-bs-toggle="tab" href="#kt_tab_pane_10" aria-selected="false"
                                                 role="tab" tabindex="-1">Skrining Awal Gizi</a>
-                                        </li>
+                                        </li> --}}
                                         @if ($rawat->idpoli == 4)
                                             <li class="nav-item" role="presentation">
                                                 <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
@@ -261,11 +261,11 @@
                                                 data-bs-toggle="tab" href="#kt_tab_pane_2" aria-selected="false"
                                                 role="tab" tabindex="-1">CPPT</a>
                                         </li>
-                                        <li class="nav-item" role="presentation">
+                                        {{-- <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
                                                 data-bs-toggle="tab" href="#kt_tab_pane_3" aria-selected="false"
                                                 role="tab" tabindex="-1">Implementasi</a>
-                                        </li>
+                                        </li> --}}
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
                                                 data-bs-toggle="tab" href="#kt_tab_pane_4" aria-selected="false"
@@ -406,8 +406,10 @@
                                     <div class="rounded border p-5">
                                         <form action="{{ route('store.skrining-gizi') }}" method="POST"
                                             autocomplete="off">
+
                                             @csrf
                                             <input type="hidden" name="idrawat" value="{{ $rawat->id }}">
+                                           
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <label for="" class="form-label">
@@ -566,6 +568,9 @@
                     <form action="{{ route('post_cppt.rawat-inap', $rawat->id) }}" id="frmCppt" method="post">
                         <div class="modal-body">
                             @csrf
+                            @if(isset($raber))
+                                <input type="hidden" name="id_raber" value="{{ $raber->id }}">
+                            @endif
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="row">
@@ -574,12 +579,16 @@
                                         </div>
                                         <div class="col-md-8">
                                             <select name="profesi" class="form-select" id="">
-                                                <option value="">-- Profesi (PPA) -- </option>
-                                                <option value="Dokter">Dokter</option>
+                                                
+                                                @if(!isset($raber) || auth()->user()->idpriv != 7)
                                                 <option value="Perawat">Perawat</option>
                                                 <option value="Bidan">Bidan</option>
                                                 <option value="Gizi">Gizi</option>
                                                 <option value="Farmasi">Farmasi</option>
+                                                @else
+                                                <option value="">-- Profesi (PPA) -- </option>
+                                                <option value="Dokter">Dokter</option>
+                                                @endif
                                             </select>
                                         </div>
                                     </div>
@@ -704,6 +713,9 @@
                         <div class="modal-body">
 
                             @csrf
+                            @if(isset($raber))
+                                <input type="hidden" name="id_raber" value="{{ $raber->id }}">
+                            @endif
                             <div class="row">
                                 <div class="col-md-12">
                                     <div id="kt_tindakan_repeater">
@@ -797,6 +809,9 @@
                         <div class="modal-body">
 
                             @csrf
+                            @if(isset($raber))
+                                <input type="hidden" name="id_raber" value="{{ $raber->id }}">
+                            @endif
                             <div class="row mb-5">
                                 <!--begin::Repeater-->
                                 <div class="col-md-8">
@@ -836,6 +851,9 @@
                         <div class="modal-body">
 
                             @csrf
+                            @if(isset($raber))
+                                <input type="hidden" name="id_raber" value="{{ $raber->id }}">
+                            @endif
                             <div class="row mb-5">
                                 <!--begin::Repeater-->
                                 <div id="radiologi_repeater">
@@ -1091,6 +1109,9 @@
                     <div class="modal-body">
                         <form action="{{ route('store.operasi') }}" method="POST" autocomplete="off">
                             @csrf
+                            @if(isset($raber))
+                                <input type="hidden" name="id_raber" value="{{ $raber->id }}">
+                            @endif
                             <input type="hidden" name="idrawat" value="{{ $rawat->id }}">
                             <div class="row">
                                 <div class="col-md-12">

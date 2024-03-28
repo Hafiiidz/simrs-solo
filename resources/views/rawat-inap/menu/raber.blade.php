@@ -9,7 +9,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach ($raber as $rb)
+        @foreach ($list_raber as $rb)
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $rb->nama_dokter }}</td>

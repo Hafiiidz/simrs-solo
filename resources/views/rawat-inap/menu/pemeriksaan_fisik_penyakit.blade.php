@@ -1,5 +1,8 @@
 <form action="{{ route('postPemeriksaanFisik.rawat-inap',$rawat->id) }}" id='frmpemeriksaan_fisik' class="mt-5" method="post">
     @csrf
+    @if(isset($raber))
+        <input type="hidden" name="id_raber" value="{{ $raber->id }}">
+    @endif
     <span class="d-inline-block position-relative mb-7">
         <!--begin::Label-->
         <span class="d-inline-block mb-2 fs-4 fw-bold">
