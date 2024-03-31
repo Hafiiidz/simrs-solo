@@ -210,7 +210,8 @@
                         <div class="rounded border p-5">
                             <div class="mb-5 hover-scroll-x">
                                 <div class="d-grid">
-                                    <ul class="nav nav-tabs text-nowrap font-weight-bold" role="tablist" style="font-weight: bold">
+                                    <ul class="nav nav-tabs text-nowrap font-weight-bold" role="tablist"
+                                        style="font-weight: bold">
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0 active"
                                                 data-bs-toggle="tab" href="#kt_tab_pane_1" aria-selected="true"
@@ -241,12 +242,12 @@
                                                 data-bs-toggle="tab" href="#kt_tab_pane_4" aria-selected="false"
                                                 role="tab" tabindex="-1">Tindakan</a>
                                         </li>
-                                        @if(auth()->user()->idpriv == 7)
-                                        <li class="nav-item" role="presentation">
-                                            <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
-                                                data-bs-toggle="tab" href="#kt_tab_pane_61" aria-selected="false"
-                                                role="tab" tabindex="-1">Order Tindakan Penunjang</a>
-                                        </li>
+                                        @if (auth()->user()->idpriv == 7)
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
+                                                    data-bs-toggle="tab" href="#kt_tab_pane_61" aria-selected="false"
+                                                    role="tab" tabindex="-1">Order Tindakan Penunjang</a>
+                                            </li>
                                         @endif
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
@@ -703,8 +704,18 @@
                                                                 </td>
                                                             @else
                                                                 <td>{{ $rd->nama_obat }}</td>
-                                                                <td role="button" id="{{ $resep }}">
-                                                                    {{ $rd->jumlah }}</td>
+                                                                <td data-id="{{ $rd->id }}" width=100
+                                                                    role="button" id="{{ $resep }}">
+                                                                    {{-- <form action="" method="POST" id='frmEditjumlah'>
+                                                                        @csrf --}}
+                                                                    {{-- <input type="hidden" value="{{ $rd->id }}" name="idresep"> --}}
+                                                                    <input type="number"
+                                                                        class="form-control number-jumlah"
+                                                                        data-id="{{ $rd->id }}"{{ $rawat->status == 4 ? 'disabled' : '' }}
+                                                                        name="jumlah" value="{{ $rd->jumlah }}">
+                                                                    {{-- </form> --}}
+
+                                                                </td>
                                                                 <td>{{ $rd->dosis }}</td>
                                                                 <td>{{ $rd->takaran }}</td>
                                                                 <td>{{ $rd->signa }}</td>
@@ -953,7 +964,7 @@
                                                                         @foreach (json_decode($resume_detail?->icdx) as $val)
                                                                             <li>{{ $val->diagnosa_icdx }}
                                                                                 @if (isset($val->jenis_diagnosa))
-                                                                                (<b>{{ $val->jenis_diagnosa == 'P' ? 'Primer' : 'Sekunder' }}</b>)
+                                                                                    (<b>{{ $val->jenis_diagnosa == 'P' ? 'Primer' : 'Sekunder' }}</b>)
                                                                                 @endif
                                                                             </li>
                                                                         @endforeach
@@ -1923,36 +1934,36 @@
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js"></script>
     <script>
         $(".btn-edit-penunjang").on("click", function(event) {
-                event.preventDefault();
-                var id = $(this).data("id");
-                url = "{{ route('detail.get-penunjang', '') }}" + "/" + id;
-                $("#modal-hasil").empty();
-                $.get(url).done(function(data) {
-                    $("#modal-hasil").html(data);
-                    $("#modal_lihat").modal('show');
-                });
-            })
-            $(".btn-hapus-penunjang").on("click", function(event) {
-                event.preventDefault();
-                var id = $(this).data("id");
-                Swal.fire({
-                    title: 'Hapus Data?',
-                    text: "Hapus Data?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya',
-                    cancelButtonText: 'Tidak'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        url = "{{ route('detail.hapus-penunjang', '') }}" + "/" + id;
-                        $.get(url).done(function(data) {
-                            location.reload();
-                        });
-                    }
-                });
-            })
+            event.preventDefault();
+            var id = $(this).data("id");
+            url = "{{ route('detail.get-penunjang', '') }}" + "/" + id;
+            $("#modal-hasil").empty();
+            $.get(url).done(function(data) {
+                $("#modal-hasil").html(data);
+                $("#modal_lihat").modal('show');
+            });
+        })
+        $(".btn-hapus-penunjang").on("click", function(event) {
+            event.preventDefault();
+            var id = $(this).data("id");
+            Swal.fire({
+                title: 'Hapus Data?',
+                text: "Hapus Data?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    url = "{{ route('detail.hapus-penunjang', '') }}" + "/" + id;
+                    $.get(url).done(function(data) {
+                        location.reload();
+                    });
+                }
+            });
+        })
         $('#radiologi_repeater').repeater({
             initEmpty: true,
 
@@ -2691,6 +2702,36 @@
 
         });
 
+        $(document).on('keypress', '.number-jumlah', function(event) {
+
+            if (event.key === 'Enter') {
+                var id = $(this).attr('data-id');
+                var value = $(this).val();
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: '{{ route('post.edit-jumlah') }}',
+                    data: {
+                        id: id,
+                        value: value,
+                    },
+                    success: function(res) {
+                        if (res.status == 'ok') {
+                            Swal.fire(
+                                'Edit berhasil',
+                                '',
+                                'success'
+                            )
+                            
+                        }
+                    }
+                })
+            }
+        })
         $(document).on('click', '.btn-hapus', function() {
 
             e = $(this)

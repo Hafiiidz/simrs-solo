@@ -1,24 +1,31 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Carbon;
-use Yajra\DataTables\Facades\DataTables;
-use App\Models\Rawat;
-use App\Models\Pasien\Pasien;
-use App\Models\Gizi\EvaluasiGizi;
-use App\Models\Gizi\AsuhanGizi;
-use App\Models\Gizi\CpptGizi;
-use App\Models\Gizi\SkriningGizi;
+use PDF;
 use Auth;
+use App\Models\Gizi;
+use App\Models\Rawat;
+use Illuminate\Http\Request;
+use App\Models\Gizi\CpptGizi;
+use App\Models\Pasien\Pasien;
+use Illuminate\Support\Carbon;
+use App\Models\Gizi\AsuhanGizi;
+use App\Models\Gizi\EvaluasiGizi;
+use App\Models\Gizi\SkriningGizi;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Yajra\DataTables\Facades\DataTables;
+
 
 class GiziController extends Controller
 {
-    public function index()
+    public function index($jenisrawat)
     {
-        $data = Rawat::with('pasien','ruangan')->whereIn('idjenisrawat',[2])->orderBy('id','DESC');
+        $data = Rawat::with('pasien','ruangan','poli','bayar')
+        ->whereIn('idjenisrawat',[$jenisrawat])
+        ->whereIn('status',[1,2,3])
+        ->orderBy('tglmasuk','DESC');
 
         if (request()->ajax()) {
             return DataTables::eloquent($data)
@@ -32,7 +39,7 @@ class GiziController extends Controller
             ->make();
         }
 
-        return view('gizi.index');
+        return view('gizi.index',compact('jenisrawat'));
     }
 
     public function show($id)
@@ -43,9 +50,37 @@ class GiziController extends Controller
         $asuhan = AsuhanGizi::where('idrawat', $id)->first();
         $cppt = CpptGizi::with('user','user.detail')->where('idrawat', $id)->get();
         $skrining = SkriningGizi::where('idrawat', $id)->first();
-        return view('gizi.show', compact('rawat','pasien','evaluasi','asuhan','cppt','skrining'));
+        $dxgizi = DB::table('demo_dx_gizi')->get();
+        $gizi = Gizi::where('idrawat',$rawat->id)->get();
+        return view('gizi.show', compact('rawat','pasien','evaluasi','asuhan','cppt','skrining','dxgizi','gizi'));
     }
 
+    public function delete($id){
+        $gizi = Gizi::find($id);
+        $gizi->delete();
+        return redirect()->back()->with('berhasil','Data Berhasil Di Hapus!');
+
+    }
+    public function printLabel($id){
+        $gizi = Gizi::find($id);
+        $rawat = Rawat::find($gizi->idrawat);
+        $pdf = PDF::loadview('gizi.cetak-label', compact('gizi','rawat'));
+        $customPaper = array(0, 0, 170.079, 100.425);
+        $pdf->setPaper($customPaper);
+        return $pdf->stream();
+    }
+
+    public function storeDiit(Request $request){
+        $rawat = Rawat::find($request->idrawat);
+        $data = new Gizi;
+        $data->idrawat = $request->idrawat;
+        $data->no_rm =  $rawat->no_rm;
+        $data->tgl = $request->tanggal;
+        $data->diit = $request->diit;
+        $data->iddokter = $rawat->iddokter;
+        $data->save();
+        return redirect()->back()->with('berhasil','Data Evaluasi Berhasil Di Simpan!');
+    }
     public function storeEvaluasi(Request $request)
     {
         $data = new EvaluasiGizi;
@@ -60,6 +95,7 @@ class GiziController extends Controller
 
     public function storeAsuhan(Request $request)
     {
+        // return $request->all();
         $antropometri = new Collection([
             'bb' => $request->bb,
             'tb_pb' => $request->tb_pb,
@@ -97,7 +133,7 @@ class GiziController extends Controller
             $data->alergi_makanan = $alergi_makanan;
             $data->pola_makan = $request->pola_makan;
             $data->riwayat_personal = $request->riwayat_personal;
-            $data->diagnosa_gizi = $request->diagnosa_gizi;
+            $data->diagnosa_gizi = json_encode($request->diagnosa_gizi);
             $data->intervensi_gizi = $intervensi_gizi;
             $data->save();
 
@@ -115,7 +151,7 @@ class GiziController extends Controller
         $data->alergi_makanan = $alergi_makanan;
         $data->pola_makan = $request->pola_makan;
         $data->riwayat_personal = $request->riwayat_personal;
-        $data->diagnosa_gizi = $request->diagnosa_gizi;
+        $data->diagnosa_gizi = json_encode($request->diagnosa_gizi);
         $data->intervensi_gizi = $intervensi_gizi;
         $data->save();
 

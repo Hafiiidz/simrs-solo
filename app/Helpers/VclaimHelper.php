@@ -10,6 +10,7 @@ use App\Models\UserDetail;
 use LZCompressor\LZString;
 use App\Helpers\VclaimHelper;
 use App\Models\Pasien\Pasien;
+use App\Models\Gizi\AsuhanGizi;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
@@ -48,6 +49,18 @@ class VclaimHelper
         }
     }
 
+    public static function cek_dxgizi($iddx,$dx){
+        $gizi = AsuhanGizi::where('idrawat', $iddx)->first();
+        if($gizi == 'null' || $gizi == null || $gizi == ''){
+            return false;
+        }else{
+            if(in_array($dx,json_decode($gizi->diagnosa_gizi))){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
     public static function cek_signa($resep,$signa){
         // $array = ["P","S","SO","M"];
         if($resep == 'null' || $resep == null || $resep == ''){

@@ -928,4 +928,11 @@ class RekapMedisController extends Controller
         $rekap_medis->save();
         return redirect()->back()->with('berhasil','Template Berhasil Diupdate');
     }
+
+    public function edit_jumlah(Request $request){
+        $resep_dokter = DB::table('demo_resep_dokter')->where('id',$request->id)->update([
+            'jumlah'=>$request->value
+        ]);
+        return response()->json(['status'=>'ok']);
+    }
 }

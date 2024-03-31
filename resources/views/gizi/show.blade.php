@@ -58,7 +58,7 @@
                         <h5 class="card-title">Data Gizi</h5>
                     </div>
                     <div class="card-toolbar">
-                        <a href="{{ route('index.gizi') }}" class="btn btn-secondary btn-sm">Kembali</a>
+                        <a href="{{ route('index.gizi',$rawat->idjenisrawat) }}" class="btn btn-secondary btn-sm">Kembali</a>
                     </div>
                 </div>
                 <!--begin::Body-->
@@ -198,6 +198,9 @@
                                     <li class="nav-item">
                                         <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0" data-bs-toggle="tab" href="#kt_tab_pane_4">CPPT</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0" data-bs-toggle="tab" href="#diit_pasien">Diit Pasien</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -317,7 +320,7 @@
                                             </div>
                                             <div class="col-md-9">
                                                 <label for="" class="form-label">Diagnosis Medis</label>
-                                                <textarea name="diagnosis_medis" id="diagnosis_medis" rows="1" class="form-control" placeholder="Masukan Diagnosis">{{ $asuhan->diagnosis_medis ?? '' }}</textarea>
+                                                <textarea name="diagnosis_medis" id="diagnosis_medis" rows="1" class="form-control form-control-solid" readonly  placeholder="Masukan Diagnosis">{{ $rawat->icdx }}</textarea>
                                             </div>
                                         </div>
                                         <div class="row mt-5 p-5">
@@ -588,7 +591,12 @@
                                         <div class="row mt-5">
                                             <div class="col-md-12">
                                                 <label for="" class="form-label">Diagnosa Gizi</label>
-                                                <textarea name="diagnosa_gizi" id="diagnosa_gizi" rows="1" class="form-control" placeholder="Masukan Diagnosa Gizi">{{ $asuhan->diagnosa_gizi ?? '' }}</textarea>
+                                                <select class="form-select form-select" name="diagnosa_gizi[]" id="diagnosa_gizi"  data-control="select2" data-close-on-select="false" data-placeholder="Select an option" data-allow-clear="true" multiple="multiple">
+                                                    <option></option>
+                                                    @foreach ($dxgizi as $dx)
+                                                        <option {{ App\Helpers\VclaimHelper::cek_dxgizi($rawat->id, $dx->kode_diagnosa.' '.$dx->diagnosa) == 1 ? 'selected':''  }} value="{{ $dx->kode_diagnosa.' '.$dx->diagnosa }}">{{ $dx->kode_diagnosa.' '.$dx->diagnosa }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="row mt-5 p-5">
@@ -633,6 +641,11 @@
                                 data-bs-target="#modal_cppt">Tambah CPPT</button>
                                 @include('rawat-inap.menu.cppt')
                             </div>
+                            <div class="tab-pane fade" id="diit_pasien" role="tabpanel">
+                                <button class="btn btn-warning btn-sm mb-5" data-bs-toggle="modal"
+                                data-bs-target="#modal_diit">Tambah Diit</button>
+                                @include('rawat-inap.menu.diit')
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -673,6 +686,46 @@
                         <div class="col-md-12">
                             <label for="" class="form-label required">Monitoring Evaluasi</label>
                             <textarea name="monitoring_evaluasi" id="monitoring_evaluasi" rows="3" class="form-control" placeholder="Masukan Monitoring Evaluasi" required></textarea>
+                        </div>
+                    </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+                </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" id="modal_diit">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Tambah Diit</h3>
+                <!--begin::Close-->
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                    aria-label="Close">
+                    <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span
+                            class="path2"></span></i>
+                </div>
+                <!--end::Close-->
+            </div>
+
+            <div class="modal-body">
+                <form id="frm-diit" action="{{ route('store.diit') }}" method="POST" autocomplete="off">
+                    @csrf
+                    <input type="hidden" name="idrawat" value="{{ $rawat->id }}">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="" class="form-label required">Tanggal</label>
+                            <input class="form-control" placeholder="Pilih Tanggal" id="tanggal_diit" name="tanggal" data-bs-focus="false" required/>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-md-12">
+                            <label for="" class="form-label required">Diit</label>
+                            <textarea name="diit" id="diit" rows="3" class="form-control" placeholder="Diit" required></textarea>
                         </div>
                     </div>
             </div>
@@ -818,8 +871,45 @@
                 }
             });
         });
+        $("#frm-diit").on( "submit", function(event) {
+            event.preventDefault();
+            var blockUI = new KTBlockUI(document.querySelector("#kt_app_body"));
+            Swal.fire({
+                title: 'Simpan Data',
+                text: "Apakah Anda yakin akan menyimpan data ini ?",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Simpan Data',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.blockUI({
+                        css: {
+                            border: 'none',
+                            padding: '15px',
+                            backgroundColor: '#000',
+                            '-webkit-border-radius': '10px',
+                            '-moz-border-radius': '10px',
+                            opacity: .5,
+                            color: '#fff',
+                            fontSize: '16px'
+                        },
+                        message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                        baseZ: 9000,
+                    });
+                    this.submit();
+                }
+            });
+        });
 
         $("#tanggal").flatpickr({
+            altInput: true,
+            altFormat: "d-m-Y",
+            dateFormat: "Y-m-d"
+        });
+        $("#tanggal_diit").flatpickr({
             altInput: true,
             altFormat: "d-m-Y",
             dateFormat: "Y-m-d"

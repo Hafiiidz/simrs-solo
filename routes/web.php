@@ -503,6 +503,7 @@ Route::prefix('/pasien')->middleware('auth')->group(function () {
         Route::post('/post-racikan/{id}', [RekapMedisController::class, 'post_resep_racikan'])->name('rekap-medis.post_resep_racikan');
         Route::post('/post-non-racikan/{id}', [RekapMedisController::class, 'post_resep_non_racikan'])->name('rekap-medis.post_resep_non_racikan');
         Route::post('/post-delete-resep', [RekapMedisController::class, 'post_delete_resep'])->name('post.delete-resep');
+        Route::post('/post-edit-jumlah', [RekapMedisController::class, 'edit_jumlah'])->name('post.edit-jumlah');
         Route::prefix('/detail')->group(function () {
             Route::get('/{id_rekapmedis}/index', [DetailRekapMedisController::class, 'index'])->name('detail-rekap-medis-index');
             Route::get('/create', [DetailRekapMedisController::class, 'create'])->name('detail-rekap-medis-create');
@@ -561,12 +562,15 @@ Route::prefix('/pasien')->middleware('auth')->group(function () {
 
     //gizi
     Route::prefix('/gizi')->middleware('auth')->group(function () {
-        Route::get('/', [GiziController::class, 'index'])->name('index.gizi');
+        Route::get('/{jenisrawat}', [GiziController::class, 'index'])->name('index.gizi');
         Route::get('{id}/show', [GiziController::class, 'show'])->name('show.gizi');
+        Route::get('{id}/print-label', [GiziController::class, 'printLabel'])->name('label.gizi');
+        Route::get('{id}/delete', [GiziController::class, 'delete'])->name('delete.gizi');
         Route::post('/store/evaluasi-gizi', [GiziController::class, 'storeEvaluasi'])->name('store.evaluasi-gizi');
         Route::post('/store/asuhan-gizi', [GiziController::class, 'storeAsuhan'])->name('store.asuhan-gizi');
         Route::post('/store/cppt-gizi', [GiziController::class, 'storeCppt'])->name('store.cppt-gizi');
         Route::post('/store/skrining-gizi', [GiziController::class, 'storeSkrining'])->name('store.skrining-gizi');
+        Route::post('/store/diit', [GiziController::class, 'storeDiit'])->name('store.diit');
     });
 })->middleware('auth');
 

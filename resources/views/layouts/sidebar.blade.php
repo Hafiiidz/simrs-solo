@@ -435,12 +435,44 @@
                             <div class="menu-item">
                                 <!--begin:Menu link-->
 
-                                <a class="menu-link {{ Request::is('pasien/gizi') || Request::is('pasien/gizi/*') ? 'active' : '' }}"
-                                    href="{{ route('index.gizi') }}">
+                                <a class="menu-link {{ Request::is('pasien/gizi') || Request::is('pasien/gizi/2') ? 'active' : '' }}"
+                                    href="{{ route('index.gizi',2) }}">
                                     <span class="menu-bullet">
                                         <span class="bullet bullet-dot"></span>
                                     </span>
-                                    <span class="menu-title">Gizi</span>
+                                    <span class="menu-title">Gizi Ranap</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <!--end:Menu item-->
+                        </div>
+                        <div class="menu-sub menu-sub-accordion">
+                            <!--begin:Menu item-->
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+
+                                <a class="menu-link {{ Request::is('pasien/gizi') || Request::is('pasien/gizi/1') ? 'active' : '' }}"
+                                    href="{{ route('index.gizi',1) }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <span class="menu-title">Gizi Rajal</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <!--end:Menu item-->
+                        </div>
+                        <div class="menu-sub menu-sub-accordion">
+                            <!--begin:Menu item-->
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+
+                                <a class="menu-link {{ Request::is('pasien/gizi') || Request::is('pasien/gizi/3') ? 'active' : '' }}"
+                                    href="{{ route('index.gizi',3) }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <span class="menu-title">Gizi UGD</span>
                                 </a>
                                 <!--end:Menu link-->
                             </div>

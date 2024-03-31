@@ -69,7 +69,12 @@
                                 <th>No RM</th>
                                 <th>Nama Pasien</th>
                                 <th>Usia Pasien</th>
+                                <th>Tgl Masuk</th>
                                 <th>Ruangan</th>
+                                @if ($jenisrawat !=2)
+                                <th>Poliklinik</th>
+                                @endif
+                                <th>Ket Bayar</th>
                                 <th>Opsi</th>
                             </tr>
                         </thead>
@@ -126,7 +131,12 @@
                 { data: 'no_rm', name: 'no_rm' },
                 { data: 'pasien.nama_pasien', name: 'pasien.nama_pasien' },
                 { data: 'pasien.usia_tahun', name: 'pasien.usia_tahun' },
+                { data: 'tglmasuk', name: 'tglmasuk' },
                 { data: 'ruangan.nama_ruangan', name: 'ruangan.nama_ruangan' },
+                @if ($jenisrawat !=2)
+                { data: 'poli.poli', name: 'poli.poli' },
+                @endif
+                { data: 'bayar.bayar', name: 'bayar.bayar' },
                 { data: 'opsi', name: 'opsi', orderable: false, searcheable: false },
             ]
         });
