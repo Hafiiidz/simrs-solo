@@ -9,7 +9,7 @@ use Yajra\DataTables\Facades\DataTables;
 class RadiologiController extends Controller
 {
     #list pemeriksaan radiologi
-    public function antrian_radiologi(){
+    public function antrian_radiologi(Request $request){
         $query = DB::table('demo_permintaan_penunjang')
         ->leftjoin('rawat','rawat.id','=','demo_permintaan_penunjang.idrawat')
         ->leftjoin('pasien','pasien.no_rm','=','rawat.no_rm')
@@ -51,7 +51,7 @@ class RadiologiController extends Controller
             })
             ->addColumn('status', function($query){
                 if($query->status_pemeriksaan == 'Antrian'){
-                    return '<span class="badge badge-success">Antrian</span>';
+                    return '<span class="badge badge-danger">Antrian</span>';
                 }else if($query->status_pemeriksaan == 'Pemeriksaan'){
                     return '<span class="badge badge-warning">Pemeriksaan</span>';
                 }else if($query->status_pemeriksaan == 'Selesai'){
@@ -69,7 +69,8 @@ class RadiologiController extends Controller
             ->rawColumns(['action','pemeriksaan','status','poliruangan'])
             ->make(true);
         }
-        return view('radiologi.antrian');
+        $antrian = DB::table('demo_permintaan_penunjang')->where('status_pemeriksaan','Antrian')->where('pemeriksaan_penunjang','!=','null')->where('demo_permintaan_penunjang.jenis_penunjang','Radiologi')->count();
+        return view('radiologi.antrian',compact('antrian'));
     }   
     public function index_radiologi(){
         $query = DB::table('soap_radiologi')

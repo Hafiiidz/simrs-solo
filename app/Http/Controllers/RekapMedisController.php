@@ -865,7 +865,15 @@ class RekapMedisController extends Controller
             $html ='';
             $html .= '<tr id="li'.$resep->id.'">';
             $html .= '<td>'.$resep->nama_obat.'</td>';
-            $html .= '<td role="button" id="'.$resep->id.'">'.$resep->jumlah.'</td>';
+            $html .= '<td data-id="'.$resep.'" width=100
+            role="button" id="'.$resep.'">
+           
+            <input type="number"
+                class="form-control number-jumlah"
+                data-id="'.$resep.'}"
+                name="jumlah" value="'.$request->jumlah_obat.'">
+    
+            </td>';
             $html .= '<td>'.$resep->dosis.'</td>';
             $html .= '<td>'.$resep->takaran.'</td>';
             $html .= '<td>'.$resep->signa.'</td>';
@@ -904,7 +912,16 @@ class RekapMedisController extends Controller
         $html ='';
         $html .= '<tr id="li'.$resep.'">';
         $html .= '<td>'.$obat->nama_obat.'</td>';
-        $html .= '<td role="button" id="'.$resep.'">'.$request->jumlah_obat.'</td>';
+        $html .= '<td data-id="'.$resep.'" width=100
+        role="button" id="'.$resep.'">
+       
+        <input type="number"
+            class="form-control number-jumlah"
+            data-id="'.$resep.'"
+            name="jumlah" value="'.$request->jumlah_obat.'">
+
+        </td>';
+        // $html .= '<td role="button" id="'.$resep.'">'.$request->jumlah_obat.'</td>';
         $html .= '<td>'.$request->dosis_obat.'</td>';
         $html .= '<td>'.$request->takaran_obat.'</td>';
         $html .= '<td>'.json_encode($request->diminum).'</td>';

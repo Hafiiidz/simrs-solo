@@ -705,15 +705,12 @@
                                                             @else
                                                                 <td>{{ $rd->nama_obat }}</td>
                                                                 <td data-id="{{ $rd->id }}" width=100
-                                                                    role="button" id="{{ $resep }}">
-                                                                    {{-- <form action="" method="POST" id='frmEditjumlah'>
-                                                                        @csrf --}}
-                                                                    {{-- <input type="hidden" value="{{ $rd->id }}" name="idresep"> --}}
+                                                                    role="button" id="{{ $rd->id }}">
+                                                                   
                                                                     <input type="number"
                                                                         class="form-control number-jumlah"
                                                                         data-id="{{ $rd->id }}"{{ $rawat->status == 4 ? 'disabled' : '' }}
                                                                         name="jumlah" value="{{ $rd->jumlah }}">
-                                                                    {{-- </form> --}}
 
                                                                 </td>
                                                                 <td>{{ $rd->dosis }}</td>
@@ -2637,10 +2634,10 @@
                         )
 
 
-                        $('#nama_obat').val(null).trigger('change');
+                        $('#nama_obat_non').val(null).trigger('change');
                         $('#takaran_obat').val(null).trigger('change');
                         $('input[type="text"]').val('');
-                        $('input[type="number"]').val('');
+                        $('#jumlah_obat').val('');
                         $('input[type="checkbox"]').prop('checked', false);
                         $('input[type="radio"]').prop('checked', false);
                         // $('#message').css('display', 'block');
