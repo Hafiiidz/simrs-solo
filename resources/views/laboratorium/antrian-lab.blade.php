@@ -235,6 +235,10 @@
             $('#asal').change(function() {
                 table.draw();
             });
+            table.on('draw', function() {
+                KTMenu.createInstances();
+
+            });
         });
     </script>
 @endsection

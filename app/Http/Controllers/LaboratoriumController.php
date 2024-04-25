@@ -79,15 +79,12 @@ class LaboratoriumController extends Controller
                     $query->where('rawat.idjenisrawat', $request->get('asal'));
                 }
                
-                // if (!empty($request->get('search'))) {
-                //     $query->where(function ($w) use ($request) {
-                //         $search = $request->get('search');
-                //         $w->orWhere('penyiaran_id', 'LIKE', "%$search%")
-                //             ->orWhere('nib', 'LIKE', "%$search%")
-                //             ->orWhere('nama_badan_hukum', 'LIKE', "%$search%")
-                //             ->orWhere('kategori_izin', 'LIKE', "%$search%");
-                //     });
-                // }
+                if (!empty($request->get('search'))) {
+                    $query->where(function ($w) use ($request) {
+                        $search = $request->get('search');
+                        $w->orWhere('demo_permintaan_penunjang.no_rm', 'LIKE', "%$search%");
+                    });
+                }
             })
             ->rawColumns(['action','pemeriksaan','status','poliruangan'])
             ->make(true);
