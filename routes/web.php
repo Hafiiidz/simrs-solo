@@ -352,6 +352,7 @@ Route::prefix('/laporan')->middleware('auth')->group(function () {
 
 //lab
 Route::prefix('/laboratorium')->middleware('auth')->group(function () {
+    Route::get('/antrian-lab', [LaboratoriumController::class, 'antrian_lab'])->middleware('auth')->name('laboratorium.antrian');
     Route::get('/list-pemeriksaan', [LaboratoriumController::class, 'index'])->middleware('auth')->name('laboratorium.list-pemeriksaan');
     Route::get('/list-pasien', [LaboratoriumController::class, 'pasien'])->middleware('auth')->name('laboratorium.list-pasien');
     Route::get('/view-hasil', [LaboratoriumController::class, 'hasil'])->middleware('auth')->name('laboratorium.view-hasil');

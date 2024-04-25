@@ -37,6 +37,14 @@ class FarmasiController extends Controller
         $total_antrian = count($resep_rajal) + count($resep_ugd) + count($resep_ranap);
 
         $transaksi_bayar = DB::table('transaksi_bayar')->orderBy('urutan', 'asc')->get();
+
+        $query = AntrianFarmasi::with('pasien','rawat')
+        ->select([
+            'nama_pasien'
+        ])
+        ->orderBy('id','desc')->where('obat','!=','null')->whereNotNull('obat');
+        return DataTables::of($query)->make(true);
+
         return view('farmasi.antrian-resep', compact('resep_rajal', 'resep_ugd', 'resep_ranap', 'transaksi_bayar', 'total_antrian'));
     }
 

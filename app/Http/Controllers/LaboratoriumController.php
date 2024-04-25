@@ -2,15 +2,102 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Rawat;
-use App\Models\RekapMedis\RekapMedis;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Models\RekapMedis\RekapMedis;
 use Yajra\DataTables\Facades\DataTables;
 
 class LaboratoriumController extends Controller
 {
     #list pemeriksaan
+
+    public function antrian_lab(Request $request){
+        $query = DB::table('demo_permintaan_penunjang')
+        ->leftjoin('rawat','rawat.id','=','demo_permintaan_penunjang.idrawat')
+        ->leftjoin('pasien','pasien.no_rm','=','rawat.no_rm')
+        ->leftjoin('rawat_jenis','rawat_jenis.id','=','rawat.idjenisrawat')
+        ->leftjoin('poli','poli.id','=','rawat.idpoli')
+        ->leftjoin('ruangan','ruangan.id','=','rawat.idruangan')
+        ->leftjoin('dokter','dokter.id','=','demo_permintaan_penunjang.peminta')
+        ->select([
+            'demo_permintaan_penunjang.*',
+            'pasien.nama_pasien',
+            'rawat_jenis.jenis',
+            'poli.id as idpoli',
+            'poli.poli',
+            'ruangan.nama_ruangan',
+            'dokter.nama_dokter',
+            'rawat.idjenisrawat',
+
+        ])
+        ->where('pemeriksaan_penunjang','!=','null')
+        ->where('demo_permintaan_penunjang.jenis_penunjang','Lab')->orderBy('demo_permintaan_penunjang.id','desc');
+        if(request()->ajax()){
+            return DataTables::of($query)
+            ->addColumn('action', function($query){
+                return '<a href="'.route('penunjang.detail',[$query->idrawat,'Lab']).'" class="btn btn-sm btn-icon btn-light-info"><i class="fa fa-pencil"></i></a>';
+            })
+            ->addColumn('pemeriksaan',function($query){
+               
+                 if($query->pemeriksaan_penunjang != 'null' || $query->pemeriksaan_penunjang != null || $query->pemeriksaan_penunjang != ''){
+                    $pemeriksaan = json_decode($query->pemeriksaan_penunjang);
+                    $html = '<ol>';
+                    foreach($pemeriksaan as $p){
+                        $radiologi_tindakan = DB::table('laboratorium_pemeriksaan')->where('id',$p->tindakan_lab)->first();
+                        $html .= '<li>'.$radiologi_tindakan?->nama_pemeriksaan.'</li>';
+                    }
+                    $html .= '</ol>';
+                    return $html;
+                 }
+                 return '-';
+            })
+            ->addColumn('status', function($query){
+                if($query->status_pemeriksaan == 'Antrian'){
+                    return '<span class="badge badge-danger">Antrian</span>';
+                }else if($query->status_pemeriksaan == 'Pemeriksaan'){
+                    return '<span class="badge badge-warning">Pemeriksaan</span>';
+                }else if($query->status_pemeriksaan == 'Selesai'){
+                    return '<span class="badge badge-primary">Selesai</span>';
+                }
+            })
+            ->addColumn('poliruangan', function($query){
+                if($query->idjenisrawat == 2){
+                    return $query->nama_ruangan;
+                }else{
+                    return $query->poli;
+                }
+            })
+            ->addIndexColumn()
+            ->filter(function ($query) use ($request) {
+                if ($request->get('status') != '') {
+                    $query->where('status_pemeriksaan', $request->get('status'));
+                }
+                if ($request->get('asal') != '') {
+                    $query->where('rawat.idjenisrawat', $request->get('asal'));
+                }
+               
+                // if (!empty($request->get('search'))) {
+                //     $query->where(function ($w) use ($request) {
+                //         $search = $request->get('search');
+                //         $w->orWhere('penyiaran_id', 'LIKE', "%$search%")
+                //             ->orWhere('nib', 'LIKE', "%$search%")
+                //             ->orWhere('nama_badan_hukum', 'LIKE', "%$search%")
+                //             ->orWhere('kategori_izin', 'LIKE', "%$search%");
+                //     });
+                // }
+            })
+            ->rawColumns(['action','pemeriksaan','status','poliruangan'])
+            ->make(true);
+        }
+        $antrian = DB::table('demo_permintaan_penunjang')->where('status_pemeriksaan','Antrian')->where('pemeriksaan_penunjang','!=','null')->whereDate('created_at', date('Y-m-d'))->where('demo_permintaan_penunjang.jenis_penunjang','Lab')->count();
+        $selesai = DB::table('demo_permintaan_penunjang')->where('status_pemeriksaan','Selesai')->where('pemeriksaan_penunjang','!=','null')->whereDate('created_at', date('Y-m-d'))->where('demo_permintaan_penunjang.jenis_penunjang','Lab')->count();
+        $pemeriksaan = DB::table('demo_permintaan_penunjang')->where('status_pemeriksaan','Selesai')->where('pemeriksaan_penunjang','!=','null')->whereDate('created_at', date('Y-m-d'))->where('demo_permintaan_penunjang.jenis_penunjang','Lab')->count();
+        return view('laboratorium.antrian-lab',compact('antrian','selesai','pemeriksaan'));
+    }   
+
     public function index()
     {
         if (request()->ajax()) {

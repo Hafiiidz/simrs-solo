@@ -101,7 +101,7 @@
                                 <div class="menu-item">
                                     <!--begin:Menu link-->
                                     <a class="menu-link {{ Request::is('laboratorium') || Request::is('laboratorium/') ? 'active' : '' }}"
-                                        href="{{ route('penunjang.antrian', 'Lab') }}">
+                                        href="{{ route('laboratorium.antrian') }}">
                                         <span class="menu-bullet">
                                             <span class="bullet bullet-dot"></span>
                                         </span>
