@@ -85,6 +85,16 @@ class LaboratoriumController extends Controller
                         $w->orWhere('demo_permintaan_penunjang.no_rm', 'LIKE', "%$search%");
                     });
                 }
+                if($request->get('tgl') && $request->get('tgl') != null){
+                    setlocale(LC_TIME, 'id_ID');
+                    \Carbon\Carbon::setLocale('id');
+        
+                    $date_range = explode(' - ', $request->get('tgl'));
+                    $start = date('Y-m-d', strtotime($date_range[0]));
+                    $end = date('Y-m-d', strtotime($date_range[1]));
+                    $query->whereDate('created_at','>=',$start)->whereDate('created_at','<=',$end);
+                    // $query->whereBetween('created_at',[$start,$end]);
+                }
             })
             ->rawColumns(['action','pemeriksaan','status','poliruangan'])
             ->make(true);

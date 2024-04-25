@@ -122,6 +122,10 @@
                                             <option value="Selesai">Selesai</option>
                                         </select>
                                     </th>
+                                    <th>
+                                        <input class="form-control form-control-sm" placeholder="Pick date rage"
+                                        id="kt_daterangepicker_4" />
+                                    </th>
                                 </tr>
                                 <tr class="fw-bold fs-7 text-gray-800 px-7">
                                     <th>No RM</th>
@@ -150,6 +154,28 @@
 @endsection
 @section('js')
     <script>
+        var start = moment().subtract(29, "days");
+        var end = moment();
+
+        function cb(start, end) {
+            $("#kt_daterangepicker_4").html(start.format("MMMM D, YYYY") + " - " + end.format("MMMM D, YYYY"));
+        }
+
+        $("#kt_daterangepicker_4").daterangepicker({
+            startDate: start,
+            endDate: end,
+            ranges: {
+                "Today": [moment(), moment()],
+                "Yesterday": [moment().subtract(1, "days"), moment().subtract(1, "days")],
+                "Last 7 Days": [moment().subtract(6, "days"), moment()],
+                "Last 30 Days": [moment().subtract(29, "days"), moment()],
+                "This Month": [moment().startOf("month"), moment().endOf("month")],
+                "Last Month": [moment().subtract(1, "month").startOf("month"), moment().subtract(1, "month").endOf(
+                    "month")]
+            }
+        }, cb);
+
+        cb(start, end);
         $(function() {
             let table = $("#tbl-pasien").DataTable({
                 "language": {
@@ -178,6 +204,7 @@
                             d.nama_pasien = $('#nama_pasien').val(),
                             d.asal = $('#asal').val(),
                             d.status = $('#status').val(),
+                            d.tgl = $('#kt_daterangepicker_4').val(),
                             d.search = $('input[type="search"]').val()
                     }
                 },
@@ -229,6 +256,9 @@
                     },
                 ]
             });
+            $('#kt_daterangepicker_4').change(function() {
+                table.draw();
+            });
             $('#status').change(function() {
                 table.draw();
             });
@@ -239,6 +269,8 @@
                 KTMenu.createInstances();
 
             });
+
+
         });
     </script>
 @endsection
