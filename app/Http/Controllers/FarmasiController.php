@@ -454,7 +454,7 @@ class FarmasiController extends Controller
         $antrian->save();
         $current_time = round(microtime(true) * 1000); 
 
-        VclaimHelper::update_task($rawat->idrawat,7,$current_time); 
+        VclaimHelper::update_task2($rawat->idrawat,7,$current_time); 
         
         return back()->with('berhasil', 'Resep Berhasil Di Simpan');
     }

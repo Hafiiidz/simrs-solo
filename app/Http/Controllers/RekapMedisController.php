@@ -96,7 +96,7 @@ class RekapMedisController extends Controller
             $rekap_medis->perawat = 1;
             // return $rawat->idrawat;
             $current_time = round(microtime(true) * 1000); 
-            VclaimHelper::update_task($rawat->idrawat,4,$current_time);
+            VclaimHelper::update_task2($rawat->idrawat,4,$current_time);
         }elseif($request->jenis == 'bpjs'){
             $rekap_medis->bpjs = 1;
         } else {
@@ -104,7 +104,8 @@ class RekapMedisController extends Controller
             $resep_dokter = DB::table('demo_resep_dokter')->where('idrawat', $rawat->id)->get();
             // if($rekap_medis->dokter == null){
                 if (count($resep_dokter) > 0) {   
-                    VclaimHelper::update_task($rawat->idrawat,6,$current_time);             
+                    
+                    VclaimHelper::update_task2($rawat->idrawat,6,$current_time);             
                     $non_racik = [];
                     $racikan = [];
                     foreach($resep_dokter as $rd){
@@ -305,7 +306,7 @@ class RekapMedisController extends Controller
            
 
             $current_time = round(microtime(true) * 1000); 
-            VclaimHelper::update_task($rawat->idrawat,5,$current_time);
+            VclaimHelper::update_task2($rawat->idrawat,5,$current_time);
         }
 
         $rekap_medis->save();
@@ -698,14 +699,15 @@ class RekapMedisController extends Controller
     }
     public function input_resume_poli(Request $request)
     {
+        
         $rawat = Rawat::find($request->idrawat);
         if($rawat->status != 2){
             $rawat->status = 3;
         }
-       
+        $current_time = now();
         $rawat->timestamps = false;
         $rawat->save();
-
+        
         $cek_resume = RekapMedis::where('idrawat', $request->idrawat)->first();
         if (!$cek_resume) {
             $resume = new RekapMedis;
@@ -713,8 +715,10 @@ class RekapMedisController extends Controller
             $resume->idrawat = $request->idrawat;
             $resume->idpasien = $request->idpasien;
             $resume->save();
+            VclaimHelper::update_task2($rawat->idrawat,4,$current_time);
         } else {
             $resume = RekapMedis::find($cek_resume->id);
+            // VclaimHelper::update_task2($rawat->idrawat,5,$current_time);
         }
         $triase = DB::table('soap_triase')->get();
         $data = RekapMedis::find($resume->id);

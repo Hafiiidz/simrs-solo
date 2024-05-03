@@ -455,14 +455,42 @@ class VclaimHelper
         // $helper = new VclaimHelper();
         // $token = $helper->getTokenAntrol();
         // // return $token;
-        // $response = Http::withHeaders($token['signature'])
-        //     ->withOptions(["verify" => $token['ssl']])
-        //     ->post('https://apijkn.bpjs-kesehatan.go.id/antreanrs/antrean/updatewaktu',[
+        // $response = Http::post('https://apijkn.bpjs-kesehatan.go.id/antreanrs/antrean/updatewaktu',[
         //         'kodebooking'=>$kode_boking,
         //         "taskid"=> $taksid,
         //         "waktu"=> $waktu,
         // ]);
         // return $response;
+    }
+    public static function update_task2($kode_boking,$taksid,$waktu){
+        $rawat = Rawat::where('idrawat',$kode_boking)->first();
+        if($rawat){
+            $cek_demo = DB::table('demo_task_id')->where('kode_rawat',$rawat->idrawat)->where('task',$taksid)->first();
+            if($cek_demo){
+                $demo_task_id = DB::table('demo_task_id')->where('kode_rawat',$rawat->idrawat)->where('task',$taksid)->update([
+                    'waktu'=>date('Y-m-d H:i:s'),
+                    'status'=>0,
+                    'microtime'=>$waktu,
+                ]);
+            }else{
+            $demo_task_id = DB::table('demo_task_id')->insert([
+                'idrawat'=>$rawat->id,
+                'kode_rawat'=>$rawat->idrawat,
+                'task'=>$taksid,
+                'waktu'=>date('Y-m-d H:i:s'),
+                'status'=>0,
+                'microtime'=>$waktu,
+            ]);
+         }
+        }
+        // return $kode_boking;
+        // $helper = new VclaimHelper();
+        // $token = $helper->getTokenAntrol();
+        // // return $token;
+        $helper = new VclaimHelper();
+        $token = $helper->getToken();
+        $response = Http::withOptions(["verify" => $token['ssl']])->get('https://live.simrs.rsaudrsiswanto.co.id/dashboard/rest/update-taks?kode_booking='.$rawat->idrawat.'&taks='.$taksid);
+        return $response;
     }
     public static function add_antrian($idrawat){
         $rawat = Rawat::find($idrawat);
