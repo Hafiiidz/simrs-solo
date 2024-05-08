@@ -8,14 +8,14 @@
             margin-top: 10px;
             margin-bottom: 0px;
             margin-right: 10px;
-            margin-left: 10px;
+            margin-left: 15px;
         }
 
         body {
             margin-top: 10px;
             margin-bottom: 0px;
             margin-right: 10px;
-            margin-left: 10px;
+            margin-left: 15px;
             font-size: 12px;
         }
     </style>

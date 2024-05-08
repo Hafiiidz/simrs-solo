@@ -600,7 +600,7 @@ class FarmasiController extends Controller
             '"'.$rawat->dokter->nama_dokter.'"',
         );
         $pdf = PDF::loadview('farmasi.cetak.resep-tempo', compact('resep', 'rawat', 'pasien', 'obat', 'detail_rekap', 'alamat','qr'));
-        $customPaper =array(0,0,567.00,283.80,'landscape');
+        // $customPaper =array(0,0,567.00,283.80,'landscape');
         $pdf->setPaper('a5','portrait');
         return $pdf->stream();
     }
