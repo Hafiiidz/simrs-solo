@@ -188,21 +188,21 @@ class FarmasiController extends Controller
                 ]);
                 
                 $rd = DB::table('demo_resep_dokter')->where('id', $non_racik)->first();
-                $hitung_kronis += $rd->kronis;
+                $hitung_kronis += $rd?->kronis;
                 $non_racikan[] = [
-                    'obat'=>$rd->idobat,
-                    'takaran'=>$rd->takaran,
-                    'jumlah'=>$rd->jumlah,
-                    'diberikan'=>$rd->diberikan,
-                    'kronis'=>$rd->kronis,
-                    'dosis'=>$rd->dosis,
-                    'signa'=>$rd->signa,
-                    'diminum'=>$rd->diminum,
-                    'catatan'=>$rd->catatan,
-                    'dtd'=>$rd->dtd,
-                    'idresep'=>$rd->id,
-                    'jenis'=>$request->jenis_obat_non_racikan[$rd->id],
-                    'tambahan_farmasi'=>$rd->tambahan_farmasi
+                    'obat'=>$rd?->idobat,
+                    'takaran'=>$rd?->takaran,
+                    'jumlah'=>$rd?->jumlah,
+                    'diberikan'=>$rd?->diberikan,
+                    'kronis'=>$rd?->kronis,
+                    'dosis'=>$rd?->dosis,
+                    'signa'=>$rd?->signa,
+                    'diminum'=>$rd?->diminum,
+                    'catatan'=>$rd?->catatan,
+                    'dtd'=>$rd?->dtd,
+                    'idresep'=>$rd?->id,
+                    'jenis'=>$request->jenis_obat_non_racikan[$rd?->id],
+                    'tambahan_farmasi'=>$rd?->tambahan_farmasi
                 ];
             }
 
