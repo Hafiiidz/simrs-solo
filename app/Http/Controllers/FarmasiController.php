@@ -14,6 +14,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 use App\Models\RekapMedis\RekapMedis;
 use Yajra\DataTables\Facades\DataTables;
@@ -263,6 +264,7 @@ class FarmasiController extends Controller
 
     public function post_resep(Request $request, $id)
     {
+        // return env('URL_SIMRS_LAMA').'/rest/selesai-farmasi?id=';
         // return $request->all();
         $antrian = AntrianFarmasi::find($id);
         if($antrian->update != 1){
@@ -454,8 +456,10 @@ class FarmasiController extends Controller
         $antrian->save();
         $current_time = round(microtime(true) * 1000); 
 
-        VclaimHelper::update_task2($rawat->idrawat,7,$current_time); 
-        
+        // VclaimHelper::update_task2($rawat->idrawat,7,$current_time); 
+        $response = Http::withOptions(["verify" => true])
+        ->get(env('URL_SIMRS_LAMA').'/rest/selesai-farmasi?id='.$obat_transaksi_save->id);
+        // return $response;
         return back()->with('berhasil', 'Resep Berhasil Di Simpan');
     }
 
@@ -1029,13 +1033,13 @@ class FarmasiController extends Controller
         $no_antrian = DB::table('demo_antrian_resep')->whereDate('created_at', Carbon::today())->where('jenis_rawat', $rawat->idjenisrawat)->count();
         $antrian = DB::table('demo_antrian_resep')->insert([
             'idrawat' => $rekap_medis->idrawat,
-            'racikan' => [],
+            'racikan' => '[]',
             'idbayar' => $rekap_medis->rawat->idbayar,
             'status_antrian' => 'Antrian',
             'no_rm' => $rekap_medis->rawat->no_rm,
             'idrekap' => $rekap_medis->id,
             'no_antrian' => $no_antrian + 1,
-            'obat' => [],
+            'obat' => '[]',
             'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
             'created_at' => now(),
             'updated_at' => now(),
