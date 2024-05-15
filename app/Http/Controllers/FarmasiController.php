@@ -189,7 +189,7 @@ class FarmasiController extends Controller
                 
                 $rd = DB::table('demo_resep_dokter')->where('id', $non_racik)->first();
                 $hitung_kronis += $rd?->kronis;
-               
+                // if($rd)
                 $non_racikan[] = [
                     'obat'=>$rd->idobat,
                     'takaran'=>$rd->takaran,
@@ -457,8 +457,8 @@ class FarmasiController extends Controller
         $antrian->save();
         $current_time = round(microtime(true) * 1000); 
 
-        // VclaimHelper::update_task2($rawat->idrawat,7,$current_time); 
-        $response = Http::withOptions(["verify" => true])
+        VclaimHelper::update_task2($rawat->idrawat,7,$current_time); 
+        Http::withOptions(["verify" => true])
         ->get(env('URL_SIMRS_LAMA').'/rest/selesai-farmasi?id='.$obat_transaksi_save->id);
         // return $response;
         return back()->with('berhasil', 'Resep Berhasil Di Simpan');
