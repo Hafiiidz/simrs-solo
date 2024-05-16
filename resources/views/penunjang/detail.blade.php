@@ -569,10 +569,12 @@
                                                                     <a href="{{ route('penunjang.input-hasil-radiologi', [$pld->id, $pld->idtindakan]) }}"
                                                                         class="btn btn-primary btn-sm">Input Hasil</a>
                                                                 @else
-                                                                    <a href="https://live.simrs.rsaudrsiswanto.co.id/dashboard/radiologi-order/hasil-print?id={{ $pld->id }}" class="btn btn-success btn-sm">Lihat Hasil</a>
-                                                                    {{-- <a href="{{ route('penunjang.input-hasil-radiologi', [$pld->id, $pld->idtindakan]) }}" class="btn btn-success btn-sm">Lihat Hasil</a> --}}
-                                                                    <a href="{{ route('penunjang.cetak-radiologi', $pld->id) }}"
+                                                                    <a href="{{ route('penunjang.input-hasil-radiologi', [$pld->id, $pld->idtindakan]) }}" class="btn btn-success btn-sm">Lihat Hasil</a>
+                                                                    {{-- <a href="{{ route('penunjang.cetak-radiologi', $pld->id) }}"
                                                                         class="btn btn-info btn-sm"
+                                                                        target="_blank">Print</a> --}}
+                                                                        
+                                                                    <a href="https://live.simrs.rsaudrsiswanto.co.id/dashboard/radiologi-order/hasil-print?id={{ $pld->id }}"    class="btn btn-info btn-sm"
                                                                         target="_blank">Print</a>
                                                                 @endif
 
