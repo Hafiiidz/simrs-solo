@@ -201,7 +201,7 @@
                                                                                         <label class="form-label">Tindakan
                                                                                             Lab</label>
                                                                                         <select name="tindakan_lab"
-                                                                                            class="form-select"
+                                                                                            class="form-select tindakan_select"
                                                                                             data-kt-repeater="select2lab"
                                                                                             data-placeholder="-Pilih-"
                                                                                             required>
@@ -306,13 +306,14 @@
                                 <div class="card-header">
                                     <h5 class="card-title">List Pemeriksaan {{ $jenis }}</h5>
                                     @if (!$penunjang)
-                                    <div class="card-toolbar">
-                                        <form action="{{ route('laboratorium.tambah-pemeriksaan-lab',$rawat->id) }}" method="post" id='frmTambahpemeriksaan'>
-                                            @csrf
-                                            <button class="btn btn-light-warning">Tambah Pemeriksaan</button>
-                                        </form>
-                                        
-                                    </div>
+                                        <div class="card-toolbar">
+                                            <form action="{{ route('laboratorium.tambah-pemeriksaan-lab', $rawat->id) }}"
+                                                method="post" id='frmTambahpemeriksaan'>
+                                                @csrf
+                                                <button class="btn btn-light-warning">Tambah Pemeriksaan</button>
+                                            </form>
+
+                                        </div>
                                     @endif
                                 </div>
 
@@ -323,27 +324,32 @@
                                                 <thead>
                                                     <tr>
                                                         <th colspan="3">
-                                                            <form action="{{ route('laboratorium.hapus-hasil',$pl->id) }}" method="post" id='frmHapusHasil'>
+                                                            <form action="{{ route('laboratorium.hapus-hasil', $pl->id) }}"
+                                                                method="post" id='frmHapusHasil'>
                                                                 @csrf
                                                                 <button type="button" data-bs-toggle="modal"
-                                                                data-bs-target="#print_hasil{{ $pl->id }}" class="btn btn-warning btn-sm">
+                                                                    data-bs-target="#print_hasil{{ $pl->id }}"
+                                                                    class="btn btn-warning btn-sm">
                                                                     <i class="fas fa-print"></i>
                                                                 </button>
                                                                 <button type="button" data-bs-toggle="modal"
-                                                                data-bs-target="#print_kwitasi{{ $pl->id }}"  class="btn btn-primary btn-sm">Kwitansi</button>
+                                                                    data-bs-target="#print_kwitasi{{ $pl->id }}"
+                                                                    class="btn btn-primary btn-sm">Kwitansi</button>
                                                                 <button type="button" data-bs-toggle="modal"
-                                                                data-bs-target="#print_kwitasi_kecil{{ $pl->id }}"  class="btn btn-info btn-sm">Kwitansi
+                                                                    data-bs-target="#print_kwitasi_kecil{{ $pl->id }}"
+                                                                    class="btn btn-info btn-sm">Kwitansi
                                                                     Kecil</button>
                                                                 <button type="button" data-bs-toggle="modal"
                                                                     data-bs-target="#modal_tambah_layanan_lab{{ $pl->id }}"
-                                                                    class="btn btn-secondary btn-sm">Tambah Layanan</button>
+                                                                    class="btn btn-secondary btn-sm">Tambah
+                                                                    Layanan</button>
                                                                 <button type="button" data-bs-toggle="modal"
                                                                     data-bs-target="#edit_tgl_hasil{{ $pl->id }}"
                                                                     class="btn btn-light-success btn-sm">Edit
                                                                     Tgl Hasil</button>
                                                                 <button class="btn btn-danger btn-sm">Hapus</button>
                                                             </form>
-                                                            
+
                                                         </th>
 
                                                     </tr>
@@ -354,9 +360,10 @@
                                                     <tr class="p-5">
                                                         <td>
                                                             {{-- @if ($penunjang->status_pemeriksaan == 'Pemeriksaan') --}}
-                                                            <button class="btn-selesai btn btn-sm mb-3 btn-primary" data-id="{{ $pl->idrawat }}">Selesai</button>
+                                                            <button class="btn-selesai btn btn-sm mb-3 btn-primary"
+                                                                data-id="{{ $pl->idrawat }}">Selesai</button>
                                                             {{-- @endif --}}
-                                                            
+
                                                         </td>
                                                     </tr>
                                                 </thead>
@@ -434,59 +441,60 @@
                                                             <div class="form-group">
                                                                 <div data-repeater-list="radiologi">
                                                                     @if ($penunjang->pemeriksaan_penunjang != 'null')
-                                                                    @foreach (json_decode($penunjang->pemeriksaan_penunjang) as $val)
-                                                                        <div data-repeater-item>
-                                                                            <div class="form-group row mb-5">
-                                                                                <div class="col-md-6">
-                                                                                    <label class="form-label">Tindakan
-                                                                                        Rad</label>
-                                                                                    <select name="tindakan_rad"
-                                                                                        class="form-select"
-                                                                                        data-kt-repeater="select2radiologi"
-                                                                                        data-placeholder="-Pilih-"
-                                                                                        required>
-                                                                                        <option></option>
-                                                                                        @foreach ($radiologi as $rad)
-                                                                                            <option
-                                                                                                value="{{ $rad->id }}"
-                                                                                                {{ $val->tindakan_rad == $rad->id ? 'selected' : '' }}>
-                                                                                                {{ $rad->nama_tindakan }}
-                                                                                            </option>
-                                                                                        @endforeach
-                                                                                    </select>
-                                                                                </div>
-                                                                                <div class="col-md-2">
-                                                                                    <label
-                                                                                        class="form-label">Klinis</label>
-                                                                                    <input class="form-control" value="{{ $val->klinis }}"
-                                                                                        name='klinis' required
-                                                                                        placeholder="Klinis" />
-                                                                                </div>
-                                                                                <div class="col-md-2">
-                                                                                    <label
-                                                                                        class="form-label">Catatan</label>
-                                                                                    <input class="form-control"
-                                                                                        name='catatan'
-                                                                                        placeholder="Catatan" />
-                                                                                </div>
+                                                                        @foreach (json_decode($penunjang->pemeriksaan_penunjang) as $val)
+                                                                            <div data-repeater-item>
+                                                                                <div class="form-group row mb-5">
+                                                                                    <div class="col-md-6">
+                                                                                        <label class="form-label">Tindakan
+                                                                                            Rad</label>
+                                                                                        <select name="tindakan_rad"
+                                                                                            class="form-select"
+                                                                                            data-kt-repeater="select2radiologi"
+                                                                                            data-placeholder="-Pilih-"
+                                                                                            required>
+                                                                                            <option></option>
+                                                                                            @foreach ($radiologi as $rad)
+                                                                                                <option
+                                                                                                    value="{{ $rad->id }}"
+                                                                                                    {{ $val->tindakan_rad == $rad->id ? 'selected' : '' }}>
+                                                                                                    {{ $rad->nama_tindakan }}
+                                                                                                </option>
+                                                                                            @endforeach
+                                                                                        </select>
+                                                                                    </div>
+                                                                                    <div class="col-md-2">
+                                                                                        <label
+                                                                                            class="form-label">Klinis</label>
+                                                                                        <input class="form-control"
+                                                                                            value="{{ $val->klinis }}"
+                                                                                            name='klinis' required
+                                                                                            placeholder="Klinis" />
+                                                                                    </div>
+                                                                                    <div class="col-md-2">
+                                                                                        <label
+                                                                                            class="form-label">Catatan</label>
+                                                                                        <input class="form-control"
+                                                                                            name='catatan'
+                                                                                            placeholder="Catatan" />
+                                                                                    </div>
 
-                                                                                <div class="col-md-2">
-                                                                                    <a href="javascript:;"
-                                                                                        data-repeater-delete
-                                                                                        class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                                        <i
-                                                                                            class="ki-duotone ki-trash fs-5"><span
-                                                                                                class="path1"></span><span
-                                                                                                class="path2"></span><span
-                                                                                                class="path3"></span><span
-                                                                                                class="path4"></span><span
-                                                                                                class="path5"></span></i>
-                                                                                        Hapus
-                                                                                    </a>
+                                                                                    <div class="col-md-2">
+                                                                                        <a href="javascript:;"
+                                                                                            data-repeater-delete
+                                                                                            class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                                                            <i
+                                                                                                class="ki-duotone ki-trash fs-5"><span
+                                                                                                    class="path1"></span><span
+                                                                                                    class="path2"></span><span
+                                                                                                    class="path3"></span><span
+                                                                                                    class="path4"></span><span
+                                                                                                    class="path5"></span></i>
+                                                                                            Hapus
+                                                                                        </a>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
-                                                                        </div>
-                                                                    @endforeach
+                                                                        @endforeach
                                                                     @endif
                                                                 </div>
 
@@ -528,9 +536,10 @@
                                                     <tr class="p-5">
                                                         <td>
                                                             {{-- @if ($penunjang->status_pemeriksaan == 'Pemeriksaan') --}}
-                                                            <button class="btn-selesai btn btn-sm mb-3 btn-primary" data-id="{{ $pl->idrawat }}">Selesai</button>
+                                                            <button class="btn-selesai btn btn-sm mb-3 btn-primary"
+                                                                data-id="{{ $pl->idrawat }}">Selesai</button>
                                                             {{-- @endif --}}
-                                                            
+
                                                         </td>
                                                     </tr>
                                                 </thead>
@@ -560,8 +569,8 @@
                                                                     <a href="{{ route('penunjang.input-hasil-radiologi', [$pld->id, $pld->idtindakan]) }}"
                                                                         class="btn btn-primary btn-sm">Input Hasil</a>
                                                                 @else
-                                                                    <a href="{{ route('penunjang.input-hasil-radiologi', [$pld->id, $pld->idtindakan]) }}"
-                                                                        class="btn btn-success btn-sm">Lihat Hasil</a>
+                                                                    <a href="https://live.simrs.rsaudrsiswanto.co.id/dashboard/radiologi-order/hasil-print?id={{ $pld->id }}" class="btn btn-success btn-sm">Lihat Hasil</a>
+                                                                    {{-- <a href="{{ route('penunjang.input-hasil-radiologi', [$pld->id, $pld->idtindakan]) }}" class="btn btn-success btn-sm">Lihat Hasil</a> --}}
                                                                     <a href="{{ route('penunjang.cetak-radiologi', $pld->id) }}"
                                                                         class="btn btn-info btn-sm"
                                                                         target="_blank">Print</a>
@@ -778,16 +787,18 @@
                                 </div>
                                 <!--end::Close-->
                             </div>
-                           
-                                <div class="modal-body">
-                                    <div class="mb-10">
-                                        <iframe src="{{ config('app.url_simrs_lama') }}/laboratorium/hasil-print?id={{ $pl->id }}" width="100%" height="600"></iframe>
-                                    </div>
-                                </div>
 
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            <div class="modal-body">
+                                <div class="mb-10">
+                                    <iframe
+                                        src="{{ config('app.url_simrs_lama') }}/laboratorium/hasil-print?id={{ $pl->id }}"
+                                        width="100%" height="600"></iframe>
                                 </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            </div>
 
                         </div>
                     </div>
@@ -807,16 +818,18 @@
                                 </div>
                                 <!--end::Close-->
                             </div>
-                           
-                                <div class="modal-body">
-                                    <div class="mb-10">
-                                        <iframe src="{{ config('app.url_simrs_lama') }}/laboratorium/kwitansi?id={{ $pl->id }}" width="100%" height="600"></iframe>
-                                    </div>
-                                </div>
 
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            <div class="modal-body">
+                                <div class="mb-10">
+                                    <iframe
+                                        src="{{ config('app.url_simrs_lama') }}/laboratorium/kwitansi?id={{ $pl->id }}"
+                                        width="100%" height="600"></iframe>
                                 </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            </div>
 
                         </div>
                     </div>
@@ -836,16 +849,18 @@
                                 </div>
                                 <!--end::Close-->
                             </div>
-                           
-                                <div class="modal-body">
-                                    <div class="mb-10">
-                                        <iframe src="{{ config('app.url_simrs_lama') }}/laboratorium/kwitansi-dua?id={{ $pl->id }}" width="100%" height="600"></iframe>
-                                    </div>
-                                </div>
 
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            <div class="modal-body">
+                                <div class="mb-10">
+                                    <iframe
+                                        src="{{ config('app.url_simrs_lama') }}/laboratorium/kwitansi-dua?id={{ $pl->id }}"
+                                        width="100%" height="600"></iframe>
                                 </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            </div>
 
                         </div>
                     </div>
@@ -1020,6 +1035,10 @@
 
                     ready: function() {
                         $('[data-kt-repeater="select2lab"]').select2();
+
+                        $('#lab_repeater').on('change', '.tindakan_select', function() {
+                            alert('tes tes');
+                        });
                     }
                 });
                 $("#frmLab").on("submit", function(event) {
@@ -1337,8 +1356,9 @@
                                         customClass: {
                                             confirmButton: "btn btn-primary"
                                         }
-                                    }).then(function() {                                       
-                                        window.location.href = "{{ route('penunjang.detail', [$rawat->id, $jenis]) }}";
+                                    }).then(function() {
+                                        window.location.href =
+                                            "{{ route('penunjang.detail', [$rawat->id, $jenis]) }}";
                                     });
                                 } else {
                                     Swal.fire({
