@@ -308,6 +308,7 @@
                                                     <th rowspan="2">Jumlah</th>
                                                     <th rowspan="2" width=100>Pemberian</th>
                                                     <th rowspan="2" width=100>Kronis</th>
+                                                    <th rowspan="2" width=100>Pribadi</th>
                                                     <th rowspan="2">Dosis / Takaran Obat / Catatan</th>
                                                     <th rowspan="2">Jenis Obat</th>
                                                 </tr>
@@ -356,13 +357,19 @@
                                                                 <td>
                                                                     <input type="text"
                                                                         name="pemberian[{{ $val->idresep }}]"
-                                                                        value="{{ isset($val->diberikan) ? $val->diberikan : '' }}"
+                                                                        value="{{ isset($val->diberikan) ? $val->diberikan : '0' }}"
                                                                         class="form-control form-control-sm">
                                                                 </td>
                                                                 <td>
                                                                     <input type="text"
                                                                         name="kronis[{{ $val->idresep }}]"
-                                                                        value="{{ isset($val->kronis) ? $val->kronis : '' }}"
+                                                                        value="{{ isset($val->kronis) ? $val->kronis : '0' }}"
+                                                                        class="form-control form-control-sm">
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text"
+                                                                        name="pribadi[{{ $val->idresep }}]"
+                                                                        value="{{ isset($val->pribadi) ? $val->pribadi : '0' }}"
                                                                         class="form-control form-control-sm">
                                                                 </td>
                                                                 <td class="text-center">
@@ -490,6 +497,7 @@
                                                         @foreach ($obat_detail as $od)
                                                             <li>{{ $od->nama_obat }}
                                                                 {{ $od->idbayar == 3 ? '(Kronis)' : '' }}
+                                                                {{ $od->idbayar == 1 ? '(Pribadi)' : '' }}
                                                                 ({{ $od->qty }})
                                                             </li>
                                                         @endforeach

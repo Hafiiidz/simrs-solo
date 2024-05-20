@@ -51,12 +51,13 @@ class FarmasiController extends Controller
 
     public function updateResep(Request $request)
     {
-        
+        // return $request->all();
     //    return $request->idantrian;
         // return $select_resep;
         $obat_non_racik = 0;
         $obat_racikan = 0;
         $hitung_kronis = 0;
+        $hitung_pribadi = 0;
         if(isset($request->idresep)){
             $select_resep = DB::table('demo_resep_dokter')->where('id', $request->idresep)->first();
             if($select_resep->jenis == 'Racik'){
@@ -184,18 +185,21 @@ class FarmasiController extends Controller
                 $select_resep_non = DB::table('demo_resep_dokter')->where('id', $non_racik)->update([
                     'diberikan'=>$request->pemberian[$non_racik],
                     'kronis'=>$request->kronis[$non_racik],
+                    'pribadi'=>$request->pribadi[$non_racik],
                     'idantrian'=>$request->idantrian
                 ]);
                 
                 $rd = DB::table('demo_resep_dokter')->where('id', $non_racik)->first();
                 $hitung_kronis += $rd?->kronis;
+                $hitung_pribadi += $rd?->pribadi;
                 // if($rd)
                 $non_racikan[] = [
                     'obat'=>$rd->idobat,
                     'takaran'=>$rd->takaran,
                     'jumlah'=>$rd->jumlah,
                     'diberikan'=>$rd->diberikan,
-                    'kronis'=>$rd->kronis,
+                    'kronis'=>$rd?->kronis,
+                    'pribadi'=>$rd?->pribadi,
                     'dosis'=>$rd->dosis,
                     'signa'=>$rd->signa,
                     'diminum'=>$rd->diminum,
@@ -216,6 +220,16 @@ class FarmasiController extends Controller
                     'kronis' => null,
                 ]);
             }
+
+            if($hitung_pribadi > 0){
+                AntrianFarmasi::where('id', $request->idantrian)->update([
+                    'pribadi' => 1,
+                ]);
+            }else{
+                AntrianFarmasi::where('id', $request->idantrian)->update([
+                    'pribadi' => null,
+                ]);
+            }
             AntrianFarmasi::where('id', $request->idantrian)->update([
                 'obat' => json_encode($non_racikan),
                 'update'=>1,
@@ -226,6 +240,8 @@ class FarmasiController extends Controller
         // return $request->all();
 
         $total_obat = 0;
+        $total_pribadi = 0;
+        $pribadi = 0;
         $total_kronis = 0;
         $kronis = 0;
         $total_obat_racikan = 0;
@@ -235,9 +251,20 @@ class FarmasiController extends Controller
             $obat = Obat::find($non->obat);
             if($non->jenis != 1){
                 $total_obat += $obat->harga_beli * $non->diberikan;
+                if($non->pribadi == null){
+                    $total_pribadi += 0;
+                }else{
+                    $total_pribadi += $obat->harga_jual * $non->pribadi + 3000;
+                }
+                
                 $total_kronis += $obat->harga_beli *$non->kronis;
             }else{
                 $total_obat += $obat->harga_jual * $non->diberikan + 3000;
+                if($non->pribadi == null){
+                    $total_pribadi += 0;
+                }else{
+                    $total_pribadi += $obat->harga_jual * $non->pribadi + 3000;
+                }
                 $total_kronis += $obat->harga_beli *$non->kronis;
             }           
 
@@ -258,8 +285,10 @@ class FarmasiController extends Controller
 
         return response()->json([
             'status' => 'true',
-            'total' =>  VclaimHelper::IndoCurr($total_obat_racikan + $total_obat),
-            'kronis' => $total_kronis
+            'total' =>  VclaimHelper::IndoCurr($total_obat_racikan + $total_obat + $total_kronis + $total_pribadi),
+            'kronis' => VclaimHelper::IndoCurr($total_kronis),
+            'pribadi' => VclaimHelper::IndoCurr($total_pribadi),
+            'total_obat' =>VclaimHelper::IndoCurr(  $total_obat),
         ]);
     }
 
@@ -316,7 +345,7 @@ class FarmasiController extends Controller
                         $total_obat += $obat->harga_jual * $to->kronis;
                         $harga = $obat->harga_jual;
                     }
-                    // for($i=1; $i<=$to->kronis; $i++){
+                    for($i=1; $i<=$to->kronis; $i++){
                         DB::table('obat_transaksi_detail')->insert([
                             'idtrx' => $obat_transaksi->id,
                             'idtransaksi' => $transaksi?->id,
@@ -333,7 +362,30 @@ class FarmasiController extends Controller
                             'idbayar' =>3,
                             'no_stok'=>1,
                         ]);
-                    // }
+                    }
+                }
+                if($to->pribadi > 0){
+                        $tuslah = 3000;
+                        $total_obat += $obat->harga_jual * $to->pribadi;
+                        $harga = $obat->harga_jual;
+                    for($i=1; $i<=$to->pribadi; $i++){
+                        DB::table('obat_transaksi_detail')->insert([
+                            'idtrx' => $obat_transaksi->id,
+                            'idtransaksi' => $transaksi?->id,
+                            'nama_obat' => $obat->nama_obat,
+                            'idobat' => $to->obat,
+                            'qty' => $to->pribadi,
+                            'harga' => $harga,
+                            'signa' => $to->signa,
+                            'tuslah'=>$tuslah,
+                            'dosis'=> $to->dosis,
+                            'diminum'=> $to->diminum,
+                            'takaran'=> $to->takaran,
+                            'total' => $harga * $to->pribadi,
+                            'idbayar' =>1,
+                            'no_stok'=>1,
+                        ]);
+                    }
                 }
                
                 DB::table('obat_transaksi_detail')->insert([
@@ -354,12 +406,12 @@ class FarmasiController extends Controller
                 ]);
             }
         }
-
-        if($antrian->racikan != null || $antrian->racikan != ''){
-            $obat_transaksi_save = ObatTransaksi::find($obat_transaksi->id);
-            $obat_transaksi_save->jumlahracik = count(json_decode($antrian->racikan));
-            $obat_transaksi_save->jasa_racik = 10000 * count(json_decode($antrian->racikan));            
-            $obat_transaksi_save->save();
+        // return $total_obat ;
+        if($antrian->racikan != null || $antrian->racikan != '' || $antrian->racikan != []){
+            $obat_transaksi_save2 = ObatTransaksi::find($obat_transaksi->id);
+            $obat_transaksi_save2->jumlahracik = count(json_decode($antrian->racikan));
+            $obat_transaksi_save2->jasa_racik = 10000 * count(json_decode($antrian->racikan));            
+            $obat_transaksi_save2->save();
 
             foreach (json_decode($antrian->racikan) as $to) {
                 #create obat_racik
@@ -386,7 +438,7 @@ class FarmasiController extends Controller
                             $harga = $obat->harga_jual;
                         }
                         
-                        // for($i=1; $i<=$ob->kronis; $i++){
+                        for($i=1; $i<=$ob->kronis; $i++){
                             DB::table('obat_transaksi_detail')->insert([
                                 'idtrx' => $obat_transaksi->id,
                                 'nama_obat' => $obat->nama_obat,
@@ -403,7 +455,7 @@ class FarmasiController extends Controller
                                 'idbayar' =>3,
                                 'no_stok'=>1,
                             ]);
-                        // }
+                        }
                     }
                     $obat = Obat::find($ob->obat);
                     if($to->jenis != 1){
@@ -446,7 +498,7 @@ class FarmasiController extends Controller
                 }
             }
         }
-        // return $total_obat;
+        // return $total_obat+ $total_obat_racikan;
 
         $obat_transaksi_save = ObatTransaksi::find($obat_transaksi->id);
         $obat_transaksi_save->total_harga = $total_obat + $total_obat_racikan;
@@ -629,7 +681,11 @@ class FarmasiController extends Controller
         $racik = DB::table('obat_racik')->where('idresep', $resep->id)->get();
         // dd($racik);
         $cek_kronis = DB::table('obat_transaksi_detail')->where('idbayar',3)->where('idtrx', $resep->id)->count();
-        $pdf = PDF::loadview('farmasi.cetak.faktur', compact('resep', 'rawat', 'pasien', 'detail_resep', 'cek_kronis','racik'));
+        $cek_pribadi = DB::table('obat_transaksi_detail')->where('idbayar',1)->where('idtrx', $resep->id)->count();
+        $no1=1;
+        $no2=2;
+        $no3=3;
+        $pdf = PDF::loadview('farmasi.cetak.faktur', compact('resep', 'rawat', 'pasien', 'detail_resep', 'cek_kronis','racik','cek_pribadi','no1','no2','no3'));
         $customPaper = array(0, 0, 323.15, 790.866);
         $pdf->setPaper($customPaper);
         return $pdf->stream();

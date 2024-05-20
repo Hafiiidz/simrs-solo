@@ -101,12 +101,12 @@
                                 $total = 0;
                             @endphp
                             @foreach ($detail_resep as $val)
-                                @if ($val->idbayar != 3)
+                                @if ($val->idbayar == 2)
                                     @php
                                         $total += $val->total;
                                     @endphp
                                     <tr class="border">
-                                        <td style="border: 1px solid black;" class="text-center">{{ $loop->iteration }}
+                                        <td style="border: 1px solid black;" class="text-center">{{ $no1++ }}
                                         </td>
                                         <td style="border: 1px solid black;">{{ $val->nama_obat }}</td>
                                         <td style="border: 1px solid black;" class="text-center">{{ $val->qty }}
@@ -142,6 +142,117 @@
             </div>
         </div>
     </div>
+    @if ($cek_pribadi > 0)
+        <div class="page_break"></div>
+        <div class="container">
+            <div class="row">
+                <table>
+                    <tr>
+                        <td rowspan="3"><img width="40" src="data:image/png;base64, {!! base64_encode(file_get_contents(public_path('image/logosiswanto.png'))) !!} ">
+                        </td>
+                        <td>FARMASI RSAU dr.SISWANTO</td>
+                    </tr>
+                    <tr>
+                        <td><i>JL Tentara Pelajar No 1, Malangjiwan, Colomadu</i></td>
+                    </tr>
+                    <tr>
+                        <td><i>Telepon 0271779112</i></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="row mt-2">
+                <p>Rincian Resep Kronis</p>
+            </div>
+            <div class="row mt-2">
+                <div class="table-responsive">
+                    <table class="table">
+                        <tr>
+                            <td>Nama Pasien</td>
+                            <td>:</td>
+                            <td>{{ $pasien->nama_pasien }}</td>
+                            <td>Usia</td>
+                            <td>:</td>
+                            <td>{{ $pasien->usia_tahun }}Th , {{ $pasien->usia_bulan }}Bln ,
+                                {{ $pasien->usia_hari }}Hr
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>No RM</td>
+                            <td>:</td>
+                            <td>{{ $pasien->no_rm }}</td>
+                            <td>Tgl Lahir</td>
+                            <td>:</td>
+                            <td>{{ $pasien->tgllahir }}</td>
+                        </tr>
+                        <tr>
+                            <td>No Resep</td>
+                            <td>:</td>
+                            <td>{{ $resep->kode_resep }}</td>
+                            <td>Dokter</td>
+                            <td>:</td>
+                            <td>{{ $rawat->dokter?->nama_dokter }}</td>
+                        </tr>
+                        <tr>
+                            <td>Tgl Resep</td>
+                            <td>:</td>
+                            <td>{{ $resep->tgl }}</td>
+                            <td>Poli/Ruangan</td>
+                            <td>:</td>
+                            <td>Poli {{ $rawat->poli?->poli }}</td>
+                        </tr>
+                    </table>
+                </div>
+                <hr>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr class="border">
+                                    <th style="border: 1px solid black;" class="text-center">No</th>
+                                    <th style="border: 1px solid black;" class="text-center">Nama Obat (Merk)</th>
+                                    <th style="border: 1px solid black;" class="text-center">Qty</th>
+                                    <th style="border: 1px solid black;" class="text-center">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $total_pribadi = 0;
+                                @endphp
+                                @foreach ($detail_resep as $val)
+                                    @if ($val->idbayar == 1)
+                                        @php
+                                            $total_pribadi += $val->total;
+                                        @endphp
+                                        <tr class="border">
+                                            <td style="border: 1px solid black;" class="text-center">
+                                                {{ $no2++ }}
+                                            </td>
+                                            <td style="border: 1px solid black;">{{ $val->nama_obat }}</td>
+                                            <td style="border: 1px solid black;" class="text-center">
+                                                {{ $val->qty }}
+                                            </td>
+                                            <td style="border: 1px solid black;" class="text-end">
+                                                Rp.{{ App\Helpers\VclaimHelper::IndoCurr($val->total) }}</td>
+                                        </tr>
+                                    @endif
+                                @endforeach
+
+                                <tr class="border">
+                                    <td style="border: 1px solid black;" colspan="3" class="text-end">Total Harga
+                                    </td>
+                                    <td style="border: 1px solid black;" class="text-end">
+                                        Rp.{{ App\Helpers\VclaimHelper::IndoCurr($total_pribadi) }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
     @if ($cek_kronis > 0)
         <div class="page_break"></div>
         <div class="container">
@@ -227,7 +338,7 @@
                                         @endphp
                                         <tr class="border">
                                             <td style="border: 1px solid black;" class="text-center">
-                                                {{ $loop->iteration }}
+                                                {{ $no3++ }}
                                             </td>
                                             <td style="border: 1px solid black;">{{ $val->nama_obat }}</td>
                                             <td style="border: 1px solid black;" class="text-center">
