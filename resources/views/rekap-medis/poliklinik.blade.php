@@ -468,6 +468,22 @@
                                                                                     class="spinner-border spinner-border-sm align-middle ms-2"></span>
                                                                             </span>
                                                                         </button>
+
+                                                                        @if ($rawat->idjenisrawat == 3)
+                                                                            @if (count($resep_dokter) > 0)
+                                                                                <button type="button" name="kirim_resep"
+                                                                                    id="kirim_resep"
+                                                                                    class="btn btn-success btn-sm">
+                                                                                    <span class="indicator-label">
+                                                                                        Kirim Resep
+                                                                                    </span>
+                                                                                    <span class="indicator-progress">
+                                                                                        Prossesing... <span
+                                                                                            class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                                                                    </span>
+                                                                                </button>
+                                                                            @endif
+                                                                        @endif
                                                                     </th>
                                                                 </tr>
                                                             </form>
@@ -706,7 +722,7 @@
                                                                 <td>{{ $rd->nama_obat }}</td>
                                                                 <td data-id="{{ $rd->id }}" width=100
                                                                     role="button" id="{{ $rd->id }}">
-                                                                   
+
                                                                     <input type="number"
                                                                         class="form-control number-jumlah"
                                                                         data-id="{{ $rd->id }}"{{ $rawat->status == 4 ? 'disabled' : '' }}
@@ -2723,7 +2739,7 @@
                                 '',
                                 'success'
                             )
-                            
+
                         }
                     }
                 })

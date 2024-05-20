@@ -532,7 +532,7 @@
                                                                                 {{ $val->takaran }} ( {{ $val->signa }}
                                                                                 )
                                                                                 {{ $val->diminum . ' makan' }}
-                                                                                @if(isset($val->dtd))
+                                                                                @if (isset($val->dtd))
                                                                                     <b>{!! $val->dtd == 1 ? '<b> - (DTD)</b>' : '' !!}</b>
                                                                                 @endif
                                                                             </td>
@@ -632,13 +632,19 @@
                                                                             <td>
                                                                                 <input type="text"
                                                                                     name="pemberian[{{ $val->idresep }}]"
-                                                                                    value="{{ isset($val->diberikan) ? $val->diberikan : '' }}"
+                                                                                    value="{{ isset($val->diberikan) ? $val->diberikan : '0' }}"
                                                                                     class="form-control form-control-sm">
                                                                             </td>
                                                                             <td>
                                                                                 <input type="text"
                                                                                     name="kronis[{{ $val->idresep }}]"
-                                                                                    value="{{ isset($val->kronis) ? $val->kronis : '' }}"
+                                                                                    value="{{ isset($val->kronis) ? $val->kronis : '0' }}"
+                                                                                    class="form-control form-control-sm">
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="text"
+                                                                                    name="pribadi[{{ $val->idresep }}]"
+                                                                                    value="{{ isset($val->pribadi) ? $val->pribadi : '0' }}"
                                                                                     class="form-control form-control-sm">
                                                                             </td>
                                                                             <td class="text-center">
