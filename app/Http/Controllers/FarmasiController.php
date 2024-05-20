@@ -251,7 +251,7 @@ class FarmasiController extends Controller
             $obat = Obat::find($non->obat);
             if($non->jenis != 1){
                 $total_obat += $obat->harga_beli * $non->diberikan;
-                if($non->pribadi == null){
+                if($non->pribadi == null || $non->pribadi == 0){
                     $total_pribadi += 0;
                 }else{
                     $total_pribadi += $obat->harga_jual * $non->pribadi + 3000;
@@ -260,7 +260,7 @@ class FarmasiController extends Controller
                 $total_kronis += $obat->harga_beli *$non->kronis;
             }else{
                 $total_obat += $obat->harga_jual * $non->diberikan + 3000;
-                if($non->pribadi == null){
+                if($non->pribadi == null || $non->pribadi == 0){
                     $total_pribadi += 0;
                 }else{
                     $total_pribadi += $obat->harga_jual * $non->pribadi + 3000;
