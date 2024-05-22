@@ -345,7 +345,7 @@ class FarmasiController extends Controller
                         $total_obat += $obat->harga_jual * $to->kronis;
                         $harga = $obat->harga_jual;
                     }
-                    for($i=1; $i<=$to->kronis; $i++){
+                    // for($i=1; $i<=$to->kronis; $i++){
                         DB::table('obat_transaksi_detail')->insert([
                             'idtrx' => $obat_transaksi->id,
                             'idtransaksi' => $transaksi?->id,
@@ -362,13 +362,13 @@ class FarmasiController extends Controller
                             'idbayar' =>3,
                             'no_stok'=>1,
                         ]);
-                    }
+                    // }
                 }
                 if($to->pribadi > 0){
                         $tuslah = 3000;
                         $total_obat += $obat->harga_jual * $to->pribadi;
                         $harga = $obat->harga_jual;
-                    for($i=1; $i<=$to->pribadi; $i++){
+                    // for($i=1; $i<=$to->pribadi; $i++){
                         DB::table('obat_transaksi_detail')->insert([
                             'idtrx' => $obat_transaksi->id,
                             'idtransaksi' => $transaksi?->id,
@@ -385,7 +385,7 @@ class FarmasiController extends Controller
                             'idbayar' =>1,
                             'no_stok'=>1,
                         ]);
-                    }
+                    // }
                 }
                
                 DB::table('obat_transaksi_detail')->insert([
@@ -438,7 +438,7 @@ class FarmasiController extends Controller
                             $harga = $obat->harga_jual;
                         }
                         
-                        for($i=1; $i<=$ob->kronis; $i++){
+                        // for($i=1; $i<=$ob->kronis; $i++){
                             DB::table('obat_transaksi_detail')->insert([
                                 'idtrx' => $obat_transaksi->id,
                                 'nama_obat' => $obat->nama_obat,
@@ -455,7 +455,7 @@ class FarmasiController extends Controller
                                 'idbayar' =>3,
                                 'no_stok'=>1,
                             ]);
-                        }
+                        // }
                     }
                     $obat = Obat::find($ob->obat);
                     if($to->jenis != 1){
