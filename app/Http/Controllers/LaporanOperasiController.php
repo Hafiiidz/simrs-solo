@@ -23,7 +23,7 @@ class LaporanOperasiController extends Controller
 {
     public function index()
     {
-        $data = LaporanOperasi::with('rawat','rawat.pasien');
+        $data = LaporanOperasi::with('rawat','rawat.pasien')->orderBy('tgl_operasi','desc');
 
         if (request()->ajax()) {
 
@@ -44,6 +44,7 @@ class LaporanOperasiController extends Controller
                 return '<span class="badge badge-secondary">'. $data->status .'</span<';
             })
             ->rawColumns(['opsi','tanggal','status','no_rm'])
+            
             ->addIndexColumn()
             ->make();
 
