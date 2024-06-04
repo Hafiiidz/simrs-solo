@@ -101,7 +101,7 @@ class RekapMedisController extends Controller
             $rekap_medis->bpjs = 1;
         } else {
             $rekap_medis->dokter = 1;
-            $resep_dokter = DB::table('demo_resep_dokter')->where('idrawat', $rawat->id)->get();
+            $resep_dokter = DB::table('demo_resep_dokter')->where('idrawat', "$rawat->id")->get();
             // if($rekap_medis->dokter == null){
                 if (count($resep_dokter) > 0) {   
                     
@@ -176,10 +176,10 @@ class RekapMedisController extends Controller
                         }
                     }
                     // return $racikan;
-                    $cek_antrian = DB::table('demo_antrian_resep')->where('idrawat', $rawat->id)->where('jenis_rawat', $rawat->idjenisrawat)->first();
+                    $cek_antrian = DB::table('demo_antrian_resep')->where('idrawat', "$rawat->id")->where('jenis_rawat', $rawat->idjenisrawat)->first();
                     if($cek_antrian){
                         $no_antrian = DB::table('demo_antrian_resep')->whereDate('created_at', Carbon::today())->where('jenis_rawat', $rawat->idjenisrawat)->count();
-                        $antrian = DB::table('demo_antrian_resep')->where('idrawat', $rawat->id)->where('status_antrian', 'Antrian')->update([
+                        $antrian = DB::table('demo_antrian_resep')->where('idrawat', "$rawat->id")->where('status_antrian', 'Antrian')->update([
                             'racikan' => json_encode($racikan),
                             'obat' => json_encode($non_racik),
                             'updated_at' => now(),
@@ -199,7 +199,7 @@ class RekapMedisController extends Controller
                             'created_at' => now(),
                             'updated_at' => now(),
                         ]);
-                        DB::table('demo_resep_dokter')->where('idrawat', $rawat->id)->whereNull('idantrian')->update([
+                        DB::table('demo_resep_dokter')->where('idrawat', "$rawat->id")->whereNull('idantrian')->update([
                             'idantrian'=>$antrian
                         ]);
                     }
@@ -325,7 +325,7 @@ class RekapMedisController extends Controller
                     // return $rekap_medis->tindakan;
                     foreach (json_decode($rekap_medis->tindakan) as $tindakan) {
                         // $jumlah += 2;
-                        // $cek_tindakan = DB::table('transaksi_detail_rinci')->where('idrawat', $rawat->id)->where('idtarif', $tindakan->tindakan)->first();
+                        // $cek_tindakan = DB::table('transaksi_detail_rinci')->where('idrawat', "$rawat->id")->where('idtarif', $tindakan->tindakan)->first();
                         // if(!$cek_tindakan){
                             $tarif = Tarif::find($tindakan->tindakan);
                             for ($x = 1; $x <= $tindakan->jumlah; $x++) {
@@ -476,7 +476,7 @@ class RekapMedisController extends Controller
     {
         // $rawat = DB::table('rawat')->where('id', $id_rawat)->first();
         $rawat = Rawat::find($id_rawat);
-        $resume_medis = RekapMedis::with('kategori')->where('idrawat', $rawat->id)->first();
+        $resume_medis = RekapMedis::with('kategori')->where('idrawat', "$rawat->id")->first();
         // dd($resume_medis);
         $resume_detail = [];
         if ($resume_medis) {
@@ -484,7 +484,7 @@ class RekapMedisController extends Controller
         }
         $pasien = Pasien::with('alamat')->where('no_rm', $rawat->no_rm)->first();
         if (request()->ajax()) {
-            $rekap = RekapMedis::with('kategori')->where('idrawat', '!=', $rawat->id)->where('idpasien', $pasien->id);
+            $rekap = RekapMedis::with('kategori')->where('idrawat', '!=', "$rawat->id")->where('idpasien', $pasien->id);
 
             return DataTables::of($rekap)
                 ->addColumn('kategori', function (RekapMedis $rekap) {

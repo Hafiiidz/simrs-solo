@@ -21,9 +21,9 @@ use Svg\Tag\Rect;
 class DetailRekapMedisController extends Controller
 {
     public function post_sbar(Request $request,$id){
-        $cek_sbar = DB::table('demo_sbar')->where('idrawat',$id)->first();
+        $cek_sbar = DB::table('demo_sbar')->where('idrawat',"$id")->first();
         if($cek_sbar){
-            $sbar = DB::table('demo_sbar')->where('idrawat',$id)->update([
+            $sbar = DB::table('demo_sbar')->where('idrawat',"$id")->update([
                 'situation' => $request->situation,
                 'background' => $request->background,
                 'assesmen' => $request->assesment,
@@ -159,7 +159,7 @@ class DetailRekapMedisController extends Controller
         $rekap->idrawat = $rekap_medis->idrawat;
         $rekap->save();
 
-        return redirect()->route('rekam-medis-poli', $rekap_medis->idrawat)->with('berhasil', 'Data Rekam Medis Pasien Berhasil Di Simpan!');
+        return redirect()->route('rekam-medis-poli', "$rekap_medis->idrawat")->with('berhasil', 'Data Rekam Medis Pasien Berhasil Di Simpan!');
     }
 
     public function show($id)
