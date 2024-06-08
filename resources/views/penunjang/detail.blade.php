@@ -440,6 +440,7 @@
                                                             <!--begin::Form group-->
                                                             <div class="form-group">
                                                                 <div data-repeater-list="radiologi">
+                                                                    
                                                                     @if ($penunjang->pemeriksaan_penunjang != 'null')
                                                                         @foreach (json_decode($penunjang->pemeriksaan_penunjang) as $val)
                                                                             <div data-repeater-item>
@@ -539,6 +540,13 @@
                                                             <button class="btn-selesai btn btn-sm mb-3 btn-primary"
                                                                 data-id="{{ $pl->idrawat }}">Selesai</button>
                                                             {{-- @endif --}}
+                                                            <button type="button" data-bs-toggle="modal"
+                                                                    data-bs-target="#print_rad_kwitasi{{ $pl->id }}"
+                                                                    class="btn mb-3 btn-warning btn-sm">Kwitansi</button>
+                                                                <button type="button" data-bs-toggle="modal"
+                                                                    data-bs-target="#print_rad_kwitasi_kecil{{ $pl->id }}"
+                                                                    class="btn mb-3 btn-info btn-sm">Kwitansi
+                                                                    Kecil</button>
 
                                                         </td>
                                                     </tr>
@@ -987,6 +995,74 @@
             @endforeach
         @endif
 
+    @endif
+
+    @if ($jenis == 'Radiologi')
+    @if (count($pemeriksaan_radiologi))
+            @foreach ($pemeriksaan_radiologi as $pr)
+    <div class="modal fade" tabindex="-1" id="print_rad_kwitasi{{ $pr->id }}">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Print Kwitansi</h3>
+
+                    <!--begin::Close-->
+                    <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                        aria-label="Close">
+                        <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span
+                                class="path2"></span></i>
+                    </div>
+                    <!--end::Close-->
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-10">
+                        <iframe
+                            src="{{ config('app.url_simrs_lama') }}/radiologi/kwitansi?id={{ $pr->id }}"
+                            width="100%" height="600"></iframe>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {{-- modal kwitansi kecil --}}
+    <div class="modal fade" tabindex="-1" id="print_rad_kwitasi_kecil{{ $pr->id }}">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Print Kwitansi Kecil</h3>
+
+                    <!--begin::Close-->
+                    <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                        aria-label="Close">
+                        <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span
+                                class="path2"></span></i>
+                    </div>
+                    <!--end::Close-->
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-10">
+                        <iframe
+                            src="{{ config('app.url_simrs_lama') }}/radiologi/kwitansi-dua?id={{ $pr->id }}"
+                            width="100%" height="600"></iframe>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    @endforeach
+    @endif
     @endif
 @endsection
 @section('js')
