@@ -57,10 +57,19 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">
-                            <h5 class="card-title">Data Kategori Rekam Medis Pasien</h5>
+                            <h5 class="card-title">Data Rekam Medis Pasien</h5>
                         </div>
                         <div class="card-toolbar">
                             <a href="{{ route('poliklinik') }}" class="btn btn-sm btn-secondary me-2">Kembali</a>
+                            @if ($rawat->status == 1 || $rawat->status == 3)
+                                @if (!$cek_icu)
+                                <button type="button" class="btn btn-danger me-2" data-bs-toggle="modal"
+                                data-bs-target="#kt_modal_2">
+                                ICU
+                                </button>
+                                @endif
+                                
+                            @endif
                             @if ($resume_medis)
                                 <a id="confirmButton" class="btn btn-sm btn-light-primary" href="#">Update
                                     Template</a>
@@ -1939,7 +1948,54 @@
             </div>
         </div>
     </div>
+    <div class="modal bg-body fade" tabindex="-1" id="kt_modal_2">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content shadow-none">
+                <div class="modal-header">
+                    <h5 class="modal-title">Kirim ICU</h5>
 
+                    <!--begin::Close-->
+                    <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                        aria-label="Close">
+                        <i class="ki-duotone ki-cross fs-2x"><span class="path1"></span><span class="path2"></span></i>
+                    </div>
+                    <!--end::Close-->
+                </div>
+
+                <div class="modal-body">
+                    @if ($ruangan_icu > 0)
+                    <form action="{{ route('post.icu') }}" method="post" id="form-icu">
+                        @csrf
+                        <input type="hidden" name="idrawat" value="{{ $rawat->id }}" id="">
+                        <div class="fw-row">
+                            <label for="">Tgl Kirim</label>
+                            <input type="text" disabled value="{{ date('Y-m-d H:i:s') }}" class="form-control">
+                        </div>
+                        <div class="fw-row">
+                            <label for="">Catatan</label>
+                            <textarea name="catatan" class="form-control" id="" cols="30" rows="10"></textarea>
+                        </div>
+                    </form>
+                    @else
+                    <div class="alert alert-danger d-flex align-items-center p-5 mb-10">
+                        <i class="ki-duotone ki-shield-tick fs-2hx text-danger me-4"><span class="path1"></span><span class="path2"></span></i>                    <div class="d-flex flex-column">
+                            <h4 class="mb-1 text-danger">ICU PENUH</h4>
+                            <span>Bed dirungan ICU tidak tersedia untuk saat ini </span>
+                        </div>
+                    </div>
+                    @endif
+                    
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    @if ($ruangan_icu > 0)
+                    <button type="button" class="btn btn-primary" id="btn-kirim-icu">Kirim</button>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('js')
     <script src="{{ asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
@@ -2770,5 +2826,94 @@
                 }
             })
         })
+
+        // Define form element
+        @if ($ruangan_icu > 0)
+        const form = document.getElementById('form-icu');
+
+        // Init form validation rules. For more info check the FormValidation plugin's official documentation:https://formvalidation.io/
+        var validator = FormValidation.formValidation(
+            form, {
+                fields: {
+                    'catatan': {
+                        validators: {
+                            notEmpty: {
+                                message: 'Catatan harus di isi'
+                            }
+                        }
+                    },
+                },
+
+                plugins: {
+                    trigger: new FormValidation.plugins.Trigger(),
+                    bootstrap: new FormValidation.plugins.Bootstrap5({
+                        rowSelector: '.fw-row',
+                        eleInvalidClass: '',
+                        eleValidClass: ''
+                    })
+                }
+            }
+        );
+
+        // Submit button handler
+        const submitButton = document.getElementById('btn-kirim-icu');
+        submitButton.addEventListener('click', function(e) {
+            // Prevent default button action
+            e.preventDefault();
+
+            // Validate form before submit
+            if (validator) {
+                validator.validate().then(function(status) {
+                    console.log('validated!');
+
+                    if (status == 'Valid') {
+                        // Show loading indication
+
+
+                        Swal.fire({
+                            title: 'Kirim ICU',
+                            text: "Apakah Anda yakin akan mengirim ke ICU ?",
+                            icon: 'info',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Ya',
+                            cancelButtonText: 'Tidak'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $.blockUI({
+                                    css: {
+                                        border: 'none',
+                                        padding: '15px',
+                                        backgroundColor: '#000',
+                                        '-webkit-border-radius': '10px',
+                                        '-moz-border-radius': '10px',
+                                        opacity: .5,
+                                        color: '#fff',
+                                        fontSize: '16px'
+                                    },
+                                    message: "<img src='{{ asset('assets/img/loading.gif') }}' width='10%' height='auto'> Tunggu . . .",
+                                    baseZ: 9000,
+                                });
+                                submitButton.setAttribute('data-kt-indicator', 'on');
+
+                                // Disable button to avoid multiple click
+                                submitButton.disabled = true;
+
+                                // Simulate form submission. For more info check the plugin's official documentation: https://sweetalert2.github.io/
+                                setTimeout(function() {
+                                    form.submit();
+                                    // Submit form
+                                }, 2000);
+
+                            }
+                        });
+
+
+                    }
+                });
+            }
+        });
+        @endif
     </script>
 @endsection

@@ -454,6 +454,8 @@ Route::prefix('/rawat-jalan')->middleware('auth')->group(function () {
         Route::post('/update-resep/{id}', [RekapMedisController::class, 'post_resep_update_non_racikan'])->name('update-resep-obat');
         Route::post('/post-upload-pengantar/{id}', [RekapMedisController::class, 'upload_file_pengatar'])->name('post.upload-pengantar');
         Route::post('/post-delete-pengantar', [RekapMedisController::class, 'delete_file_pengatar'])->name('post.delete-pengantar');
+        Route::post('/post-icu', [RekapMedisController::class, 'post_icu'])->name('post.icu');
+        Route::post('/post-icu-keluar', [RekapMedisController::class, 'post_icu_keluar'])->name('post.icu-keluar');
     });
 });
 Route::prefix('/rawat-inap')->middleware('auth')->group(function () {

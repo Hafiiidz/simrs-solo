@@ -2,27 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\VclaimHelper;
+use App\Models\Rawat;
+use App\Models\Tarif;
 use App\Models\Dokter;
 use App\Models\LabHasil;
 use App\Models\Obat\Obat;
-use App\Models\ObatTransaksi;
+use App\Models\TindakLanjut;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Carbon;
-use Yajra\DataTables\Facades\DataTables;
-use App\Models\RekapMedis\RekapMedis;
-use App\Models\RekapMedis\DetailRekapMedis;
-use App\Models\RekapMedis\Kategori;
+use Termwind\Components\Raw;
+use App\Helpers\VclaimHelper;
+use App\Models\ObatTransaksi;
 use App\Models\Pasien\Pasien;
 use App\Models\RadiologiHasil;
-use App\Models\Rawat;
+use Illuminate\Support\Carbon;
 use App\Models\SoapRajalTindakan;
-use App\Models\Tarif;
-use App\Models\TindakLanjut;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use App\Models\RekapMedis\Kategori;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
-use Termwind\Components\Raw;
+use App\Models\RekapMedis\RekapMedis;
+use Yajra\DataTables\Facades\DataTables;
+use App\Models\RekapMedis\DetailRekapMedis;
+use Exception;
 
 class RekapMedisController extends Controller
 {
@@ -472,6 +474,167 @@ class RekapMedisController extends Controller
         return redirect()->back()->with('berhasil', 'Template Berhasil Disalin');
     }
 
+    #post icu
+    public function post_icu_keluar(Request $request){
+        // return $request->all();
+        if($request->keluar == 'Kembali'){
+            $cek_ruangan_sebelumnya = DB::table('rawat_ruangan')->where('idrawat',$request->idrawat)->where('status',2)->orderBy('tgl_keluar','desc')->first();
+            $rawat = Rawat::where('id',$request->idrawat)->first();
+            if($cek_ruangan_sebelumnya){
+                DB::table('rawat_ruangan')->where('idrawat',$request->idrawat)->where('status',1)->update([
+                    'status'=>2,
+                    'tgl_keluar'=>now()
+                ]);
+                DB::table('ruangan_bed')->where('id',$rawat->idbed)->update([
+                    'terisi'=>0,
+                ]);
+                // $new_ruangan = $cek_ruangan_sebelumnya->replicate();
+                // $new_ruangan->tgl_keluar = null;
+                // $new_ruangan->tgl_masuk = now();
+                // $new_ruangan->status = 1;
+                // $new_ruangan->save();
+                $cek_ruangan_array = (array) $cek_ruangan_sebelumnya;
+
+                // Remove the 'id' field from the array since it is the primary key
+                unset($cek_ruangan_array['id']);
+            
+                // Update the necessary fields
+                $cek_ruangan_array['tgl_keluar'] = null;
+                $cek_ruangan_array['tgl_masuk'] = now();
+                $cek_ruangan_array['status'] = 1;
+                $cek_ruangan_array['asal'] = 'Rawat Inap';
+            
+                // Insert the new room record into the database
+                DB::table('rawat_ruangan')->insert($cek_ruangan_array);
+
+                $rawat->idbed = $cek_ruangan_sebelumnya->idbed;
+                $rawat->idruangan = $cek_ruangan_sebelumnya->idruangan;
+                $rawat->icu = 0;
+                $rawat->save();
+               return redirect(route('index.rawat-inap'))->with('berhasil','Pasien Kembali Ke Ruangan Rawat');
+            }else{
+                DB::table('rawat_ruangan')->where('idrawat',$request->idrawat)->where('status',1)->update([
+                    'status'=>2,
+                    'tgl_keluar'=>now()
+                ]);
+                DB::table('ruangan_bed')->where('id',$rawat->idbed)->update([
+                    'terisi'=>0,
+                ]);
+                $rawat->idbed = 0;
+                $rawat->idruangan = 1;
+                $rawat->icu = 0;
+                $rawat->save();
+                return redirect(route('index.rawat-inap'))->with('berhasil','Pasien belum mendapat ruangan rawat silahkan daftarkan ke admisi untuk mendapatkan ruangan');
+            }
+        }else{
+
+        }
+    }
+    public function post_icu(Request $request){
+        // return $request->all();
+       
+        DB::beginTransaction();
+        try {           
+            $rawat = Rawat::where('id',$request->idrawat)->first();
+            $cari_kunjungan = DB::table('rawat_kunjungan')->where('idkunjungan',$rawat->idkunjungan)->first();
+            // return $cari_kunjungan;
+            if($rawat->idjenisrawat != 2){
+                $new_rawat_icu = $rawat->replicate();
+                $new_rawat_icu->idrawat = 'ICU'.date('Ymd').rand(10000, 99999); 
+                $new_rawat_icu->idruangan = 23;
+                $new_rawat_icu->idjenisrawat = 2;
+                $new_rawat_icu->icu = 1;
+                $new_rawat_icu->status = 2;
+                $new_rawat_icu->tglmasuk = now();
+                
+
+                $cari_bed = DB::table('ruangan_bed')->where('idruangan',23)->where('terisi',0)->where('status',1)->first();
+                if($cari_bed){
+                    DB::table('ruangan_bed')->where('id',$cari_bed->id)->update([
+                        'terisi'=>1,
+                    ]);
+
+                    $new_rawat_icu->idbed = $cari_bed->id;
+                }
+                $data = [
+                    'idrawat'=>$new_rawat_icu->id,
+                    'tglmasuk'=>date('Y-m-d H:i:s'),
+                    'catatan_masuk'=>$request->catatan,
+                ];
+                
+                DB::table('demo_rawat_icu')->insert($data);
+                
+
+                DB::table('rawat_ruangan')->insert([
+                    'idkunjungan'=>$cari_kunjungan->id,
+                    'idrawat'=>$new_rawat_icu->id,
+                    'no_rm'=>$rawat->no_rm,
+                    'idruangan'=>23,
+                    'idbayar'=>$rawat->idbayar,
+                    'tgl_masuk'=>now(),
+                    'status'=>1,
+                    'asal'=>'ICU',
+                    'idbed'=>$cari_bed?->id,
+                    'idkelas'=>3,
+                ]);
+                $new_rawat_icu->idbed = $cari_bed?->id;
+                $new_rawat_icu->save();
+            }else{
+                // return $rawat;
+                $cari_rawat_ruangan = DB::table('rawat_ruangan')->where('idrawat',$rawat->id)->where('status',1)->first();
+                $cari_bed = DB::table('ruangan_bed')->where('idruangan',23)->where('terisi',0)->where('status',1)->first();
+                // return $cari_bed;
+                if($cari_rawat_ruangan){
+                    DB::table('rawat_ruangan')->where('id',$cari_rawat_ruangan->id)->update([
+                        'status'=>2,
+                        'tgl_keluar'=>now(),
+                    ]);
+                }
+
+                
+                if($cari_bed){
+                    DB::table('ruangan_bed')->where('id',$cari_bed->id)->update([
+                        'terisi'=>1,
+                    ]);
+                }
+                DB::table('rawat_ruangan')->insert([
+                    'idkunjungan'=>$cari_kunjungan->id,
+                    'idrawat'=>$rawat->id,
+                    'no_rm'=>$rawat->no_rm,
+                    'idruangan'=>23,
+                    'idbayar'=>$rawat->idbayar,
+                    'tgl_masuk'=>now(),
+                    'status'=>1,
+                    'asal'=>'ICU',
+                    'idbed'=>$cari_bed?->id,
+                    'idkelas'=>$rawat->idkelas,
+                ]);
+                // $rawat->icu = 1;
+                // $rawat->save();
+                Rawat::where('id',$request->idrawat)->update([
+                    'icu'=>1,
+                    'idbed'=>$cari_bed->id,
+                    'idruangan'=>23
+                ]);
+                $data = [
+                    'idrawat'=>$request->idrawat,
+                    'tglmasuk'=>date('Y-m-d H:i:s'),
+                    'catatan_masuk'=>$request->catatan,
+                ];
+                DB::table('demo_rawat_icu')->insert($data);
+                DB::commit();
+                return redirect(route('index.rawat-inap'))->with('berhasil','Pasien tercatat sebagai pasien ICU');
+
+            }
+            
+
+            DB::commit();
+            return back()->with('berhasil','Pasien tercatat sebagai pasien ICU');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->with('gagal', $e->getMessage());
+        }
+    }
     public function index_poli($id_rawat)
     {
         // $rawat = DB::table('rawat')->where('id', $id_rawat)->first();
@@ -531,9 +694,12 @@ class RekapMedisController extends Controller
         ->groupBy('demo_detail_rekap_medis.diagnosa')
         ->limit(10)
         ->get();
+
+        $cek_icu = DB::table('demo_rawat_icu')->where('idrawat',$rawat->id)->whereNull('tglkeluar')->first();
+        $ruangan_icu = DB::table('ruangan_bed')->where('idruangan',23)->where('status',1)->where('terisi',0)->count();
         // dd($get_template);
         // dd($riwayat_berobat);
-        return view('rekap-medis.poliklinik', compact('pasien', 'rawat', 'resume_medis', 'resume_detail', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'soap_tindakan', 'fisio', 'pemeriksaan_lab', 'pemeriksaan_radiologi', 'riwayat_berobat', 'pemeriksaan_luar', 'resep_dokter', 'resep','get_template','penunjang','fisio_tindakan','tarif_all'));
+        return view('rekap-medis.poliklinik', compact('pasien', 'rawat', 'resume_medis', 'resume_detail', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'soap_tindakan', 'fisio', 'pemeriksaan_lab', 'pemeriksaan_radiologi', 'riwayat_berobat', 'pemeriksaan_luar', 'resep_dokter', 'resep','get_template','penunjang','fisio_tindakan','tarif_all','cek_icu','ruangan_icu'));
     }
 
     public function copy_data(Request $request, $id)

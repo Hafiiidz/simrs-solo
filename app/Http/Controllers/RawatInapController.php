@@ -142,11 +142,21 @@ class RawatInapController extends Controller
                     ->where('status', 2);
             }
 
+            // if($query->icu == 1){
+            //     $query
+            // }
+
             return DataTables::eloquent($query)
                 ->addColumn('dokter', function ($item) {
+                    if($item->icu == 1){
+                        return '-';
+                    }
                     return $item->dokter->nama_dokter;
                 })
                 ->addColumn('ruangan', function ($item) {
+                    if($item->icu == 1){
+                        return 'ICU';
+                    }
                     $ruangan = DB::table('ruangan')->where('id', $item->idruangan)->first();
                     return $ruangan->nama_ruangan;
                 })
@@ -486,7 +496,12 @@ class RawatInapController extends Controller
         $raber = null;
         $rawat = Rawat::where('id', $id)->first();
         if($rawat->status != 2){
-            $disable = 'disabled';
+            if($rawat->icu == 1){
+                $disable = '';
+            }else{
+                $disable = 'disabled';
+            }
+           
         }else{
             $disable = '';
         }
@@ -500,7 +515,12 @@ class RawatInapController extends Controller
         $lab = DB::table('laboratorium_pemeriksaan')->get();
         $dokter = Dokter::get();
         $dokter_dpjp = Dokter::whereNotNull('idspesialis')->where('status',1)->where('id','!=',$rawat->iddokter)->get();
-        $tarif = DB::table('tarif')->where('idjenisrawat', 2)->where('idkelas', $rawat->idkelas)->where('idruangan', $rawat->idruangan)->get();
+        if($rawat->icu == 1){
+            $tarif = DB::table('tarif')->where('idruangan',23)->get();
+        }else{
+            $tarif = DB::table('tarif')->where('idjenisrawat', 2)->where('idkelas', $rawat->idkelas)->where('idruangan', $rawat->idruangan)->get();
+        }
+        
         $fisio_tindakan = DB::table('tarif')->where('idkategori', 8)->get();
         // dd($tarif);
         $order_obat = DB::table('demo_antrian_resep')->where('idrawat', $id)->whereNull('id_raber')->whereNotNull('obat')->get();
@@ -538,10 +558,13 @@ class RawatInapController extends Controller
             $pemeriksaan_fisik = null;
             $anamnesa = null;
         }
+
+        $cek_icu = DB::table('demo_rawat_icu')->where('idrawat',$rawat->id)->whereNull('tglkeluar')->first();
+        $ruangan_icu = DB::table('ruangan_bed')->where('idruangan',23)->where('status',1)->where('terisi',0)->count();
         // dd($pemeriksaan_fisik);
         return view('rawat-inap.detail', [
             'rawat' => $rawat
-        ], compact('pasien', 'ringakasan_pasien_masuk', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'data_operasi','pemberian_obat','order_obat','cppt','implamentasi','list_tindakan','penunjang','diagnosa_akhir','data_pulang','poli','skrining','kesadaran','anamnesa','pemeriksaan_fisik','disable','disable_order','kelas_rawat','order_obat_null','dokter_dpjp','list_raber','anamnesa_pemeriksaan_fisik','fisio_tindakan','tarif_all','raber'));
+        ], compact('pasien', 'ringakasan_pasien_masuk', 'obat', 'tindak_lanjut', 'radiologi', 'lab', 'tarif', 'dokter', 'data_operasi','pemberian_obat','order_obat','cppt','implamentasi','list_tindakan','penunjang','diagnosa_akhir','data_pulang','poli','skrining','kesadaran','anamnesa','pemeriksaan_fisik','disable','disable_order','kelas_rawat','order_obat_null','dokter_dpjp','list_raber','anamnesa_pemeriksaan_fisik','fisio_tindakan','tarif_all','raber','cek_icu','ruangan_icu'));
     }
     public function detail_raber($id)
     {
