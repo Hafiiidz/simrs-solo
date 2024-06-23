@@ -1830,6 +1830,10 @@
 
                         @csrf
                         <div class="row mb-5">
+                            <label>Tgl Periksa</label>
+                            <input type="date" name="tgl_periksa" value="{{ date('Y-m-d') }}" class="form-control" required />
+                        </div>
+                        <div class="row mb-5">
                             <!--begin::Repeater-->
                             <div id="radiologi_repeater">
                                 <!--begin::Form group-->
