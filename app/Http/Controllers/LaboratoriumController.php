@@ -34,6 +34,7 @@ class LaboratoriumController extends Controller
 
         ])
         ->where('pemeriksaan_penunjang','!=','null')
+        ->whereDate('created_at','<=',date('Y-m-d'))
         ->where('demo_permintaan_penunjang.jenis_penunjang','Lab')->orderBy('demo_permintaan_penunjang.id','desc');
         if(request()->ajax()){
             return DataTables::of($query)
