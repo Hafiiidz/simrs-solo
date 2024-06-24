@@ -1,19 +1,24 @@
 <?php
 
 // use GuzzleHttp\Psr7\Request;
+
 use App\Models\Rawat;
 use Illuminate\Http\Request;
 use App\Helpers\VclaimHelper;
 use App\Models\Pasien\Pasien;
+use App\Jobs\SendSatuSehatJob;
 use Illuminate\Support\Facades\DB;
+use App\Jobs\SatuseharObservasiJob;
 use App\Helpers\SatusehatAuthHelper;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use App\Helpers\SatusehatPasienHelper;
+use App\Jobs\SatusehatUpdatePasienJob;
 use App\Helpers\SatusehatKondisiHelper;
 use App\Helpers\SatusehatResourceHelper;
 use App\Http\Controllers\GiziController;
 use App\Http\Controllers\UserController;
+use App\Helpers\SatusehatObservasiHelper;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\FarmasiController;
 use App\Http\Controllers\LaporanController;
@@ -34,6 +39,7 @@ use App\Helpers\Satusehat\Resource\PatientHelper;
 use App\Helpers\Satusehat\Resource\LocationHelper;
 use App\Http\Controllers\LaporanOperasiController;
 use App\Helpers\Satusehat\Resource\EncounterHelper;
+use App\Helpers\Satusehat\Resource\ProcedureHelper;
 use App\Http\Controllers\DetailRekapMedisController;
 
 /*
@@ -46,6 +52,147 @@ use App\Http\Controllers\DetailRekapMedisController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+
+if (config('app.env') == 'local') {
+    Route::get('/update-pasien-nik', function () {
+        ini_set('max_execution_time', 0);
+            ini_set('memory_limit', '4000M');
+        $data = [];
+        $pasien = Pasien::whereNull('ihs')->get();
+        foreach ($pasien as $p) {
+           array_push($data,[
+             SatusehatPasienHelper::searchPasienByNik($p->nik),
+           ]);
+        }
+        return $data;
+    });
+    Route::get('/update-pasien-job', function () {
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '4000M');
+        $pasien = Pasien::whereNull('ihs')->whereYear('kunjungan_terakhir',2024)->orderBy('id','desc')->get();
+        foreach ($pasien as $r) {
+            SatusehatUpdatePasienJob::dispatch($r->nik);
+        }
+        // $counter = 0;
+        // foreach ($pasien as $r) {
+        //     if ($counter > 0 && $counter % 15 == 0) {
+        //         SatusehatUpdatePasienJob::dispatch($r->nik)->delay(now()->addSeconds(10));
+        //     } else {
+        //         SatusehatUpdatePasienJob::dispatch($r->nik);
+        //     }
+            
+        // }
+        return 'Alhamdulillah';
+    });
+    Route::get('/create-observasi', function () {
+        $rawat = Rawat::whereNotNull('id_encounter')
+        ->whereNotNull('id_condition')
+        ->whereDate('tglmasuk', date('Y-m-d'))
+        ->whereNull('obs')
+        ->where('status', 4)
+        ->where('idjenisrawat', 1)
+        ->get();
+        // return  SatusehatObservasiHelper::create($rawat->id);
+        $counter = 0;
+        foreach ($rawat as $r) {
+            // if ($counter > 0 && $counter % 15 == 0) {
+            //     SatuseharObservasiJob::dispatch($r->id)->delay(now()->addSeconds(10));
+            // } else {
+                
+            // }
+            SatuseharObservasiJob::dispatch($r->id);
+            
+        }
+        return 'Alhamdulillah';
+    });
+    Route::get('/create-kondisi', function () {
+        $rawat = Rawat::whereNotNull('id_encounter')
+        ->whereNull('id_condition')
+        ->whereDate('tglmasuk', date('Y-m-d'))
+        ->where('status', 4)
+        ->where('idjenisrawat', 1)
+        ->get();
+        $counter = 0;
+
+        foreach ($rawat as $r) {
+            if ($counter > 0 && $counter % 15 == 0) {
+                SendSatuSehatJob::dispatch($r->id)->delay(now()->addSeconds(10));
+            } else {
+                SendSatuSehatJob::dispatch($r->id);
+            }
+            
+        }
+        
+        return 'Alhamdulillah';
+    });
+    Route::get('/running-ss', function () {
+        {
+            ini_set('max_execution_time', 0);
+            ini_set('memory_limit', '4000M');
+
+            $rawat = Rawat::whereNull('id_encounter')->whereDate('tglmasuk',date('Y-m-d'))->where('idjenisrawat',1)->get();
+            $array_rawat = [];
+            $respon = [];
+            $respon_pasien = [];
+            try {
+                foreach ($rawat as $r) {
+                    
+                    
+                    $pasien = Pasien::where('no_rm',$r->no_rm)->whereNull('ihs')->first();
+                    // return $pasien;
+                    if($pasien){
+                        $array = SatusehatPasienHelper::searchPasienByNik($pasien->nik);
+                        // return $array;
+                        // $respon_pasien = $array['entry'][0]['fullUrl']; // Converts array to JSON string
+                        // array_push($respon_pasien,[
+                        //     'full_url'=>$array['entry'],
+                        // ]);
+                        
+                    }
+    
+                    // $idrawat = $request->idrawat;
+                    // $rawat = Rawat::find($idrawat);
+                    // return $rawat;
+                    $pasien2 = Pasien::where('no_rm', $r->no_rm)->first();
+                    if($pasien2->ihs != null){
+                        $consent = SatusehatResourceHelper::consent_read($pasien2->ihs);
+                        array_push($respon_pasien,[
+                            'full_url'=>$pasien2->ihs,
+                            'idrawat'=>$r->id,
+                            'encounter'=>EncounterHelper::create($r->id),
+                        ]);
+                        if($r->pasien?->ihs != null){
+                            array_push($array_rawat,[
+                                'id'=>$r->id,
+                                'nik'=>$r->pasien?->nik,
+                                'ihs'=>$r->pasien?->ihs,
+                                'poli'=>$r->poli?->poli
+                            ]);
+                        }
+                        // $consent = SatusehatResourceHelper::consent_read($pasien2->ihs);
+                        // $response = EncounterHelper::create($r->id);
+                        // if(isset($response['subject'])){
+                        //     $respon .= $response['subject'];
+                        // }else{
+                        //     $respon .= [
+                        //         'message'=>'Gagal',
+                        //         'no_rm'=>$pasien->no_rm
+                        //     ];
+                        // }
+                    }
+                    
+                }
+                return $array_rawat;
+            } catch (\Throwable $th) {
+                throw $th;
+            }
+            
+        }
+    });
+
+   
+}
 
 #SS
 Route::get('/generate-token-ss', function () {
@@ -141,6 +288,21 @@ Route::prefix('condition')->group(function () {
     Route::get('/create', function (Request $request) {
         $idrawat = $request->idrawat;
         return SatusehatKondisiHelper::create_kondisi($idrawat);
+    });
+   
+});
+#OBS
+Route::prefix('observasi')->group(function () {
+    Route::get('/create', function (Request $request) {
+        $idrawat = 77015;
+        return SatusehatObservasiHelper::create($idrawat);
+    });
+   
+});
+Route::prefix('prosedur')->group(function () {
+    Route::get('/create', function (Request $request) {
+        $idrawat = 76859;
+        return ProcedureHelper::create($idrawat);
     });
    
 });

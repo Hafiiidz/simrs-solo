@@ -61,6 +61,7 @@
                         </div>
                         <div class="card-toolbar">
                             <a href="{{ route('poliklinik') }}" class="btn btn-sm btn-secondary me-2">Kembali</a>
+                            {{-- <button class="btn btn-primary me-5 btn-sm" data-id="{{ $rawat->id }}" id='update-satu-sehat'>Update Satu Sehat</button> --}}
                             @if ($rawat->status == 1 || $rawat->status == 3)
                                 @if (!$cek_icu)
                                 <button type="button" class="btn btn-danger me-2" data-bs-toggle="modal"

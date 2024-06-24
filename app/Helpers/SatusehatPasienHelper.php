@@ -33,7 +33,8 @@ class SatusehatPasienHelper
             'Authorization' => 'Bearer '.$token,
         ])
         ->get($url.'/Patient?identifier=https://fhir.kemkes.go.id/id/nik|'.$nik);
-        if($response['total'] > 0){
+        
+        if(isset($response['total']) && $response['total'] > 0){
             
             // $consent = SatusehatResourceHelper::consent_update($pasien->ihs);
             // return $consent;

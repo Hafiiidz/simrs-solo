@@ -88,7 +88,7 @@ class EncounterHelper
                 ]
             ],
             "period"=> [
-                "start"=> date('Y-m-d')."T".date('H:i:s')."+07:00"
+                "start"=> date('Y-m-d',strtotime($rawat->tglmasuk))."T".date('H:i:s',strtotime($rawat->tglmasuk))."+07:00"
             ],
             "location"=> [
                 [
@@ -102,7 +102,7 @@ class EncounterHelper
                 [
                     "status"=> "arrived",
                     "period"=> [
-                        "start"=> date('Y-m-d')."T".date('H:i:s')."+07:00"
+                        "start"=> date('Y-m-d',strtotime($rawat->tglmasuk))."T".date('H:i:s',strtotime($rawat->tglmasuk))."+07:00"
                     ]
                 ]
             ],
@@ -117,8 +117,12 @@ class EncounterHelper
             'Authorization' => 'Bearer '.EncounterHelper::token(),
         ])
         ->post(EncounterHelper::url().'/Encounter', $data);
-        $rawat->id_encounter = $response->json()['id'];
-        $rawat->save();
+        // return $response;
+        if(isset($response->json()['id'])){
+            $rawat->id_encounter = $response->json()['id'];
+            $rawat->save();
+        }
+        
         return $response->json();
     }
 
@@ -188,7 +192,7 @@ class EncounterHelper
                 ]
             ],
             'period' => [
-                'start' =>  date('Y-m-d')."T".date('H:i:s')."+07:00",
+                'start' =>  date('Y-m-d',strtotime($rawat->tglmasuk))."T".date('H:i:s',strtotime($rawat->tglmasuk))."+07:00",
                 'end' =>  date('Y-m-d')."T".date('H:i:s')."+07:00"
             ],
             "location"=> [

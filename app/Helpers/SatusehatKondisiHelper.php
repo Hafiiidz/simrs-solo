@@ -30,16 +30,18 @@ class SatusehatKondisiHelper
     $rekap_medis = DB::table('demo_detail_rekap_medis')->where('idrawat',$id)->first();
     // return $rekap_medis;
     $diagnosa =  [];
-    foreach(json_decode($rekap_medis->icdx) as $value){
-        $split = explode(' - ', $value->diagnosa_icdx);
-        $diagnosa[] = 
-            [
-                'system' => 'http://hl7.org/fhir/sid/icd-10',
-                'code' => $split[0],
-                'display' => $split[1]
-            ];
-        
-    }
+    if($rekap_medis->icdx != 'null'){       
+        foreach(json_decode($rekap_medis->icdx) as $value){
+            $split = explode(' - ', $value->diagnosa_icdx);
+            $diagnosa[] = 
+                [
+                    'system' => 'http://hl7.org/fhir/sid/icd-10',
+                    'code' => $split[0],
+                    'display' => $split[1]
+                ];
+            
+        }
+
     // return $diagnosa;
     $data = [
         'resourceType' => 'Condition',
@@ -84,8 +86,75 @@ class SatusehatKondisiHelper
         ->withHeaders([
             'Authorization' => 'Bearer '.$token,
         ])->post($url.'/Condition',$data);
+    if(isset($response['id'])){
+        $rawat->id_condition = $response['id'];
+        $rawat->save();
+    }
     return $response->json();
-
+}
     // return $data;
+    }
+
+    public static function update_kondisi($id){
+        $rawat = Rawat::find($id);
+        $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
+        $rekap_medis = DB::table('demo_detail_rekap_medis')->where('idrawat',$id)->first();
+        $diagnosa =  [];
+        foreach(json_decode($rekap_medis->icdx) as $value){
+            $split = explode(' - ', $value->diagnosa_icdx);
+            $diagnosa[] = 
+                [
+                    'system' => 'http://hl7.org/fhir/sid/icd-10',
+                    'code' => $split[0],
+                    'display' => $split[1]
+                ];
+            
+        }
+        $data = [
+            "resourceType" => "Condition",
+            "id" => $rawat->id_condition,
+            "clinicalStatus" => [
+                "coding" => [
+                    [
+                        "system" => "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                        "code" => "remission",
+                        "display" => "Remission"
+                    ]
+                ]
+            ],
+           'category' => [
+                [
+                    'coding' => [
+                        [
+                            'system' => 'http://terminology.hl7.org/CodeSystem/condition-category',
+                            'code' => 'encounter-diagnosis',
+                            'display' => 'Encounter Diagnosis'
+                        ]
+                    ]
+                ]
+            ],
+            'code' => [
+                'coding' => $diagnosa
+            ],
+            'subject' => [
+                'reference' => 'Patient/'.$pasien->ihs,
+                'display' => $pasien->nama_pasien
+            ],
+            'encounter' => [
+                'reference' => 'Encounter/'.$rawat->id_encounter,
+                'display' => 'Kunjungan '.$pasien->nama_pasien.' '.\Carbon\Carbon::parse($rawat->tglmasuk)->formatLocalized('%A %d %B %Y')
+            ]
+        ];
+        $url = env('PROD_BASE_URL_SS');
+        // return $url;
+        $get_token = SatusehatAuthHelper::generate_token();
+        $token = $get_token['access_token'];
+
+        $response = Http::withOptions(["verify" => false])
+        ->withHeaders([
+            'Authorization' => 'Bearer '.$token,
+        ])
+        ->put($url.'/Condition/' . $rawat->id_condition, $data);
+        return $response;
     }
 }
