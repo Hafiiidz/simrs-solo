@@ -54,7 +54,7 @@ use App\Http\Controllers\DetailRekapMedisController;
 */
 
 
-if (config('app.env') == 'local') {
+// if (config('app.env') == 'local') {
     Route::get('/update-pasien-nik', function () {
         ini_set('max_execution_time', 0);
             ini_set('memory_limit', '4000M');
@@ -192,7 +192,7 @@ if (config('app.env') == 'local') {
     });
 
    
-}
+// }
 
 #SS
 Route::get('/generate-token-ss', function () {
