@@ -32,7 +32,7 @@ class EncounterHelper
 
     }
     public static function orgId(){
-        return 100026488;
+        return 100026489;
     }
 
     public static function create($idrawat){
@@ -54,7 +54,7 @@ class EncounterHelper
             "resourceType"=> "Encounter",
             "identifier"=> [
                 [
-                    "system"=> "http://sys-ids.kemkes.go.id/encounter/100026488",
+                    "system"=> "http://sys-ids.kemkes.go.id/encounter/100026489",
                     "value"=> $rawat->idrawat
                 ]
             ],
@@ -107,7 +107,7 @@ class EncounterHelper
                 ]
             ],
             "serviceProvider"=> [
-                "reference"=> "Organization/100026488"
+                "reference"=> "Organization/100026489"
             ],
 
         ];
@@ -154,7 +154,7 @@ class EncounterHelper
             'id' => $id,
             "identifier"=> [
                 [
-                    "system"=> "http://sys-ids.kemkes.go.id/encounter/100026488",
+                    "system"=> "http://sys-ids.kemkes.go.id/encounter/100026489",
                     "value"=> $rawat->idrawat
                 ]
             ],
@@ -216,7 +216,7 @@ class EncounterHelper
                 ]
             ],
             'serviceProvider' => [
-                'reference' => 'Organization/100026488'
+                'reference' => 'Organization/100026489'
             ]
         ];
 

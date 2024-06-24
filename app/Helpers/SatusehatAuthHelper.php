@@ -17,7 +17,7 @@ class SatusehatAuthHelper
         if (config('app.env') == 'production') {
             return true;
         } else {
-            return false;        }
+            return true;        }
 
     }
     public static function generate_token(){
