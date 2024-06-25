@@ -131,7 +131,7 @@ use App\Http\Controllers\DetailRekapMedisController;
             ini_set('max_execution_time', 0);
             ini_set('memory_limit', '4000M');
 
-            $rawat = Rawat::whereNull('id_encounter')->whereDate('tglmasuk',date('Y-m-d'))->where('idjenisrawat',1)->get();
+            $rawat = Rawat::whereNull('id_encounter')->whereDate('tglmasuk',date('Y-m-d'))->whereBetween('idjenisrawat',[1,3])->get();
             $array_rawat = [];
             $respon = [];
             $respon_pasien = [];
