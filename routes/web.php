@@ -70,7 +70,7 @@ use App\Http\Controllers\DetailRekapMedisController;
     Route::get('/update-pasien-job', function () {
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '4000M');
-        $pasien = Pasien::whereNull('ihs')->whereYear('kunjungan_terakhir',2024)->orderBy('id','desc')->get();
+        $pasien = Pasien::whereNull('ihs')->orderBy('id','desc')->get();
         foreach ($pasien as $r) {
             SatusehatUpdatePasienJob::dispatch($r->nik);
         }
