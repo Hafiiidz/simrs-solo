@@ -62,10 +62,10 @@
                                         <label for="noRM" class="col-sm-4 col-form-label text-end">No RM</label>
                                         <div class="col-sm-5">
                                             <div class="input-group mb-3">
-                                                <input type="text" name='no_rm' class="form-control" required
-                                                    id="noRM">
+                                                <input type="text" readonly name='no_rm' value="{{ $kodepasien }}"
+                                                    class="form-control form-control-solid" id='pasien-kodepasien' required>
                                                 <button class="btn btn-sm btn-warning" type="button"
-                                                    id="btn-edit">Edit</button>
+                                                    id="btn-edit-rm">Edit</button>
                                             </div>
                                         </div>
                                     </div>
@@ -74,7 +74,8 @@
                                         <label class="col-sm-4 col-form-label text-end">NIK</label>
                                         <div class="col-sm-8">
                                             <div class="input-group">
-                                                <input type="text" name='nik' class="form-control" required>
+                                                <input type="text" name='nik' id='nik' class="form-control"
+                                                    required>
                                                 <button class="btn btn-sm btn-success" type="button"
                                                     id="btn-cari-nik">Cari</button>
                                             </div>
@@ -85,7 +86,7 @@
                                         <label class="col-sm-4 col-form-label text-end">BPJS</label>
                                         <div class="col-sm-8">
                                             <div class="input-group">
-                                                <input type="text" name='bpjs' class="form-control" required>
+                                                <input type="text" name='bpjs' id='bpjs' class="form-control" required>
                                                 <button class="btn btn-sm btn-primary" type="button"
                                                     id="btn-cari-bpjs">Cari</button>
                                             </div>
@@ -94,13 +95,13 @@
                                     <div class="form-group row mb-3">
                                         <label class="col-sm-4 col-form-label text-end">Nama Pasien</label>
                                         <div class="col-sm-8">
-                                            <input type="text" name='nama_pasien' class="form-control" required>
+                                            <input type="text" name='nama_pasien' id='nama_pasien' class="form-control" required>
                                         </div>
                                     </div>
                                     <div class="form-group row mb-3">
                                         <label class="col-sm-4 col-form-label text-end">JK / Gol Darah</label>
                                         <div class="col-sm-4">
-                                            <select name="" class="form-select" id="" required>
+                                            <select name="jenis_kelamin" class="form-select" id="jenis_kelamin" required>
                                                 <option value="">-- Jenis Kelamin --</option>
                                                 <option value="L">Laki Laki</option>
                                                 <option value="P">Perempuan</option>
@@ -126,7 +127,7 @@
                                         <label class="col-sm-4 col-form-label text-end">Tgl.Lahir</label>
                                         <div class="col-sm-8">
                                             <div class="input-group">
-                                                <input class="form-control" name='tgl_lahir' placeholder="Pilih Tanggal"
+                                                <input class="form-control" name='tgl_lahir' id='tgl_lahir' placeholder="Pilih Tanggal"
                                                     id="kt_datepicker_1" />
                                                 <div class="input-group-text">
                                                     <input class="form-check-input me-3" type="checkbox" name='baru_lahir'
@@ -141,11 +142,11 @@
                                     <div class="form-group row mb-3">
                                         <label class="col-sm-4 col-form-label text-end">No.Hp / Email</label>
                                         <div class="col-sm-4">
-                                            <input type="text" class="form-control" name="no_hp" id=""
+                                            <input type="text" class="form-control" name="no_hp" id="no_hp"
                                                 placeholder="No HP" required>
                                         </div>
                                         <div class="col-sm-4">
-                                            <input type="text" class="form-control" name="email" id=""
+                                            <input type="text" class="form-control" name="email" id="email"
                                                 placeholder="Email" required>
                                         </div>
                                     </div>
@@ -153,7 +154,7 @@
                                         <label class="col-sm-4 col-form-label text-end">Kepesertaan BPJS</label>
                                         <div class="col-sm-8">
                                             <input type="text" readonly class="form-control form-control-solid"
-                                                name="kepesertaan_bpjs" id="" placeholder="" required>
+                                                name="kepesertaan_bpjs" id="kepesertaan_bpjs" placeholder="" required>
                                         </div>
                                     </div>
                                     <div class="form-group row mb-3">
@@ -355,7 +356,128 @@
     </div>
 @endsection
 @section('js')
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js"></script>
     <script>
+        $(document).on('click', '#btn-edit-rm', function() {
+            $('#pasien-kodepasien').prop('readonly', false);
+            $('#pasien-kodepasien').val('P-');
+            $('#pasien-kodepasien').focus();
+            $('#pasien-kodepasien').removeClass('form-control-solid');
+            $(this).attr("id", "auto-rm");
+        });
+
+        $(document).on('click', '#auto-rm', function() {
+            $('#pasien-kodepasien').prop('readonly', true);
+            $('#pasien-kodepasien').val('{{ $kodepasien }}');
+            $('#pasien-kodepasien').addClass('form-control-solid');
+            $(this).attr("id", "btn-edit-rm");
+        });
+        $(document).on('click', '#btn-cari-nik', function() {
+            var nik = $('#nik').val();
+            if (nik == null || nik == '') {
+                toastr.error('Harap isi NIK');
+            } else {
+                $.ajax({
+                    url: "{{ route('pasien.get-by-nik') }}",
+                    type: 'GET',
+                    data: {
+                        nik: nik,
+                        jenis: 'nik'
+                    },
+                    beforeSend: function() {
+                        $.blockUI({
+                            message: '<i class="fa fa-spinner fa-spin"></i> Loading ...',
+                            css: {
+                                border: 'none',
+                                padding: '15px',
+                                backgroundColor: '#000',
+                                '-webkit-border-radius': '10px',
+                                '-moz-border-radius': '10px',
+                                opacity: .5,
+                                color: '#fff'
+                            }
+                        });
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        $.unblockUI();
+                        if (data.status == true) {
+                            toastr.success(data.message);
+                            $('#bpjs').val(data.data.peserta.noKartu);
+                            $('#nama_pasien').val(data.data.peserta.nama);
+                            $('#jenis_kelamin').val(data.data.peserta.sex);
+                            $('#tgl_lahir').val(data.data.peserta.tglLahir);
+                            $('#no_hp').val(data.data.peserta.mr.noTelepon);
+                            $('#pasien-kodepasien').val("P-"+data.data.peserta.mr.noMR);
+                            $('#kepesertaan_bpjs').val(data.data.peserta.jenisPeserta.keterangan);
+                        } else {
+                            toastr.error(data.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $.unblockUI();
+                        toastr.error('Terjadi kesalahan: ' + error);
+                        console.error('Error details:', xhr, status, error);
+                    }
+                });
+            }
+        });
+        $(document).on('click', '#btn-cari-bpjs', function() {
+            var nik = $('#bpjs').val();
+            if (nik == null || nik == '') {
+                toastr.error('Harap isi NIK');
+            } else {
+                $.ajax({
+                    url: "{{ route('pasien.get-by-nik') }}",
+                    type: 'GET',
+                    data: {
+                        nik: nik,
+                        jenis: 'bpjs'
+                    },
+                    beforeSend: function() {
+                        $.blockUI({
+                            message: '<i class="fa fa-spinner fa-spin"></i> Loading ...',
+                            css: {
+                                border: 'none',
+                                padding: '15px',
+                                backgroundColor: '#000',
+                                '-webkit-border-radius': '10px',
+                                '-moz-border-radius': '10px',
+                                opacity: .5,
+                                color: '#fff'
+                            }
+                        });
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        $.unblockUI();
+                        if (data.status == true) {
+                            toastr.success(data.message);
+                            $('#nik').val(data.data.peserta.nik);
+                            $('#bpjs').val(data.data.peserta.noKartu);
+                            $('#nama_pasien').val(data.data.peserta.nama);
+                            $('#jenis_kelamin').val(data.data.peserta.sex);
+                            $('#tgl_lahir').val(data.data.peserta.tglLahir);
+                            $('#no_hp').val(data.data.peserta.mr.noTelepon);
+                            $('#pasien-kodepasien').val("P-"+data.data.peserta.mr.noMR);
+                            $('#kepesertaan_bpjs').val(data.data.peserta.jenisPeserta.keterangan);
+                        } else {
+                            toastr.error(data.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $.unblockUI();
+                        toastr.error('Terjadi kesalahan: ' + error);
+                        console.error('Error details:', xhr, status, error);
+                    }
+                });
+            }
+        });
+
+
+
+
         $(function() {
             $("#id_kel").select2({
                 ajax: {

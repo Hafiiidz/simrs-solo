@@ -93,8 +93,8 @@ class EncounterHelper
             "location"=> [
                 [
                     "location"=> [
-                        "reference"=> "Location/".$organisasi_lokasi->id_location,
-                        "display"=> $organisasi_lokasi->nama_organisasi
+                        "reference"=> "Location/".$organisasi_lokasi?->id_location,
+                        "display"=> $organisasi_lokasi?->nama_organisasi
                     ]
                 ]
             ],
@@ -111,19 +111,21 @@ class EncounterHelper
             ],
 
         ];
-
-        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
-        ->withHeaders([
-            'Authorization' => 'Bearer '.EncounterHelper::token(),
-        ])
-        ->post(EncounterHelper::url().'/Encounter', $data);
-        // return $response;
-        if(isset($response->json()['id'])){
-            $rawat->id_encounter = $response->json()['id'];
-            $rawat->save();
-        }
+        // if(isset($organisasi_lokasi->id_location)){
+            $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
+            ->withHeaders([
+                'Authorization' => 'Bearer '.EncounterHelper::token(),
+            ])
+            ->post(EncounterHelper::url().'/Encounter', $data);
+            // return $response;
+            if(isset($response->json()['id'])){
+                $rawat->id_encounter = $response->json()['id'];
+                $rawat->save();
+            }
+            
+            return $response->json();
+        // }
         
-        return $response->json();
     }
 
     #search by id

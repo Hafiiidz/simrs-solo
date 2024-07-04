@@ -3,16 +3,22 @@
 // use GuzzleHttp\Psr7\Request;
 
 use App\Models\Rawat;
+use App\Jobs\UpdateBilling;
 use Illuminate\Http\Request;
 use App\Helpers\VclaimHelper;
 use App\Models\Pasien\Pasien;
+use App\Jobs\ProcessPasienJob;
 use App\Jobs\SendSatuSehatJob;
+use App\Jobs\ProcessRawatSendJob;
 use Illuminate\Support\Facades\DB;
 use App\Jobs\SatuseharObservasiJob;
+use Illuminate\Support\Facades\Bus;
 use App\Helpers\SatusehatAuthHelper;
 use Illuminate\Support\Facades\Hash;
+use App\Jobs\ProcessEncounterSendJob;
 use Illuminate\Support\Facades\Route;
 use App\Helpers\SatusehatPasienHelper;
+use App\Jobs\ProcessRawatObservasiJob;
 use App\Jobs\SatusehatUpdatePasienJob;
 use App\Helpers\SatusehatKondisiHelper;
 use App\Helpers\SatusehatResourceHelper;
@@ -37,6 +43,7 @@ use App\Http\Controllers\LaboratoriumController;
 use App\Http\Controllers\TindakLanjutController;
 use App\Helpers\Satusehat\Resource\PatientHelper;
 use App\Helpers\Satusehat\Resource\LocationHelper;
+use App\Helpers\Vclaim\VclaimRencanaKontrolHelper;
 use App\Http\Controllers\LaporanOperasiController;
 use App\Helpers\Satusehat\Resource\EncounterHelper;
 use App\Helpers\Satusehat\Resource\ProcedureHelper;
@@ -55,6 +62,214 @@ use App\Http\Controllers\DetailRekapMedisController;
 
 
 // if (config('app.env') == 'local') {
+    Route::get('/update-data', function () {
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '4000M');
+        $data = DB::table('table_satu')->whereNull('billing_lanjut_ranap')->get();
+        foreach($data as $d){
+            UpdateBilling::dispatch($d->icd10);
+            // $data = DB::table('soap_rajalicdx')
+            // ->join('rawat', 'soap_rajalicdx.idrawat', '=', 'rawat.id')
+            // ->leftJoin('transaksi_detail_bill', 'rawat.id', '=', 'transaksi_detail_bill.idrawat')
+            // ->select(
+            //     'rawat.id as rawat_id',
+            //     'rawat.status',
+            //     'transaksi_detail_bill.tarif',
+            //     'soap_rajalicdx.icd10'
+            // )
+            // ->where('soap_rajalicdx.idjenisrawat', 3)
+            // ->where('rawat.idbayar', 2)
+            // ->whereBetween('rawat.tglmasuk', ['2023-01-01 00:00:00', '2023-12-31 23:59:59'])
+            // ->whereIn('rawat.status', [2, 4])
+            // ->where('soap_rajalicdx.icd10', $d->icd10)
+            // ->get();
+            
+            // $lanjut_ranap = 0;
+            // $tidak_lanjut_ranap = 0;
+            // $billing_lanjut = 0;
+            // $billing_tidak_lanjut = 0;
+
+            // foreach ($data as $d) {
+            //     if ($d->status == 2) {
+            //         // $lanjut_ranap++;
+            //         $billing_lanjut += $d->tarif;
+            //     } elseif ($d->status == 4) {
+            //         // $tidak_lanjut_ranap++;
+            //         $billing_tidak_lanjut += $d->tarif;
+            //     }
+            // }
+            // DB::table('table_satu')->where('icd10',$d->icd10)->update([
+            //     'billing_lanjut_ranap'=>$billing_lanjut,
+            //     'billing_tidak_lanjut'=>$billing_tidak_lanjut,
+            // ]);
+
+
+        }
+        return 'aa';
+    });
+    Route::get('/get-lab', function () {
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '4000M');
+        $results = DB::table('laboratorium_hasildetail')
+        ->select('laboratorium_hasildetail.nama_pemeriksaan', 
+                DB::raw('COUNT(*) as jumlah'), 
+                DB::raw('COUNT(CASE WHEN rawat.status = 2 THEN 1 END) AS lanjut_ranap'),
+                DB::raw('COUNT(CASE WHEN rawat.status = 4 THEN 1 END) as tidak_lanjut_ranap')
+        )
+        ->join('laboratorium_hasil', 'laboratorium_hasildetail.idhasil', '=', 'laboratorium_hasil.id')
+        ->join('rawat', 'laboratorium_hasil.idrawat', '=', 'rawat.id')
+        ->where('rawat.idjenisrawat', 3)
+        ->whereBetween('rawat.tglmasuk', ['2023-01-01 00:00:00', '2023-12-31 23:59:59'])
+        ->whereIn('rawat.status', [2, 4])
+        ->where('rawat.idbayar', 2)
+        ->groupBy('laboratorium_hasildetail.nama_pemeriksaan')
+        ->orderBy('jumlah', 'DESC')
+        ->get();
+
+        $array = $results->map(function ($rs) {
+            return [
+                'kode_rs' => '3313022',
+                'nama_pemeriksaan' => $rs->nama_pemeriksaan,
+                'jumlah' => $rs->jumlah,
+                'lanjut_ranap' => $rs->lanjut_ranap,
+                'tidak_lanjut_ranap' => $rs->tidak_lanjut_ranap,
+            ];
+        });
+
+        return $array;
+    });
+    Route::get('/get-data', function () {
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '4000M');
+        // $results = DB::table('soap_rajalicdx')
+        //     ->join('rawat', 'soap_rajalicdx.idrawat', '=', 'rawat.id')
+        //     ->select('soap_rajalicdx.icd10', DB::raw('COUNT(*) as jumlah'))
+        //     ->where('soap_rajalicdx.idjenisrawat', 3)
+        //     ->where('rawat.idbayar', 2)
+        //     ->whereBetween('rawat.tglmasuk', ['2023-01-01 00:00:00', '2023-12-31 23:59:59'])
+        //     ->where('rawat.status', '!=', 5)
+        //     ->whereNotNull('soap_rajalicdx.icd10')
+        //     ->where('soap_rajalicdx.icd10', '!=', '')
+        //     ->groupBy('soap_rajalicdx.icd10')
+        //     ->orderBy('jumlah', 'DESC')
+        //     // ->limit(10)
+        //     ->get();
+
+        // $array = [];
+
+        // foreach ($results as $rs) {
+        //     // Mengambil data lanjut ranap dan tidak lanjut ranap dalam satu query
+        //     $data = DB::table('soap_rajalicdx')
+        //         ->join('rawat', 'soap_rajalicdx.idrawat', '=', 'rawat.id')
+        //         ->leftJoin('transaksi_detail_bill', 'rawat.id', '=', 'transaksi_detail_bill.idrawat')
+        //         ->select(
+        //             'rawat.id as rawat_id',
+        //             'rawat.status',
+        //             'transaksi_detail_bill.tarif',
+        //             'soap_rajalicdx.icd10'
+        //         )
+        //         ->where('soap_rajalicdx.idjenisrawat', 3)
+        //         ->where('rawat.idbayar', 2)
+        //         ->whereBetween('rawat.tglmasuk', ['2023-01-01 00:00:00', '2023-12-31 23:59:59'])
+        //         ->whereIn('rawat.status', [2, 4])
+        //         ->where('soap_rajalicdx.icd10', $rs->icd10)
+        //         ->get();
+
+        //     $lanjut_ranap = 0;
+        //     $tidak_lanjut_ranap = 0;
+        //     $billing_lanjut = 0;
+        //     $billing_tidak_lanjut = 0;
+
+        //     foreach ($data as $d) {
+        //         if ($d->status == 2) {
+        //             $lanjut_ranap++;
+        //             $billing_lanjut += $d->tarif;
+        //         } elseif ($d->status == 4) {
+        //             $tidak_lanjut_ranap++;
+        //             $billing_tidak_lanjut += $d->tarif;
+        //         }
+        //     }
+
+        //     $array[] = [
+        //         'kode_rs' => '3313022',
+        //         'icd10' => $rs->icd10,
+        //         'jumlah' => $rs->jumlah,
+        //         'lanjut_ranap' => $lanjut_ranap,
+        //         'billing_lanjut' => $billing_lanjut,
+        //         'tidak_lanjut_ranap' => $tidak_lanjut_ranap,                
+        //         'billing_tidak_lanjut' => $billing_tidak_lanjut,
+        //         'total_biling' => $billing_tidak_lanjut+$billing_lanjut,
+        //     ];
+        // }
+
+        // return $array;
+        $results = DB::table('soap_rajalicdx')
+            ->join('rawat', 'soap_rajalicdx.idrawat', '=', 'rawat.id')
+            ->select(
+                'soap_rajalicdx.icd10',
+                DB::raw('COUNT(*) as jumlah'),
+                // DB::raw('SUM(CASE WHEN rawat.status = 2 THEN transaksi_detail_bill.tarif ELSE 0 END) as billing_lanjut'),
+                // DB::raw('SUM(CASE WHEN rawat.status = 4 THEN transaksi_detail_bill.tarif ELSE 0 END) as billing_tidak_lanjut'),
+                DB::raw('COUNT(CASE WHEN rawat.status = 2 THEN 1 END) as lanjut_ranap'),
+                DB::raw('COUNT(CASE WHEN rawat.status = 4 THEN 1 END) as tidak_lanjut_ranap')
+            )
+            // ->leftJoin('transaksi_detail_bill', 'rawat.id', '=', 'transaksi_detail_bill.idrawat')
+            ->where('soap_rajalicdx.idjenisrawat', 3)
+            ->where('rawat.idbayar', 2)
+            ->whereBetween('rawat.tglmasuk', ['2023-01-01 00:00:00', '2023-12-31 23:59:59'])
+            ->where('rawat.status', '!=', 5)
+            ->whereNotNull('soap_rajalicdx.icd10')
+            ->where('soap_rajalicdx.icd10', '!=', '')
+            ->groupBy('soap_rajalicdx.icd10')
+            ->orderBy('jumlah', 'DESC')
+            ->get();
+
+        $array = $results->map(function ($rs) {
+            return [
+                'kode_rs' => '3313022',
+                'icd10' => $rs->icd10,
+                'jumlah' => $rs->jumlah,
+                'lanjut_ranap' => $rs->lanjut_ranap,
+                'tidak_lanjut_ranap' => $rs->tidak_lanjut_ranap,
+            ];
+        });
+
+        return $array;
+
+
+    });
+    Route::get('/tes-rujukan', function () {
+        $getInsert = VclaimRencanaKontrolHelper::getInsertSpri();
+        dd($getInsert);
+    });
+    Route::get('/run-all', function () {
+       
+        $pasien = Pasien::whereNull('ihs')->get();
+        $rawat_observasi = Rawat::whereNotNull('id_encounter')
+        ->whereNotNull('id_condition')
+        ->whereDate('tglmasuk', date('Y-m-d'))
+        ->whereNull('obs')
+        ->where('status', 4)
+        ->where('idjenisrawat', 1)
+        ->get();
+        $rawat_kondisi = Rawat::whereNotNull('id_encounter')
+        ->whereNull('id_condition')
+        ->whereDate('tglmasuk', date('Y-m-d'))
+        ->where('status', 4)
+        ->where('idjenisrawat', 1)
+        ->get();
+        $rawat = Rawat::whereNull('id_encounter')->whereDate('tglmasuk',date('Y-m-d'))->whereBetween('idjenisrawat',[1,3])->get();
+
+        // Dispatch jobs secara berantai
+        Bus::chain([
+            new ProcessPasienJob($rawat),
+            new ProcessEncounterSendJob($pasien),
+            new ProcessRawatSendJob($rawat_kondisi),
+            new ProcessRawatObservasiJob($rawat_observasi),           
+        ])->dispatch();
+
+        return response()->json(['status' => 'Jobs dispatched']);
+    });
     Route::get('/update-pasien-nik', function () {
         ini_set('max_execution_time', 0);
             ini_set('memory_limit', '4000M');
@@ -96,11 +311,7 @@ use App\Http\Controllers\DetailRekapMedisController;
         // return  SatusehatObservasiHelper::create($rawat->id);
         $counter = 0;
         foreach ($rawat as $r) {
-            // if ($counter > 0 && $counter % 15 == 0) {
-            //     SatuseharObservasiJob::dispatch($r->id)->delay(now()->addSeconds(10));
-            // } else {
-                
-            // }
+          
             SatuseharObservasiJob::dispatch($r->id);
             
         }
@@ -661,6 +872,9 @@ Route::prefix('/pasien')->middleware('auth')->group(function () {
     Route::get('/cari-kelurahan', [PasienController::class, 'cari_kelurahan'])->name('pasien.cari-kelurahan');
 
     //Rekam Medis
+    Route::prefix('/bpjs')->middleware('auth')->group(function () {
+        Route::get('/get-pasien', [PasienController::class, 'get_bpjs_by_nik'])->name('pasien.get-by-nik');
+    });
     Route::prefix('/rekap-medis')->middleware('auth')->group(function () {
         Route::get('/{id_pasien}/show', [RekapMedisController::class, 'index'])->name('rekap-medis-index');
         Route::post('/store}', [RekapMedisController::class, 'store'])->name('rekap-medis-store');

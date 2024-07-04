@@ -38,4 +38,29 @@ class Pasien extends Model
     {
         return $this->HasMany(RekapMedis::class, 'idpasien','id');
     }
+
+    public function genKode()
+    {
+        $pf = 'P-';
+        $max = Pasien::where('kodepasien', 'like', $pf . '%')
+            ->max('kodepasien');
+
+        $last = $max ? (int) substr($max, strlen($pf)) + 1 : 1;
+
+        if ($last < 10) {
+            $id = $pf . '00000' . $last;
+        } elseif ($last < 100) {
+            $id = $pf . '0000' . $last;
+        } elseif ($last < 1000) {
+            $id = $pf . '000' . $last;
+        } elseif ($last < 10000) {
+            $id = $pf . '00' . $last;
+        } elseif ($last < 100000) {
+            $id = $pf . '0' . $last;
+        } else {
+            $id = $pf . $last;
+        }
+
+        $this->kodepasien = $id;
+    }
 }

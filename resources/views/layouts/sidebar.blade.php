@@ -201,7 +201,7 @@
                                 <div class="menu-item">
                                     <!--begin:Menu link-->
 
-                                    <a class="menu-link {{ Request::is('pasien') || Request::is('pasien/') ? 'active' : '' }}"
+                                    <a class="menu-link {{  Request::is('/pasien') ? 'active' : '' }}"
                                         href="{{ url('/pasien') }}">
                                         <span class="menu-bullet">
                                             <span class="bullet bullet-dot"></span>
@@ -482,6 +482,35 @@
                     <!--end:Menu sub-->
                 </div>
 
+                @if (auth()->user()->idpriv == 8)
+                <div data-kt-menu-trigger="click"
+                class="menu-item {{ Request::is('pasien') || Request::is('pasien/*') ? 'show' : '' }} menu-accordion">
+                <!--begin:Menu link-->
+                <span class="menu-link">
+                    <span class="menu-icon">
+                        <i class="ki-outline ki-profile-user fs-2"></i>
+                    </span>
+                    <span class="menu-title">Pendaftaran</span>
+                    <span class="menu-arrow"></span>
+                </span>
+                <div class="menu-sub menu-sub-accordion">
+                    <!--begin:Menu item-->
+                    <div class="menu-item">
+                        <!--begin:Menu link-->
+
+                        <a class="menu-link {{ Request::is('pasien/create') ? 'active' : '' }}"
+                            href="{{ route('pasien.tambah-pasien') }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Tambah Pasien Baru</span>
+                        </a>
+                        <!--end:Menu link-->
+                    </div>
+                    <!--end:Menu item-->
+                </div>
+                </div>
+                @endif
                 @if (auth()->user()->idpriv == 10)
                     <div data-kt-menu-trigger="click"
                         class="menu-item {{ Request::is('farmasi') || Request::is('farmasi/*') ? 'show' : '' }} menu-accordion">

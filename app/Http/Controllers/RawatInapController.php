@@ -677,6 +677,11 @@ class RawatInapController extends Controller
         }else{
             $raber = null;
         }
+        if(!$request->tgl_periksa){
+            $tglperiksa = date('Y-m-d');
+        }else{
+            $tglperiksa = $request->tgl_periksa;
+        }
         if ($request->radiologi) {
             if ($request->radiologi != 'null' || $request->radiologi != '' || $request->radiologi != null) {
                 DB::table('demo_permintaan_penunjang')->insert([
@@ -687,7 +692,7 @@ class RawatInapController extends Controller
                     'pemeriksaan_penunjang' => json_encode($request->radiologi),
                     'jenis_penunjang' => 'Radiologi',
                     'peminta' => now(),
-                    'created_at' => $request->tgl_periksa,
+                    'created_at' => $request->tgl_periksa  ?? date('Y-m-d'),
                     'updated_at' => now(),
                     'peminta' => auth()->user()->id,
                     'jenis_rawat' => $rawat->idjenisrawat,
@@ -706,7 +711,7 @@ class RawatInapController extends Controller
                     'pemeriksaan_penunjang' => json_encode($request->lab),
                     'jenis_penunjang' => 'Lab',
                     'peminta' => now(),
-                    'created_at' => $request->tgl_periksa,
+                    'created_at' => $request->tgl_periksa  ?? date('Y-m-d'),
                     'updated_at' => now(),
                     'peminta' => auth()->user()->id,
                     'jenis_rawat' => $rawat->idjenisrawat,

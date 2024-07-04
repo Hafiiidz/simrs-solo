@@ -13,12 +13,14 @@ class SatuSehatEncounter implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     protected $id;
+    protected $ihs;
     /**
      * Create a new job instance.
      */
     public function __construct($id)
     {
         $this->id = $id;
+        $this->ihs = $ihs;
     }
 
     /**
@@ -26,6 +28,7 @@ class SatuSehatEncounter implements ShouldQueue
      */
     public function handle(): void
     {
-        //
+        SatusehatResourceHelper::consent_read($this->ihs);
+        EncounterHelper::create($this->id);
     }
 }

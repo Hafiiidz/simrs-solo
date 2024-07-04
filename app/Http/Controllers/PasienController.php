@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pasien\Pasien;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
+use App\Helpers\Vclaim\VclaimPesertaHelper;
 
 class PasienController extends Controller
 {
@@ -58,6 +60,9 @@ class PasienController extends Controller
     }
 
     public function tambah_pasien_baru(){
+        $pasien = new Pasien();
+        $pasien->genKode();
+
         $gol_darah = DB::table('data_golongandarah')->get();
         $data_status = DB::table('data_status')->get();
         $data_pekerjaan = DB::table('data_pekerjaan')->get();
@@ -67,6 +72,41 @@ class PasienController extends Controller
         $data_pendidikan = DB::table('data_pendidikan')->get();
         $data_hubungan = DB::table('data_hubungan')->get();
         $data_hambatan = DB::table('data_hambatan')->get();
-        return view('pasien.tambah_pasien_baru',compact('gol_darah','data_status','data_pekerjaan','pasien_penanggungjawab','data_agama','data_etnis','data_pendidikan','data_hubungan','data_hambatan'));
+        return view('pasien.tambah_pasien_baru',[
+            'kodepasien'=>$pasien->kodepasien
+        ],compact('gol_darah','data_status','data_pekerjaan','pasien_penanggungjawab','data_agama','data_etnis','data_pendidikan','data_hubungan','data_hambatan'));
     }
+
+    public function get_bpjs_by_nik(Request $request)
+    {
+        // $getPeserta = VclaimPesertaHelper::getPesertaBPJS($request->nik,date('Y-m-d'));
+        // return $getPeserta;
+        // Validasi input
+        $request->validate([
+            'nik' => 'required|string|max:16'
+        ]);
+        $nik = $request->nik;
+        if($request->jenis == 'nik'){
+            $get_data = VclaimPesertaHelper::getPesertaNIK($request->nik,date('Y-m-d'));
+        }else{
+            $get_data = VclaimPesertaHelper::getPesertaBPJS($request->nik,date('Y-m-d'));
+        }
+        
+        if (isset($get_data['metaData']['code']) && $get_data['metaData']['code'] == '200') {
+            return response()->json([
+                'status' => true,
+                'message' => 'Data ditemukan',
+                'data' => $get_data['response']
+            ], 200);
+        } else {
+            $statusCode = isset($get_data['metaData']['code']) ? (int) $get_data['metaData']['code'] : 500;
+            $message = isset($get_data['metaData']['message']) ? $get_data['metaData']['message'] : 'Terjadi kesalahan';
+            return response()->json([
+                'status' => false,
+                'message' => $message
+            ], $statusCode);
+        }
+
+    }
+    
 }
