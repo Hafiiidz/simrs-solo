@@ -102,6 +102,7 @@
                             @endphp
                             @foreach ($detail_resep as $val)
                                 @if ($val->idbayar == 2)
+                                @if( $val->qty >0)
                                     @php
                                         $total += $val->total;
                                     @endphp
@@ -114,6 +115,7 @@
                                         <td style="border: 1px solid black;" class="text-end">
                                             Rp.{{ App\Helpers\VclaimHelper::IndoCurr($val->total) }}</td>
                                     </tr>
+                                @endif
                                 @endif
                             @endforeach
                             @php
@@ -221,6 +223,7 @@
                                     $total_pribadi = 0;
                                 @endphp
                                 @foreach ($detail_resep as $val)
+                                @if( $val->qty >0)
                                     @if ($val->idbayar == 1)
                                         @php
                                             $total_pribadi += $val->total;
@@ -236,6 +239,7 @@
                                             <td style="border: 1px solid black;" class="text-end">
                                                 Rp.{{ App\Helpers\VclaimHelper::IndoCurr($val->total) }}</td>
                                         </tr>
+                                    @endif
                                     @endif
                                 @endforeach
 
@@ -332,6 +336,7 @@
                                     $total_kronis = 0;
                                 @endphp
                                 @foreach ($detail_resep as $val)
+                                    @if( $val->qty >0)
                                     @if ($val->idbayar == 3)
                                         @php
                                             $total_kronis += $val->total;
@@ -347,6 +352,7 @@
                                             <td style="border: 1px solid black;" class="text-end">
                                                 Rp.{{ App\Helpers\VclaimHelper::IndoCurr($val->total) }}</td>
                                         </tr>
+                                    @endif
                                     @endif
                                 @endforeach
 

@@ -49,6 +49,27 @@ class VclaimHelper
         }
     }
 
+
+    public static function generateRandomTimesInOrder($startDate, $endDate, $count) {
+        // Mengonversi tanggal mulai dan selesai menjadi timestamp
+        $startTimestamp = strtotime($startDate);
+        $endTimestamp = strtotime($endDate);
+    
+        // Daftar untuk menyimpan waktu acak
+        $randomTimes = [];
+    
+        // Menghasilkan waktu acak
+        for ($i = 0; $i < $count; $i++) {
+            $randomTimestamp = rand($startTimestamp, $endTimestamp);
+            $randomTimes[] = date('Y-m-d H:i', $randomTimestamp);
+        }
+    
+        // Mengurutkan waktu acak
+        sort($randomTimes);
+    
+        return $randomTimes;
+    }
+
     public static function cek_dxgizi($iddx,$dx){
         $gizi = AsuhanGizi::where('idrawat', $iddx)->first();
         if($gizi == 'null' || $gizi == null || $gizi == ''){

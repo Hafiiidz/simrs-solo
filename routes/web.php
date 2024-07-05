@@ -62,6 +62,36 @@ use App\Http\Controllers\DetailRekapMedisController;
 
 
 // if (config('app.env') == 'local') {
+    Route::get('/get-data-histori', function () {
+        $rawat = Rawat::find(54140);
+        if($rawat){
+            
+            // $transaksi = DB::table('transaksi')->where('kode_kunjungan',$rawat->id)->orderBy('id','asc')->get();
+            $transaksi = DB::table('transaksi_detail_bill')->where('idrawat',$rawat->id)->orderBy('id','asc')->first();
+            $transaksi_rinci = DB::table('transaksi_detail_rinci')
+            ->select([
+                'tarif.nama_tarif',
+                'tgl',
+                'transaksi_detail_rinci.tarif'
+            ])
+            ->join('tarif','transaksi_detail_rinci.idtarif','=','tarif.id')
+            ->where('idtransaksi',$transaksi->idtransaksi)->orWhere(function ($query) use($rawat){
+                $query->where('idrawat', $rawat->id);
+            })->orderBy('transaksi_detail_rinci.id','asc')->groupBy('idtarif')->get();
+            $randomTimes = VclaimHelper::generateRandomTimesInOrder($rawat->tglmasuk, $rawat->tglpulang, count($transaksi_rinci));
+            // $transaksi_all = DB::table('transaksi_detail_bill')->where('idtransaksi',$transaksi->idtransaksi)->orderBy('id','asc')->get();
+            foreach ($transaksi_rinci as $index => $item) {
+                if (isset($randomTimes[$index])) {
+                    $item->waktu = $randomTimes[$index];
+                }
+            }
+            
+            // Convert the result to an array (if necessary)
+            $transaksi_rinci_array = $transaksi_rinci->toArray();
+
+            return $transaksi_rinci_array;
+        }
+    });
     Route::get('/update-data', function () {
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '4000M');
