@@ -163,7 +163,7 @@
                 </table>
             </div>
             <div class="row mt-2">
-                <p>Rincian Resep Kronis</p>
+                <p>Rincian Resep Pribadi</p>
             </div>
             <div class="row mt-2">
                 <div class="table-responsive">
