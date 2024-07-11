@@ -53,7 +53,8 @@
                     </div>
                     <!--begin::Body-->
                     <div class="card-body p-lg-15">
-                        <form>
+                        <form method="POST" id="form-create" action="{{ route('pasien.post-tambah-pasien') }}">
+                            @csrf
                             <div class="row">
                                 <div class="col-md-6">
                                     <h5>Informasi Pasien</h5>
@@ -86,7 +87,8 @@
                                         <label class="col-sm-4 col-form-label text-end">BPJS</label>
                                         <div class="col-sm-8">
                                             <div class="input-group">
-                                                <input type="text" name='bpjs' id='bpjs' class="form-control" required>
+                                                <input type="text" name='bpjs' id='bpjs' class="form-control"
+                                                    required>
                                                 <button class="btn btn-sm btn-primary" type="button"
                                                     id="btn-cari-bpjs">Cari</button>
                                             </div>
@@ -95,7 +97,8 @@
                                     <div class="form-group row mb-3">
                                         <label class="col-sm-4 col-form-label text-end">Nama Pasien</label>
                                         <div class="col-sm-8">
-                                            <input type="text" name='nama_pasien' id='nama_pasien' class="form-control" required>
+                                            <input type="text" name='nama_pasien' id='nama_pasien' class="form-control"
+                                                required>
                                         </div>
                                     </div>
                                     <div class="form-group row mb-3">
@@ -108,7 +111,7 @@
                                             </select>
                                         </div>
                                         <div class="col-sm-4">
-                                            <select name="" class="form-select" id="" required>
+                                            <select name="golongan_darah" class="form-select" id="" required>
                                                 <option value="">-- Gol Darah --</option>
                                                 @foreach ($gol_darah as $gl)
                                                     <option value="{{ $gl->id }}">{{ $gl->golongan_darah }}</option>
@@ -127,11 +130,11 @@
                                         <label class="col-sm-4 col-form-label text-end">Tgl.Lahir</label>
                                         <div class="col-sm-8">
                                             <div class="input-group">
-                                                <input class="form-control" name='tgl_lahir' id='tgl_lahir' placeholder="Pilih Tanggal"
-                                                    id="kt_datepicker_1" />
+                                                <input class="form-control" name='tgl_lahir' id='tgl_lahir'
+                                                    placeholder="Pilih Tanggal" id="kt_datepicker_1" />
                                                 <div class="input-group-text">
-                                                    <input class="form-check-input me-3" type="checkbox" name='baru_lahir'
-                                                        value="1" id="flexCheckDefault" />
+                                                    <input class="form-check-input me-3" type="checkbox"
+                                                        name='baru_lahir' value="1" id="flexCheckDefault" />
                                                     <label class="form-check-label" for="flexCheckDefault">
                                                         Baru Lahir ?
                                                     </label>
@@ -359,6 +362,28 @@
     <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js"></script>
     <script>
+        @if ($message = session('gagal'))
+            Swal.fire({
+                text: '{{ $message }}',
+                icon: "error",
+                buttonsStyling: false,
+                confirmButtonText: "Ok",
+                customClass: {
+                    confirmButton: "btn btn-primary"
+                }
+            });
+        @endif
+        @if ($message = session('berhasil'))
+            Swal.fire({
+                text: '{{ $message }}',
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok",
+                customClass: {
+                    confirmButton: "btn btn-primary"
+                }
+            });
+        @endif
         $(document).on('click', '#btn-edit-rm', function() {
             $('#pasien-kodepasien').prop('readonly', false);
             $('#pasien-kodepasien').val('P-');
@@ -409,7 +434,7 @@
                             $('#jenis_kelamin').val(data.data.peserta.sex);
                             $('#tgl_lahir').val(data.data.peserta.tglLahir);
                             $('#no_hp').val(data.data.peserta.mr.noTelepon);
-                            $('#pasien-kodepasien').val("P-"+data.data.peserta.mr.noMR);
+                            $('#pasien-kodepasien').val("P-" + data.data.peserta.mr.noMR);
                             $('#kepesertaan_bpjs').val(data.data.peserta.jenisPeserta.keterangan);
                         } else {
                             toastr.error(data.message);
@@ -460,7 +485,10 @@
                             $('#jenis_kelamin').val(data.data.peserta.sex);
                             $('#tgl_lahir').val(data.data.peserta.tglLahir);
                             $('#no_hp').val(data.data.peserta.mr.noTelepon);
-                            $('#pasien-kodepasien').val("P-"+data.data.peserta.mr.noMR);
+                            if(data.data.peserta.mr.noMR != null){
+                                $('#pasien-kodepasien').val("P-" + data.data.peserta.mr.noMR);
+                            }
+                            
                             $('#kepesertaan_bpjs').val(data.data.peserta.jenisPeserta.keterangan);
                         } else {
                             toastr.error(data.message);

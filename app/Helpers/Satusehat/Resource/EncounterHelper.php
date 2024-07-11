@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use App\Helpers\SatusehatAuthHelper;
 use Illuminate\Support\Facades\Http;
 use App\Helpers\SatusehatPasienHelper;
-use App\Helpers\Satusehat\Resource\EncounterHelper;
+// use App\Helpers\Satusehat\Resource\EncounterHelper;
 
 class EncounterHelper
 {

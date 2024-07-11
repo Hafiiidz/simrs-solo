@@ -23,6 +23,18 @@ class SatusehatPasienHelper
             return false;        }
 
     }
+    public static function searchPasienNik($nik){
+        $get_token = SatusehatAuthHelper::generate_token();
+        $token = $get_token['access_token'];
+        $url = env('PROD_BASE_URL_SS');
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
+        ->withHeaders([
+            'Authorization' => 'Bearer '.$token,
+        ])
+        ->get($url.'/Patient?identifier=https://fhir.kemkes.go.id/id/nik|'.$nik);
+        
+        return $response->json();
+    }
     public static function searchPasienByNik($nik){
         $pasien = Pasien::where('nik',$nik)->first();
         $get_token = SatusehatAuthHelper::generate_token();

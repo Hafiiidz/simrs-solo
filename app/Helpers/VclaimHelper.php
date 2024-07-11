@@ -8,7 +8,6 @@ use App\Models\Dokter;
 use App\Models\Obat\Obat;
 use App\Models\UserDetail;
 use LZCompressor\LZString;
-use App\Helpers\VclaimHelper;
 use App\Models\Pasien\Pasien;
 use App\Models\Gizi\AsuhanGizi;
 use Illuminate\Support\Facades\DB;

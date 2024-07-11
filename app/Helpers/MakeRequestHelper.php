@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Helpers;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cookie;
@@ -17,11 +18,26 @@ class MakeRequestHelper
         }
         
         if ($data) {
-            $response = Http::withHeaders($token['signature'])
-            ->withOptions(["verify" => $token['ssl']])
-            ->{$method}(config('app.url_vclaim_prod').$url,$data);
-            // return $response;
-        
+            $client = new Client();
+            $response = $client->request($method, config('app.url_vclaim_prod').$url, [
+                'headers' =>$token['signature'],
+                'json' => $data
+            ]);
+            if ($response->getStatusCode() == 200) {
+                // return $response['response'];
+                $responseBody = $response->getBody();
+                $responseData = json_decode($responseBody, true);
+                $data_response = VclaimAuthHelper::stringDecrypt($token['key'], $responseData['response']);
+                $data_response = VclaimAuthHelper::decompress($data_response);
+                $data_response = json_decode($data_response, true);
+                return [
+                    'metaData'=>$responseData['metaData'],
+                    'response'=>$data_response,
+                ];
+            } else {
+                return json_decode($response->getBody(),true);
+            }        
+            return $response;
         } else {
             $response = Http::withHeaders($token['signature'])
             ->withOptions(["verify" => $token['ssl']])
@@ -30,7 +46,6 @@ class MakeRequestHelper
         }
 
         if ($response->status() == 200) {
-            // return $response['response'];
             $data_response = VclaimAuthHelper::stringDecrypt($token['key'], $response['response']);
             $data_response = VclaimAuthHelper::decompress($data_response);
             $data_response = json_decode($data_response, true);
@@ -42,20 +57,21 @@ class MakeRequestHelper
             return $response;
         }
     
-        // if ($response->status() == 401) {
-        //     session()->forget('sso.token');
-        //     return redirect()->route('login');
-        // }
-    
         return $response;
     }
 
-    // public static function permissions($aksi){
-    //     $permissions = session()->get('sso.permissions');
-    //     if (in_array($aksi, $permissions)) {
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
+    public static function get_prov($idkel){
+        $kelurahan = DB::table('kelurahan')->where('id_kel',$idkel)->first();
+        $kecamatan = DB::table('kecamatan')->where('id_kec',$kelurahan?->id_kec)->first();
+        $kabupaten = DB::table('kabupaten')->where('id_kab',$kecamatan?->id_kab)->first();
+        $provinsi = DB::table('provinsi')->where('id_prov',$kabupaten?->id_prov)->first();
+
+        return [
+            'id_kel'=>$idkel,
+            'id_kec'=>$kecamatan->id_kec,
+            'id_kab'=>$kabupaten->id_kab,
+            'id_prov'=>$provinsi->id_prov,
+        ];
+    }
+
 }

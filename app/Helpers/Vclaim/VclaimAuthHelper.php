@@ -60,7 +60,7 @@ class VclaimAuthHelper
                     'X-timestamp' => $tStamp,
                     'X-signature' => $encodedSignature,
                     'user_key' => config('app.userkey_vclaim_prod'),
-                    "Content-Type" => "application/json"
+                    "Content-Type" => "application/x-www-form-urlencoded"
                 ],
                 'ssl' => false,
                 'key' =>  config('app.consid_vclaim_prod') . config('app.secretkey_vclaim_prod') . $tStamp

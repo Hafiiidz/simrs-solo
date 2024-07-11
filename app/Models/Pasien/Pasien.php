@@ -2,13 +2,14 @@
 
 namespace App\Models\Pasien;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\Pasien\Agama;
 use App\Models\Pasien\Alamat;
 use App\Models\RekapMedis\RekapMedis;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Pasien extends Model
 {
@@ -27,6 +28,11 @@ class Pasien extends Model
     public function alamat(): HasOne
     {
         return $this->hasOne(Alamat::class, 'idpasien');
+    }
+  
+    public function agama(): HasOne
+    {
+        return $this->hasOne(Agama::class, 'id','idagama');
     }
 
     /**

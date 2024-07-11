@@ -2,16 +2,56 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
+use App\Models\Obat\Obat;
 use Illuminate\Http\Request;
 use App\Models\Pasien\Pasien;
+use App\Helpers\MakeRequestHelper;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Helpers\SatusehatPasienHelper;
+use App\Helpers\SatusehatResourceHelper;
 use Yajra\DataTables\Facades\DataTables;
 use App\Helpers\Vclaim\VclaimPesertaHelper;
 
 class PasienController extends Controller
 {
     
+    public function rekammedis_detail($id){
+        $pasien = Pasien::find($id);
+        $detail_rekap_medis = DB::table('demo_detail_rekap_medis')
+        ->select([
+            'demo_detail_rekap_medis.*',
+        ])
+        ->join('rawat','rawat.id','=','demo_detail_rekap_medis.idrawat')
+        ->where('no_rm',$pasien->no_rm)
+        ->whereIn('rawat.status',[4])
+        ->orderBy('id','desc')
+        ->first();
+        // $pfisik = json_decode($detail_rekap_medis->pemeriksaan_fisik);
+        $pemeriksaan_fisik = json_decode($detail_rekap_medis?->pemeriksaan_fisik) ?? 0;
+        $terapi_obat = $detail_rekap_medis->terapi_obat;
+        // return $terapi_obat;
+        $obat = Obat::with('satuan')->where('nama_obat','!=','')->orderBy('obat.nama_obat', 'asc')->get();
+        // return $pemeriksaan_fisik;
+        $soap_icdx = DB::table('soap_rajalicdx')
+        ->select([
+            'soap_rajalicdx.icd10',
+            'rawat.tglmasuk',
+        ])
+        ->join('rawat','rawat.id','=','soap_rajalicdx.idrawat')
+        ->where('idrm',$pasien->id)
+        ->where('idjenisdiagnosa',1)
+        ->orderBy('soap_rajalicdx.id','desc')
+        ->limit(3)
+        ->get();
+        $penunjang = DB::table('demo_permintaan_penunjang')->where('no_rm', $pasien->no_rm)->where('status_pemeriksaan','Selesai')->orderBy('created_at','desc')->limit(5)->get();
+        $radiologi = DB::table('radiologi_tindakan')->get();
+        $lab = DB::table('laboratorium_pemeriksaan')->get();
+        $fisio = DB::table('tarif')->where('idkategori', 8)->get();
+        // return $soap_icdx;
+        return view('pasien.detail',compact('pasien','detail_rekap_medis','pemeriksaan_fisik','soap_icdx','penunjang','radiologi','lab','fisio','terapi_obat','obat'));
+    }
     public function index()
     {
         if (request()->ajax()) {
@@ -19,7 +59,7 @@ class PasienController extends Controller
 
             return DataTables::of($pasien)
                 ->addColumn('opsi', function (Pasien $pasien) {
-                    return '<a href="' . route('rekap-medis-index', $pasien->id) . '" class="btn btn-sm btn-success">Rekam Medis</a>';
+                    return '<a href="' . route('pasien.rekammedis_detail', $pasien->id) . '" class="btn btn-sm btn-success">Rekam Medis</a>';
                 })
                 ->rawColumns(['opsi'])
                 ->make();
@@ -34,15 +74,6 @@ class PasienController extends Controller
         $provinsi = DB::table('provinsi')->where('id_prov', $data_kota->id_prov)->first();
 
         return [
-            // 'idkel'=> $data_kelurahan->id_kel,
-            // 'idkec'=> $data_kecamatan->id_kec,
-            // 'idkab'=> $data_kota->id_kab,
-            // 'idprov'=> $provinsi->id_prov,
-
-            // 'provinsi' => $provinsi->nama,
-            // 'kelurahan' => $data_kelurahan->nama,
-            // 'kecamatan' => $data_kecamatan->nama,
-            // 'kota' => $data_kota->nama
             'id'=> $data_kelurahan->id_kel,
             'text'=> $data_kelurahan->nama.', '.$data_kecamatan->nama.', '.$data_kota->nama.', '.$provinsi->nama
         ];
@@ -58,6 +89,115 @@ class PasienController extends Controller
             'result' => $result
         ]);
     }
+    public function store(Request $request){
+        // return $request->all();
+    $validatedData = $request->validate([
+        'no_rm' => 'required|string|max:255',
+        'nik' => 'required|string|max:255',
+        'bpjs' => 'required|string|max:255',
+        'nama_pasien' => 'required|string|max:255',
+        'jenis_kelamin' => 'required|string|max:1',
+        'golongan_darah' => 'required|string|max:2',
+        'tempat_lahir' => 'required|string|max:255',
+        'tgl_lahir' => 'required|date',
+        'no_hp' => 'required|string|max:15',
+        'email' => 'nullable|string|email|max:255',
+        'kepesertaan_bpjs' => 'required|string|max:255',
+        'status_pasien' => 'required|string|max:1',
+        'id_agama' => 'required|integer',
+        'id_etnis' => 'required|integer',
+        'id_pendidikan' => 'required|integer',
+        'id_hubungan_pernikakan' => 'required|integer',
+        'id_hambatan' => 'required|integer',
+    ]);
+
+    DB::beginTransaction();
+    try {
+        $no_rm = explode('-', $request->no_rm);
+        $data_alamat = MakeRequestHelper::get_prov($request->id_kel);
+        $tanggal = date('Y-m-d H:i:s',strtotime('+7 hour',strtotime(date('Y-m-d H:i:s'))));				
+        $date1=date_create($request->tgl_lahir);
+        $date2=date_create($tanggal);
+        $diff=date_diff($date1,$date2);
+
+        date_default_timezone_set('UTC');
+		$tStamp = strval(time()-strtotime('1970-01-01 00:00:00'));
+        $pasienId = DB::table('pasien')->insertGetId([
+            'kodepasien' => $request->no_rm,
+            'no_rm' => $no_rm[1],
+            'nik' => $request->nik ?? $tStamp.$no_rm[1],
+            'no_bpjs' => $request->bpjs ?? $tStamp.$no_rm[1],
+            'nama_pasien' => $request->nama_pasien,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'idgolongan_darah' => $request->golongan_darah,
+            'tempat_lahir' => $request->tempat_lahir,
+            'tgllahir' => $request->tgl_lahir,
+            'nohp' => $request->no_hp,
+            'email' => $request->email,
+            'kepesertaan_bpjs' => $request->kepesertaan_bpjs,
+            'status_pasien' => $request->status_pasien,
+            'idagama' => $request->id_agama,
+            'idetnis' => $request->id_etnis,
+            'idpendidikan' => $request->id_pendidikan,
+            'idhubungan' => $request->id_hubungan_pernikakan,
+            'idhambatan' => $request->id_hambatan,
+            'penanggung_jawab' => $request->penanggung_jawab,
+            'idsb_penanggungjawab' => $request->hubungan,
+            'nohp_penanggungjawab' => $request->no_tlp_penanggung_jawab,
+            'alamat_penanggunjawab' => $request->alamat_penanggung_jawab,
+            'pangkat' => $request->pangkat,
+            'kesatuan' => $request->kesatuan,
+            'nrp' => $request->nrp,
+            'idpekerjaan' => $request->id_pekerjaan,
+            'barulahir' => $request->baru_lahir,
+            'pasien_lama' => $request->pasien_lama,
+            'usia_tahun' => $diff->format("%y"),
+            'usia_bulan' => $diff->format("%m"),
+            'usia_hari' => $diff->format("%d"),
+            'jamdaftar'=>date('H:i:s'),
+            'kunjungan_terakhir'=>date('Y-m-d'),
+        ]);
+
+        DB::table('pasien_alamat')->insert([
+            'idpasien' => $pasienId,
+            'idprov' => $data_alamat['id_prov'],
+            'idkab' => $data_alamat['id_kab'],
+            'idkel' => $data_alamat['id_kel'],
+            'idkec' => $data_alamat['id_kec'],
+            'no_rm' => $no_rm[1],
+            'alamat' => $request->alamat,
+            'updated' => now(),
+            'user_update' => auth()->user()->id,
+            'utama' => 1
+        ]);
+
+        DB::table('pasien_status')->insert([
+            'idpasien' => $pasienId,
+            'idstatus' => $request->status_pasien,
+            'pangkat' => $request->pangkat,
+            'kesatuan' => $request->kesatuan,
+            'nrp' => $request->nrp,
+            'keterangan' => $request->keterangan,
+            'no_rm' => $no_rm[1],
+        ]);
+
+        $get_satu_sehat = SatusehatPasienHelper::searchPasienNik($request->nik);
+        if (isset($get_satu_sehat['total']) && $get_satu_sehat['total'] > 0) {
+            Pasien::find($pasienId)->update([
+                'ihs' => $get_satu_sehat['entry'][0]['resource']['id']
+            ]);
+        } else {
+            SatusehatPasienHelper::add_pasien($no_rm[1]);
+        }
+
+        DB::commit();
+        return redirect(route('rekap-medis-index',$pasienId))->with('berhasil', 'Data berhasil di input');
+    } catch (Exception $e) {
+        DB::rollBack();
+        return  $e->getMessage();
+        return back()->with('gagal', $e->getMessage());
+    }
+}
 
     public function tambah_pasien_baru(){
         $pasien = new Pasien();
