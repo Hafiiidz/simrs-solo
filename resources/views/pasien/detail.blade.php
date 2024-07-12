@@ -33,6 +33,11 @@
                         </ul>
                         <!--end::Breadcrumb-->
                     </div>
+
+                    <div class="d-flex align-items-center gap-2 gap-lg-3">
+                        <a href="#" class="btn btn-sm fw-bold btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#kt_modal_new_target">Tambah Kunjungan</a>
+                    </div>
                     <!--end::Page title-->
                 </div>
                 <!--end::Toolbar wrapper-->
@@ -352,6 +357,19 @@
                                                         <td>{{ $icd->tglmasuk }}</td>
                                                     </tr>
                                                 @endforeach
+                                                @foreach ($detail_rekap_medis_all as $dl)
+                                                    @if ($dl->icdx && json_decode($dl->icdx))
+                                                        @foreach (json_decode($dl->icdx) as $ix)
+                                                            @if ($ix->jenis_diagnosa == 'P')
+                                                                <tr>
+                                                                    <td>{{ $ix->diagnosa_icdx }}</td>
+                                                                    <td>{{ $dl->created_at }}</td>
+                                                                </tr>
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
+                                                @endforeach
+
                                             </tbody>
                                         </table>
                                     </div>
@@ -563,8 +581,38 @@
                                                 </div>
                                                 <!--end::Timeline content-->
                                             </div>
-                                            
 
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="card-title">Riwayat Kunjungan</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="col-md-12">
+                                            <table id="tbl-riwayat"
+                                                class="table align-middle table-hover table-striped table-row-dashed  gy-5 gs-7 rounded">
+                                                <thead>
+                                                    <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+                                                        <th>Jenis Rawat</th>
+                                                        <th>Jenis Bayar</th>
+                                                        <th>Nama Poli / Spesialis</th>
+                                                        <th>Dokter</th>
+                                                        <th>Tgl. Masuk</th>
+                                                        <th>Tgl. Pulang</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="fs-7">
+
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
@@ -577,4 +625,59 @@
     </div>
 @endsection
 @section('js')
+    <script>
+        $(function() {
+            $("#tbl-riwayat").DataTable({
+                "language": {
+                    "lengthMenu": "Show _MENU_",
+                },
+                "dom": "<'row'" +
+                    "<'col-sm-6 d-flex align-items-center justify-conten-start'l>" +
+                    "<'col-sm-6 d-flex align-items-center justify-content-end'f>" +
+                    ">" +
+
+                    "<'table-responsive'tr>" +
+
+                    "<'row'" +
+                    "<'col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start'i>" +
+                    "<'col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end'p>" +
+                    ">",
+                processing: true,
+                serverSide: true,
+                search: {
+                    return: true
+                },
+                ajax: '{{ url()->current() }}',
+                columns: [{
+                        data: 'jenis',
+                        name: 'rawat_jenis.jenis'
+                    },
+                    {
+                        data: 'bayar',
+                        name: 'rawat_bayar.bayar'
+                    },
+                    {
+                        data: 'poli',
+                        name: 'poli.poli'
+                    },
+                    {
+                        data: 'nama_dokter',
+                        name: 'dokter.nama_dokter'
+                    },
+                    {
+                        data: 'tglmasuk',
+                        name: 'tglmasuk'
+                    },
+                    {
+                        data: 'tglpulang',
+                        name: 'tglpulang'
+                    },
+                    {
+                        data: 'status',
+                        name: 'rawat_status.status'
+                    }
+                ]
+            });
+        });
+    </script>
 @endsection

@@ -28,9 +28,20 @@ class PasienController extends Controller
         ->whereIn('rawat.status',[4])
         ->orderBy('id','desc')
         ->first();
+        $detail_rekap_medis_all = DB::table('demo_detail_rekap_medis')
+        ->select([
+            'demo_detail_rekap_medis.*',
+        ])
+        ->join('rawat','rawat.id','=','demo_detail_rekap_medis.idrawat')
+        ->where('no_rm',$pasien->no_rm)
+        ->whereIn('rawat.status',[4])
+        ->orderBy('id','desc')
+        ->limit(5)
+        ->get();
         // $pfisik = json_decode($detail_rekap_medis->pemeriksaan_fisik);
         $pemeriksaan_fisik = json_decode($detail_rekap_medis?->pemeriksaan_fisik) ?? 0;
-        $terapi_obat = $detail_rekap_medis->terapi_obat;
+        $terapi_obat = $detail_rekap_medis?->terapi_obat ?? 'null';
+        $icdx = $detail_rekap_medis->icdx ?? 'null';
         // return $terapi_obat;
         $obat = Obat::with('satuan')->where('nama_obat','!=','')->orderBy('obat.nama_obat', 'asc')->get();
         // return $pemeriksaan_fisik;
@@ -49,8 +60,30 @@ class PasienController extends Controller
         $radiologi = DB::table('radiologi_tindakan')->get();
         $lab = DB::table('laboratorium_pemeriksaan')->get();
         $fisio = DB::table('tarif')->where('idkategori', 8)->get();
+        if(request()->ajax()){
+            $query = DB::table('rawat')->select([
+                'rawat_jenis.jenis', #idjenisrawat
+                'rawat_bayar.bayar',#idbayar
+                'poli.poli',#idpoli
+                'dokter.nama_dokter',#iddokter
+                'rawat.id',
+                'rawat.tglmasuk',
+                'rawat.tglpulang',
+                'rawat_status.status'#status
+            ])
+            ->join('rawat_jenis', 'rawat.idjenisrawat', '=', 'rawat_jenis.id')
+            ->join('rawat_bayar', 'rawat.idbayar', '=', 'rawat_bayar.id')
+            ->join('poli', 'rawat.idpoli', '=', 'poli.id')
+            ->join('dokter', 'rawat.iddokter', '=', 'dokter.id')
+            ->join('rawat_status', 'rawat.status', '=', 'rawat_status.id')
+            ->where('no_rm',$pasien->no_rm)
+            ->orderBy('tglmasuk','desc')
+            ;
+
+            return DataTables::query($query)->make(true);
+        }
         // return $soap_icdx;
-        return view('pasien.detail',compact('pasien','detail_rekap_medis','pemeriksaan_fisik','soap_icdx','penunjang','radiologi','lab','fisio','terapi_obat','obat'));
+        return view('pasien.detail',compact('pasien','detail_rekap_medis','pemeriksaan_fisik','soap_icdx','penunjang','radiologi','lab','fisio','terapi_obat','obat','icdx','detail_rekap_medis_all'));
     }
     public function index()
     {
