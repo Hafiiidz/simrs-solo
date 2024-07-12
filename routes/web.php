@@ -889,7 +889,7 @@ Route::prefix('/rawat-inap')->middleware('auth')->group(function () {
 });
 Route::prefix('/pasien')->middleware('auth')->group(function () {
     Route::get('/', [PasienController::class, 'index'])->name('pasien.index');
-    Route::get('/{id}', [PasienController::class, 'rekammedis_detail'])->name('pasien.rekammedis_detail');
+    Route::get('/view/{id}', [PasienController::class, 'rekammedis_detail'])->name('pasien.rekammedis_detail');
     Route::get('/create', [PasienController::class, 'tambah_pasien_baru'])->name('pasien.tambah-pasien');
     Route::post('/store', [PasienController::class, 'store'])->name('pasien.post-tambah-pasien');
     Route::get('/cari-kelurahan', [PasienController::class, 'cari_kelurahan'])->name('pasien.cari-kelurahan');
