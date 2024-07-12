@@ -329,7 +329,7 @@
 
                 $(this).find('[data-kt-repeater="tindakan_bedah_select"]').select2({
                     ajax: {
-                        url: 'https://new-simrs.rsausulaiman.com/auth/listprosedur2',
+                        url: 'https://local-simrs.rsausulaiman.com/auth/listprosedur2',
                         dataType: 'json',
                         delay: 250,
                         data: function(params) {
@@ -363,7 +363,7 @@
 
                 $('[data-kt-repeater="tindakan_bedah_select"]').select2({
                     ajax: {
-                        url: 'https://new-simrs.rsausulaiman.com/auth/listprosedur2',
+                        url: 'https://local-simrs.rsausulaiman.com/auth/listprosedur2',
                         dataType: 'json',
                         delay: 250,
                         data: function(params) {

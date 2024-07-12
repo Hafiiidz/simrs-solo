@@ -1761,7 +1761,7 @@
 
                     $(this).find('[data-kt-repeater="select2icd9"]').select2({
                         ajax: {
-                            url: 'https://new-simrs.rsausulaiman.com/auth/listprosedur2',
+                            url: 'https://local-simrs.rsausulaiman.com/auth/listprosedur2',
                             dataType: 'json',
                             delay: 250,
                             data: function(params) {
@@ -1794,7 +1794,7 @@
                 ready: function() {
                     $('[data-kt-repeater="select2icd9"]').select2({
                         ajax: {
-                            url: 'https://new-simrs.rsausulaiman.com/auth/listprosedur2',
+                            url: 'https://local-simrs.rsausulaiman.com/auth/listprosedur2',
                             dataType: 'json',
                             delay: 250,
                             data: function(params) {
@@ -1900,7 +1900,7 @@
 
                     $(this).find('[data-kt-repeater="select22"]').select2({
                         ajax: {
-                            url: 'https://new-simrs.rsausulaiman.com/auth/listdiagnosa2',
+                            url: 'https://local-simrs.rsausulaiman.com/auth/listdiagnosa2',
                             dataType: 'json',
                             delay: 250,
                             data: function(params) {
@@ -1933,7 +1933,7 @@
                 ready: function() {
                     $('[data-kt-repeater="select22"]').select2({
                         ajax: {
-                            url: 'https://new-simrs.rsausulaiman.com/auth/listdiagnosa2',
+                            url: 'https://local-simrs.rsausulaiman.com/auth/listdiagnosa2',
                             dataType: 'json',
                             delay: 250,
                             data: function(params) {
