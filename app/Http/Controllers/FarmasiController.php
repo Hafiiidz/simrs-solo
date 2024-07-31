@@ -548,8 +548,7 @@ class FarmasiController extends Controller
         $current_time = round(microtime(true) * 1000); 
 
         VclaimHelper::update_task2($rawat->idrawat,7,$current_time); 
-        Http::withOptions(["verify" => true])
-        ->get(env('URL_SIMRS_LAMA').'/rest/selesai-farmasi?id='.$obat_transaksi_save->id);
+        Http::get('http://117.20.59.250:8012/dashboard/rest/selesai-farmasi?id='.$obat_transaksi_save->id);
         // return $response;
         return back()->with('berhasil', 'Resep Berhasil Di Simpan');
     }

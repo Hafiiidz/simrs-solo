@@ -93,6 +93,7 @@ class LaporanOperasiController extends Controller
         $rawat = Rawat::find($id);
         $rawat_kunjungan = DB::table('rawat_kunjungan')->where('idkunjungan',$rawat?->idkunjungan)->first();
         $transaksi = DB::table('transaksi')->where('idkunjungan',$rawat_kunjungan?->id)->first();
+        // return $transaksi;
         DB::beginTransaction();
         try {
             foreach($request->asisten as $tindakan){
@@ -109,7 +110,7 @@ class LaporanOperasiController extends Controller
                     'harga_tindakan'=>$tarif->tarif,
                 ];
                 DB::table('operasi_tindakan')->insert($data);
-                $transaksi_detail = DB::table('transaksi_detail_rinci')->insert([
+                DB::table('transaksi_detail_rinci')->insert([
                     'idtransaksi'=>$transaksi->id,
                     'idtarif'=>$tindakan['tindakan_bedah'],
                     'idrawat'=>$id,
