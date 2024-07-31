@@ -582,7 +582,7 @@
                                                                         class="btn btn-info btn-sm"
                                                                         target="_blank">Print</a> --}}
                                                                         
-                                                                    <a href="https://live.simrs.rsaudrsiswanto.co.id/dashboard/radiologi-order/hasil-print?id={{ $pld->id }}"    class="btn btn-info btn-sm"
+                                                                    <a href="https://local-simrs.rsaudrsiswanto.co.id/dashboard/radiologi-order/hasil-print?id={{ $pld->id }}"    class="btn btn-info btn-sm"
                                                                         target="_blank">Print</a>
                                                                 @endif
 
