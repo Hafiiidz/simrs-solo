@@ -13,7 +13,7 @@ class VclaimPesertaHelper
     public static function getPesertaBPJS($noKartu, $tgl)
     {
         try {
-            $response = MakeRequestHelper::makeRequest('get','/Peserta/nokartu/' . $noKartu . '/tglSEP/' . $tgl);
+            $response = MakeRequestHelper::makeRequest('get-peserta-bpjs','get','/Peserta/nokartu/' . $noKartu . '/tglSEP/' . $tgl);
             return $response;           
         } catch (\Exception $e) {
             return [
@@ -24,7 +24,7 @@ class VclaimPesertaHelper
     public static function getPesertaNIK($nik, $tgl)
     {
         try {
-            $response = MakeRequestHelper::makeRequest('get','/Peserta/nik/' . $nik . '/tglSEP/' . $tgl);
+            $response = MakeRequestHelper::makeRequest('get-peserta-nik','get','/Peserta/nik/' . $nik . '/tglSEP/' . $tgl);
             return $response;           
         } catch (\Exception $e) {
             return [

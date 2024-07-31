@@ -13,7 +13,7 @@ class VclaimReferensiHelper
     public static function getDiagnosa($kode)
     {
         try {
-            $response = MakeRequestHelper::makeRequest('get','/referensi/diagnosa/'.$kode);
+            $response = MakeRequestHelper::makeRequest('get-diagnosa','get','/referensi/diagnosa/'.$kode);
             return $response;           
         } catch (\Exception $e) {
             return [
@@ -24,7 +24,7 @@ class VclaimReferensiHelper
     public static function getPoli($poli)
     {
         try {
-            $response = MakeRequestHelper::makeRequest('get','referensi/poli/'.$poli);
+            $response = MakeRequestHelper::makeRequest('get-poli','get','referensi/poli/'.$poli);
             return $response;           
         } catch (\Exception $e) {
             return [
@@ -35,7 +35,7 @@ class VclaimReferensiHelper
     public static function getFaskes($nama,$jenis)
     {
         try {
-            $response = MakeRequestHelper::makeRequest('get','/referensi/faskes/'.$nama.'/'.$jenis);
+            $response = MakeRequestHelper::makeRequest('get-faskes','get','/referensi/faskes/'.$nama.'/'.$jenis);
             return $response;           
         } catch (\Exception $e) {
             return [
@@ -46,7 +46,7 @@ class VclaimReferensiHelper
     public static function getDPJP($jenis_pelayanan,$tgl_pelayanan,$kode_spesialis) // (Pencarian data dokter DPJP untuk pengisian DPJP Layan)
     {
         try {
-            $response = MakeRequestHelper::makeRequest('get','/referensi/dokter/pelayanan/'.$jenis_pelayanan.'/tglPelayanan/'.$tgl_pelayanan.'/Spesialis/'.$kode_spesialis);
+            $response = MakeRequestHelper::makeRequest('get-dpjp','get','/referensi/dokter/pelayanan/'.$jenis_pelayanan.'/tglPelayanan/'.$tgl_pelayanan.'/Spesialis/'.$kode_spesialis);
             return $response;           
         } catch (\Exception $e) {
             return [
@@ -57,7 +57,7 @@ class VclaimReferensiHelper
     public static function getProvinsi()
     {
         try {
-            $response = MakeRequestHelper::makeRequest('get','/referensi/propinsi/');
+            $response = MakeRequestHelper::makeRequest('get-provinsi','get','/referensi/propinsi/');
             return $response;           
         } catch (\Exception $e) {
             return [
@@ -68,7 +68,7 @@ class VclaimReferensiHelper
     public static function getKabupaten($id)
     {
         try {
-            $response = MakeRequestHelper::makeRequest('get','/referensi/kabupaten/propinsi/'.$id);
+            $response = MakeRequestHelper::makeRequest('get-kabupaten','get','/referensi/kabupaten/propinsi/'.$id);
             return $response;           
         } catch (\Exception $e) {
             return [
@@ -79,7 +79,7 @@ class VclaimReferensiHelper
     public static function getKecamatan($id)
     {
         try {
-            $response = MakeRequestHelper::makeRequest('get','/referensi/kecamatan/kabupaten/'.$id);
+            $response = MakeRequestHelper::makeRequest('get-kecamatan','get','/referensi/kecamatan/kabupaten/'.$id);
             return $response;           
         } catch (\Exception $e) {
             return [
@@ -90,7 +90,7 @@ class VclaimReferensiHelper
     public static function getDiagnosaprb()
     {
         try {
-            $response = MakeRequestHelper::makeRequest('get','/referensi/diagnosaprb');
+            $response = MakeRequestHelper::makeRequest('get-diagnosa-prb','get','/referensi/diagnosaprb');
             return $response;           
         } catch (\Exception $e) {
             return [
@@ -101,7 +101,7 @@ class VclaimReferensiHelper
     public static function getObatPrb($nama_obat)
     {
         try {
-            $response = MakeRequestHelper::makeRequest('get','/referensi/obatprb/'.$nama_obat);
+            $response = MakeRequestHelper::makeRequest('get-bat-prb','get','/referensi/obatprb/'.$nama_obat);
             return $response;           
         } catch (\Exception $e) {
             return [
@@ -112,7 +112,7 @@ class VclaimReferensiHelper
     public static function getProcedure($kode)
     {
         try {
-            $response = MakeRequestHelper::makeRequest('get','/referensi/procedure/'.$kode);
+            $response = MakeRequestHelper::makeRequest('get-procedure','get','/referensi/procedure/'.$kode);
             return $response;           
         } catch (\Exception $e) {
             return [
@@ -123,7 +123,7 @@ class VclaimReferensiHelper
     public static function getKelasRawat()
     {
         try {
-            $response = MakeRequestHelper::makeRequest('get','/referensi/kelasrawat');
+            $response = MakeRequestHelper::makeRequest('get-kelas-rawat','get','/referensi/kelasrawat');
             return $response;           
         } catch (\Exception $e) {
             return [
@@ -134,7 +134,7 @@ class VclaimReferensiHelper
     public static function getDokter($kode)
     {
         try {
-            $response = MakeRequestHelper::makeRequest('get','/referensi/dokter/'.$kode);
+            $response = MakeRequestHelper::makeRequest('get-dokter','get','/referensi/dokter/'.$kode);
             return $response;           
         } catch (\Exception $e) {
             return [
@@ -145,7 +145,7 @@ class VclaimReferensiHelper
     public static function getSpesialistik()
     {
         try {
-            $response = MakeRequestHelper::makeRequest('get','/referensi/spesialistik');
+            $response = MakeRequestHelper::makeRequest('get-spesialistik','get','/referensi/spesialistik');
             return $response;           
         } catch (\Exception $e) {
             return [
@@ -156,7 +156,7 @@ class VclaimReferensiHelper
     public static function getRuangRawat()
     {
         try {
-            $response = MakeRequestHelper::makeRequest('get','/referensi/ruangrawat');
+            $response = MakeRequestHelper::makeRequest('get-ruang-rawat','get','/referensi/ruangrawat');
             return $response;           
         } catch (\Exception $e) {
             return [
@@ -167,7 +167,7 @@ class VclaimReferensiHelper
     public static function getCaraKeluar()
     {
         try {
-            $response = MakeRequestHelper::makeRequest('get','/referensi/carakeluar');
+            $response = MakeRequestHelper::makeRequest('get-cara-keluar','get','/referensi/carakeluar');
             return $response;           
         } catch (\Exception $e) {
             return [
@@ -178,7 +178,7 @@ class VclaimReferensiHelper
     public static function getPascaPulang()
     {
         try {
-            $response = MakeRequestHelper::makeRequest('get','/referensi/pascapulang');
+            $response = MakeRequestHelper::makeRequest('get-pasca-pulang','get','/referensi/pascapulang');
             return $response;           
         } catch (\Exception $e) {
             return [

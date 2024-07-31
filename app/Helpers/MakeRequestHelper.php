@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Helpers;
+
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -9,69 +10,142 @@ use App\Helpers\Vclaim\VclaimAuthHelper;
 
 class MakeRequestHelper
 {
-    public static function makeRequest($method, $url, $data = null ,$token_jenis=1) {
-        // return $data;
-        if($token_jenis == 1){
+    public static function makeRequest($name_request, $method, $url, $data = null, $token_jenis = 1)
+    {
+        // return $token_jenis;
+        if ($token_jenis == 1) {
             $token = VclaimAuthHelper::getToken();
-        }else{
+            $url_request = config('app.url_vclaim_prod');
+            $metadata = 'metaData';
+        } else {
             $token = VclaimAuthHelper::getTokenAntrol();
+            $url_request = config('app.url_antrian_prod');
+            $metadata = 'metadata';
         }
-        
+        // return $url_request;
+        $startTime = microtime(true);
+
+
         if ($data) {
+            if ($token_jenis != 1) {
+                $response = Http::withHeaders($token['signature'])
+                    ->withOptions(["verify" => $token['ssl']])
+                    ->{$method}($url_request . $url, $data);
+                $endTime = microtime(true);
+                $duration = round($endTime - $startTime, 2);
+                DB::table('demo_log_request_bpjs')->insert([
+                    'url' => $url_request . $url,
+                    'name' => $name_request,
+                    'methhod' => $method,
+                    'data' => json_encode($data, true),
+                    'time_request' => $duration,
+                    'response' => $response,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'message' => $response[$metadata]['message'] ?? 0,
+                    'code' => $response->getStatusCode(),
+                ]);
+                if ($response->status() == 200) {
+                    $data_response = VclaimAuthHelper::stringDecrypt($token['key'], $response['response']);
+                    $data_response = VclaimAuthHelper::decompress($data_response);
+                    $data_response = json_decode($data_response, true);
+                    return [
+                        'metaData' => $response[$metadata],
+                        'response' => $data_response,
+                        'duration' => $duration,
+                    ];
+                } else {
+                    return $response;
+                }
+            }
             $client = new Client();
-            $response = $client->request($method, config('app.url_vclaim_prod').$url, [
-                'headers' =>$token['signature'],
+            $response = $client->request($method, $url_request . $url, [
+                'headers' => $token['signature'],
                 'json' => $data
             ]);
+            $endTime = microtime(true);
+            $duration = round($endTime - $startTime, 2);
+            $responseBody = $response->getBody();
+            $responseData = json_decode($responseBody, true);
+            DB::table('demo_log_request_bpjs')->insert([
+                'url' => $url_request . $url,
+                'name' => $name_request,
+                'methhod' => $method,
+                'data' => json_encode($data['request'], true),
+                'time_request' => $duration,
+                'created_at' => date('Y-m-d H:i:s'),
+                'response' => isset($responseData[$metadata]) ? json_encode($responseData[$metadata], true) : '0',
+                'message' => $responseData[$metadata]['message'] ?? 'Server Lost',
+                'code' => $response->getStatusCode(),
+            ]);
+
+
             if ($response->getStatusCode() == 200) {
                 // return $response['response'];
-                $responseBody = $response->getBody();
-                $responseData = json_decode($responseBody, true);
+
                 $data_response = VclaimAuthHelper::stringDecrypt($token['key'], $responseData['response']);
                 $data_response = VclaimAuthHelper::decompress($data_response);
                 $data_response = json_decode($data_response, true);
                 return [
-                    'metaData'=>$responseData['metaData'],
-                    'response'=>$data_response,
+                    'metaData' => $responseData[$metadata],
+                    'response' => $data_response,
+                    'duration' => $duration,
                 ];
             } else {
-                return json_decode($response->getBody(),true);
-            }        
+                return json_decode($response->getBody(), true);
+            }
             return $response;
         } else {
             $response = Http::withHeaders($token['signature'])
-            ->withOptions(["verify" => $token['ssl']])
-            ->{$method}(config('app.url_vclaim_prod').$url);
-
+                ->withOptions(["verify" => $token['ssl']])
+                ->{$method}($url_request . $url);
+           
+            $endTime = microtime(true);
+            $duration = round($endTime - $startTime, 2);
+            DB::table('demo_log_request_bpjs')->insert([
+                'url' => $url_request . $url,
+                'name' => $name_request,
+                'methhod' => $method,
+                'time_request' => $duration,
+                'response' => $response ?? 0,
+                'created_at' => date('Y-m-d H:i:s'),
+                'message' => $response[$metadata]['message'] ?? 0,
+                'code' => $response->getStatusCode(),
+            ]);
+            if ($response->status() == 200) {
+                if($response[$metadata]['code'] == 200){
+                    if($token_jenis == 3){
+                        return $response;
+                    }
+                    $data_response = VclaimAuthHelper::stringDecrypt($token['key'], $response['response']);
+                    $data_response = VclaimAuthHelper::decompress($data_response);
+                    $data_response = json_decode($data_response, true);
+                    return [
+                        'metaData' => $response[$metadata],
+                        'response' => $data_response,
+                        'duration' => $duration,
+                    ];
+                }else{
+                    return $response;
+                }
+               
+            } else {
+                return $response;
+            }
         }
-
-        if ($response->status() == 200) {
-            $data_response = VclaimAuthHelper::stringDecrypt($token['key'], $response['response']);
-            $data_response = VclaimAuthHelper::decompress($data_response);
-            $data_response = json_decode($data_response, true);
-            return [
-                'metaData'=>$response['metaData'],
-				'response'=>$data_response,
-            ];
-        } else {
-            return $response;
-        }
-    
-        return $response;
     }
 
-    public static function get_prov($idkel){
-        $kelurahan = DB::table('kelurahan')->where('id_kel',$idkel)->first();
-        $kecamatan = DB::table('kecamatan')->where('id_kec',$kelurahan?->id_kec)->first();
-        $kabupaten = DB::table('kabupaten')->where('id_kab',$kecamatan?->id_kab)->first();
-        $provinsi = DB::table('provinsi')->where('id_prov',$kabupaten?->id_prov)->first();
+    public static function get_prov($idkel)
+    {
+        $kelurahan = DB::table('kelurahan')->where('id_kel', $idkel)->first();
+        $kecamatan = DB::table('kecamatan')->where('id_kec', $kelurahan?->id_kec)->first();
+        $kabupaten = DB::table('kabupaten')->where('id_kab', $kecamatan?->id_kab)->first();
+        $provinsi = DB::table('provinsi')->where('id_prov', $kabupaten?->id_prov)->first();
 
         return [
-            'id_kel'=>$idkel,
-            'id_kec'=>$kecamatan->id_kec,
-            'id_kab'=>$kabupaten->id_kab,
-            'id_prov'=>$provinsi->id_prov,
+            'id_kel' => $idkel,
+            'id_kec' => $kecamatan->id_kec,
+            'id_kab' => $kabupaten->id_kab,
+            'id_prov' => $provinsi->id_prov,
         ];
     }
-
 }

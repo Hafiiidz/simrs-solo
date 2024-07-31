@@ -2,6 +2,7 @@
 
 // use GuzzleHttp\Psr7\Request;
 
+use App\Helpers\Antrol\WsBpjsHelper;
 use App\Models\Rawat;
 use App\Jobs\UpdateBilling;
 use Illuminate\Http\Request;
@@ -99,42 +100,7 @@ Route::get('/update-data', function () {
     $data = DB::table('table_satu')->whereNull('billing_lanjut_ranap')->get();
     foreach ($data as $d) {
         UpdateBilling::dispatch($d->icd10);
-        // $data = DB::table('soap_rajalicdx')
-        // ->join('rawat', 'soap_rajalicdx.idrawat', '=', 'rawat.id')
-        // ->leftJoin('transaksi_detail_bill', 'rawat.id', '=', 'transaksi_detail_bill.idrawat')
-        // ->select(
-        //     'rawat.id as rawat_id',
-        //     'rawat.status',
-        //     'transaksi_detail_bill.tarif',
-        //     'soap_rajalicdx.icd10'
-        // )
-        // ->where('soap_rajalicdx.idjenisrawat', 3)
-        // ->where('rawat.idbayar', 2)
-        // ->whereBetween('rawat.tglmasuk', ['2023-01-01 00:00:00', '2023-12-31 23:59:59'])
-        // ->whereIn('rawat.status', [2, 4])
-        // ->where('soap_rajalicdx.icd10', $d->icd10)
-        // ->get();
-
-        // $lanjut_ranap = 0;
-        // $tidak_lanjut_ranap = 0;
-        // $billing_lanjut = 0;
-        // $billing_tidak_lanjut = 0;
-
-        // foreach ($data as $d) {
-        //     if ($d->status == 2) {
-        //         // $lanjut_ranap++;
-        //         $billing_lanjut += $d->tarif;
-        //     } elseif ($d->status == 4) {
-        //         // $tidak_lanjut_ranap++;
-        //         $billing_tidak_lanjut += $d->tarif;
-        //     }
-        // }
-        // DB::table('table_satu')->where('icd10',$d->icd10)->update([
-        //     'billing_lanjut_ranap'=>$billing_lanjut,
-        //     'billing_tidak_lanjut'=>$billing_tidak_lanjut,
-        // ]);
-
-
+     
     }
     return 'aa';
 });
@@ -173,68 +139,7 @@ Route::get('/get-lab', function () {
 Route::get('/get-data', function () {
     ini_set('max_execution_time', 0);
     ini_set('memory_limit', '4000M');
-    // $results = DB::table('soap_rajalicdx')
-    //     ->join('rawat', 'soap_rajalicdx.idrawat', '=', 'rawat.id')
-    //     ->select('soap_rajalicdx.icd10', DB::raw('COUNT(*) as jumlah'))
-    //     ->where('soap_rajalicdx.idjenisrawat', 3)
-    //     ->where('rawat.idbayar', 2)
-    //     ->whereBetween('rawat.tglmasuk', ['2023-01-01 00:00:00', '2023-12-31 23:59:59'])
-    //     ->where('rawat.status', '!=', 5)
-    //     ->whereNotNull('soap_rajalicdx.icd10')
-    //     ->where('soap_rajalicdx.icd10', '!=', '')
-    //     ->groupBy('soap_rajalicdx.icd10')
-    //     ->orderBy('jumlah', 'DESC')
-    //     // ->limit(10)
-    //     ->get();
 
-    // $array = [];
-
-    // foreach ($results as $rs) {
-    //     // Mengambil data lanjut ranap dan tidak lanjut ranap dalam satu query
-    //     $data = DB::table('soap_rajalicdx')
-    //         ->join('rawat', 'soap_rajalicdx.idrawat', '=', 'rawat.id')
-    //         ->leftJoin('transaksi_detail_bill', 'rawat.id', '=', 'transaksi_detail_bill.idrawat')
-    //         ->select(
-    //             'rawat.id as rawat_id',
-    //             'rawat.status',
-    //             'transaksi_detail_bill.tarif',
-    //             'soap_rajalicdx.icd10'
-    //         )
-    //         ->where('soap_rajalicdx.idjenisrawat', 3)
-    //         ->where('rawat.idbayar', 2)
-    //         ->whereBetween('rawat.tglmasuk', ['2023-01-01 00:00:00', '2023-12-31 23:59:59'])
-    //         ->whereIn('rawat.status', [2, 4])
-    //         ->where('soap_rajalicdx.icd10', $rs->icd10)
-    //         ->get();
-
-    //     $lanjut_ranap = 0;
-    //     $tidak_lanjut_ranap = 0;
-    //     $billing_lanjut = 0;
-    //     $billing_tidak_lanjut = 0;
-
-    //     foreach ($data as $d) {
-    //         if ($d->status == 2) {
-    //             $lanjut_ranap++;
-    //             $billing_lanjut += $d->tarif;
-    //         } elseif ($d->status == 4) {
-    //             $tidak_lanjut_ranap++;
-    //             $billing_tidak_lanjut += $d->tarif;
-    //         }
-    //     }
-
-    //     $array[] = [
-    //         'kode_rs' => '3313022',
-    //         'icd10' => $rs->icd10,
-    //         'jumlah' => $rs->jumlah,
-    //         'lanjut_ranap' => $lanjut_ranap,
-    //         'billing_lanjut' => $billing_lanjut,
-    //         'tidak_lanjut_ranap' => $tidak_lanjut_ranap,                
-    //         'billing_tidak_lanjut' => $billing_tidak_lanjut,
-    //         'total_biling' => $billing_tidak_lanjut+$billing_lanjut,
-    //     ];
-    // }
-
-    // return $array;
     $results = DB::table('soap_rajalicdx')
         ->join('rawat', 'soap_rajalicdx.idrawat', '=', 'rawat.id')
         ->select(
@@ -267,6 +172,18 @@ Route::get('/get-data', function () {
     });
 
     return $array;
+});
+Route::get('/tes-antrol', function () {
+    $referensi_poli = WsBpjsHelper::referensi_poli();
+    $referensi_poli_fp = WsBpjsHelper::referensi_poli_fp();
+    $referensi_jadwaldokter = WsBpjsHelper::referensi_jadwaldokter('ANA',date('Y-m-d'));
+    $referensi_pasien_fp = WsBpjsHelper::referensi_pasien_fp('nik','3204102601980002');
+    $post_list_taks = WsBpjsHelper::post_list_taks('RJ2024629050001');
+    $get_dashboard_tgl = WsBpjsHelper::get_dashboard_tgl('2024-07-30','server');
+    $get_antrean_tgl = WsBpjsHelper::get_antrean_tgl('2024-07-31');
+    $get_antrean_kode = WsBpjsHelper::get_antrean_kode('RJ2024213530005');
+    $get_antrean_belum = WsBpjsHelper::get_antrean_belum();
+    return $get_antrean_belum;
 });
 Route::get('/tes-rujukan', function () {
     $getPeserta = VclaimPesertaHelper::getPesertaBPJS('0000570582369', date('Y-m-d'));
@@ -891,7 +808,9 @@ Route::prefix('/pasien')->middleware('auth')->group(function () {
     Route::get('/', [PasienController::class, 'index'])->name('pasien.index');
     Route::get('/view/{id}', [PasienController::class, 'rekammedis_detail'])->name('pasien.rekammedis_detail');
     Route::get('/create', [PasienController::class, 'tambah_pasien_baru'])->name('pasien.tambah-pasien');
+    Route::get('/create-kunjungan/{id}/{jenis}', [PasienController::class, 'tambah_kunjungan'])->name('pasien.tambah-kunjungan');
     Route::post('/store', [PasienController::class, 'store'])->name('pasien.post-tambah-pasien');
+    Route::post('/check-password', [PasienController::class, 'check_password'])->name('pasien.check-password');
     Route::get('/cari-kelurahan', [PasienController::class, 'cari_kelurahan'])->name('pasien.cari-kelurahan');
 
     //Rekam Medis

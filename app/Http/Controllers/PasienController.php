@@ -3,16 +3,20 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use App\Models\Poli;
 use App\Models\Obat\Obat;
 use Illuminate\Http\Request;
 use App\Models\Pasien\Pasien;
 use App\Helpers\MakeRequestHelper;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Helpers\SatusehatPasienHelper;
 use App\Helpers\SatusehatResourceHelper;
 use Yajra\DataTables\Facades\DataTables;
 use App\Helpers\Vclaim\VclaimPesertaHelper;
+use App\Helpers\Vclaim\VclaimSepHelper;
 
 class PasienController extends Controller
 {
@@ -83,7 +87,9 @@ class PasienController extends Controller
             return DataTables::query($query)->make(true);
         }
         // return $soap_icdx;
-        return view('pasien.detail',compact('pasien','detail_rekap_medis','pemeriksaan_fisik','soap_icdx','penunjang','radiologi','lab','fisio','terapi_obat','obat','icdx','detail_rekap_medis_all'));
+        $cek_credential = DB::table('demo_erm_check')->where('pasien_id',$pasien->id)->where('user_id',auth()->user()->id)->whereDate('date_time',date('Y-m-d'))->count();
+       
+        return view('pasien.detail',compact('cek_credential','pasien','detail_rekap_medis','pemeriksaan_fisik','soap_icdx','penunjang','radiologi','lab','fisio','terapi_obat','obat','icdx','detail_rekap_medis_all'));
     }
     public function index()
     {
@@ -283,4 +289,29 @@ class PasienController extends Controller
 
     }
     
+    public function tambah_kunjungan($id,$jenis){
+        $pasien = Pasien::find($id);
+        $poli = Poli::get();
+        $cek_finger_print = VclaimSepHelper::get_finger_print($pasien->no_bpjs,date('Y-m-d'));
+        return $cek_finger_print;
+        return view('pasien.tambah-kunjungan',compact('pasien','poli'));
+    }
+
+    public function check_password(Request $request){
+        $password = $request->input('password');
+        $user = Auth::user();
+
+        if (Hash::check($password, $user->password_hash)) {
+            $pasien = Pasien::find($request->pasien_id);
+            DB::table('demo_erm_check')->insert([
+                'user_id'=>auth()->user()->id,
+                'pasien_id'=>$request->pasien_id,
+                'date_time'=>now(),
+                'aksi'=>'Membuka data pasien RM '.$pasien->no_rm.''
+            ]);
+            return response()->json(['status' => 'success']);
+        } else {
+            return response()->json(['status' => 'fail '.$password], 401);
+        }
+    }
 }

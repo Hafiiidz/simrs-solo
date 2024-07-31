@@ -26,7 +26,7 @@ class VclaimRencanaKontrolHelper
         }
         // return json_encode($post_data);
         try {
-            $response = MakeRequestHelper::makeRequest('post', '/RencanaKontrol/insert', $post_data);
+            $response = MakeRequestHelper::makeRequest('post-insest-rencana-kontrol','post', '/RencanaKontrol/insert', $post_data);
             return $response;
         } catch (\Exception $e) {
             return [
@@ -38,7 +38,7 @@ class VclaimRencanaKontrolHelper
     {
 
         try {
-            $response = MakeRequestHelper::makeRequest('put', '/RencanaKontrol/Update', $post_data);
+            $response = MakeRequestHelper::makeRequest('put-update-rencana-kontrol','put', '/RencanaKontrol/Update', $post_data);
             return $response;
         } catch (\Exception $e) {
             return [
@@ -59,7 +59,7 @@ class VclaimRencanaKontrolHelper
                 )
             );
 
-            return MakeRequestHelper::makeRequest('POST', 'RencanaKontrol/InsertSPRI', $post_data);
+            return MakeRequestHelper::makeRequest('post-insest-spri','post', '/RencanaKontrol/InsertSPRI', $post_data);
         } catch (\Exception $e) {
             return [
                 'error' => $e->getMessage(),

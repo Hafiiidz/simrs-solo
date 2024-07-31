@@ -60,6 +60,6 @@ class VclaimComand extends Command
         $getInsert = VclaimRencanaKontrolHelper::getInsert();
 
 
-        dd($getInsert);
+        dd($getPeserta);
     }
 }

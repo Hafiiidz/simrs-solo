@@ -1,5 +1,16 @@
 @extends('layouts.index')
 @section('css')
+    <style>
+        .blur-background {
+            filter: blur(5px);
+            transition: filter 0.3s;
+        }
+
+        /* Ensure SweetAlert popup is not blurred */
+        .swal2-container {
+            z-index: 10000;
+        }
+    </style>
 @endsection
 @section('content')
     <div class="d-flex flex-column flex-column-fluid">
@@ -35,8 +46,9 @@
                     </div>
 
                     <div class="d-flex align-items-center gap-2 gap-lg-3">
-                        <a href="#" class="btn btn-sm fw-bold btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#kt_modal_new_target">Tambah Kunjungan</a>
+                        <a href="{{ route('pasien.tambah-kunjungan', [$pasien->id, 2]) }}"
+                            class="btn btn-sm fw-bold btn-primary">Tambah Kunjungan</a>
+                        {{-- <a href="{{ route('pasien.tambah-kunjungan',[$pasien->id,1]) }}" class="btn btn-sm fw-bold btn-success" >Tambah Kunjungan Umum</a> --}}
                     </div>
                     <!--end::Page title-->
                 </div>
@@ -626,6 +638,70 @@
 @endsection
 @section('js')
     <script>
+        function promptPassword() {
+            document.getElementById('kt_app_content').classList.add('blur-background');
+            Swal.fire({
+                title: 'Enter your password',
+                input: 'password',
+                inputAttributes: {
+                    autocapitalize: 'off',
+                    required: 'true'
+                },
+                showCancelButton: false,
+                confirmButtonText: 'Submit',
+                showLoaderOnConfirm: true,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                preConfirm: (password) => {
+                    if (!password) {
+                        Swal.showValidationMessage('Password is required');
+                        return false;
+                    } else {
+                        // Here you can add your AJAX request to send the password to the server
+                        return new Promise((resolve) => {
+                            $.ajax({
+                                url: '{{ route('pasien.check-password') }}',
+                                type: 'POST',
+                                data: {
+                                    _token: '{{ csrf_token() }}',
+                                    password: password,
+                                    pasien_id: "{{ $pasien->id }}"
+                                },
+                                success: function(response) {
+                                    console.log(response);
+                                    if (response.status === 'success') {
+                                        resolve(password);
+                                    } else {
+                                        Swal.showValidationMessage('Incorrect password');
+                                        resolve(false);
+                                    }
+                                },
+                                error: function() {
+                                    Swal.showValidationMessage('Request failed');
+                                    resolve(false);
+                                }
+                            });
+                        });
+                    }
+                }
+            }).then((result) => {
+                document.getElementById('kt_app_content').classList.remove('blur-background');
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: `Password submitted`
+                    });
+                } else {
+                    // Reopen the prompt if the user tries to close it without submitting a password
+                    promptPassword();
+                }
+            });
+        }
+
+        // Call the function to prompt for password on page load
+        if({!! $cek_credential !!} < 1){
+            promptPassword();
+        }
+        
         $(function() {
             $("#tbl-riwayat").DataTable({
                 "language": {
