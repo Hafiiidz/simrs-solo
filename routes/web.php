@@ -820,6 +820,7 @@ Route::prefix('/pasien')->middleware('auth')->group(function () {
     Route::get('/get-surat-kontrol', [PasienController::class, 'get_surat_kontrol'])->name('get-surat-kontrol');
     Route::get('/get-pilih-nomer', [PasienController::class, 'get_pilih_nomer'])->name('get-pilih-nomer');
     Route::get('/get-pilih-dokter/{jenis}', [PasienController::class, 'get_pilih_dokter'])->name('get-pilih-dokter');
+    Route::get('/show-sep/{sep}', [PasienController::class, 'show_sep'])->name('show-sep');
 
     //Rekam Medis
     Route::prefix('/bpjs')->middleware('auth')->group(function () {

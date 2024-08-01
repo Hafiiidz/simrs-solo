@@ -83,8 +83,9 @@ class PasienController extends Controller
                 'dokter.nama_dokter', #iddokter
                 'rawat.id',
                 'rawat.tglmasuk',
+                'rawat.no_sep',
                 'rawat.tglpulang',
-                'rawat_status.status' #status
+                'rawat_status.status'
             ])
                 ->join('rawat_jenis', 'rawat.idjenisrawat', '=', 'rawat_jenis.id')
                 ->join('rawat_bayar', 'rawat.idbayar', '=', 'rawat_bayar.id')
@@ -634,5 +635,13 @@ class PasienController extends Controller
                 'message'=>$e->getMessage()
             ]);
         }
+    }
+
+    public function show_sep($nomer_sep){
+        return View::make('pasien.modal.sep',compact('nomer_sep'));
+    }
+    public function buat_sep_manual(Request $request){
+        $pasien = Pasien::where('no_rm',$request->no_rm)->first();
+        return View::make('pasien.form.rujukan-manual',compact('pasien'));
     }
 }

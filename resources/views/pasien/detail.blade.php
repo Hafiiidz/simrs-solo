@@ -614,8 +614,9 @@
                                                     <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
                                                         <th>Jenis Rawat</th>
                                                         <th>Jenis Bayar</th>
-                                                        <th>Nama Poli / Spesialis</th>
-                                                        <th>Dokter</th>
+                                                        <th>Kunjungan</th>
+                                                        <th class="d-none">Nama Poli / Spesialis</th>
+                                                        <th class="d-none">Dokter</th>
                                                         <th>Tgl. Masuk</th>
                                                         <th>Tgl. Pulang</th>
                                                         <th>Status</th>
@@ -635,9 +636,19 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" tabindex="-1" id="modal-dokter">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div id="modal-hasil"></div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('js')
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.js"></script>
     <script>
+
         function promptPassword() {
             document.getElementById('kt_app_content').classList.add('blur-background');
             Swal.fire({
@@ -698,10 +709,10 @@
         }
 
         // Call the function to prompt for password on page load
-        if({!! $cek_credential !!} < 1){
+        if ({!! $cek_credential !!} < 1) {
             promptPassword();
         }
-        
+
         $(function() {
             $("#tbl-riwayat").DataTable({
                 "language": {
@@ -730,23 +741,56 @@
                     },
                     {
                         data: 'bayar',
-                        name: 'rawat_bayar.bayar'
+                        name: 'rawat_bayar.bayar',
+                        render: function(data, type, row) {
+                            var sep = row.no_sep != null ?
+                                `<br><span class="badge badge-dark" style="cursor:pointer;" onclick="handleSepClick('${row.no_sep}')">${row.no_sep}</span>` :
+                                ``;
+                            return data + sep;
+                        }
+                    },
+                    {
+                        data: 'poli_dokter', // gunakan data gabungan untuk tampilan
+                        name: 'poli_dokter',
+                        render: function(data, type, row) {
+                            return `<a>${row.nama_dokter}</a><br> <span style="cursor-pointer" class="badge badge-primary">${row.poli}</span>`;
+                        }
                     },
                     {
                         data: 'poli',
-                        name: 'poli.poli'
+                        name: 'poli.poli',
+                        visible: false, // sembunyikan kolom ini dari tampilan
+                        searchable: true // aktifkan pencarian pada kolom ini
                     },
                     {
                         data: 'nama_dokter',
-                        name: 'dokter.nama_dokter'
+                        name: 'dokter.nama_dokter',
+                        visible: false, // sembunyikan kolom ini dari tampilan
+                        searchable: true // aktifkan pencarian pada kolom ini
                     },
                     {
                         data: 'tglmasuk',
-                        name: 'tglmasuk'
+                        name: 'tglmasuk',
+                        render: function(data, type, row) {
+                            if (row.tglmasuk) {
+                                var datetime = row.tglmasuk.split(' ');
+                                return datetime[0] + '<br>' + datetime[1];
+                            } else {
+                                return '';
+                            }
+                        }
                     },
                     {
                         data: 'tglpulang',
-                        name: 'tglpulang'
+                        name: 'tglpulang',
+                        render: function(data, type, row) {
+                            if (row.tglpulang) {
+                                var datetime = row.tglpulang.split(' ');
+                                return datetime[0] + '<br>' + datetime[1];
+                            } else {
+                                return '';
+                            }
+                        }
                     },
                     {
                         data: 'status',
@@ -755,5 +799,36 @@
                 ]
             });
         });
+
+        function handleSepClick(sep) {
+            // alert("SEP clicked: " + sep);
+            $.ajax({
+                url: '{{ route('show-sep', '') }}' + '/' + sep,
+                type: 'GET',
+                beforeSend: function() {
+                    $.blockUI({
+                        message: '<i class="fa fa-spinner fa-spin"></i> Loading ...',
+                        css: {
+                            border: 'none',
+                            padding: '15px',
+                            backgroundColor: '#000',
+                            '-webkit-border-radius': '10px',
+                            '-moz-border-radius': '10px',
+                            opacity: .5,
+                            color: '#fff'
+                        }
+                    });
+                },
+                success: function(response) {
+                    $.unblockUI();
+                    $('#modal-hasil').html(response);
+                    $('#modal-dokter').modal('show');
+                },
+                error: function(xhr, status, error) {
+                    $.unblockUI();
+                    toastr.error(xhr.responseJSON.message || error);
+                }
+            });
+        }
     </script>
 @endsection

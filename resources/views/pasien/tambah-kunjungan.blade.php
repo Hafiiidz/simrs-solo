@@ -372,7 +372,7 @@
                                         <div class="card-header">
                                             <h3 class="card-title">SEP</h3>
                                             <div class="card-toolbar">
-                                                <button class="btn btn-warning">SEP Manual</button>
+                                                <button type="button" id='btn-sep-manual' class="btn btn-warning">Rujukan Manual/IGD</button>
                                                 {{-- <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" value=""
                                                         id="flexCheckDefault" />
@@ -402,6 +402,7 @@
                                                 <div id="list_data_rujukan"></div>
                                                 <div id="insert_rujukan"></div>
                                             </div>
+                                            <div id="insert_sep_manual"></div>
                                         </div>
 
                                     </div>
@@ -620,7 +621,10 @@
             });
         });
 
-
+        $('#btn-sep-manual').on('click', function() {
+            $('#sep_rujukan').empty();
+            $('#kt_datepicker_1').val("{{ date('Y-m-d') }}");
+        });
 
 
         $(document).ready(function() {

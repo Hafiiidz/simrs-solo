@@ -1,16 +1,16 @@
-<div class="mb-2">
+<div class="mb-2 fv-row">
     <label for="">No.Rujukan</label>
     <input type="text" name="" class="form-control form-control-solid" readonly id="no_rujukan">
 </div>
-<div class="mb-2">
+<div class="mb-2 fv-row">
     <label for="">Asal Rujukan</label>
     <input type="text" name="" class="form-control form-control-solid" readonly id="asal_rujukan">
 </div>
-<div class="mb-2">
+<div class="mb-2 fv-row">
     <label for="">Diagnosa</label>
     <input type="text" name="" class="form-control form-control-solid" readonly id="diagnosa">
 </div>
-<div class="mb-2">
+<div class="mb-2 fv-row">
     <label for="">Status Kecelakaan</label>
     <select class="form-select " id="cbstatuskll">
         <option value="-">-- Silahkan Pilih --</option>
