@@ -76,9 +76,9 @@
                     </div>
                     <!--begin::Body-->
                     <div class="card-body p-lg-15">
-                        <table id="tbl-pasien" class="table table-striped table-row-bordered gy-5 gs-7 border rounded">
+                        <table id="tbl-pasien" class="table table-striped table-row-bordered gy-3 gs-5 border rounded">
                             <thead class="border">
-                                <tr class="fw-bold fs-6 text-gray-800 px-7">
+                                <tr class="fw-bold fs-8 text-gray-800 px-7">
                                     <th>No RM</th>
                                     <th>Nik</th>
                                     <th>No BPJS</th>
@@ -88,7 +88,29 @@
                                     <th>Opsi</th>
                                 </tr>
                             </thead>
-                            <tbody class="border fs-6">
+                            <thead>
+                                <tr class="fw-bold fs-9 text-gray-800 px-7">
+                                    <th>
+                                        <input type="text" id='no_rm' class="form-control form-control-sm">
+                                    </th>
+                                    <th>
+                                        <input type="text" id='nik' class="form-control form-control-sm">
+                                    </th>
+                                    <th>
+                                        <input type="text" id='no_bpjs' class="form-control form-control-sm">
+                                    </th>
+                                    <th>
+                                        <input type="text" id='nama' class="form-control form-control-sm">
+                                    </th>
+                                    <th>
+                                        <input type="text" id='tempat_lahir' class="form-control form-control-sm">
+                                    </th>
+                                    <th>
+                                        <input type="text" id='no_hp' class="form-control form-control-sm">
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="border fs-7">
 
                             </tbody>
                         </table>
@@ -105,7 +127,7 @@
 @section('js')
     <script>
         $(function() {
-            $("#tbl-pasien").DataTable({
+           var table = $("#tbl-pasien").DataTable({
                 "language": {
                     "lengthMenu": "Show _MENU_",
                 },
@@ -125,7 +147,18 @@
                 search: {
                     return: true
                 },
-                ajax: '{{ url()->current() }}',
+                ajax: {
+                    url: '{{ url()->current() }}',
+                    data: function(d) {
+                        d.search = $('input[type="search"]').val(),
+                        d.no_rm = $('#no_rm').val(),
+                        d.nik = $('#nik').val(),
+                        d.no_bpjs = $('#no_bpjs').val(),
+                        d.nama = $('#nama').val(),
+                        d.tempat_lahir = $('#tempat_lahir').val(),
+                        d.no_hp = $('#no_hp').val()
+                    }
+                }, // memanggil route yang menampilkan data json
                 columns: [{
                         data: 'no_rm',
                         name: 'no_rm'
@@ -166,6 +199,37 @@
                         searcheable: false
                     },
                 ]
+            });
+
+            $('#no_rm').on('keyup', function(e) {
+                if (e.keyCode == 13) {
+                    table.draw();
+                    e.preventDefault();
+                }
+            });
+            $('#nik').on('keyup', function(e) {
+                if (e.keyCode == 13) {
+                    table.draw();
+                    e.preventDefault();
+                }
+            });
+            $('#no_bpjs').on('keyup', function(e) {
+                if (e.keyCode == 13) {
+                    table.draw();
+                    e.preventDefault();
+                }
+            });
+            $('#nama').on('keyup', function(e) {
+                if (e.keyCode == 13) {
+                    table.draw();
+                    e.preventDefault();
+                }
+            });
+            $('#no_hp').on('keyup', function(e) {
+                if (e.keyCode == 13) {
+                    table.draw();
+                    e.preventDefault();
+                }
             });
         });
     </script>

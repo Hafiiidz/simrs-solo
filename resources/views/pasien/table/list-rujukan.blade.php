@@ -1,28 +1,36 @@
-<table id='list_rujukan_bpjs' class="table table-bordered">
-    <thead>
-        <tr>
-            <th>No</th>
-            <th>No.Rujukan</th>
-            <th>Tgl.Rujukan</th>
-            <th>PPK Perujuk</th>
-            <th>Sub/Spesialis</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($response['response']['rujukan'] as $r)
-            <tr>
-                <td>{{ $loop->iteration }}</td>
-                <td>
-                    <button type="button" class="btn btn-sm btn-light btn-norujukan" data-poli="{{ $r['poliRujukan']['kode'] }}"
-                        data-id="{{ $r['noKunjungan'] }}">{{ $r['noKunjungan'] }}</button>
-                </td>
-                <td>{{ $r['tglKunjungan'] }}</td>
-                <td>{{ $r['peserta']['provUmum']['nmProvider'] }}</td>
-                <td>{{ $r['poliRujukan']['nama'] }}</td>
-            </tr>
-        @endforeach
-    </tbody>
-</table>
+
+@foreach ($response['response']['rujukan'] as $r)
+    <div class="d-flex flex-stack  px-0">
+        <!--begin::Symbol-->
+        <div class="symbol symbol-40px me-4">
+        </div>
+        <!--end::Symbol-->
+
+        <!--begin::Section-->
+        <div class="d-flex align-items-center flex-row-fluid flex-wrap">
+            <!--begin:Author-->
+            <div class="flex-grow-1 me-2">
+                <a href="#" class="text-gray-800 text-hover-primary fs-6 fw-bold">No.Rujukan:
+                    {{ $r['noKunjungan'] }}</a>
+                <span class="text-muted fw-semibold d-block fs-7">Tgl.Rujukan: {{ $r['tglKunjungan'] }}</span>
+                <span class="text-muted fw-semibold d-block fs-7">PPK Perujuk:
+                    {{ $r['peserta']['provUmum']['nmProvider'] }}</span>
+                <span class="text-muted fw-semibold d-block fs-7">Sub/Spesialis: {{ $r['poliRujukan']['nama'] }}</span>
+            </div>
+            <!--end:Author-->
+
+            <!--begin::Actions-->
+            <button type="button"
+                class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px btn-norujukan"
+                data-poli="{{ $r['poliRujukan']['kode'] }}" data-id="{{ $r['noKunjungan'] }}">
+                <i class="ki-duotone ki-arrow-right fs-2"><span class="path1"></span><span class="path2"></span></i>
+            </button>
+            <!--end::Actions-->
+        </div>
+        <!--end::Section-->
+    </div>
+    <div class="separator separator-dashed my-4"></div>
+@endforeach
 <script>
     $('.btn-norujukan').on('click', function() {
         var rujukan = $(this).data('id');
@@ -56,18 +64,18 @@
                 if (response.status === 'failed') {
                     toastr.error(response.message);
                 } else {
-                    if(response.keterangan != null){
+                    if (response.keterangan != null) {
                         toastr.success(response.keterangan);
                         $('#list_data_rujukan').empty();
                         $('#list_data_rujukan').html(response.data);
                     }
-                   
+
                 }
             },
             error: function(xhr, status, error) {
                 $.unblockUI();
                 toastr.error(xhr.responseJSON.message || error);
-               
+
             }
         });
     })

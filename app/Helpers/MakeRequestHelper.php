@@ -45,14 +45,22 @@ class MakeRequestHelper
                     'code' => $response->getStatusCode(),
                 ]);
                 if ($response->status() == 200) {
-                    $data_response = VclaimAuthHelper::stringDecrypt($token['key'], $response['response']);
-                    $data_response = VclaimAuthHelper::decompress($data_response);
-                    $data_response = json_decode($data_response, true);
-                    return [
-                        'metaData' => $response[$metadata],
-                        'response' => $data_response,
-                        'duration' => $duration,
-                    ];
+                    if(isset($response['response'])){
+                        $data_response = VclaimAuthHelper::stringDecrypt($token['key'], $response['response']);
+                        $data_response = VclaimAuthHelper::decompress($data_response);
+                        $data_response = json_decode($data_response, true);
+                        return [
+                            'metaData' => $response[$metadata],
+                            'response' => $data_response,
+                            'duration' => $duration,
+                        ];
+                    }else{
+                        return [
+                            'metaData' => $response[$metadata],
+                            'duration' => $duration,
+                        ];
+                    }
+                    
                 } else {
                     return $response;
                 }

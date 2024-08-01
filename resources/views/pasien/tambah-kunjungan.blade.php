@@ -289,6 +289,7 @@
                             id="formInputKunjungan">
                             <div class="row g-5">
                                 @csrf
+                                <input type="hidden" name="no_rm" id="no_rm" value="{{ $pasien->no_rm }}">
                                 <div id="tambah_kunjungan" class="col-md-12">
                                     <div class="card card-stretch">
                                         <div class="card-header">
@@ -311,7 +312,7 @@
                                                         <option value="1">UMUM</option>
                                                     </select>
                                                     <div class="form-check mt-2">
-                                                        <input class="form-check-input" type="checkbox" value=""
+                                                        <input class="form-check-input" type="checkbox" value="1"
                                                             id="buat_sep" name="buat_sep" />
                                                         <label class="form-check-label" for="buat_sep">
                                                             Buat SEP
@@ -352,7 +353,7 @@
                                                 </div>
                                             </div>
                                             <div class="mb-2 fv-row form-check">
-                                                <input class="form-check-input" type="checkbox" value=""
+                                                <input class="form-check-input" type="checkbox" name="anggota" value="1"
                                                     id="flexCheckDefault" />
                                                 <label class="form-check-label" for="flexCheckDefault">
                                                     Anggota ?
@@ -366,7 +367,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div id="card_buat_sep" class="col-md-8 d-none">
+                                <div id="card_buat_sep" class="col-md-7 d-none">
                                     <div class="card card-stretch">
                                         <div class="card-header">
                                             <h3 class="card-title">SEP</h3>
@@ -389,7 +390,7 @@
                                                 3. Kontrol
                                                 4. Post Ranap --}}
                                                 <input type="hidden" name="sep" id='sep'>
-                                                <div class="mb-2 fv-row">
+                                                <div class="mb-5 fv-row">
                                                     <label for="">Asal Rujukan</label>
                                                     <select name="faskes" class="form-select" id="faskes">
                                                         <option value="">Pilih Asal Rujukan</option>
@@ -397,6 +398,7 @@
                                                         <option value="2">Faskes 2</option>
                                                     </select>
                                                 </div>
+                                                <div class="separator separator-dashed my-4"></div>
                                                 <div id="list_data_rujukan"></div>
                                                 <div id="insert_rujukan"></div>
                                             </div>
@@ -471,7 +473,7 @@
         </div>
     </div>
     <div class="modal fade" tabindex="-1" id="modal-dokter">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div id="modal-hasil"></div>
             </div>
@@ -602,7 +604,7 @@
                                     url: url, // Replace with your server endpoint
                                     data: formDataFix,
                                     success: function(response) {
-                                        console.log('success');
+                                        console.log(response);
                                     },
                                     error: function(error) {
                                         console.log('Error submitting form:',
@@ -678,13 +680,13 @@
                     $(this).prop('checked', false);
                     $('#sep').val(null);
                 } else {
-                    $('#tambah_kunjungan').removeClass('col-md-12').addClass('col-md-4');
+                    $('#tambah_kunjungan').removeClass('col-md-12').addClass('col-md-5');
                     $('#card_buat_sep').removeClass('d-none');
                     $('#sep').val(1);
                 }
 
             } else {
-                $('#tambah_kunjungan').removeClass('col-md-4').addClass('col-md-12');
+                $('#tambah_kunjungan').removeClass('col-md-5').addClass('col-md-12');
                 $('#card_buat_sep').addClass('d-none');
                 $('#list_data_rujukan').empty();
                 $('#sep').val(null);

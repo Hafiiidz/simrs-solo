@@ -112,4 +112,25 @@ class WsBpjsHelper
             ];
         }
     }
+
+    public static function post_tambah_antrean($data){
+        try {
+            $response = MakeRequestHelper::makeRequest('post-tambah-antrian','post','/antrean/add',$data,2);
+            return $response;           
+        } catch (\Exception $e) {
+            return [
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+    public static function post_update_antrean($data){
+        try {
+            $response = MakeRequestHelper::makeRequest('post-update-antrian','post','/antrean/updatewaktu',$data,2);
+            return $response;           
+        } catch (\Exception $e) {
+            return [
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
 }

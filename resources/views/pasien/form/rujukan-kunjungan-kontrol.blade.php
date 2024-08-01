@@ -19,8 +19,8 @@
     <input type="text" name=""
         value="{{ $get_rujukan['response']['rujukan']['peserta']['provUmum']['nmProvider'] }}"
         class="form-control form-control-solid" readonly>
-    <input type="hidden" name="kode_faskes"
-        value="{{ $get_rujukan['response']['rujukan']['peserta']['provUmum']['kdProvider'] }}" id="kode_faskes">
+    <input type="hidden" name="kode_faskes" value="{{ $get_rujukan['response']['rujukan']['peserta']['provUmum']['kdProvider'] }}" id="kode_faskes">
+    <input type="hidden" name="kunjungan" value="3" id="kunjungan">
 </div>
 <div class="mb-2 fv-row">
     <label class="required" for="">Diagnosa</label>

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Carbon\Carbon;
 use App\Models\Poli;
+use App\Models\Rawat;
 use App\Models\Dokter;
 use App\Models\Obat\Obat;
 use Illuminate\Http\Request;
@@ -22,7 +24,9 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Helpers\Vclaim\VclaimPesertaHelper;
 use App\Helpers\Vclaim\VclaimRujukanHelper;
 use App\Helpers\Vclaim\VclaimRencanaKontrolHelper;
-use App\Models\Rawat;
+use App\Models\DokterJadwal;
+use App\Models\DokterKuota;
+use Svg\Tag\Rect;
 
 class PasienController extends Controller
 {
@@ -97,7 +101,7 @@ class PasienController extends Controller
 
         return view('pasien.detail', compact('cek_credential', 'pasien', 'detail_rekap_medis', 'pemeriksaan_fisik', 'soap_icdx', 'penunjang', 'radiologi', 'lab', 'fisio', 'terapi_obat', 'obat', 'icdx', 'detail_rekap_medis_all'));
     }
-    public function index()
+    public function index(Request $request)
     {
         if (request()->ajax()) {
             $pasien = Pasien::query()->orderBy('id', 'desc');
@@ -107,6 +111,28 @@ class PasienController extends Controller
                     return '<a href="' . route('pasien.rekammedis_detail', $pasien->id) . '" class="btn btn-sm btn-success">Rekam Medis</a>';
                 })
                 ->rawColumns(['opsi'])
+                ->filter(function ($instance) use ($request) {
+                    if ($request->get('no_rm') != '') {
+                        $instance->where('no_rm', $request->get('no_rm'));
+                    }
+                    if ($request->get('nik') != '') {
+                        $instance->where('nik', $request->get('nik'));
+                    }
+                    if ($request->get('no_bpjs') != '') {
+                        $instance->where('no_bpjs', $request->get('no_bpjs'));
+                    }
+                    if ($request->get('nama') != '') {
+                        $nama = $request->get('nama');
+                        $instance->where('nama_pasien', 'LIKE', "%$nama%");
+                    }
+                    if (!empty($request->get('search'))) {
+                        $instance->where(function ($w) use ($request) {
+                            $search = $request->get('search');
+                            $w->orWhere('no_rm', 'LIKE', "%$search%")
+                                ->orWhere('nama_pasien', 'LIKE', "%$search%");
+                        });
+                    }
+                })
                 ->make();
         }
         return view('pasien.index');
@@ -156,26 +182,27 @@ class PasienController extends Controller
     }
     public function store(Request $request)
     {
+        // return back()->with('gagal', 'gagal');
         // return $request->all();
-        $validatedData = $request->validate([
-            'no_rm' => 'required|string|max:255',
-            'nik' => 'required|string|max:255',
-            'bpjs' => 'required|string|max:255',
-            'nama_pasien' => 'required|string|max:255',
-            'jenis_kelamin' => 'required|string|max:1',
-            'golongan_darah' => 'required|string|max:2',
-            'tempat_lahir' => 'required|string|max:255',
-            'tgl_lahir' => 'required|date',
-            'no_hp' => 'required|string|max:15',
-            'email' => 'nullable|string|email|max:255',
-            'kepesertaan_bpjs' => 'required|string|max:255',
-            'status_pasien' => 'required|string|max:1',
-            'id_agama' => 'required|integer',
-            'id_etnis' => 'required|integer',
-            'id_pendidikan' => 'required|integer',
-            'id_hubungan_pernikakan' => 'required|integer',
-            'id_hambatan' => 'required|integer',
-        ]);
+        // $validatedData = $request->validate([
+        //     'no_rm' => 'required|string|max:255',
+        //     'nik' => 'required|string|max:255',
+        //     'bpjs' => 'required|string|max:255',
+        //     'nama_pasien' => 'required|string|max:255',
+        //     'jenis_kelamin' => 'required|string|max:1',
+        //     'golongan_darah' => 'required|string|max:2',
+        //     'tempat_lahir' => 'required|string|max:255',
+        //     'tgl_lahir' => 'required|date',
+        //     'no_hp' => 'required|string|max:15',
+        //     'email' => 'nullable|string|email|max:255',
+        //     'kepesertaan_bpjs' => 'required|string|max:255',
+        //     'status_pasien' => 'required|string|max:1',
+        //     'id_agama' => 'required|integer',
+        //     'id_etnis' => 'required|integer',
+        //     'id_pendidikan' => 'required|integer',
+        //     'id_hubungan_pernikakan' => 'required|integer',
+        //     'id_hambatan' => 'required|integer',
+        // ]);
 
         DB::beginTransaction();
         try {
@@ -257,10 +284,9 @@ class PasienController extends Controller
             }
 
             DB::commit();
-            return redirect(route('rekap-medis-index', $pasienId))->with('berhasil', 'Data berhasil di input');
+            return redirect(route('pasien.rekammedis_detail', $pasienId))->with('berhasil', 'Data berhasil di input');
         } catch (Exception $e) {
             DB::rollBack();
-            return  $e->getMessage();
             return back()->with('gagal', $e->getMessage());
         }
     }
@@ -423,6 +449,7 @@ class PasienController extends Controller
         } else {
             if ($request->penanggung == 2) {
                 $results = WsBpjsHelper::referensi_jadwaldokter($poli->kode, $date);
+                // return $poli->kode;
                 if ($results['metaData']['code'] == 200) {
                     return View::make('pasien.modal.jadwal-dokter-bpjs', compact('results'));
                 }
@@ -470,8 +497,8 @@ class PasienController extends Controller
         ];
     }
     public function store_kunjungan(Request $request)
-    {
-        return $request->all();
+    {   
+        // return $request->all();
         DB::beginTransaction();
 
         try {
@@ -502,14 +529,15 @@ class PasienController extends Controller
                 'status'=>1,
                 'idkunjungan'=>$insert_rawat_kunjungan,
                 'no_rm'=>$pasien->no_rm,
-                'tglmasuk'=>$request->tglmasuk,
+                'tgl_masuk'=>$request->tglmasuk,
                 'kode_kunjungan'=>$kode_kunjungan,
                 'idpasien'=>$pasien->id,
                 'id_bayar'=>$request->penanggung
             ]);
-
+            $kode_booking = $kode.date('Ymd').rand(1000,9999);
+            $antrian = MakeRequestHelper::genAntri($request->idpoli,$request->iddokter,null,$request->tglmasuk);
             DB::table('rawat')->insertGetId([
-                'idrawat'=>$kode.date('Ymd').rand(1000,9999),
+                'idrawat'=>$kode_booking,
                 'idkunjungan'=>$kode_kunjungan,
                 'idjenisrawat'=>$request->jenis_rawat,
                 'no_rm'=>$pasien->no_rm,
@@ -519,16 +547,92 @@ class PasienController extends Controller
                 'idbayar'=>$request->penanggung,
                 'tglmasuk'=>$request->tglmasuk.' '.date("H:i:s"),
                 'status'=>1,
-                'anggota'=>$request->anggota,
-                'antrian'=> MakeRequestHelper::genAntri($request->idpoli,$request->iddokter,null,$request->tglmasuk)
-
+                'anggota'=>$request->anggota ?? 0,
+                'no_antrian'=> $antrian
             ]);
-            $rawat = new Rawat();
 
+           
+            $poli = Poli::find($request->idpoli);
+            $dokter = Dokter::find($request->iddokter);
+            $date = date('Y-m-d');
+            $timestamp = strtotime($date);
+            $dayNumber = date('N', $timestamp);
+            $dokter_jadwal = DB::table('dokter_jadwal')->where('iddokter',$request->iddokter)->where('idhari',$dayNumber)->where('idpoli',$request->idpoli)->first();
+            $millisecond = Carbon::now()->timestamp * 1000 + Carbon::now()->microsecond / 1000;
             
+            // return $dokter_kuota;
+            // return $request->penanggung'
+            if ($request->jenis_rawat == 1) {
+            
+                $jadwal = DokterJadwal::where(['iddokter' => $request->iddokter, 'idhari' => $dayNumber])->first();
+                // return $jadwal;
+                if (!$jadwal) {
+                    session()->flash('danger', 'Jadwal Dokter Tidak ditemukan');
+                    // return redirect()->back();
+                }
+            
+                $kuota = DokterKuota::firstOrNew(
+                    ['iddokter' => $request->iddokter, 'idhari' => $dayNumber, 'tgl' => date('Y-m-d',strtotime($request->tglmasuk))],
+                    ['kuota' => $jadwal->kuota, 'sisa' => $jadwal->kuota, 'terdaftar' => 0, 'status' => 1]
+                );
+            
+                if ($kuota->sisa > 0){
+                    $kuota->sisa -= 1;
+                    $kuota->terdaftar += 1;
+                    $kuota->save();
+                }
+            
+                // Additional actions can be added here
+           
+            $dokter_kuota = DB::table('dokter_kuota')->where('iddokter',$request->iddokter)->where('idhari',$dayNumber)->where('idpoli',$request->idpoli)->where('tgl',date('Y-m-d',strtotime($request->tglmasuk)))->first();
+            // return $dokter_kuota;
+            $data = [
+                "kodebooking" => $kode_booking,
+                "jenispasien" => $request->penanggung == 2 ? 'JKN':'NON JKN',
+                "nomorkartu" => $request->penanggung == 2 ? $pasien->no_bpjs:'',
+                "nik" => $pasien->nik,
+                "nohp" => $pasien->nohp ?? 0,
+                "kodepoli" => $poli->kode,
+                "namapoli" => $poli->poli,
+                "pasienbaru" => 0,
+                "norm" => $pasien->no_rm,
+                "tanggalperiksa" => $request->tglmasuk,
+                "kodedokter" => $dokter->kode_dpjp,
+                "namadokter" => $dokter->nama_dokter,
+                "jampraktek" => date('H:i',strtotime($dokter_jadwal->jam_mulai)).'-'. date('H:i',strtotime($dokter_jadwal->jam_selesai)),
+                "jeniskunjungan" => $request->kunjungan ?? 1,
+                "nomorreferensi" =>  $request->penanggung == 2 ? '0171R0010824K000007':'0151B1070622P002358',
+                "nomorantrean" => $poli->kode_antrean.'-'.substr($antrian,-3),
+                "angkaantrean" => (int) ltrim(substr($antrian,-3), '0'),
+                "estimasidilayani" => round(microtime(true) * 1000),
+                "sisakuotajkn"=>  $dokter_kuota->sisa ?? $jadwal->kuota - 1,
+                "kuotajkn"=> $dokter_kuota->kuota ?? $jadwal->kuota,
+                "sisakuotanonjkn"=> $dokter_kuota->sisa ?? $jadwal->kuota - 1,
+                "kuotanonjkn"=> $dokter_kuota->kuota ?? $jadwal->kuota,
+                "keterangan" => "Peserta harap 30 menit lebih awal guna pencatatan administrasi."
+            ];
+
+            $data_antrian = [
+                "kodebooking"=>$kode_booking,
+                "taskid"=>3,
+                "waktu"=>round(microtime(true) * 1000),
+            ];
+            // return $data;
+            WsBpjsHelper::post_tambah_antrean($data);
+            WsBpjsHelper::post_update_antrean($data_antrian);
+        }
+           
+            DB::commit();
+            
+            return response()->json([
+                'status'=>'success',
+            ]);
         } catch (\Exception $e) {
             DB::rollback();
-            
+            return response()->json([
+                'status'=>'failed',
+                'message'=>$e->getMessage()
+            ]);
         }
     }
 }

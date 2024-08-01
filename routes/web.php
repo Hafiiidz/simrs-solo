@@ -174,16 +174,17 @@ Route::get('/get-data', function () {
     return $array;
 });
 Route::get('/tes-antrol', function () {
-    $referensi_poli = WsBpjsHelper::referensi_poli();
-    $referensi_poli_fp = WsBpjsHelper::referensi_poli_fp();
-    $referensi_jadwaldokter = WsBpjsHelper::referensi_jadwaldokter('IGD',date('Y-m-d'));
-    $referensi_pasien_fp = WsBpjsHelper::referensi_pasien_fp('nik','3204102601980002');
-    $post_list_taks = WsBpjsHelper::post_list_taks('RJ2024629050001');
-    $get_dashboard_tgl = WsBpjsHelper::get_dashboard_tgl('2024-07-30','server');
-    $get_antrean_tgl = WsBpjsHelper::get_antrean_tgl('2024-07-31');
-    $get_antrean_kode = WsBpjsHelper::get_antrean_kode('RJ2024213530005');
+    // $referensi_poli = WsBpjsHelper::referensi_poli();
+    // $referensi_poli_fp = WsBpjsHelper::referensi_poli_fp();
+    // $referensi_jadwaldokter = WsBpjsHelper::referensi_jadwaldokter('IGD',date('Y-m-d'));
+    // $referensi_pasien_fp = WsBpjsHelper::referensi_pasien_fp('nik','3204102601980002');
+    
+    // $get_dashboard_tgl = WsBpjsHelper::get_dashboard_tgl('2024-07-30','server');
+    // $get_antrean_tgl = WsBpjsHelper::get_antrean_tgl('2024-07-31');
+    // $get_antrean_kode = WsBpjsHelper::get_antrean_kode('RJ2024213530005');
     $get_antrean_belum = WsBpjsHelper::get_antrean_belum();
-    return $referensi_jadwaldokter;
+    // $post_list_taks = WsBpjsHelper::post_list_taks('RJ202408016091');
+    return $get_antrean_belum;
 });
 Route::get('/tes-rujukan', function () {
     $getPeserta = VclaimPesertaHelper::getPesertaBPJS('0000570582369', date('Y-m-d'));

@@ -11,23 +11,31 @@
                 <th>Nama Dokter</th>
                 <th>Tgl Rencana Kontrol</th>
                 <th>No Sep Asal Kontrol</th>
+                <th>Terbit SEP</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($response['response']['list'] as $list)
                 <tr>
                     <td>
-                       <button type="button" class="btn btn-light btn-pilih-nomor" 
-                       data-tglsurat="{{ $list['tglRencanaKontrol'] }}"
-                       data-id="{{ $list['noSuratKontrol'] }}"
-                       data-dokter="{{ $list['kodeDokter'] }}"
-                       data-poli="{{ $list['poliTujuan'] }}"
-                       >{{ $list['noSuratKontrol'] }}</button> 
+                        {{-- @if($list['terbitSEP'] != 'Sudah')
+                        
+                        @else
+                        {{ $list['noSuratKontrol'] }}
+                        @endif --}}
+                        <button type="button" class="btn btn-light btn-pilih-nomor" 
+                        data-tglsurat="{{ $list['tglRencanaKontrol'] }}"
+                        data-id="{{ $list['noSuratKontrol'] }}"
+                        data-dokter="{{ $list['kodeDokter'] }}"
+                        data-poli="{{ $list['poliTujuan'] }}"
+                        >{{ $list['noSuratKontrol'] }}</button> 
+                      
                     </td>
                     <td>{{ $list['jnsPelayanan'] }}</td>
                     <td>{{ $list['namaDokter'] }}</td>
                     <td>{{ $list['tglRencanaKontrol'] }}</td>
                     <td>{{ $list['noSepAsalKontrol'] }}</td>
+                    <td>{{ $list['terbitSEP'] }}</td>
                 </tr>
             @endforeach
         </tbody>

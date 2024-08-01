@@ -604,7 +604,8 @@
                                 }
                             });
 
-                            //form.submit(); // Submit form
+                            form.submit(); 
+                            // Submit form
                         }, 2000);
                     }
                 });
