@@ -81,6 +81,7 @@
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
     <script src="https://code.highcharts.com/themes/high-contrast-light.js"></script>
         <!--end::Vendors Javascript-->
+    @stack('script')
     @yield('js')
     
     <!--end::Javascript-->

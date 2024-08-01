@@ -66,4 +66,14 @@ class VclaimRencanaKontrolHelper
             ];
         }
     }
+    public static function getDatabynomor($bulan,$tahun,$nokartu,$filter)
+    {
+        try {
+            return MakeRequestHelper::makeRequest('get-surat-by-nomor','get', '/RencanaKontrol/ListRencanaKontrol/Bulan/'.$bulan.'/Tahun/'.$tahun.'/Nokartu/'.$nokartu.'/filter/'.$filter);
+        } catch (\Exception $e) {
+            return [
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
 }

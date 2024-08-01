@@ -176,14 +176,14 @@ Route::get('/get-data', function () {
 Route::get('/tes-antrol', function () {
     $referensi_poli = WsBpjsHelper::referensi_poli();
     $referensi_poli_fp = WsBpjsHelper::referensi_poli_fp();
-    $referensi_jadwaldokter = WsBpjsHelper::referensi_jadwaldokter('ANA',date('Y-m-d'));
+    $referensi_jadwaldokter = WsBpjsHelper::referensi_jadwaldokter('IGD',date('Y-m-d'));
     $referensi_pasien_fp = WsBpjsHelper::referensi_pasien_fp('nik','3204102601980002');
     $post_list_taks = WsBpjsHelper::post_list_taks('RJ2024629050001');
     $get_dashboard_tgl = WsBpjsHelper::get_dashboard_tgl('2024-07-30','server');
     $get_antrean_tgl = WsBpjsHelper::get_antrean_tgl('2024-07-31');
     $get_antrean_kode = WsBpjsHelper::get_antrean_kode('RJ2024213530005');
     $get_antrean_belum = WsBpjsHelper::get_antrean_belum();
-    return $get_antrean_belum;
+    return $referensi_jadwaldokter;
 });
 Route::get('/tes-rujukan', function () {
     $getPeserta = VclaimPesertaHelper::getPesertaBPJS('0000570582369', date('Y-m-d'));
@@ -810,8 +810,15 @@ Route::prefix('/pasien')->middleware('auth')->group(function () {
     Route::get('/create', [PasienController::class, 'tambah_pasien_baru'])->name('pasien.tambah-pasien');
     Route::get('/create-kunjungan/{id}/{jenis}', [PasienController::class, 'tambah_kunjungan'])->name('pasien.tambah-kunjungan');
     Route::post('/store', [PasienController::class, 'store'])->name('pasien.post-tambah-pasien');
+    Route::post('/store-kunjungan', [PasienController::class, 'store_kunjungan'])->name('pasien.post-tambah-kunjungan');
     Route::post('/check-password', [PasienController::class, 'check_password'])->name('pasien.check-password');
     Route::get('/cari-kelurahan', [PasienController::class, 'cari_kelurahan'])->name('pasien.cari-kelurahan');
+    Route::get('/get-jadwal-dokter', [PasienController::class, 'get_jadwal_dokter'])->name('get-jadwal-dokter');
+    Route::get('/get-rujukan-faskes', [PasienController::class, 'get_rujukan_faskes'])->name('get-rujukan-faskes');
+    Route::get('/pilih-rujukan-faskes', [PasienController::class, 'pilih_rujukan_faskes'])->name('pilih-rujukan-faskes');
+    Route::get('/get-surat-kontrol', [PasienController::class, 'get_surat_kontrol'])->name('get-surat-kontrol');
+    Route::get('/get-pilih-nomer', [PasienController::class, 'get_pilih_nomer'])->name('get-pilih-nomer');
+    Route::get('/get-pilih-dokter/{jenis}', [PasienController::class, 'get_pilih_dokter'])->name('get-pilih-dokter');
 
     //Rekam Medis
     Route::prefix('/bpjs')->middleware('auth')->group(function () {

@@ -98,7 +98,7 @@ class MakeRequestHelper
             $response = Http::withHeaders($token['signature'])
                 ->withOptions(["verify" => $token['ssl']])
                 ->{$method}($url_request . $url);
-           
+
             $endTime = microtime(true);
             $duration = round($endTime - $startTime, 2);
             DB::table('demo_log_request_bpjs')->insert([
@@ -112,8 +112,8 @@ class MakeRequestHelper
                 'code' => $response->getStatusCode(),
             ]);
             if ($response->status() == 200) {
-                if($response[$metadata]['code'] == 200){
-                    if($token_jenis == 3){
+                if ($response[$metadata]['code'] == 200) {
+                    if ($token_jenis == 3) {
                         return $response;
                     }
                     $data_response = VclaimAuthHelper::stringDecrypt($token['key'], $response['response']);
@@ -124,10 +124,9 @@ class MakeRequestHelper
                         'response' => $data_response,
                         'duration' => $duration,
                     ];
-                }else{
+                } else {
                     return $response;
                 }
-               
             } else {
                 return $response;
             }
@@ -147,5 +146,31 @@ class MakeRequestHelper
             'id_kab' => $kabupaten->id_kab,
             'id_prov' => $provinsi->id_prov,
         ];
+    }
+
+    public static function genAntri($pf, $iddokter, $ang, $daftar)
+    {
+        $tgl = date('Ymd', strtotime($daftar));
+
+        $max = DB::table('rawat')
+            ->where('idpoli', 'like', $pf)
+            ->where('anggota', 0)
+            ->where('status', '<>', 5)
+            ->whereDate('tglmasuk', '=', $daftar)
+            ->max(DB::raw('CAST(SUBSTRING(no_antrian, LENGTH(no_antrian) - 3, 4) AS UNSIGNED)'));
+
+        $last = $max + 1;
+
+        if ($last < 10) {
+            $id = $tgl . $pf . $iddokter . '000' . $last;
+        } elseif ($last < 100) {
+            $id = $tgl . $pf . $iddokter . '00' . $last;
+        } elseif ($last < 1000) {
+            $id = $tgl . $pf . $iddokter . '0' . $last;
+        } else {
+            $id = $tgl . $pf . $iddokter . $last;
+        }
+
+        return $id;
     }
 }

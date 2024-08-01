@@ -72,7 +72,7 @@
                                 <!--begin::Row-->
                                 <div class="row mb-7">
                                     <!--begin::Label-->
-                                    <label class="col-lg-4 fw-semibold text-muted">Alamat</label>
+                                    <label class="col-lg-4 fw-semibold text-muted">Nama Lengkap</label>
                                     <!--end::Label-->
 
                                     <!--begin::Col-->
