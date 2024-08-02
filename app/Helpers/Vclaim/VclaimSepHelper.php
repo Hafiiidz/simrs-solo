@@ -19,4 +19,24 @@ class VclaimSepHelper
             ];
         }
     }
+    public static function getInsertSep($data)
+    {
+        try {
+            return MakeRequestHelper::makeRequest('post-insest-sep','post', '/SEP/2.0/insert', $data);
+        } catch (\Exception $e) {
+            return [
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+    public static function getDeleteSep($data)
+    {
+        try {
+            return MakeRequestHelper::makeRequest('delete-sep','delete', '/SEP/2.0//Delete', $data);
+        } catch (\Exception $e) {
+            return [
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
 }

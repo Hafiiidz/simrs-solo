@@ -353,8 +353,8 @@
                                                 </div>
                                             </div>
                                             <div class="mb-2 fv-row form-check">
-                                                <input class="form-check-input" type="checkbox" name="anggota" value="1"
-                                                    id="flexCheckDefault" />
+                                                <input class="form-check-input" type="checkbox" name="anggota"
+                                                    value="1" id="flexCheckDefault" />
                                                 <label class="form-check-label" for="flexCheckDefault">
                                                     Anggota ?
                                                 </label>
@@ -372,7 +372,8 @@
                                         <div class="card-header">
                                             <h3 class="card-title">SEP</h3>
                                             <div class="card-toolbar">
-                                                <button type="button" id='btn-sep-manual' class="btn btn-warning">Rujukan Manual/IGD</button>
+                                                <button type="button" id='btn-sep-manual'
+                                                    class="btn btn-warning">Rujukan Manual/IGD</button>
                                                 {{-- <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" value=""
                                                         id="flexCheckDefault" />
@@ -384,12 +385,13 @@
                                             </div>
                                         </div>
                                         <div class="card-body">
+                                            <input type="hidden" name="sep" id='sep'>
                                             <div id="sep_rujukan">
                                                 {{-- 1. Manual
                                                 2. Rujukan Pertama
                                                 3. Kontrol
                                                 4. Post Ranap --}}
-                                                <input type="hidden" name="sep" id='sep'>
+
                                                 <div class="mb-5 fv-row">
                                                     <label for="">Asal Rujukan</label>
                                                     <select name="faskes" class="form-select" id="faskes">
@@ -492,6 +494,13 @@
             var validator = FormValidation.formValidation(
                 form, {
                     fields: {
+                        'icdx': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'icdx Harus diisi'
+                                }
+                            }
+                        },
                         'no_surat': {
                             validators: {
                                 notEmpty: {
@@ -560,10 +569,12 @@
                     }
                 }
             );
-           
+
             const submitButton = document.getElementById('button-simpan');
             submitButton.addEventListener('click', function(e) {
                 // Prevent default button action
+                var no_surat = $('#no_surat').val();
+
                 e.preventDefault();
 
                 // Validate form before submit
@@ -572,49 +583,382 @@
                         console.log('validated!');
 
                         if (status == 'Valid') {
-                            // Show loading indication
-                            submitButton.setAttribute('data-kt-indicator', 'on');
 
-                            // Disable button to avoid multiple click
-                            submitButton.disabled = true;
+                            if (no_surat) {
+                                let selections = {
+                                    tujuanKunjungan: '',
+                                    alasanTidakSelesai: '',
+                                    prosedur: '',
+                                    prosedurBerkelanjutan: '',
+                                    prosedurTidakBerkelanjutan: ''
+                                };
 
-                            // Simulate form submission. For more info check the plugin's official documentation: https://sweetalert2.github.io/
-                            setTimeout(function() {
-                                // Remove loading indication
-                                submitButton.removeAttribute('data-kt-indicator');
-
-                                // Enable button
-                                submitButton.disabled = false;
-
-                                // Show popup confirmation
                                 Swal.fire({
-                                    text: "Form has been successfully submitted!",
-                                    icon: "success",
-                                    buttonsStyling: false,
-                                    confirmButtonText: "Ok, got it!",
-                                    customClass: {
-                                        confirmButton: "btn btn-primary"
+                                    title: 'Apa tujuan kunjungan ini?',
+                                    html: '<select id="firstSelect" class="form-select">' +
+                                        '<option value="0" data-value="" disabled selected>-- Apa tujuan kunjungan ini? --</option>' +
+                                        '<option value="1" data-value="Prosedur">Prosedur</option>' +
+                                        '<option value="2" data-value="Konsul Dokter">Konsul Dokter</option>' +
+                                        '</select>',
+                                    preConfirm: () => {
+                                        const selectedValue = $('#firstSelect').val();
+                                        const selectedText = $(
+                                            '#firstSelect option:selected').data(
+                                            'value');
+                                        if (!selectedValue) {
+                                            Swal.showValidationMessage(
+                                                'Please select an option');
+                                        }
+                                        selections.tujuanKunjungan = selectedValue;
+                                        return {
+                                            selectedValue,
+                                            selectedText
+                                        };
+                                    }
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        if (result.value.selectedValue == 2) {
+                                            var select_option =
+                                                '<select id="secondSelect" class="form-select">' +
+                                                '<option value="" disabled selected>-- Mengapa pelayanan ini tidak diselesaikan pada hari yang sama sebelumnya? --</option>' +
+                                                '<option value="1">Poli spesialis tidak tersedia pada hari sebelumnya</option>' +
+                                                '<option value="2">Jam Poli telah berakhir pada hari sebelumnya</option>' +
+                                                '<option value="3">Dokter Spesialis yang dimaksud tidak praktek pada hari sebelumnya</option>' +
+                                                '<option value="4">Atas Instruksi RS</option>' +
+                                                '<option value="5">Tujuan Kontrol</option>' +
+                                                '</select>';
+                                            Swal.fire({
+                                                title: 'Mengapa pelayanan ini tidak diselesaikan pada hari yang sama sebelumnya?',
+                                                html: select_option,
+                                                preConfirm: () => {
+                                                    const selectedValue = $(
+                                                            '#secondSelect')
+                                                        .val();
+                                                    if (!selectedValue) {
+                                                        Swal.showValidationMessage(
+                                                            'Please select an option'
+                                                        );
+                                                    }
+                                                    selections
+                                                        .alasanTidakSelesai =
+                                                        selectedValue;
+                                                    return selectedValue;
+                                                }
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    simpanDatasep();
+                                                }
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                title: 'Apakah Kunjungan ini untuk prosedur dan terapi berkelanjutan?',
+                                                html: '<button id="yesButton" class="swal2-confirm swal2-styled" style="display: inline-block; margin-right: 10px;">Ya</button>' +
+                                                    '<button id="noButton" class="swal2-cancel swal2-styled" style="display: inline-block;">Tidak</button>',
+                                                showCancelButton: false,
+                                                showConfirmButton: false,
+                                                didRender: () => {
+                                                    const yesButton = document
+                                                        .getElementById(
+                                                            'yesButton');
+                                                    const noButton = document
+                                                        .getElementById(
+                                                            'noButton');
+
+                                                    yesButton.addEventListener(
+                                                        'click', () => {
+                                                            selections
+                                                                .prosedur =
+                                                                1;
+                                                            Swal.close();
+                                                            Swal.fire({
+                                                                title: 'Pilih Prosedur Berkelanjutan',
+                                                                html: '<select id="prosedur" name="prosedur" class="form-control">' +
+                                                                    '<option checked="" value="">-- Prosedur Berkelanjutan --</option>' +
+                                                                    '<option value="1">Radioterapi</option>' +
+                                                                    '<option value="2">Kemoterapi</option>' +
+                                                                    '<option value="3">Rehabilitasi Medik</option>' +
+                                                                    '<option value="4">Rehabilitasi Psikososial</option>' +
+                                                                    '<option value="5">Transfusi Darah</option>' +
+                                                                    '<option value="6">Pelayanan Gigi</option>' +
+                                                                    '<option value="12">HEMODIALISA</option>' +
+                                                                    '</select>',
+                                                                showCancelButton: true,
+                                                                cancelButtonText: 'Cancel',
+                                                                preConfirm: () => {
+                                                                    const
+                                                                        selectedValue =
+                                                                        document
+                                                                        .getElementById(
+                                                                            'prosedur'
+                                                                        )
+                                                                        .value;
+                                                                    if (!
+                                                                        selectedValue
+                                                                    ) {
+                                                                        Swal.showValidationMessage(
+                                                                            'Please select an option'
+                                                                        );
+                                                                    }
+                                                                    selections
+                                                                        .prosedurBerkelanjutan =
+                                                                        selectedValue;
+                                                                    return selectedValue;
+                                                                }
+                                                            }).then((
+                                                                result
+                                                            ) => {
+                                                                if (result
+                                                                    .isConfirmed
+                                                                ) {
+                                                                    simpanDatasep();
+                                                                }
+                                                            });
+                                                        });
+
+                                                    noButton.addEventListener(
+                                                        'click', () => {
+                                                            selections
+                                                                .prosedur =
+                                                                0;
+                                                            Swal.close();
+                                                            Swal.fire({
+                                                                title: 'Pilih Prosedur Tidak Berkelanjutan',
+                                                                html: '<select id="nonprosedur" name="nonprosedur" class="form-control">' +
+                                                                    '<option checked="" value="">-- Prosedur tidak berkelanjutan --</option>' +
+                                                                    '<option value="7">Laboratorium</option>' +
+                                                                    '<option value="8">USG</option>' +
+                                                                    '<option value="9">Farmasi</option>' +
+                                                                    '<option value="10">Lain-Lain</option>' +
+                                                                    '<option value="11">MRI</option>' +
+                                                                    '</select>',
+                                                                showCancelButton: true,
+                                                                cancelButtonText: 'Cancel',
+                                                                preConfirm: () => {
+                                                                    const
+                                                                        selectedValue =
+                                                                        document
+                                                                        .getElementById(
+                                                                            'nonprosedur'
+                                                                        )
+                                                                        .value;
+                                                                    if (!
+                                                                        selectedValue
+                                                                    ) {
+                                                                        Swal.showValidationMessage(
+                                                                            'Please select an option'
+                                                                        );
+                                                                    }
+                                                                    selections
+                                                                        .prosedurTidakBerkelanjutan =
+                                                                        selectedValue;
+                                                                    return selectedValue;
+                                                                }
+                                                            }).then((
+                                                                result
+                                                            ) => {
+                                                                if (result
+                                                                    .isConfirmed
+                                                                ) {
+                                                                    simpanDatasep();
+                                                                }
+                                                            });
+                                                        });
+                                                }
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    simpanDatasep();
+                                                }
+                                            });
+
+                                        }
                                     }
                                 });
-                                // var formData = form.closest('form');
-                                var formDataFix = $(form).serialize();
-                                var url = form.getAttribute('action');
-                                var method = form.getAttribute('method');
-                                $.ajax({
-                                    type: method,
-                                    url: url, // Replace with your server endpoint
-                                    data: formDataFix,
-                                    success: function(response) {
-                                        console.log(response);
-                                    },
-                                    error: function(error) {
-                                        console.log('Error submitting form:',
-                                            error);
+
+                                function simpanDatasep() {
+                                    Swal.fire({
+                                        title: 'Simpan Data',
+                                        text: "Apakah Anda yakin simpan data ? ",
+                                        icon: 'info',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#3085d6',
+                                        cancelButtonColor: '#d33',
+                                        confirmButtonText: 'Ya, Simpan Data',
+                                        cancelButtonText: 'Tidak'
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            submitButton.setAttribute('data-kt-indicator',
+                                                'on');
+
+                                            // Disable button to avoid multiple click
+                                            submitButton.disabled = true;
+
+                                            // Simulate form submission. For more info check the plugin's official documentation: https://sweetalert2.github.io/
+
+                                            // var formData = form.closest('form');
+                                            var formDataFix = $(form).serialize();
+                                            formDataFix +=
+                                                `&tujuanKunjungan=${selections.tujuanKunjungan}`;
+                                            formDataFix +=
+                                                `&alasanTidakSelesai=${selections.alasanTidakSelesai}`;
+                                            formDataFix +=
+                                                `&prosedur=${selections.prosedur}`;
+                                            formDataFix +=
+                                                `&prosedurTidakBerkelanjutan=${selections.prosedurTidakBerkelanjutan}`;
+                                            formDataFix +=
+                                                `&prosedurTidakBerkelanjutan=${selections.prosedurBerkelanjutan}`;
+                                            var url = form.getAttribute('action');
+                                            var method = form.getAttribute('method');
+                                            $.ajax({
+                                                type: method,
+                                                url: url, // Replace with your server endpoint
+                                                data: formDataFix,
+                                                beforeSend: function() {
+                                                    $.blockUI({
+                                                        message: '<i class="fa fa-spinner fa-spin"></i> Loading ...',
+                                                        css: {
+                                                            border: 'none',
+                                                            padding: '15px',
+                                                            backgroundColor: '#000',
+                                                            '-webkit-border-radius': '10px',
+                                                            '-moz-border-radius': '10px',
+                                                            opacity: .5,
+                                                            color: '#fff'
+                                                        }
+                                                    });
+                                                },
+                                                success: function(response) {
+                                                    $.unblockUI();
+                                                    submitButton.disabled =
+                                                        false;
+                                                    if (response.status ==
+                                                        'failed') {
+                                                        toastr.error(response
+                                                            .message);
+                                                        return false
+                                                    }
+                                                    toastr.success(response
+                                                        .message);
+                                                    // $.blockUI({
+                                                    //     message: '<i class="fa fa-spinner fa-spin"></i> Loading ...',
+                                                    //     css: {
+                                                    //         border: 'none',
+                                                    //         padding: '15px',
+                                                    //         backgroundColor: '#000',
+                                                    //         '-webkit-border-radius': '10px',
+                                                    //         '-moz-border-radius': '10px',
+                                                    //         opacity: .5,
+                                                    //         color: '#fff'
+                                                    //     }
+                                                    // });
+                                                    // window.location =
+                                                    //     "{{ route('pasien.rekammedis_detail', $pasien->id) }}"
+                                                    console.log(response);
+                                                },
+                                                error: function(error) {
+                                                    $.unblockUI();
+                                                    console.log(
+                                                        'Error submitting form:',
+                                                        error);
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+
+                                function displayFinalSelections() {
+                                    Swal.fire({
+                                        title: 'Your Selections',
+                                        html: `<p>Tujuan Kunjungan: ${selections.tujuanKunjungan}</p>
+                                            <p>Alasan Tidak Selesai: ${selections.alasanTidakSelesai}</p>
+                                            <p>Prosedur: ${selections.prosedur}</p>
+                                            <p>Prosedur Berkelanjutan: ${selections.prosedurBerkelanjutan}</p>
+                                            <p>Prosedur Tidak Berkelanjutan: ${selections.prosedurTidakBerkelanjutan}</p>`,
+                                        icon: 'info'
+                                    });
+                                }
+
+                            } else {
+                                Swal.fire({
+                                    title: 'Simpan Data',
+                                    text: "Apakah Anda yakin simpan data ? ",
+                                    icon: 'info',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Ya, Simpan Data',
+                                    cancelButtonText: 'Tidak'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        submitButton.setAttribute('data-kt-indicator',
+                                            'on');
+
+                                        // Disable button to avoid multiple click
+                                        submitButton.disabled = true;
+
+                                        // Simulate form submission. For more info check the plugin's official documentation: https://sweetalert2.github.io/
+
+                                        // var formData = form.closest('form');
+                                        var formDataFix = $(form).serialize();
+                                        var url = form.getAttribute('action');
+                                        var method = form.getAttribute('method');
+                                        $.ajax({
+                                            type: method,
+                                            url: url, // Replace with your server endpoint
+                                            data: formDataFix,
+                                            beforeSend: function() {
+                                                $.blockUI({
+                                                    message: '<i class="fa fa-spinner fa-spin"></i> Loading ...',
+                                                    css: {
+                                                        border: 'none',
+                                                        padding: '15px',
+                                                        backgroundColor: '#000',
+                                                        '-webkit-border-radius': '10px',
+                                                        '-moz-border-radius': '10px',
+                                                        opacity: .5,
+                                                        color: '#fff'
+                                                    }
+                                                });
+                                            },
+                                            success: function(response) {
+                                                $.unblockUI();
+                                                submitButton.disabled = false;
+                                                if (response.status ==
+                                                    'failed') {
+                                                    toastr.error(response
+                                                        .message);
+                                                    return false
+                                                }
+                                                toastr.success(response
+                                                    .message);
+                                                // $.blockUI({
+                                                //     message: '<i class="fa fa-spinner fa-spin"></i> Loading ...',
+                                                //     css: {
+                                                //         border: 'none',
+                                                //         padding: '15px',
+                                                //         backgroundColor: '#000',
+                                                //         '-webkit-border-radius': '10px',
+                                                //         '-moz-border-radius': '10px',
+                                                //         opacity: .5,
+                                                //         color: '#fff'
+                                                //     }
+                                                // });
+                                                // window.location =
+                                                //     "{{ route('pasien.rekammedis_detail', $pasien->id) }}"
+                                                console.log(response);
+                                            },
+                                            error: function(error) {
+                                                $.unblockUI();
+                                                console.log(
+                                                    'Error submitting form:',
+                                                    error);
+                                            }
+                                        });
                                     }
                                 });
-                                // form.submit();
-                                // Submit form
-                            }, 2000);
+                            }
+
+
+
                         }
                     });
                 }
@@ -623,22 +967,48 @@
 
         $('#btn-sep-manual').on('click', function() {
             $('#sep_rujukan').empty();
-            $('#kt_datepicker_1').val("{{ date('Y-m-d') }}");
+
+            $.ajax({
+                url: '{{ route('buat-sep-manual') }}',
+                type: 'GET',
+                data: {
+                    no_rm: '{{ $pasien->no_rm }}',
+                },
+
+                success: function(response) {
+                    console.log(response);
+                    if (response.status === 'failed') {
+                        $('#insert_sep_manual').empty();
+                    } else {
+                        $('#insert_sep_manual').html(response);
+                        $('#btn-cari-dokter').prop('disabled', false);
+                        $('#jenis_rawat').val(3);
+                        $('#poli').html(`
+                            <option selected value="1">UGD</option>
+                        `);
+                        $('#kt_datepicker_1').val("{{ date('Y-m-d') }}");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    toastr.error(xhr.responseJSON.message || error);
+                    $('#insert_sep_manual').empty();
+                }
+            });
         });
 
 
         $(document).ready(function() {
             $('#openPopup').on('click', function() {
                 Swal.fire({
-                    title: 'Select an option',
+                    title: 'Apa tujuan kunjungan ini?',
                     html: '<select id="firstSelect" class="form-select">' +
-                        '<option value="" disabled selected>Select an option</option>' +
-                        '<option value="1">Option 1</option>' +
-                        '<option value="2">Option 2</option>' +
-                        '<option value="3">Option 3</option>' +
+                        '<option value="0" data-value="" disabled selected>-- Apa tujuan kunjungan ini? --</option>' +
+                        '<option value="1" data-value="Prosedur">Prosedur</option>' +
+                        '<option value="2" data-value="Konsul Dokter">Konsul Dokter</option>' +
                         '</select>',
                     preConfirm: () => {
                         const selectedValue = $('#firstSelect').val();
+                        const selectedText = $('#firstSelect option:selected').data('value');
                         if (!selectedValue) {
                             Swal.showValidationMessage('Please select an option');
                         }
@@ -647,7 +1017,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         Swal.fire({
-                            title: 'You selected ' + result.value,
+                            title: 'You selected ' + result.value.selectedText,
                             html: '<select id="secondSelect" class="form-select">' +
                                 '<option value="" disabled selected>Select another option</option>' +
                                 '<option value="1">Sub-option 1</option>' +
@@ -703,6 +1073,8 @@
             } else {
                 $('#btn-cari-dokter').prop('disabled', true);
             }
+            $('#dokter').val('');
+            $('#iddokter').val('');
         })
 
 

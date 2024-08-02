@@ -24,10 +24,13 @@
 </div>
 <div class="mb-2 fv-row">
     <label class="required" for="">Diagnosa</label>
-    <input type="text" name="diagnosa" value="{{ $get_rujukan['response']['rujukan']['diagnosa']['nama'] }}"
+    {{-- <input type="text" name="diagnosa" value="{{ $get_rujukan['response']['rujukan']['diagnosa']['nama'] }}"
         class="form-control form-control-solid" readonly id="diagnosa">
     <input type="hidden" name="kode" value="{{ $get_rujukan['response']['rujukan']['diagnosa']['kode'] }}"
-        class="form-control form-control-solid" readonly id="kode_diagnosa">
+        class="form-control form-control-solid" readonly id="kode_diagnosa"> --}}
+        <label for="">Diagnosa ICD X</label>
+        <select class="js-data-example-ajax form-select form-select-sm" name="icdx"></select>
+        <input type="hidden" name="kode" value="{{ $get_rujukan['response']['rujukan']['diagnosa']['kode'].' - '.$get_rujukan['response']['rujukan']['diagnosa']['nama'] }}" id="kode_diagnosa">
 </div>
 <div class="mb-2 fv-row">
     
@@ -104,5 +107,34 @@
         // setTimeout(function() {
         //     button.removeAttribute("data-kt-indicator");
         // }, 3000);
+    });
+</script>
+<script>
+    $('.js-data-example-ajax').select2({
+        ajax: {
+            url: 'https://new-simrs.rsausulaiman.com/auth/listdiagnosa2',
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+
+                return {
+                    q: params.term, // search term
+                };
+            },
+            processResults: function(data) {
+                return {
+                    results: data.result.map(function(user) {
+                        return {
+                            id: user.id,
+                            text: user.text
+                        };
+                    })
+                };
+            },
+            cache: true
+        },
+        minimumInputLength: 1,
+        placeholder: '{{ $get_rujukan['response']['rujukan']['diagnosa']['kode']." - ".$get_rujukan['response']['rujukan']['diagnosa']['nama'] }}'
+    
     });
 </script>

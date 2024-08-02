@@ -76,4 +76,14 @@ class VclaimRencanaKontrolHelper
             ];
         }
     }
+    public static function getDatabysep($nosep)
+    {
+        try {
+            return MakeRequestHelper::makeRequest('get-surat-by-sep','get', '/RencanaKontrol/nosep/'.$nosep);
+        } catch (\Exception $e) {
+            return [
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
 }

@@ -480,168 +480,292 @@ class PasienController extends Controller
         return View::make('pasien.modal.jadwal-dokter', compact('results'));
     }
 
-    public function get_pilih_nomer(Request $request){
-        $poli = Poli::where('kode',$request->poli)->first();
-        $dokter = Dokter::where('kode_dpjp',$request->dokter)->first();
+    public function get_pilih_nomer(Request $request)
+    {
+        $poli = Poli::where('kode', $request->poli)->first();
+        $dokter = Dokter::where('kode_dpjp', $request->dokter)->first();
+        $data_poli = Poli::where('ket', 1)->get();
+        $sep_asal_kontrol = VclaimRencanaKontrolHelper::getDatabysep($request->sep);
+        $text = 'Anda sudah melakukan kunjungan dengan (flaging) prosedur non berkelanjutan (pemeriksaan penunjang) '.$sep_asal_kontrol['response']['poli'].' pada tgl '.$sep_asal_kontrol['response']['tglSep'];
+        $options = '';
+        foreach ($data_poli as $p) {
+            $selected = $p->id == $poli->id ? 'selected' : '';
+            $options .= '<option value="' . $p->id . '" ' . $selected . '>' . $p->poli . '</option>';
+        }
+
         return [
-            'status'=>'success',
-            'data'=>[
-                'no_surat'=>$request->no_surat,
-                'tgl_surat'=>$request->tglsurat,
-                'poli'=>$poli->poli,
-                'idpoli'=>$poli->id,
-                'iddokter'=>$dokter->id,
-                'nama_dokter'=>$dokter->nama_dokter,
-                'kode_dokter'=>$dokter->kode_dpjp,
-                'nama_dpjp'=>$dokter->nama_dokter
+            'status' => 'success',
+            'data' => [
+                'no_surat' => $request->no_surat,
+                'tgl_surat' => $request->tglsurat,
+                'poli' => $poli->poli,
+                'idpoli' => $poli->id,
+                'iddokter' => $dokter->id,
+                'nama_dokter' => $dokter->nama_dokter,
+                'kode_dokter' => $dokter->kode_dpjp,
+                'nama_dpjp' => $dokter->nama_dokter,
+                'poli_option'=>$options,
+                'sep_asal_kontrol'=>$text
             ]
         ];
     }
     public function store_kunjungan(Request $request)
-    {   
+    {
+        // return $request->all();
+        if ($request->sep == 1) {
+            // if ($request->icdx == null) {
+            //     return response()->json([
+            //         'status' => 'failed',
+            //         'message' => 'ICD X Harus diisi'
+            //     ]);
+            // }
+            if ($request->status_kecelakaan == '-') {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Status Kecelakaan Harus diisi'
+                ]);
+            }
+        }
         // return $request->all();
         DB::beginTransaction();
 
         try {
-            $pasien = Pasien::where('no_rm',$request->no_rm)->first();
-            $kode_kunjungan = date('dmY').rand(1000,9999);
-            if($request->jenis_rawat == 1){
+            $pasien = Pasien::where('no_rm', $request->no_rm)->first();
+            $poli = Poli::find($request->idpoli);
+            $dokter = Dokter::find($request->iddokter);
+            $kode_kunjungan = date('dmY') . rand(1000, 9999);
+            if ($request->jenis_rawat == 1) {
                 $kode = 'RJ';
                 $ruangan = 2;
-            }elseif($request->jenis_rawat == 3){
+            } elseif ($request->jenis_rawat == 3) {
                 $kode = 'UGD';
                 $ruangan = 1;
             }
             $insert_rawat_kunjungan = DB::table('rawat_kunjungan')->insertGetId([
-                'idkunjungan'=>$kode_kunjungan,
-                'no_rm'=>$pasien->no_rm,
-                'tgl_kunjungan'=>date('Y-m-d'),
-                'jam_kunjungan'=>date('H:i:s'),
-                'iduser'=>auth()->user()->id,
-                'usia_kunjungan'=>$pasien->usia_tahun,
-                'status'=>1,
-                'idpasien'=>$pasien->id,
+                'idkunjungan' => $kode_kunjungan,
+                'no_rm' => $pasien->no_rm,
+                'tgl_kunjungan' => date('Y-m-d'),
+                'jam_kunjungan' => date('H:i:s'),
+                'iduser' => auth()->user()->id,
+                'usia_kunjungan' => $pasien->usia_tahun,
+                'status' => 1,
+                'idpasien' => $pasien->id,
             ]);
 
             DB::table('transaksi')->insert([
-                'idtransaksi'=>'TRX'.date('dmY').rand(1000,9999),
-                'tgltransaksi'=>date('Y-m-d H:i:s'),
-                'iduser'=>auth()->user()->id,
-                'status'=>1,
-                'idkunjungan'=>$insert_rawat_kunjungan,
-                'no_rm'=>$pasien->no_rm,
-                'tgl_masuk'=>$request->tglmasuk,
-                'kode_kunjungan'=>$kode_kunjungan,
-                'idpasien'=>$pasien->id,
-                'id_bayar'=>$request->penanggung
+                'idtransaksi' => 'TRX' . date('dmY') . rand(1000, 9999),
+                'tgltransaksi' => date('Y-m-d H:i:s'),
+                'iduser' => auth()->user()->id,
+                'status' => 1,
+                'idkunjungan' => $insert_rawat_kunjungan,
+                'no_rm' => $pasien->no_rm,
+                'tgl_masuk' => $request->tglmasuk,
+                'kode_kunjungan' => $kode_kunjungan,
+                'idpasien' => $pasien->id,
+                'id_bayar' => $request->penanggung
             ]);
-            $kode_booking = $kode.date('Ymd').rand(1000,9999);
-            $antrian = MakeRequestHelper::genAntri($request->idpoli,$request->iddokter,null,$request->tglmasuk);
-            DB::table('rawat')->insertGetId([
-                'idrawat'=>$kode_booking,
-                'idkunjungan'=>$kode_kunjungan,
-                'idjenisrawat'=>$request->jenis_rawat,
-                'no_rm'=>$pasien->no_rm,
-                'idpoli'=>$request->idpoli,
-                'iddokter'=>$request->iddokter,
-                'idruangan'=>$ruangan,
-                'idbayar'=>$request->penanggung,
-                'tglmasuk'=>$request->tglmasuk.' '.date("H:i:s"),
-                'status'=>1,
-                'anggota'=>$request->anggota ?? 0,
-                'no_antrian'=> $antrian
+            $kode_booking = $kode . date('Ymd') . rand(1000, 9999);
+            $antrian = MakeRequestHelper::genAntri($request->idpoli, $request->iddokter, null, $request->tglmasuk);
+            $rawat = DB::table('rawat')->insertGetId([
+                'idrawat' => $kode_booking,
+                'idkunjungan' => $kode_kunjungan,
+                'idjenisrawat' => $request->jenis_rawat,
+                'no_rm' => $pasien->no_rm,
+                'idpoli' => $request->idpoli,
+                'iddokter' => $request->iddokter,
+                'idruangan' => $ruangan,
+                'idbayar' => $request->penanggung,
+                'tglmasuk' => $request->tglmasuk . ' ' . date("H:i:s"),
+                'status' => 1,
+                'icdx' => $request->icdx ?? null,
+                'anggota' => $request->anggota ?? 0,
+                'no_antrian' => $antrian
             ]);
 
-           
-            $poli = Poli::find($request->idpoli);
-            $dokter = Dokter::find($request->iddokter);
-            $date = date('Y-m-d');
-            $timestamp = strtotime($date);
-            $dayNumber = date('N', $timestamp);
-            $dokter_jadwal = DB::table('dokter_jadwal')->where('iddokter',$request->iddokter)->where('idhari',$dayNumber)->where('idpoli',$request->idpoli)->first();
-            $millisecond = Carbon::now()->timestamp * 1000 + Carbon::now()->microsecond / 1000;
-            
+
+
             // return $dokter_kuota;
             // return $request->penanggung'
             if ($request->jenis_rawat == 1) {
-            
+
+                $date = date('Y-m-d');
+                $timestamp = strtotime($date);
+                $dayNumber = date('N', $timestamp);
+                $dokter_jadwal = DB::table('dokter_jadwal')->where('iddokter', $request->iddokter)->where('idhari', $dayNumber)->where('idpoli', $request->idpoli)->first();
+                $millisecond = Carbon::now()->timestamp * 1000 + Carbon::now()->microsecond / 1000;
+
                 $jadwal = DokterJadwal::where(['iddokter' => $request->iddokter, 'idhari' => $dayNumber])->first();
                 // return $jadwal;
                 if (!$jadwal) {
                     session()->flash('danger', 'Jadwal Dokter Tidak ditemukan');
                     // return redirect()->back();
                 }
-            
+
                 $kuota = DokterKuota::firstOrNew(
-                    ['iddokter' => $request->iddokter, 'idhari' => $dayNumber, 'tgl' => date('Y-m-d',strtotime($request->tglmasuk))],
+                    ['iddokter' => $request->iddokter, 'idhari' => $dayNumber, 'tgl' => date('Y-m-d', strtotime($request->tglmasuk))],
                     ['kuota' => $jadwal->kuota, 'sisa' => $jadwal->kuota, 'terdaftar' => 0, 'status' => 1]
                 );
-            
-                if ($kuota->sisa > 0){
+
+                if ($kuota->sisa > 0) {
                     $kuota->sisa -= 1;
                     $kuota->terdaftar += 1;
                     $kuota->save();
                 }
-            
-                // Additional actions can be added here
-           
-            $dokter_kuota = DB::table('dokter_kuota')->where('iddokter',$request->iddokter)->where('idhari',$dayNumber)->where('idpoli',$request->idpoli)->where('tgl',date('Y-m-d',strtotime($request->tglmasuk)))->first();
-            // return $dokter_kuota;
-            $data = [
-                "kodebooking" => $kode_booking,
-                "jenispasien" => $request->penanggung == 2 ? 'JKN':'NON JKN',
-                "nomorkartu" => $request->penanggung == 2 ? $pasien->no_bpjs:'',
-                "nik" => $pasien->nik,
-                "nohp" => $pasien->nohp ?? 0,
-                "kodepoli" => $poli->kode,
-                "namapoli" => $poli->poli,
-                "pasienbaru" => 0,
-                "norm" => $pasien->no_rm,
-                "tanggalperiksa" => $request->tglmasuk,
-                "kodedokter" => $dokter->kode_dpjp,
-                "namadokter" => $dokter->nama_dokter,
-                "jampraktek" => date('H:i',strtotime($dokter_jadwal->jam_mulai)).'-'. date('H:i',strtotime($dokter_jadwal->jam_selesai)),
-                "jeniskunjungan" => $request->kunjungan ?? 1,
-                "nomorreferensi" =>  $request->penanggung == 2 ? '0171R0010824K000007':'0151B1070622P002358',
-                "nomorantrean" => $poli->kode_antrean.'-'.substr($antrian,-3),
-                "angkaantrean" => (int) ltrim(substr($antrian,-3), '0'),
-                "estimasidilayani" => round(microtime(true) * 1000),
-                "sisakuotajkn"=>  $dokter_kuota->sisa ?? $jadwal->kuota - 1,
-                "kuotajkn"=> $dokter_kuota->kuota ?? $jadwal->kuota,
-                "sisakuotanonjkn"=> $dokter_kuota->sisa ?? $jadwal->kuota - 1,
-                "kuotanonjkn"=> $dokter_kuota->kuota ?? $jadwal->kuota,
-                "keterangan" => "Peserta harap 30 menit lebih awal guna pencatatan administrasi."
-            ];
 
-            $data_antrian = [
-                "kodebooking"=>$kode_booking,
-                "taskid"=>3,
-                "waktu"=>round(microtime(true) * 1000),
-            ];
-            // return $data;
-            WsBpjsHelper::post_tambah_antrean($data);
-            WsBpjsHelper::post_update_antrean($data_antrian);
-        }
-           
+                // Additional actions can be added here
+
+                $dokter_kuota = DB::table('dokter_kuota')->where('iddokter', $request->iddokter)->where('idhari', $dayNumber)->where('idpoli', $request->idpoli)->where('tgl', date('Y-m-d', strtotime($request->tglmasuk)))->first();
+                // return $dokter_kuota;
+                $data = [
+                    "kodebooking" => $kode_booking,
+                    "jenispasien" => $request->penanggung == 2 ? 'JKN' : 'NON JKN',
+                    "nomorkartu" => $request->penanggung == 2 ? $pasien->no_bpjs : '',
+                    "nik" => $pasien->nik,
+                    "nohp" => $pasien->nohp ?? 0,
+                    "kodepoli" => $poli->kode,
+                    "namapoli" => $poli->poli,
+                    "pasienbaru" => 0,
+                    "norm" => $pasien->no_rm,
+                    "tanggalperiksa" => $request->tglmasuk,
+                    "kodedokter" => $dokter->kode_dpjp,
+                    "namadokter" => $dokter->nama_dokter,
+                    "jampraktek" => date('H:i', strtotime($dokter_jadwal->jam_mulai)) . '-' . date('H:i', strtotime($dokter_jadwal->jam_selesai)),
+                    "jeniskunjungan" => $request->kunjungan ?? 1,
+                    "nomorreferensi" =>  $request->penanggung == 2 ? '0171R0010824K000007' : '0151B1070622P002358',
+                    "nomorantrean" => $poli->kode_antrean . '-' . substr($antrian, -3),
+                    "angkaantrean" => (int) ltrim(substr($antrian, -3), '0'),
+                    "estimasidilayani" => round(microtime(true) * 1000),
+                    "sisakuotajkn" =>  $dokter_kuota->sisa ?? $jadwal->kuota - 1,
+                    "kuotajkn" => $dokter_kuota->kuota ?? $jadwal->kuota,
+                    "sisakuotanonjkn" => $dokter_kuota->sisa ?? $jadwal->kuota - 1,
+                    "kuotanonjkn" => $dokter_kuota->kuota ?? $jadwal->kuota,
+                    "keterangan" => "Peserta harap 30 menit lebih awal guna pencatatan administrasi."
+                ];
+
+                $data_antrian = [
+                    "kodebooking" => $kode_booking,
+                    "taskid" => 3,
+                    "waktu" => round(microtime(true) * 1000),
+                ];
+                // return $data;
+                WsBpjsHelper::post_tambah_antrean($data);
+                WsBpjsHelper::post_update_antrean($data_antrian);
+            }
+            if ($request->sep == 1) {
+                if($request->no_rujukan){
+                    $rujukan = VclaimRujukanHelper::get_rujukan_norujukan($request->no_rujukan);
+                    $tanggal = $rujukan['response']['rujukan']['tglKunjungan'];
+                }else{
+                    $tanggal = "";
+                }
+                $icdx = explode(" - ", $request->icdx ?? $request->kode);
+                $kode = $icdx[0];
+                $nama = $icdx[1];
+                $sep_manual = [
+                    'request' => [
+                        't_sep' => [
+                            'noKartu' => $pasien->no_bpjs,
+                            'tglSep' => $request->tglmasuk,
+                            'ppkPelayanan' => '0171R001',
+                            'jnsPelayanan' => '2',
+                            "klsRawat" => [
+                                "klsRawatHak" => 3,
+                                "klsRawatNaik" => "",
+                                "pembiayaan" => "",
+                                "penanggungJawab" => ""
+                            ],
+                            'noMR' => $pasien->no_rm,
+                            'rujukan' => [
+                                "asalRujukan" => $request->faskes ?? 2,
+                                "tglRujukan" => $tanggal,
+                                "noRujukan" => $request->no_rujukan ?? "",
+                                "ppkRujukan" => $request->kode_faskes  ?? ""
+                            ],
+                            'catatan' => '-',
+                            'diagAwal' => $kode,
+                            'poli' => [
+                                'tujuan' => $poli->kode,
+                                'eksekutif' => '0'
+                            ],
+                            'cob' => [
+                                'cob' => '0'
+                            ],
+                            'katarak' => [
+                                'katarak' => '0'
+                            ],
+                            'jaminan' => [
+                                'lakaLantas' => '0',
+                                'penjamin' => [
+                                    'penjamin' => '0',
+                                    'tglKejadian' => '',
+                                    'keterangan' => '',
+                                    'suplesi' => [
+                                        'suplesi' => '0',
+                                        'noSepSuplesi' => '0',
+                                        'lokasiLaka' => [
+                                            'kdPropinsi' => '',
+                                            'kdKabupaten' => '',
+                                            'kdKecamatan' => ''
+                                        ]
+                                    ]
+                                ]
+                            ],
+                            "tujuanKunj" => $request->tujuanKunjungan ?? 0,
+                            "flagProcedure" => $request->prosedur ?? "",
+                            "kdPenunjang" => $request->prosedurTidakBerkelanjutan ?? "",
+                            "assesmentPel" => $request->alasanTidakSelesai ?? "",
+                            "skdp" => [
+                                "noSurat" => $request->no_surat ?? "",
+                                "kodeDPJP" => $request->txtkddpjp ?? "",
+                            ],
+                            "dpjpLayan" => $dokter->kode_dpjp,
+                            "noTelp" => $pasien->nohp,
+                            "user" => auth()->user()->username
+                        ]
+                    ]
+                ];
+                // return $sep_manual;
+                $sep = VclaimSepHelper::getInsertSep($sep_manual);
+                // return $sep;
+                if (isset($sep['metaData']) && $sep['metaData']['code'] != 200) {
+                    return response()->json([
+                        'status' => 'failed',
+                        'message' => $sep['metaData']['message'] ?? 'Server Error'
+                    ]);
+                }
+
+                DB::table('rawat')->where('id', $rawat)->update([
+                    'no_sep' => $sep['response']['sep']['noSep']
+                ]);
+                DB::commit();
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Data Berhasil disimpan | No SEP : ' . $sep['response']['sep']['noSep']
+                ]);
+            }
             DB::commit();
-            
+
             return response()->json([
-                'status'=>'success',
+                'status' => 'success',
+                'message' => 'Data Berhasil disimpan'
             ]);
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
-                'status'=>'failed',
-                'message'=>$e->getMessage()
+                'status' => 'failed',
+                'message' => $e->getMessage()
             ]);
         }
     }
 
-    public function show_sep($nomer_sep){
-        return View::make('pasien.modal.sep',compact('nomer_sep'));
+    public function show_sep($nomer_sep)
+    {
+        return View::make('pasien.modal.sep', compact('nomer_sep'));
     }
-    public function buat_sep_manual(Request $request){
-        $pasien = Pasien::where('no_rm',$request->no_rm)->first();
-        return View::make('pasien.form.rujukan-manual',compact('pasien'));
+    public function buat_sep_manual(Request $request)
+    {
+        $pasien = Pasien::where('no_rm', $request->no_rm)->first();
+        return View::make('pasien.form.rujukan-manual', compact('pasien'));
     }
 }

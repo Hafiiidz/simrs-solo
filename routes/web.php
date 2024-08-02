@@ -49,6 +49,7 @@ use App\Helpers\Vclaim\VclaimRencanaKontrolHelper;
 use App\Http\Controllers\LaporanOperasiController;
 use App\Helpers\Satusehat\Resource\EncounterHelper;
 use App\Helpers\Satusehat\Resource\ProcedureHelper;
+use App\Helpers\Vclaim\VclaimSepHelper;
 use App\Http\Controllers\DetailRekapMedisController;
 
 /*
@@ -100,7 +101,6 @@ Route::get('/update-data', function () {
     $data = DB::table('table_satu')->whereNull('billing_lanjut_ranap')->get();
     foreach ($data as $d) {
         UpdateBilling::dispatch($d->icd10);
-     
     }
     return 'aa';
 });
@@ -173,12 +173,23 @@ Route::get('/get-data', function () {
 
     return $array;
 });
+Route::get('/tes-sep', function () {
+    $data = [
+        'request' => [
+            't_sep' => [
+                'noSep' => "0171R0010824V000174",
+                'user' => auth()->user()->username
+            ]
+        ]
+    ];
+    return VclaimSepHelper::getDeleteSep($data);
+});
 Route::get('/tes-antrol', function () {
     // $referensi_poli = WsBpjsHelper::referensi_poli();
     // $referensi_poli_fp = WsBpjsHelper::referensi_poli_fp();
     // $referensi_jadwaldokter = WsBpjsHelper::referensi_jadwaldokter('IGD',date('Y-m-d'));
     // $referensi_pasien_fp = WsBpjsHelper::referensi_pasien_fp('nik','3204102601980002');
-    
+
     // $get_dashboard_tgl = WsBpjsHelper::get_dashboard_tgl('2024-07-30','server');
     // $get_antrean_tgl = WsBpjsHelper::get_antrean_tgl('2024-07-31');
     // $get_antrean_kode = WsBpjsHelper::get_antrean_kode('RJ2024213530005');
@@ -821,6 +832,7 @@ Route::prefix('/pasien')->middleware('auth')->group(function () {
     Route::get('/get-pilih-nomer', [PasienController::class, 'get_pilih_nomer'])->name('get-pilih-nomer');
     Route::get('/get-pilih-dokter/{jenis}', [PasienController::class, 'get_pilih_dokter'])->name('get-pilih-dokter');
     Route::get('/show-sep/{sep}', [PasienController::class, 'show_sep'])->name('show-sep');
+    Route::get('/buat-sep-manual', [PasienController::class, 'buat_sep_manual'])->name('buat-sep-manual');
 
     //Rekam Medis
     Route::prefix('/bpjs')->middleware('auth')->group(function () {

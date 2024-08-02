@@ -28,6 +28,7 @@
                         data-id="{{ $list['noSuratKontrol'] }}"
                         data-dokter="{{ $list['kodeDokter'] }}"
                         data-poli="{{ $list['poliTujuan'] }}"
+                        data-sep="{{ $list['noSepAsalKontrol'] }}"
                         >{{ $list['noSuratKontrol'] }}</button> 
                       
                     </td>
@@ -50,6 +51,7 @@
         var dokter = $(this).data('dokter');
         var poli = $(this).data('poli');
         var tglsurat = $(this).data('tglsurat');
+        var sep = $(this).data('sep');
 
         $.ajax({
             url: '{{ route('get-pilih-nomer') }}',
@@ -58,14 +60,13 @@
                 no_surat: no_surat,
                 dokter: dokter,
                 tglsurat: tglsurat,
-                poli: poli
+                poli: poli,
+                sep: sep
             },
             success: function(response) {
                 // Display the result
                 console.log(response);
-                $('#poli').html(`
-                    <option selected value="${response.data.idpoli}">${response.data.poli}</option>
-                `);
+                $('#poli').html(response.data.poli_option);
                 $('#kt_datepicker_1').val(response.data.tgl_surat)
                 $('#jenis_rawat').val(1)
                 $('#iddokter').val(response.data.iddokter)
@@ -74,7 +75,9 @@
                 $('#txtnmdpjp').val(response.data.nama_dpjp)
                 $('#txtkddpjp').val(response.data.kode_dokter)
                 $('#modal-hasil').empty();
+                $('#btn-cari-dokter').prop('disabled', false);
                 $('#modal-dokter').modal('hide');
+                toastr.warning(response.data.sep_asal_kontrol)
             },
             error: function(xhr, status, error) {
                 console.error('AJAX Error: ' + status + error);
