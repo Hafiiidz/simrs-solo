@@ -73,7 +73,7 @@ class RawatInapController extends Controller
         //                 'idtarif' => $tk->idtindakan,
         //                 'tarif' => $tarif->tarif,
         //                 'idtindakan' => $tarif->kat_tindakan,
-        //                 'tgl' => now(),
+        //                 'tgl' => date('Y-m-d H:i:s'),
         //             ]); 
         //         }
         //     }
@@ -92,14 +92,14 @@ class RawatInapController extends Controller
         // if($rawat_ruangan > 0){
         //     DB::table('rawat_ruangan')->where('idrawat',$rawat->id)->update([
         //         'tgl_keluar'=>$request->tgl_pulang,
-        //         'updated_at'=>now(),
+        //         'updated_at'=>date('Y-m-d H:i:s'),
         //     ]);
         // }
         // #update tempat tidur 
         // DB::table('ruangan_bed')->where('id',$rawat->idtempattidur)->update([
         //     'terisi'=>0,
         //     'status'=>0,
-        //     'updated_at'=>now(),
+        //     'updated_at'=>date('Y-m-d H:i:s'),
         // ]);
         return redirect()->back()->with('berhasil','Data Berhasil Di Simpan');
     }
@@ -304,15 +304,15 @@ class RawatInapController extends Controller
             DB::table('demo_ranap_dx')->where('idrawat',$id)->update([
                 'icd10'=>json_encode($request->icdx),
                 'icd9'=>json_encode($request->icd9),
-                'updated_at'=>now(),
+                'updated_at'=>date('Y-m-d H:i:s'),
             ]);
         }else{
             DB::table('demo_ranap_dx')->insert([
                 'idrawat'=>$id,
                 'icd10'=>json_encode($request->icdx),
                 'icd9'=>json_encode($request->icd9),
-                'created_at'=>now(),
-                'updated_at'=>now(),
+                'created_at'=>date('Y-m-d H:i:s'),
+                'updated_at'=>date('Y-m-d H:i:s'),
             ]);
         }
 
@@ -347,7 +347,7 @@ class RawatInapController extends Controller
                 DB::table('demo_trx_tindakan')->where('idrawat',$rawat->id)->where('idtindakan',$tindakan['tindakan'])->update([
                     'jumlah'=>$cek_tindakan->jumlah + $tindakan['jumlah'],
                     'profesi'=>$profesi,
-                    'updated_at'=>now(),
+                    'updated_at'=>date('Y-m-d H:i:s'),
                 ]);
 
                
@@ -360,8 +360,8 @@ class RawatInapController extends Controller
                     'iddokter'=>$tindakan['dokter'],
                     'jumlah'=>$tindakan['jumlah'],
                     'profesi'=>$profesi,
-                    'created_at'=>now(),
-                    'updated_at'=>now(),
+                    'created_at'=>date('Y-m-d H:i:s'),
+                    'updated_at'=>date('Y-m-d H:i:s'),
                     'id_raber'=>$raber
                 ]);
             }
@@ -382,7 +382,7 @@ class RawatInapController extends Controller
                             'idtarif' => $tk->idtindakan,
                             'tarif' => $tarif->tarif,
                             'idtindakan' => $tarif->kat_tindakan,
-                            'tgl' => now(),
+                            'tgl' => date('Y-m-d H:i:s'),
                         ]); 
                     }
                 }
@@ -658,7 +658,7 @@ class RawatInapController extends Controller
         $penunjang = DB::table('demo_permintaan_penunjang')->where('id', $id)->first();
         DB::table('demo_permintaan_penunjang')->where('status_pemeriksaan','Antrian')->where('id',$id)->update([
             'pemeriksaan_penunjang' => json_encode($request->radiologi),
-            'updated_at' => now(),
+            'updated_at' => date('Y-m-d H:i:s'),
         ]);
         return redirect()->back()->with('berhasil','Data Berhasil Di Simpan');
 
@@ -667,7 +667,7 @@ class RawatInapController extends Controller
         $penunjang = DB::table('demo_permintaan_penunjang')->where('id', $id)->first();
         DB::table('demo_permintaan_penunjang')->where('status_pemeriksaan','Antrian')->where('id',$id)->update([
             'pemeriksaan_penunjang' => json_encode($request->lab),
-            'updated_at' => now(),
+            'updated_at' => date('Y-m-d H:i:s'),
         ]);
         return redirect()->back()->with('berhasil','Data Berhasil Di Simpan');
 
@@ -697,9 +697,9 @@ class RawatInapController extends Controller
                     'no_rm' => $rawat->no_rm,
                     'pemeriksaan_penunjang' => json_encode($request->radiologi),
                     'jenis_penunjang' => 'Radiologi',
-                    'peminta' => now(),
+                    'peminta' => date('Y-m-d H:i:s'),
                     'created_at' => $request->tgl_periksa  ?? date('Y-m-d'),
-                    'updated_at' => now(),
+                    'updated_at' => date('Y-m-d H:i:s'),
                     'peminta' => auth()->user()->id,
                     'jenis_rawat' => $rawat->idjenisrawat,
                     'id_raber'=>$raber
@@ -716,9 +716,9 @@ class RawatInapController extends Controller
                     'no_rm' => $rawat->no_rm,
                     'pemeriksaan_penunjang' => json_encode($request->lab),
                     'jenis_penunjang' => 'Lab',
-                    'peminta' => now(),
+                    'peminta' => date('Y-m-d H:i:s'),
                     'created_at' => $request->tgl_periksa  ?? date('Y-m-d'),
-                    'updated_at' => now(),
+                    'updated_at' => date('Y-m-d H:i:s'),
                     'peminta' => auth()->user()->id,
                     'jenis_rawat' => $rawat->idjenisrawat,
                     'id_raber'=>$raber
@@ -735,9 +735,9 @@ class RawatInapController extends Controller
                     'no_rm' => $rawat->no_rm,
                     'pemeriksaan_penunjang' => json_encode($request->fisio),
                     'jenis_penunjang' => 'Fisio',
-                    'peminta' => now(),
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'peminta' => date('Y-m-d H:i:s'),
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
                     'peminta' => auth()->user()->id,
                     'jenis_rawat' => $rawat->idjenisrawat,
                     'id_raber'=>$raber
@@ -843,7 +843,7 @@ class RawatInapController extends Controller
                 'obat'=>json_encode($racikan),
                 'racikan' => json_encode($racikan),
                 'obat' => json_encode($non_racik),
-                'updated_at'=>now(),
+                'updated_at'=>date('Y-m-d H:i:s'),
             ]);
             DB::table('demo_resep_dokter')->where('idrawat', $rawat->id)->whereNull('idantrian')->update([
                 'idantrian'=>$request->idresep,
@@ -873,8 +873,8 @@ class RawatInapController extends Controller
             'no_antrian' => $no_antrian + 1,
             'obat' => null,
             'jenis_rawat' => $rawat->idjenisrawat,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
             'id_raber'=>$raber
         ]);
         // $antrian->save();
@@ -887,8 +887,8 @@ class RawatInapController extends Controller
         //     'no_rm' => $rawat->no_rm,
         //     'obat' => json_encode($request->terapi_obat),
         //     'jenis_rawat' => $rawat->idjenisrawat,
-        //     'created_at' => now(),
-        //     'updated_at' => now(),
+        //     'created_at' => date('Y-m-d H:i:s'),
+        //     'updated_at' => date('Y-m-d H:i:s'),
         // ]);
         return redirect(route('view.rawat-inap-order',$rawat->id))->with('berhasil', 'Order Obat Berhasil Di Simpan');
         // return redirect()->back()->with('berhasil', 'Silahkan Inputkan');
@@ -926,7 +926,7 @@ class RawatInapController extends Controller
             DB::table('demo_ranap_awal_pemeriksaan_fisik')->where('idrawat', $rawat->id)->update([
                 'anamnesa' => $anamnesa->toJson(),
                 'pemeriksaan_fisik' => $pemeriksaan_fisik->toJson(),
-                'updated_at' => now(),
+                'updated_at' => date('Y-m-d H:i:s'),
             ]);
             return redirect()->back()->with('berhasil', 'Data Berhasil Di Update');
         }else
@@ -939,8 +939,8 @@ class RawatInapController extends Controller
             'idrawat' => $rawat->id,
             'anamnesa' => $anamnesa->toJson(),
             'pemeriksaan_fisik' => $pemeriksaan_fisik->toJson(),
-            'created_at' => now(),
-            'updated_at' => now(),
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
             'id_raber'=>$raber
         ]);
 
@@ -961,8 +961,8 @@ class RawatInapController extends Controller
                 'icd10' => json_encode($request->icdx),
                 'icd9' => json_encode($request->icd9),
                 'icd10_sekunder' => json_encode($request->icdx_sekunder),
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
             ]);
             return redirect()->back()->with('berhasil', 'Ringkasan Pasien Berhasil Di Update');
         }
@@ -979,8 +979,8 @@ class RawatInapController extends Controller
             'icd10' => json_encode($request->icdx),
             'icd9' => json_encode($request->icd9),
             'icd10_sekunder' => json_encode($request->icdx_sekunder),
-            'created_at' => now(),
-            'updated_at' => now(),
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
             'id_raber'=>$raber
         ]);
 
@@ -999,7 +999,7 @@ class RawatInapController extends Controller
             DB::table('demo_rawat_bersama')->insert([
                 'idrawat' => $rawat->id,
                 'id_dokter' => $request->id_dokter,
-                'tgl_mulai'=>now(),
+                'tgl_mulai'=>date('Y-m-d H:i:s'),
                 'status'=>1
             ]);
         }

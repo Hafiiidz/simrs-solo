@@ -8,6 +8,7 @@ use App\Jobs\UpdateBilling;
 use Illuminate\Http\Request;
 use App\Helpers\VclaimHelper;
 use App\Models\Pasien\Pasien;
+use Illuminate\Support\Carbon;
 use App\Jobs\ProcessPasienJob;
 use App\Jobs\SendSatuSehatJob;
 use App\Jobs\ProcessRawatSendJob;
@@ -185,6 +186,7 @@ Route::get('/tes-sep', function () {
     return VclaimSepHelper::getDeleteSep($data);
 });
 Route::get('/tes-antrol', function () {
+    return Carbon::now()->format('Y-m-d\TH:i:s\Z');
     // $referensi_poli = WsBpjsHelper::referensi_poli();
     // $referensi_poli_fp = WsBpjsHelper::referensi_poli_fp();
     // $referensi_jadwaldokter = WsBpjsHelper::referensi_jadwaldokter('IGD',date('Y-m-d'));

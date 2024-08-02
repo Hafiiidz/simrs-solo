@@ -29,7 +29,7 @@ class DetailRekapMedisController extends Controller
                 'assesmen' => $request->assesment,
                 'rekomendation' => $request->recomendation,
                 'intruksi' => $request->intruksi,
-                'updated_at'=>now(),
+                'updated_at'=>date('Y-m-d H:i:s'),
             ]);
         }else{
             DB::table('demo_sbar')->insert([
@@ -38,7 +38,7 @@ class DetailRekapMedisController extends Controller
                 'assesmen' => $request->assesment,
                 'rekomendation' => $request->recomendation,
                 'intruksi' => $request->intruksi,
-                'updated_at'=>now(),
+                'updated_at'=>date('Y-m-d H:i:s'),
                 'idrawat'=>$id
             ]);
 

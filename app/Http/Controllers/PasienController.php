@@ -260,7 +260,7 @@ class PasienController extends Controller
                 'idkec' => $data_alamat['id_kec'],
                 'no_rm' => $no_rm[1],
                 'alamat' => $request->alamat,
-                'updated' => now(),
+                'updated' => date('Y-m-d H:i:s'),
                 'user_update' => auth()->user()->id,
                 'utama' => 1
             ]);
@@ -344,7 +344,7 @@ class PasienController extends Controller
             DB::table('demo_erm_check')->insert([
                 'user_id' => auth()->user()->id,
                 'pasien_id' => $request->pasien_id,
-                'date_time' => now(),
+                'date_time' => date('Y-m-d H:i:s'),
                 'aksi' => 'Membuka data pasien RM ' . $pasien->no_rm . ''
             ]);
             return response()->json(['status' => 'success']);

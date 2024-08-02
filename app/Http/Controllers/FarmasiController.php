@@ -601,8 +601,8 @@ class FarmasiController extends Controller
             'jenis' => $request->jenis_pemberian,
             'tgl' => $request->tgl,
             'pemberian_obat' => json_encode($request->pemberian_obat),
-            'created_at' => now(),
-            'updated_at' => now(),
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
             'user' => auth()->user()->id,
         ]);
         return redirect()->back()->with('berhasil', 'Data Pemberian Obat Berhasil Di Simpan');
@@ -795,7 +795,7 @@ class FarmasiController extends Controller
                 
                 DB::table('demo_antrian_resep')->where('id',$request->antrian)->update([
                     'obat' => json_encode($non_racik),
-                    'updated_at' => now(),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ]);
                 return response()->json([
                     'status'=>true,
@@ -893,7 +893,7 @@ class FarmasiController extends Controller
             DB::table('demo_antrian_resep')->where('idrawat',$id)->where('status_antrian','Antrian')->update([
                 'racikan' => json_encode($racikan),
                 'obat' => json_encode($non_racik),
-                'updated_at' => now(),
+                'updated_at' => date('Y-m-d H:i:s'),
             ]);
             $antrian = DB::table('demo_antrian_resep')->where('idrawat', $id)->where('status_antrian','Antrian')->first();
 
@@ -987,7 +987,7 @@ class FarmasiController extends Controller
         // return $racikan;
         DB::table('demo_antrian_resep')->where('id',$resep_asal->idantrian)->update([
             'racikan' => json_encode($racikan),
-            'updated_at' => now(),
+            'updated_at' => date('Y-m-d H:i:s'),
         ]);
         return redirect()->back()->with('berhasil', 'Data Berhasil Di Simpan');
 
@@ -1030,7 +1030,7 @@ class FarmasiController extends Controller
             
             DB::table('demo_antrian_resep')->where('id',$resep_asal->idantrian)->update([
                 'obat' => json_encode($non_racik),
-                'updated_at' => now(),
+                'updated_at' => date('Y-m-d H:i:s'),
             ]);
             // return redirect()->back()->with('berhasil', 'Data Berhasil Di Simpan');
         }
@@ -1111,7 +1111,7 @@ class FarmasiController extends Controller
                 
                 DB::table('demo_antrian_resep')->where('id',$request->idtambah)->update([
                     'obat' => json_encode($non_racik),
-                    'updated_at' => now(),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ]);
                 return redirect()->back()->with('berhasil', 'Data Berhasil Di Simpan');
             }
@@ -1135,8 +1135,8 @@ class FarmasiController extends Controller
             'no_antrian' => $no_antrian + 1,
             'obat' => '[]',
             'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
         ]);
         return redirect(route('farmasi.status-rajal', $id))->with('berhasil', 'Resep Berhasil Di Tambah');
 

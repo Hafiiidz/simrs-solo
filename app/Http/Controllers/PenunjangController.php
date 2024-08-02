@@ -186,7 +186,7 @@ class PenunjangController extends Controller
                 'idtarif' => $tarif->id,
                 'tarif' => $tarif->tarif,
                 'idtindakan' => $tarif->kat_tindakan,
-                'tgl' => now(),
+                'tgl' => date('Y-m-d H:i:s'),
             ]);
         }
         
@@ -220,7 +220,7 @@ class PenunjangController extends Controller
                     'idtarif' => $tarif->id,
                     'tarif' => $tarif->tarif,
                     'idtindakan' => $tarif->kat_tindakan,
-                    'tgl' => now(),
+                    'tgl' => date('Y-m-d H:i:s'),
                 ]);
             }
         }
@@ -269,7 +269,7 @@ class PenunjangController extends Controller
                 'idtarif' => $tarif->id,
                 'tarif' => $tarif->tarif,
                 'idtindakan' => $tarif->kat_tindakan,
-                'tgl' => now(),
+                'tgl' => date('Y-m-d H:i:s'),
             ]);
 
         }

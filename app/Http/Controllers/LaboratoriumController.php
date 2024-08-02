@@ -230,8 +230,8 @@ class LaboratoriumController extends Controller
         $data = [
             'idrawat'=>$id,
             'pemeriksaan_penunjang'=>'null',
-            'created_at'=>now(),
-            'updated_at'=>now(),
+            'created_at'=>date('Y-m-d H:i:s'),
+            'updated_at'=>date('Y-m-d H:i:s'),
             'status_pemeriksaan'=>'Antrian',
             'jenis_penunjang'=>'Lab',
             'peminta'=>$rawat->iddokter,

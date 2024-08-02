@@ -180,14 +180,14 @@ class RekapMedisController extends Controller
                     // return $racikan;
                     $cek_antrian = DB::table('demo_antrian_resep')->where('idrawat', "$rawat->id")->where('jenis_rawat', $rawat->idjenisrawat)->first();
                     if($cek_antrian){
-                        $no_antrian = DB::table('demo_antrian_resep')->whereDate('created_at', Carbon::today())->where('jenis_rawat', $rawat->idjenisrawat)->count();
+                        $no_antrian = DB::table('demo_antrian_resep')->whereDate('created_at',date('Y-m-d H:i:s'))->where('jenis_rawat', $rawat->idjenisrawat)->count();
                         $antrian = DB::table('demo_antrian_resep')->where('idrawat', "$rawat->id")->where('status_antrian', 'Antrian')->update([
                             'racikan' => json_encode($racikan),
                             'obat' => json_encode($non_racik),
-                            'updated_at' => now(),
+                            'updated_at' => date('Y-m-d H:i:s'),
                         ]);
                     }else{
-                        $no_antrian = DB::table('demo_antrian_resep')->whereDate('created_at', Carbon::today())->where('jenis_rawat', $rawat->idjenisrawat)->count();
+                        $no_antrian = DB::table('demo_antrian_resep')->whereDate('created_at',date('Y-m-d H:i:s'))->where('jenis_rawat', $rawat->idjenisrawat)->count();
                         $antrian = DB::table('demo_antrian_resep')->insertGetId([
                             'idrawat' => $rekap_medis->idrawat,
                             'racikan' => json_encode($racikan),
@@ -198,8 +198,8 @@ class RekapMedisController extends Controller
                             'no_antrian' => $no_antrian + 1,
                             'obat' => json_encode($non_racik),
                             'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
-                            'created_at' => now(),
-                            'updated_at' => now(),
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s'),
                         ]);
                         DB::table('demo_resep_dokter')->where('idrawat', "$rawat->id")->whereNull('idantrian')->update([
                             'idantrian'=>$antrian
@@ -217,9 +217,9 @@ class RekapMedisController extends Controller
                             'no_rm' => $rekap_medis->rawat->no_rm,
                             'pemeriksaan_penunjang' => $detail->radiologi,
                             'jenis_penunjang' => 'Radiologi',
-                            'peminta' => now(),
-                            'created_at' => now(),
-                            'updated_at' => now(),
+                            'peminta' => date('Y-m-d H:i:s'),
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s'),
                             'peminta' => auth()->user()->id,
                             'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
                             'idrekap' => $rekap_medis->id,
@@ -232,9 +232,9 @@ class RekapMedisController extends Controller
                     //     'no_rm' => $rekap_medis->rawat->no_rm,
                     //     'pemeriksaan_penunjang' => $detail->radiologi,
                     //     'jenis_penunjang' => 'Radiologi',
-                    //     'peminta' => now(),
-                    //     'created_at' => now(),
-                    //     'updated_at' => now(),
+                    //     'peminta' => date('Y-m-d H:i:s'),
+                    //     'created_at' => date('Y-m-d H:i:s'),
+                    //     'updated_at' => date('Y-m-d H:i:s'),
                     //     'peminta' => auth()->user()->id,
                     //     'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
                     //     'idrekap' => $rekap_medis->id,
@@ -250,9 +250,9 @@ class RekapMedisController extends Controller
                             'no_rm' => $rekap_medis->rawat->no_rm,
                             'pemeriksaan_penunjang' => $detail->laborat,
                             'jenis_penunjang' => 'Lab',
-                            'peminta' => now(),
-                            'created_at' => now(),
-                            'updated_at' => now(),
+                            'peminta' => date('Y-m-d H:i:s'),
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s'),
                             'peminta' => auth()->user()->id,
                             'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
                             'idrekap' => $rekap_medis->id,
@@ -265,9 +265,9 @@ class RekapMedisController extends Controller
                     //     'no_rm' => $rekap_medis->rawat->no_rm,
                     //     'pemeriksaan_penunjang' => $detail->laborat,
                     //     'jenis_penunjang' => 'Lab',
-                    //     'peminta' => now(),
-                    //     'created_at' => now(),
-                    //     'updated_at' => now(),
+                    //     'peminta' => date('Y-m-d H:i:s'),
+                    //     'created_at' => date('Y-m-d H:i:s'),
+                    //     'updated_at' => date('Y-m-d H:i:s'),
                     //     'peminta' => auth()->user()->id,
                     //     'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
                     //     'idrekap' => $rekap_medis->id,
@@ -281,8 +281,8 @@ class RekapMedisController extends Controller
                     //     'no_rm' => $rekap_medis->rawat->no_rm,
                     //     'terapi' => $detail->fisio,
                     //     'iddokter'=>$rekap_medis->rawat->iddokter,
-                    //     'created_at' => now(),
-                    //     'updated_at' => now(),
+                    //     'created_at' => date('Y-m-d H:i:s'),
+                    //     'updated_at' => date('Y-m-d H:i:s'),
                     //     'limit_program'=>8,
                     // ]);
                     $cek_antrian_fisio = DB::table('demo_permintaan_penunjang')->where('idrawat', $rekap_medis->idrawat)->where('jenis_penunjang','Fisio')->where('status_pemeriksaan','Antrian')->first();
@@ -294,9 +294,9 @@ class RekapMedisController extends Controller
                             'no_rm' => $rekap_medis->rawat->no_rm,
                             'pemeriksaan_penunjang' => $detail->fisio,
                             'jenis_penunjang' => 'Fisio',
-                            'peminta' => now(),
-                            'created_at' => now(),
-                            'updated_at' => now(),
+                            'peminta' => date('Y-m-d H:i:s'),
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s'),
                             'peminta' => auth()->user()->id,
                             'jenis_rawat' => $rekap_medis->rawat->idjenisrawat,
                             'idrekap' => $rekap_medis->id,
@@ -341,7 +341,7 @@ class RekapMedisController extends Controller
                                     'idtarif' => $tindakan->tindakan,
                                     'tarif' => $tarif->tarif,
                                     'idtindakan' => $tarif->kat_tindakan,
-                                    'tgl' => now(),
+                                    'tgl' => date('Y-m-d H:i:s'),
                                 ]);
                             // }   
                         }
@@ -483,14 +483,14 @@ class RekapMedisController extends Controller
             if($cek_ruangan_sebelumnya){
                 DB::table('rawat_ruangan')->where('idrawat',$request->idrawat)->where('status',1)->update([
                     'status'=>2,
-                    'tgl_keluar'=>now()
+                    'tgl_keluar'=>date('Y-m-d H:i:s')
                 ]);
                 DB::table('ruangan_bed')->where('id',$rawat->idbed)->update([
                     'terisi'=>0,
                 ]);
                 // $new_ruangan = $cek_ruangan_sebelumnya->replicate();
                 // $new_ruangan->tgl_keluar = null;
-                // $new_ruangan->tgl_masuk = now();
+                // $new_ruangan->tgl_masuk = date('Y-m-d H:i:s');
                 // $new_ruangan->status = 1;
                 // $new_ruangan->save();
                 $cek_ruangan_array = (array) $cek_ruangan_sebelumnya;
@@ -500,7 +500,7 @@ class RekapMedisController extends Controller
             
                 // Update the necessary fields
                 $cek_ruangan_array['tgl_keluar'] = null;
-                $cek_ruangan_array['tgl_masuk'] = now();
+                $cek_ruangan_array['tgl_masuk'] = date('Y-m-d H:i:s');
                 $cek_ruangan_array['status'] = 1;
                 $cek_ruangan_array['asal'] = 'Rawat Inap';
             
@@ -515,7 +515,7 @@ class RekapMedisController extends Controller
             }else{
                 DB::table('rawat_ruangan')->where('idrawat',$request->idrawat)->where('status',1)->update([
                     'status'=>2,
-                    'tgl_keluar'=>now()
+                    'tgl_keluar'=>date('Y-m-d H:i:s')
                 ]);
                 DB::table('ruangan_bed')->where('id',$rawat->idbed)->update([
                     'terisi'=>0,
@@ -545,7 +545,7 @@ class RekapMedisController extends Controller
                 $new_rawat_icu->idjenisrawat = 2;
                 $new_rawat_icu->icu = 1;
                 $new_rawat_icu->status = 2;
-                $new_rawat_icu->tglmasuk = now();
+                $new_rawat_icu->tglmasuk = date('Y-m-d H:i:s');
                 
 
                 $cari_bed = DB::table('ruangan_bed')->where('idruangan',23)->where('terisi',0)->where('status',1)->first();
@@ -571,7 +571,7 @@ class RekapMedisController extends Controller
                     'no_rm'=>$rawat->no_rm,
                     'idruangan'=>23,
                     'idbayar'=>$rawat->idbayar,
-                    'tgl_masuk'=>now(),
+                    'tgl_masuk'=>date('Y-m-d H:i:s'),
                     'status'=>1,
                     'asal'=>'ICU',
                     'idbed'=>$cari_bed?->id,
@@ -587,7 +587,7 @@ class RekapMedisController extends Controller
                 if($cari_rawat_ruangan){
                     DB::table('rawat_ruangan')->where('id',$cari_rawat_ruangan->id)->update([
                         'status'=>2,
-                        'tgl_keluar'=>now(),
+                        'tgl_keluar'=>date('Y-m-d H:i:s'),
                     ]);
                 }
 
@@ -603,7 +603,7 @@ class RekapMedisController extends Controller
                     'no_rm'=>$rawat->no_rm,
                     'idruangan'=>23,
                     'idbayar'=>$rawat->idbayar,
-                    'tgl_masuk'=>now(),
+                    'tgl_masuk'=>date('Y-m-d H:i:s'),
                     'status'=>1,
                     'asal'=>'ICU',
                     'idbed'=>$cari_bed?->id,
@@ -856,7 +856,7 @@ class RekapMedisController extends Controller
         DB::table('demo_rekap_medis_file_penunjang')->insert([
             'id_rekap' => $id,
             'id_user' => auth()->user()->id,
-            'created_at' => now(),
+            'created_at' => date('Y-m-d H:i:s'),
             'nama_file' => $filenameSimpan,
             'keterangan_file' => $request->keterangan_file
         ]);
@@ -870,7 +870,7 @@ class RekapMedisController extends Controller
         if($rawat->status != 2){
             $rawat->status = 3;
         }
-        $current_time = now();
+        $current_time = date('Y-m-d H:i:s');
         $rawat->timestamps = false;
         $rawat->save();
         
