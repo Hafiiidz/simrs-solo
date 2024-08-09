@@ -50,6 +50,7 @@ use App\Helpers\Vclaim\VclaimRencanaKontrolHelper;
 use App\Http\Controllers\LaporanOperasiController;
 use App\Helpers\Satusehat\Resource\EncounterHelper;
 use App\Helpers\Satusehat\Resource\ProcedureHelper;
+use App\Helpers\Vclaim\VclaimMonitoringHelper;
 use App\Helpers\Vclaim\VclaimSepHelper;
 use App\Http\Controllers\DetailRekapMedisController;
 
@@ -185,8 +186,15 @@ Route::get('/tes-sep', function () {
     ];
     return VclaimSepHelper::getDeleteSep($data);
 });
+Route::get('/tes-monitoring', function () {
+    $now = Carbon::now()->format('Y-m-d');
+    $threeMonthsAgo = Carbon::now()->subMonths(2)->format('Y-m-d');
+
+    $getHistoriPelayananPeserta = VclaimMonitoringHelper::getHistoriPelayananPeserta('0002753924499', $threeMonthsAgo,$now);
+    return $getHistoriPelayananPeserta;
+});
 Route::get('/tes-antrol', function () {
-    return Carbon::now()->format('Y-m-d\TH:i:s\Z');
+    // return Carbon::now()->format('Y-m-d\TH:i:s\Z');
     // $referensi_poli = WsBpjsHelper::referensi_poli();
     // $referensi_poli_fp = WsBpjsHelper::referensi_poli_fp();
     // $referensi_jadwaldokter = WsBpjsHelper::referensi_jadwaldokter('IGD',date('Y-m-d'));
@@ -835,6 +843,8 @@ Route::prefix('/pasien')->middleware('auth')->group(function () {
     Route::get('/get-pilih-dokter/{jenis}', [PasienController::class, 'get_pilih_dokter'])->name('get-pilih-dokter');
     Route::get('/show-sep/{sep}', [PasienController::class, 'show_sep'])->name('show-sep');
     Route::get('/buat-sep-manual', [PasienController::class, 'buat_sep_manual'])->name('buat-sep-manual');
+    Route::get('/histori-pelayanan', [PasienController::class, 'get_histori_pasien'])->name('histori-pelayanan');
+    Route::get('/data-kontrol-sep', [PasienController::class, 'get_sep_kontrol'])->name('data-kontrol-sep');
 
     //Rekam Medis
     Route::prefix('/bpjs')->middleware('auth')->group(function () {

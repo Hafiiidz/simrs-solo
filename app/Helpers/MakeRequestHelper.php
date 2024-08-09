@@ -109,16 +109,16 @@ class MakeRequestHelper
 
             $endTime = microtime(true);
             $duration = round($endTime - $startTime, 2);
-            // DB::table('demo_log_request_bpjs')->insert([
-            //     'url' => $url_request . $url,
-            //     'name' => $name_request,
-            //     'methhod' => $method,
-            //     'time_request' => $duration,
-            //     'response' => $response ?? 0,
-            //     'created_at' => date('Y-m-d H:i:s'),
-            //     'message' => $response[$metadata]['message'] ?? 0,
-            //     'code' => $response->getStatusCode(),
-            // ]);
+            DB::table('demo_log_request_bpjs')->insert([
+                'url' => $url_request . $url,
+                'name' => $name_request,
+                'methhod' => $method,
+                'time_request' => $duration,
+                'response' => $response ?? 0,
+                'created_at' => date('Y-m-d H:i:s'),
+                'message' => $response[$metadata]['message'] ?? 0,
+                'code' => $response->getStatusCode(),
+            ]);
             if ($response->status() == 200) {
                 if ($response[$metadata]['code'] == 200) {
                     if ($token_jenis == 3) {

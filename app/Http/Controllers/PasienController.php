@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Svg\Tag\Rect;
 use Carbon\Carbon;
 use App\Models\Poli;
 use App\Models\Rawat;
 use App\Models\Dokter;
 use App\Models\Obat\Obat;
+use App\Models\DokterKuota;
+use App\Models\DokterJadwal;
 use Illuminate\Http\Request;
 use App\Models\Pasien\Pasien;
 use App\Helpers\MakeRequestHelper;
@@ -23,10 +26,8 @@ use App\Helpers\SatusehatResourceHelper;
 use Yajra\DataTables\Facades\DataTables;
 use App\Helpers\Vclaim\VclaimPesertaHelper;
 use App\Helpers\Vclaim\VclaimRujukanHelper;
+use App\Helpers\Vclaim\VclaimMonitoringHelper;
 use App\Helpers\Vclaim\VclaimRencanaKontrolHelper;
-use App\Models\DokterJadwal;
-use App\Models\DokterKuota;
-use Svg\Tag\Rect;
 
 class PasienController extends Controller
 {
@@ -62,7 +63,7 @@ class PasienController extends Controller
         // return $pemeriksaan_fisik;
         $soap_icdx = DB::table('soap_rajalicdx')
             ->select([
-                'soap_rajalicdx.icd10',
+                'soap_rajalicdx.icdx',
                 'rawat.tglmasuk',
             ])
             ->join('rawat', 'rawat.id', '=', 'soap_rajalicdx.idrawat')
@@ -370,8 +371,19 @@ class PasienController extends Controller
             $keterangan = null;
             $data = View::make('pasien.form.rujukan-kunjungan-pertama', compact('request', 'get_rujukan'))->render();
         }
+
+        $get_poli = Poli::where('kode',$get_rujukan['response']['rujukan']['poliRujukan']['kode'])->first();
+        $poli = Poli::where('ket',1)->get();
+        $options = '';
+        foreach ($poli as $p) {
+            $selected = $p->id == $get_poli->id ? 'selected' : '';
+            $options .= '<option value="' . $p->id . '" ' . $selected . '>' . $p->poli . '</option>';
+        }
         return response()->json([
             'status' => 'success',
+            'data_rujukan' => $get_rujukan['response'],
+            'data_poli_tujuan' => $get_poli,
+            'data_poli' => $options,
             'keterangan' => $keterangan,
             'data' => $data
         ]);
@@ -666,8 +678,8 @@ class PasienController extends Controller
                         't_sep' => [
                             'noKartu' => $pasien->no_bpjs,
                             'tglSep' => $request->tglmasuk,
-                            'ppkPelayanan' => '0171R001',
-                            'jnsPelayanan' => '2',
+                            'ppkPelayanan' => env('KODE_FASKES'),
+                            'jnsPelayanan' => 2,
                             "klsRawat" => [
                                 "klsRawatHak" => 3,
                                 "klsRawatNaik" => "",
@@ -710,7 +722,7 @@ class PasienController extends Controller
                                     ]
                                 ]
                             ],
-                            "tujuanKunj" => $request->tujuanKunjungan ?? 0,
+                            "tujuanKunj" =>0,
                             "flagProcedure" => $request->prosedur ?? "",
                             "kdPenunjang" => $request->prosedurTidakBerkelanjutan ?? "",
                             "assesmentPel" => $request->alasanTidakSelesai ?? "",
@@ -768,4 +780,23 @@ class PasienController extends Controller
         $pasien = Pasien::where('no_rm', $request->no_rm)->first();
         return View::make('pasien.form.rujukan-manual', compact('pasien'));
     }
+    public function get_histori_pasien(Request $request)
+    {
+        $now = Carbon::now()->format('Y-m-d');
+        $threeMonthsAgo = Carbon::now()->subMonths(2)->format('Y-m-d');
+        $getHistoriPelayananPeserta = VclaimMonitoringHelper::getHistoriPelayananPeserta($request->nokartu, $threeMonthsAgo,$now);
+
+        return View::make('pasien.form.histori-pasien', compact('getHistoriPelayananPeserta'));
+    }
+
+    public function get_sep_kontrol(Request $request){
+        $sep = VclaimRencanaKontrolHelper::getDatabysep($request->sep);
+        $split_poli = explode(' - ',$sep['response']['poli']);
+        if($sep['response']['jnsPelayanan'] == 'Rawat Jalan'){
+            $poli = Poli::where('kode',$split_poli[0])->get();
+        }else{
+            $poli = Poli::where('ket',1)->get();
+        }
+        return View::make('pasien.form.form-surat-kontrol', compact('sep','poli'));
+    }   
 }

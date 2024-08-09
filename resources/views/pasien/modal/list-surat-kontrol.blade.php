@@ -1,6 +1,6 @@
 <div class="modal-header">
     <h3 class="modal-title">List Surat Kontrol</h3>
-    
+
 </div>
 <div class="modal-body">
     <table class="table table-bordered">
@@ -18,19 +18,17 @@
             @foreach ($response['response']['list'] as $list)
                 <tr>
                     <td>
-                        {{-- @if($list['terbitSEP'] != 'Sudah')
-                        
+                        @if ($list['terbitSEP'] != 'Sudah')
+                        <button type="button" class="btn btn-light btn-pilih-nomor"
+                            data-tglsurat="{{ $list['tglRencanaKontrol'] }}" data-id="{{ $list['noSuratKontrol'] }}"
+                            data-dokter="{{ $list['kodeDokter'] }}" data-poli="{{ $list['poliTujuan'] }}"
+                            data-sep="{{ $list['noSepAsalKontrol'] }}"
+                            data-nokartu="{{ $list['noKartu'] }}">{{ $list['noSuratKontrol'] }}</button>
                         @else
                         {{ $list['noSuratKontrol'] }}
-                        @endif --}}
-                        <button type="button" class="btn btn-light btn-pilih-nomor" 
-                        data-tglsurat="{{ $list['tglRencanaKontrol'] }}"
-                        data-id="{{ $list['noSuratKontrol'] }}"
-                        data-dokter="{{ $list['kodeDokter'] }}"
-                        data-poli="{{ $list['poliTujuan'] }}"
-                        data-sep="{{ $list['noSepAsalKontrol'] }}"
-                        >{{ $list['noSuratKontrol'] }}</button> 
-                      
+                        @endif
+                        
+
                     </td>
                     <td>{{ $list['jnsPelayanan'] }}</td>
                     <td>{{ $list['namaDokter'] }}</td>
@@ -42,11 +40,46 @@
         </tbody>
     </table>
     <hr>
-    <button class="btn btn-success">Tambah Surat Kontrol</button>
+    <button data-nokartu="{{ $list['noKartu'] }}" class="btn btn-success btn-tambah-nomer-kontrol">Tambah Surat
+        Kontrol</button>
+    <div id="form-tambah"></div>
 </div>
 <div class="modal-footer"></div>
 <script>
-    $('.btn-pilih-nomor').on('click',function(){
+    $('.btn-tambah-nomer-kontrol').on('click', function() {
+        var noKartu = $(this).data('nokartu');
+        $('#form-tambah').empty();
+        $.ajax({
+            url: '{{ route('histori-pelayanan') }}',
+            type: 'GET',
+            data: {
+                nokartu: noKartu,
+            },
+            beforeSend: function() {
+                $('#kt_block_ui_4_target').block({
+                    message: '<i class="fa fa-spinner fa-spin"></i> Mengambil data ke server BPJS ...',
+                    css: {
+                        border: 'none',
+                        padding: '15px',
+                        backgroundColor: '#000',
+                        '-webkit-border-radius': '10px',
+                        '-moz-border-radius': '10px',
+                        opacity: .5,
+                        color: '#fff'
+                    }
+                });
+            },
+            success: function(response) {
+                console.log(response);
+                $('#form-tambah').html(response);
+                $('#kt_block_ui_4_target').unblock();
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX Error: ' + status + error);
+            }
+        });
+    });
+    $('.btn-pilih-nomor').on('click', function() {
         var no_surat = $(this).data('id');
         var dokter = $(this).data('dokter');
         var poli = $(this).data('poli');

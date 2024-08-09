@@ -1,4 +1,4 @@
-<div class="alert alert-dismissible bg-success d-flex flex-column flex-sm-row w-100 p-5 mb-5">
+<div class="alert rujukan_kontrol alert-dismissible bg-success d-flex flex-column flex-sm-row w-100 p-5 mb-5">
     <!--begin::Icon-->
     <i class="ki-duotone ki-search-list fs-2hx text-light me-4 mb-5 mb-sm-0"><span class="path1"></span><span
             class="path2"></span><span class="path3"></span></i> <!--end::Icon-->
@@ -32,7 +32,7 @@
         <select class="js-data-example-ajax form-select form-select-sm" name="icdx"></select>
         <input type="hidden" name="kode" value="{{ $get_rujukan['response']['rujukan']['diagnosa']['kode'].' - '.$get_rujukan['response']['rujukan']['diagnosa']['nama'] }}" id="kode_diagnosa">
 </div>
-<div class="mb-2 fv-row">
+<div class="mb-2 fv-row rujukan_kontrol">
     
     <label class="required" for="">No.Surat Kontrol/SKDP</label>
     <div class="input-group">
@@ -47,7 +47,7 @@
         </button>
     </div>
 </div>
-<div class="mb-2 fv-row">
+<div class="mb-2 fv-row rujukan_kontrol">
     <label class="required" for="">DPJP Pemberi Surat SKDP/SPRI </label>
     <input type="text" name="txtnmdpjp" value="" class="form-control form-control-solid" readonly
         id="txtnmdpjp">
@@ -71,6 +71,7 @@
         </option>
     </select>
 </div>
+<input type="hidden" value=1 id="is_rujukan">
 <script>
     var button = document.querySelector("#btn-cari-no-surat");
 

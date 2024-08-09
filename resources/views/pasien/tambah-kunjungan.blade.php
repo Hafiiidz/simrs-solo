@@ -477,11 +477,13 @@
     </div>
     <div class="modal fade" tabindex="-1" id="modal-dokter">
         <div class="modal-dialog modal-xl">
-            <div class="modal-content">
+            <div class="modal-content" id="kt_block_ui_4_target">
                 <div id="modal-hasil"></div>
             </div>
         </div>
     </div>
+
+    <input type="hidden" value="" id="poli_rujukan">
     {{-- <button id="openPopup">Open Popup</button> --}}
 @endsection
 @section('js')
@@ -574,6 +576,7 @@
             submitButton.addEventListener('click', function(e) {
                 // Prevent default button action
                 var no_surat = $('#no_surat').val();
+                var is_rujukan = $('#is_rujukan').val();
 
                 e.preventDefault();
 
@@ -584,7 +587,7 @@
 
                         if (status == 'Valid') {
 
-                            if (no_surat) {
+                            if (is_rujukan) {
                                 let selections = {
                                     tujuanKunjungan: '',
                                     alasanTidakSelesai: '',
@@ -592,187 +595,238 @@
                                     prosedurBerkelanjutan: '',
                                     prosedurTidakBerkelanjutan: ''
                                 };
-
-                                Swal.fire({
-                                    title: 'Apa tujuan kunjungan ini?',
-                                    html: '<select id="firstSelect" class="form-select">' +
-                                        '<option value="0" data-value="" disabled selected>-- Apa tujuan kunjungan ini? --</option>' +
-                                        '<option value="1" data-value="Prosedur">Prosedur</option>' +
-                                        '<option value="2" data-value="Konsul Dokter">Konsul Dokter</option>' +
-                                        '</select>',
-                                    preConfirm: () => {
-                                        const selectedValue = $('#firstSelect').val();
-                                        const selectedText = $(
-                                            '#firstSelect option:selected').data(
-                                            'value');
-                                        if (!selectedValue) {
-                                            Swal.showValidationMessage(
-                                                'Please select an option');
+                                if (no_surat) {
+                                    Swal.fire({
+                                        title: 'Apa tujuan kunjungan ini?',
+                                        html: '<select id="firstSelect" class="form-select">' +
+                                            '<option value="0" data-value="" disabled selected>-- Apa tujuan kunjungan ini? --</option>' +
+                                            '<option value="1" data-value="Prosedur">Prosedur</option>' +
+                                            '<option value="2" data-value="Konsul Dokter">Konsul Dokter</option>' +
+                                            '</select>',
+                                        preConfirm: () => {
+                                            const selectedValue = $('#firstSelect')
+                                                .val();
+                                            const selectedText = $(
+                                                    '#firstSelect option:selected')
+                                                .data(
+                                                    'value');
+                                            if (!selectedValue) {
+                                                Swal.showValidationMessage(
+                                                    'Please select an option');
+                                            }
+                                            selections.tujuanKunjungan = selectedValue;
+                                            return {
+                                                selectedValue,
+                                                selectedText
+                                            };
                                         }
-                                        selections.tujuanKunjungan = selectedValue;
-                                        return {
-                                            selectedValue,
-                                            selectedText
-                                        };
-                                    }
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        if (result.value.selectedValue == 2) {
-                                            var select_option =
-                                                '<select id="secondSelect" class="form-select">' +
-                                                '<option value="" disabled selected>-- Mengapa pelayanan ini tidak diselesaikan pada hari yang sama sebelumnya? --</option>' +
-                                                '<option value="1">Poli spesialis tidak tersedia pada hari sebelumnya</option>' +
-                                                '<option value="2">Jam Poli telah berakhir pada hari sebelumnya</option>' +
-                                                '<option value="3">Dokter Spesialis yang dimaksud tidak praktek pada hari sebelumnya</option>' +
-                                                '<option value="4">Atas Instruksi RS</option>' +
-                                                '<option value="5">Tujuan Kontrol</option>' +
-                                                '</select>';
-                                            Swal.fire({
-                                                title: 'Mengapa pelayanan ini tidak diselesaikan pada hari yang sama sebelumnya?',
-                                                html: select_option,
-                                                preConfirm: () => {
-                                                    const selectedValue = $(
-                                                            '#secondSelect')
-                                                        .val();
-                                                    if (!selectedValue) {
-                                                        Swal.showValidationMessage(
-                                                            'Please select an option'
-                                                        );
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            if (result.value.selectedValue == 2) {
+                                                var select_option =
+                                                    '<select id="secondSelect" class="form-select">' +
+                                                    '<option value="" disabled selected>-- Mengapa pelayanan ini tidak diselesaikan pada hari yang sama sebelumnya? --</option>' +
+                                                    '<option value="1">Poli spesialis tidak tersedia pada hari sebelumnya</option>' +
+                                                    '<option value="2">Jam Poli telah berakhir pada hari sebelumnya</option>' +
+                                                    '<option value="3">Dokter Spesialis yang dimaksud tidak praktek pada hari sebelumnya</option>' +
+                                                    '<option value="4">Atas Instruksi RS</option>' +
+                                                    '<option value="5">Tujuan Kontrol</option>' +
+                                                    '</select>';
+                                                Swal.fire({
+                                                    title: 'Mengapa pelayanan ini tidak diselesaikan pada hari yang sama sebelumnya?',
+                                                    html: select_option,
+                                                    preConfirm: () => {
+                                                        const selectedValue = $(
+                                                                '#secondSelect')
+                                                            .val();
+                                                        if (!selectedValue) {
+                                                            Swal.showValidationMessage(
+                                                                'Please select an option'
+                                                            );
+                                                        }
+                                                        selections
+                                                            .alasanTidakSelesai =
+                                                            selectedValue;
+                                                        return selectedValue;
                                                     }
-                                                    selections
-                                                        .alasanTidakSelesai =
-                                                        selectedValue;
-                                                    return selectedValue;
-                                                }
-                                            }).then((result) => {
-                                                if (result.isConfirmed) {
-                                                    simpanDatasep();
-                                                }
-                                            });
-                                        } else {
-                                            Swal.fire({
-                                                title: 'Apakah Kunjungan ini untuk prosedur dan terapi berkelanjutan?',
-                                                html: '<button id="yesButton" class="swal2-confirm swal2-styled" style="display: inline-block; margin-right: 10px;">Ya</button>' +
-                                                    '<button id="noButton" class="swal2-cancel swal2-styled" style="display: inline-block;">Tidak</button>',
-                                                showCancelButton: false,
-                                                showConfirmButton: false,
-                                                didRender: () => {
-                                                    const yesButton = document
-                                                        .getElementById(
-                                                            'yesButton');
-                                                    const noButton = document
-                                                        .getElementById(
-                                                            'noButton');
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        simpanDatasep();
+                                                    }
+                                                });
+                                            } else {
+                                                Swal.fire({
+                                                    title: 'Apakah Kunjungan ini untuk prosedur dan terapi berkelanjutan?',
+                                                    html: '<button id="yesButton" class="swal2-confirm swal2-styled" style="display: inline-block; margin-right: 10px;">Ya</button>' +
+                                                        '<button id="noButton" class="swal2-cancel swal2-styled" style="display: inline-block;">Tidak</button>',
+                                                    showCancelButton: false,
+                                                    showConfirmButton: false,
+                                                    didRender: () => {
+                                                        const yesButton =
+                                                            document
+                                                            .getElementById(
+                                                                'yesButton');
+                                                        const noButton =
+                                                            document
+                                                            .getElementById(
+                                                                'noButton');
 
-                                                    yesButton.addEventListener(
-                                                        'click', () => {
-                                                            selections
-                                                                .prosedur =
-                                                                1;
-                                                            Swal.close();
-                                                            Swal.fire({
-                                                                title: 'Pilih Prosedur Berkelanjutan',
-                                                                html: '<select id="prosedur" name="prosedur" class="form-control">' +
-                                                                    '<option checked="" value="">-- Prosedur Berkelanjutan --</option>' +
-                                                                    '<option value="1">Radioterapi</option>' +
-                                                                    '<option value="2">Kemoterapi</option>' +
-                                                                    '<option value="3">Rehabilitasi Medik</option>' +
-                                                                    '<option value="4">Rehabilitasi Psikososial</option>' +
-                                                                    '<option value="5">Transfusi Darah</option>' +
-                                                                    '<option value="6">Pelayanan Gigi</option>' +
-                                                                    '<option value="12">HEMODIALISA</option>' +
-                                                                    '</select>',
-                                                                showCancelButton: true,
-                                                                cancelButtonText: 'Cancel',
-                                                                preConfirm: () => {
-                                                                    const
-                                                                        selectedValue =
-                                                                        document
-                                                                        .getElementById(
-                                                                            'prosedur'
-                                                                        )
-                                                                        .value;
-                                                                    if (!
-                                                                        selectedValue
-                                                                    ) {
-                                                                        Swal.showValidationMessage(
-                                                                            'Please select an option'
-                                                                        );
-                                                                    }
+                                                        yesButton
+                                                            .addEventListener(
+                                                                'click', () => {
                                                                     selections
-                                                                        .prosedurBerkelanjutan =
-                                                                        selectedValue;
-                                                                    return selectedValue;
-                                                                }
-                                                            }).then((
-                                                                result
-                                                            ) => {
-                                                                if (result
-                                                                    .isConfirmed
-                                                                ) {
-                                                                    simpanDatasep();
-                                                                }
-                                                            });
-                                                        });
+                                                                        .prosedur =
+                                                                        1;
+                                                                    Swal
+                                                                        .close();
+                                                                    Swal.fire({
+                                                                        title: 'Pilih Prosedur Berkelanjutan',
+                                                                        html: '<select id="prosedur" name="prosedur" class="form-control">' +
+                                                                            '<option checked="" value="">-- Prosedur Berkelanjutan --</option>' +
+                                                                            '<option value="1">Radioterapi</option>' +
+                                                                            '<option value="2">Kemoterapi</option>' +
+                                                                            '<option value="3">Rehabilitasi Medik</option>' +
+                                                                            '<option value="4">Rehabilitasi Psikososial</option>' +
+                                                                            '<option value="5">Transfusi Darah</option>' +
+                                                                            '<option value="6">Pelayanan Gigi</option>' +
+                                                                            '<option value="12">HEMODIALISA</option>' +
+                                                                            '</select>',
+                                                                        showCancelButton: true,
+                                                                        cancelButtonText: 'Cancel',
+                                                                        preConfirm: () => {
+                                                                            const
+                                                                                selectedValue =
+                                                                                document
+                                                                                .getElementById(
+                                                                                    'prosedur'
+                                                                                )
+                                                                                .value;
+                                                                            if (!
+                                                                                selectedValue
+                                                                            ) {
+                                                                                Swal.showValidationMessage(
+                                                                                    'Please select an option'
+                                                                                );
+                                                                            }
+                                                                            selections
+                                                                                .prosedurBerkelanjutan =
+                                                                                selectedValue;
+                                                                            return selectedValue;
+                                                                        }
+                                                                    }).then(
+                                                                        (
+                                                                            result
+                                                                        ) => {
+                                                                            if (result
+                                                                                .isConfirmed
+                                                                            ) {
+                                                                                simpanDatasep
+                                                                                    ();
+                                                                            }
+                                                                        });
+                                                                });
 
-                                                    noButton.addEventListener(
-                                                        'click', () => {
-                                                            selections
-                                                                .prosedur =
-                                                                0;
-                                                            Swal.close();
-                                                            Swal.fire({
-                                                                title: 'Pilih Prosedur Tidak Berkelanjutan',
-                                                                html: '<select id="nonprosedur" name="nonprosedur" class="form-control">' +
-                                                                    '<option checked="" value="">-- Prosedur tidak berkelanjutan --</option>' +
-                                                                    '<option value="7">Laboratorium</option>' +
-                                                                    '<option value="8">USG</option>' +
-                                                                    '<option value="9">Farmasi</option>' +
-                                                                    '<option value="10">Lain-Lain</option>' +
-                                                                    '<option value="11">MRI</option>' +
-                                                                    '</select>',
-                                                                showCancelButton: true,
-                                                                cancelButtonText: 'Cancel',
-                                                                preConfirm: () => {
-                                                                    const
-                                                                        selectedValue =
-                                                                        document
-                                                                        .getElementById(
-                                                                            'nonprosedur'
-                                                                        )
-                                                                        .value;
-                                                                    if (!
-                                                                        selectedValue
-                                                                    ) {
-                                                                        Swal.showValidationMessage(
-                                                                            'Please select an option'
-                                                                        );
-                                                                    }
+                                                        noButton
+                                                            .addEventListener(
+                                                                'click', () => {
                                                                     selections
-                                                                        .prosedurTidakBerkelanjutan =
-                                                                        selectedValue;
-                                                                    return selectedValue;
-                                                                }
-                                                            }).then((
-                                                                result
-                                                            ) => {
-                                                                if (result
-                                                                    .isConfirmed
-                                                                ) {
-                                                                    simpanDatasep();
-                                                                }
-                                                            });
-                                                        });
-                                                }
-                                            }).then((result) => {
-                                                if (result.isConfirmed) {
-                                                    simpanDatasep();
-                                                }
-                                            });
+                                                                        .prosedur =
+                                                                        0;
+                                                                    Swal
+                                                                        .close();
+                                                                    Swal.fire({
+                                                                        title: 'Pilih Prosedur Tidak Berkelanjutan',
+                                                                        html: '<select id="nonprosedur" name="nonprosedur" class="form-control">' +
+                                                                            '<option checked="" value="">-- Prosedur tidak berkelanjutan --</option>' +
+                                                                            '<option value="7">Laboratorium</option>' +
+                                                                            '<option value="8">USG</option>' +
+                                                                            '<option value="9">Farmasi</option>' +
+                                                                            '<option value="10">Lain-Lain</option>' +
+                                                                            '<option value="11">MRI</option>' +
+                                                                            '</select>',
+                                                                        showCancelButton: true,
+                                                                        cancelButtonText: 'Cancel',
+                                                                        preConfirm: () => {
+                                                                            const
+                                                                                selectedValue =
+                                                                                document
+                                                                                .getElementById(
+                                                                                    'nonprosedur'
+                                                                                )
+                                                                                .value;
+                                                                            if (!
+                                                                                selectedValue
+                                                                            ) {
+                                                                                Swal.showValidationMessage(
+                                                                                    'Please select an option'
+                                                                                );
+                                                                            }
+                                                                            selections
+                                                                                .prosedurTidakBerkelanjutan =
+                                                                                selectedValue;
+                                                                            return selectedValue;
+                                                                        }
+                                                                    }).then(
+                                                                        (
+                                                                            result
+                                                                        ) => {
+                                                                            if (result
+                                                                                .isConfirmed
+                                                                            ) {
+                                                                                simpanDatasep
+                                                                                    ();
+                                                                            }
+                                                                        });
+                                                                });
+                                                    }
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        simpanDatasep();
+                                                    }
+                                                });
 
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: 'Mengapa pelayanan ini tidak diselesaikan pada hari yang sama sebelumnya?',
+                                        html: '<select id="secondSelect" class="form-select">' +
+                                            '<option value="" disabled selected>-- Mengapa pelayanan ini tidak diselesaikan pada hari yang sama sebelumnya? --</option>' +
+                                            '<option value="1">Poli spesialis tidak tersedia pada hari sebelumnya</option>' +
+                                            '<option value="2">Jam Poli telah berakhir pada hari sebelumnya</option>' +
+                                            '<option value="3">Dokter Spesialis yang dimaksud tidak praktek pada hari sebelumnya</option>' +
+                                            '<option value="4">Atas Instruksi RS</option>' +
+                                            '<option value="5">Tujuan Kontrol</option>' +
+                                            '</select>',
+                                        showCancelButton: true,
+                                        cancelButtonText: 'Cancel',
+                                        preConfirm: () => {
+                                            const selectedValue = $('#secondSelect')
+                                                .val();
+                                            const selectedText = $(
+                                                    '#secondSelect option:selected')
+                                                .data(
+                                                    'value');
+                                            if (!selectedValue) {
+                                                Swal.showValidationMessage(
+                                                    'Please select an option');
+                                            }
+                                            selections.tujuanKunjungan = 0;
+                                            selections.alasanTidakSelesai =
+                                                selectedValue;
+                                            return {
+                                                selectedValue,
+                                                selectedText
+                                            };
+                                        }
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            simpanDatasep();
+                                        }
+                                    });
+                                }
+
 
                                 function simpanDatasep() {
                                     Swal.fire({
@@ -878,6 +932,9 @@
                                 }
 
                             } else {
+
+
+
                                 Swal.fire({
                                     title: 'Simpan Data',
                                     text: "Apakah Anda yakin simpan data ? ",
@@ -1069,6 +1126,14 @@
         $('#poli').on('change', function() {
             var selectedValue = $(this).val();
             if (selectedValue > 0) {
+                if ($('#poli_rujukan').val() != selectedValue) {
+                    $('.rujukan_kontrol').addClass('d-none');
+                    $('#no_surat').val('');
+                    $('#txtkddpjp').val('');
+                    $('#txtnmdpjp').val('');
+                } else {
+                    $('.rujukan_kontrol').removeClass('d-none');
+                }
                 $('#btn-cari-dokter').prop('disabled', false);
             } else {
                 $('#btn-cari-dokter').prop('disabled', true);

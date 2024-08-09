@@ -46,7 +46,7 @@
             },
             beforeSend: function() {
                 $.blockUI({
-                    message: '<i class="fa fa-spinner fa-spin"></i> Loading ...',
+                    message: '<i class="fa fa-spinner fa-spin"></i> Mengambil data ke server BPJS ...',
                     css: {
                         border: 'none',
                         padding: '15px',
@@ -68,6 +68,9 @@
                         toastr.success(response.keterangan);
                         $('#list_data_rujukan').empty();
                         $('#list_data_rujukan').html(response.data);
+                        $('#jenis_rawat').val(1);
+                        $('#poli_rujukan').val(response.data_poli_tujuan.id);
+                        $('#poli').html(response.data_poli);
                     }
 
                 }
