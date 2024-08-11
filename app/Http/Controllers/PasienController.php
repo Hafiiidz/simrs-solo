@@ -16,6 +16,7 @@ use App\Models\Pasien\Pasien;
 use App\Helpers\MakeRequestHelper;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\Antrol\WsBpjsHelper;
+use App\Helpers\Satusehat\Resource\EncounterHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -63,7 +64,7 @@ class PasienController extends Controller
         // return $pemeriksaan_fisik;
         $soap_icdx = DB::table('soap_rajalicdx')
             ->select([
-                'soap_rajalicdx.icdx',
+                'soap_rajalicdx.icd10',
                 'rawat.tglmasuk',
             ])
             ->join('rawat', 'rawat.id', '=', 'soap_rajalicdx.idrawat')
@@ -100,7 +101,7 @@ class PasienController extends Controller
         }
         // return $soap_icdx;
         $cek_credential = DB::table('demo_erm_check')->where('pasien_id', $pasien->id)->where('user_id', auth()->user()->id)->whereDate('date_time', date('Y-m-d'))->count();
-
+        
         return view('pasien.detail', compact('cek_credential', 'pasien', 'detail_rekap_medis', 'pemeriksaan_fisik', 'soap_icdx', 'penunjang', 'radiologi', 'lab', 'fisio', 'terapi_obat', 'obat', 'icdx', 'detail_rekap_medis_all'));
     }
     public function index(Request $request)
@@ -328,11 +329,14 @@ class PasienController extends Controller
 
     public function tambah_kunjungan($id, $jenis)
     {
+        \Carbon\Carbon::setLocale('id');
         $pasien = Pasien::find($id);
         $poli = Poli::get();
         $cek_finger_print = VclaimSepHelper::get_finger_print($pasien->no_bpjs, date('Y-m-d'));
         // return $cek_finger_print;
-        return view('pasien.tambah-kunjungan', compact('pasien', 'poli', 'cek_finger_print'));
+        $cek_general_concent = DB::table('demo_consent')->where('idpasien',$pasien->id)->whereDate('period',date('Y-m-d'))->first();
+        // return Carbon::();
+        return view('pasien.tambah-kunjungan', compact('pasien', 'poli', 'cek_finger_print','cek_general_concent'));
     }
 
     public function check_password(Request $request)
@@ -342,6 +346,8 @@ class PasienController extends Controller
 
         if (Hash::check($password, $user->password_hash)) {
             $pasien = Pasien::find($request->pasien_id);
+            // return $pasien;
+            SatusehatPasienHelper::searchPasienByNik($pasien->nik);
             DB::table('demo_erm_check')->insert([
                 'user_id' => auth()->user()->id,
                 'pasien_id' => $request->pasien_id,
@@ -463,7 +469,7 @@ class PasienController extends Controller
             if ($request->penanggung == 2) {
                 $results = WsBpjsHelper::referensi_jadwaldokter($poli->kode, $date);
                 // return $poli->kode;
-                if ($results['metaData']['code'] == 200) {
+                if ($results['metadata']['code'] == 200) {
                     return View::make('pasien.modal.jadwal-dokter-bpjs', compact('results'));
                 }
             }
@@ -602,6 +608,7 @@ class PasienController extends Controller
 
                 $date = date('Y-m-d');
                 $timestamp = strtotime($date);
+                // $dayNumber = 5;
                 $dayNumber = date('N', $timestamp);
                 $dokter_jadwal = DB::table('dokter_jadwal')->where('iddokter', $request->iddokter)->where('idhari', $dayNumber)->where('idpoli', $request->idpoli)->first();
                 $millisecond = Carbon::now()->timestamp * 1000 + Carbon::now()->microsecond / 1000;
@@ -749,6 +756,8 @@ class PasienController extends Controller
                 DB::table('rawat')->where('id', $rawat)->update([
                     'no_sep' => $sep['response']['sep']['noSep']
                 ]);
+
+                EncounterHelper::create($rawat);
                 DB::commit();
 
                 return response()->json([
@@ -756,8 +765,10 @@ class PasienController extends Controller
                     'message' => 'Data Berhasil disimpan | No SEP : ' . $sep['response']['sep']['noSep']
                 ]);
             }
+            // return $rawat;
+            
             DB::commit();
-
+            EncounterHelper::create($rawat);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Data Berhasil disimpan'
@@ -799,4 +810,38 @@ class PasienController extends Controller
         }
         return View::make('pasien.form.form-surat-kontrol', compact('sep','poli'));
     }   
+
+    public function post_form_consent(Request $request){
+        DB::beginTransaction();
+
+        try {
+            $pasien = Pasien::find($request->idpasien);
+            // return $pasien;
+            $consent = SatusehatResourceHelper::consent_update($pasien->ihs);
+            // return $consent;
+            DB::table('demo_consent')->insert([
+                'idpasien'=>$pasien->id,
+                'general_consent'=>$request->general_consent,
+                'created_at'=>date('Y-m-d H:i:s'),
+                'user'=>auth()->user()->id,
+                'penanggung_jawab'=>$request->penanggung_jawab,
+                'period'=>$consent['provision']['period']['start'],
+                'consent_id'=>$consent['id'],
+            ]);
+            // return $consent['provision']['period']['start'];
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data Berhasil disimpan'
+            ]);
+        }catch(\Exception $e){
+            DB::rollback();
+            return response()->json([
+                'status' => 'failed',
+                'message' => $e->getMessage()
+            ]);
+        }
+        return $request->all();
+    }
 }

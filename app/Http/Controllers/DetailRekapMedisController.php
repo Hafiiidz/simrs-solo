@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Carbon;
-use Yajra\DataTables\Facades\DataTables;
-use App\Models\RekapMedis\RekapMedis;
-use App\Models\RekapMedis\DetailRekapMedis;
-use App\Models\RekapMedis\Kategori;
-use App\Models\Pasien\Pasien;
-use App\Models\Obat\Obat;
-use App\Models\Rawat;
-use App\Models\TindakLanjut;
-use Illuminate\Support\Facades\DB;
 use PDF;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Svg\Tag\Rect;
+use App\Models\Rawat;
+use App\Models\Obat\Obat;
+use App\Models\TindakLanjut;
+use Illuminate\Http\Request;
+use App\Models\Pasien\Pasien;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use App\Models\RekapMedis\Kategori;
+use App\Http\Controllers\Controller;
+use App\Models\RekapMedis\RekapMedis;
+use Yajra\DataTables\Facades\DataTables;
+use App\Models\RekapMedis\DetailRekapMedis;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Helpers\Satusehat\Resource\EncounterHelper;
 
 class DetailRekapMedisController extends Controller
 {
@@ -89,7 +91,10 @@ class DetailRekapMedisController extends Controller
     public function store(Request $request, $id_rekapmedis)
     {
 
-        // return $request->all();
+        $rekap_medis = RekapMedis::find($id_rekapmedis);
+        $rekap = new DetailRekapMedis;
+        $rawat = Rawat::find($rekap_medis->idrawat);
+        EncounterHelper::updateInProgress($rawat->id_encounter);
         $alergi = new Collection([
             'value_obat' => $request->value_obat,
             'value_makanan' => $request->value_makanan,
@@ -120,9 +125,7 @@ class DetailRekapMedisController extends Controller
 
 
 
-        $rekap_medis = RekapMedis::find($id_rekapmedis);
-        $rekap = new DetailRekapMedis;
-        $rawat = Rawat::find($rekap_medis->idrawat);
+       
         if($rawat->idpoli == 12){
             $pemeriksaan_fisio = new Collection([
                 'pemeriksaan_fisik' => $request->pemeriksaan_fisik,
@@ -186,6 +189,7 @@ class DetailRekapMedisController extends Controller
 
         $rekap = DetailRekapMedis::find($id);
         $rawat = Rawat::find($rekap->idrawat);
+        EncounterHelper::updateInProgress($rawat->id_encounter);
         if (auth()->user()->idpriv == 7) {
             $rekap->diagnosa = $request->diagnosa;
             $rekap->anamnesa_dokter = $request->anamnesa_dokter;

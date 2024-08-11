@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Satusehat\Resource\ObservationHelper;
+use App\Helpers\SatusehatObservasiHelper;
 use App\Models\Rawat;
 use App\Models\Tarif;
 use App\Models\Dokter;
@@ -101,6 +103,7 @@ class RekapMedisController extends Controller
             VclaimHelper::update_task2($rawat->idrawat,4,$current_time);
         }elseif($request->jenis == 'bpjs'){
             $rekap_medis->bpjs = 1;
+            
         } else {
             $rekap_medis->dokter = 1;
             $resep_dokter = DB::table('demo_resep_dokter')->where('idrawat', "$rawat->id")->get();
@@ -351,7 +354,11 @@ class RekapMedisController extends Controller
                 }
             }
         }
-       
+        
+        if($rekap_medis->dokter == 1 && $rekap_medis->perawat == 1){
+            SatusehatObservasiHelper::create($rawat->id);
+        }
+
         return redirect()->back()->with('berhasil', 'Pasien Selesai Diperiksa');
     }
 

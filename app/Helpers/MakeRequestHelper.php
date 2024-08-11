@@ -17,10 +17,12 @@ class MakeRequestHelper
             $token = VclaimAuthHelper::getToken();
             $url_request = config('app.url_vclaim_prod');
             $metadata = 'metaData';
+           
         } else {
             $token = VclaimAuthHelper::getTokenAntrol();
             $url_request = config('app.url_antrian_prod');
             $metadata = 'metadata';
+            // return $metadata;
         }
         // return $url_request;
         $startTime = microtime(true);
@@ -67,6 +69,7 @@ class MakeRequestHelper
             }
             $client = new Client();
             $response = $client->request($method, $url_request . $url, [
+                'verify' => false,
                 'headers' => $token['signature'],
                 'json' => $data
             ]);

@@ -43,55 +43,55 @@ class SatusehatKondisiHelper
         }
 
     // return $diagnosa;
-    $data = [
-        'resourceType' => 'Condition',
-        'clinicalStatus' => [
-            'coding' => [
-                [
-                    'system' => 'http://terminology.hl7.org/CodeSystem/condition-clinical',
-                    'code' => 'active',
-                    'display' => 'Active'
-                ]
-            ]
-        ],
-        'category' => [
-            [
+        $data = [
+            'resourceType' => 'Condition',
+            'clinicalStatus' => [
                 'coding' => [
                     [
-                        'system' => 'http://terminology.hl7.org/CodeSystem/condition-category',
-                        'code' => 'encounter-diagnosis',
-                        'display' => 'Encounter Diagnosis'
+                        'system' => 'http://terminology.hl7.org/CodeSystem/condition-clinical',
+                        'code' => 'active',
+                        'display' => 'Active'
                     ]
                 ]
+            ],
+            'category' => [
+                [
+                    'coding' => [
+                        [
+                            'system' => 'http://terminology.hl7.org/CodeSystem/condition-category',
+                            'code' => 'encounter-diagnosis',
+                            'display' => 'Encounter Diagnosis'
+                        ]
+                    ]
+                ]
+            ],
+            'code' => [
+                'coding' => $diagnosa
+            ],
+            'subject' => [
+                'reference' => 'Patient/'.$pasien->ihs,
+                'display' => $pasien->nama_pasien
+            ],
+            'encounter' => [
+                'reference' => 'Encounter/'.$rawat->id_encounter,
+                'display' => 'Kunjungan '.$pasien->nama_pasien.' '.\Carbon\Carbon::parse($rawat->tglmasuk)->formatLocalized('%A %d %B %Y')
             ]
-        ],
-        'code' => [
-            'coding' => $diagnosa
-        ],
-        'subject' => [
-            'reference' => 'Patient/'.$pasien->ihs,
-            'display' => $pasien->nama_pasien
-        ],
-        'encounter' => [
-            'reference' => 'Encounter/'.$rawat->id_encounter,
-            'display' => 'Kunjungan '.$pasien->nama_pasien.' '.\Carbon\Carbon::parse($rawat->tglmasuk)->formatLocalized('%A %d %B %Y')
-        ]
-    ];
-    // return $data;
-    $url = env('PROD_BASE_URL_SS');
-    // return $url;
-    $get_token = SatusehatAuthHelper::generate_token();
-    $token = $get_token['access_token'];
-    $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
-        ->withHeaders([
-            'Authorization' => 'Bearer '.$token,
-        ])->post($url.'/Condition',$data);
-    if(isset($response['id'])){
-        $rawat->id_condition = $response['id'];
-        $rawat->save();
+        ];
+        // return $data;
+        $url = env('PROD_BASE_URL_SS');
+        // return $url;
+        $get_token = SatusehatAuthHelper::generate_token();
+        $token = $get_token['access_token'];
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
+            ->withHeaders([
+                'Authorization' => 'Bearer '.$token,
+            ])->post($url.'/Condition',$data);
+        if(isset($response['id'])){
+            $rawat->id_condition = $response['id'];
+            $rawat->save();
+        }
+        return $response->json();
     }
-    return $response->json();
-}
     // return $data;
     }
 

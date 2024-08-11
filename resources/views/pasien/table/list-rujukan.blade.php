@@ -69,8 +69,18 @@
                         $('#list_data_rujukan').empty();
                         $('#list_data_rujukan').html(response.data);
                         $('#jenis_rawat').val(1);
+                        $('#kt_datepicker_1').val("{{ date('Y-m-d') }}");
                         $('#poli_rujukan').val(response.data_poli_tujuan.id);
                         $('#poli').html(response.data_poli);
+                    }else{
+                        toastr.success(response.keterangan);
+                        $('#list_data_rujukan').empty();
+                        $('#list_data_rujukan').html(response.data);
+                        $('#poli_rujukan').val(response.data_poli_tujuan.id);
+                        $('#jenis_rawat').val(1);
+                        $('#kt_datepicker_1').val("{{ date('Y-m-d') }}");
+                        $('#poli').html(response.data_poli);
+                        $('#btn-cari-dokter').prop('disabled', false);
                     }
 
                 }

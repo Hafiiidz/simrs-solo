@@ -11,6 +11,7 @@ use App\Models\Pasien\Pasien;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\SatusehatAuthHelper;
 use Illuminate\Support\Facades\Http;
+use App\Helpers\Satusehat\RequestSatuSehatHelper;
 
 class SatusehatResourceHelper
 {
@@ -198,49 +199,55 @@ class SatusehatResourceHelper
 
     #Organization - Search by PartOf
     public static function organization_search_partof($partof){
-        $get_token = SatusehatAuthHelper::generate_token();
-        $token = $get_token['access_token'];
-        $url = env('PROD_BASE_URL_SS');
-        // return $url;
-        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
-        ->withHeaders([
-            'Authorization' => 'Bearer '.$token,
-        ])
-        ->get($url.'/Organization?partof='.$partof);
-
-        return $response->json();
+        try{
+            $response = RequestSatuSehatHelper::makeRequest('organization-search-partof','get','/Organization?partof='.$partof);
+            return $response;
+        }catch (\Exception $e) {
+            return [
+                'error' => $e->getMessage(),
+            ];
+        }
     }
 
     #Consent - Read Consent Service
 
-    public static function consent_read($id){
-        $get_token = SatusehatAuthHelper::generate_token();
-        $token = $get_token['access_token'];
-        $url = env('PROD_CONSENT_URL_SS');
-        // return $url;
-        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
-            ->withHeaders([
-                'Authorization' => 'Bearer '.$token,
-            ])->get($url.'/Consent?patient_id='.$id);
-        return $response->json();
+    public static function consent_read($id){   
+        
+        try{
+            $response = RequestSatuSehatHelper::makeRequest('consent_read','get','/Consent?patient_id='.$id,null,1);
+            return $response;
+        }catch (\Exception $e) {
+            return [
+                'error' => $e->getMessage(),
+            ];
+        }
     }
 
     #Consent Update
     public static function consent_update($id){
-        $data = [
-            "patient_id"=> $id,
-            "action"=> "OPTIN",
-            "agent"=> "Fikri Ramadhan"
-        ];
+
         // return $data;
-        $url = env('PROD_CONSENT_URL_SS');
-        // return $url;
-        $get_token = SatusehatAuthHelper::generate_token();
-        $token = $get_token['access_token'];
-        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
-            ->withHeaders([
-                'Authorization' => 'Bearer '.$token,
-            ])->post($url.'/Consent',$data);
-        return $response->json();
+        // $url = env('PROD_CONSENT_URL_SS');
+        // // return $url;
+        // $get_token = SatusehatAuthHelper::generate_token();
+        // $token = $get_token['access_token'];
+        // $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
+        //     ->withHeaders([
+        //         'Authorization' => 'Bearer '.$token,
+        //     ])->post($url.'/Consent',$data);
+        // return $response->json();
+        try{
+            $data = [
+                "patient_id"=> $id,
+                "action"=> "OPTIN",
+                "agent"=> 'Fikri Rama'
+            ];
+            $response = RequestSatuSehatHelper::makeRequest('consent_update','post','/Consent',$data,1);
+            return $response;
+        }catch (\Exception $e) {
+            return [
+                'error' => $e->getMessage(),
+            ];
+        }
     }
 }

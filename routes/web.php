@@ -3,6 +3,7 @@
 // use GuzzleHttp\Psr7\Request;
 
 use App\Helpers\Antrol\WsBpjsHelper;
+use App\Helpers\Satusehat\RequestSatuSehatHelper;
 use App\Models\Rawat;
 use App\Jobs\UpdateBilling;
 use Illuminate\Http\Request;
@@ -67,6 +68,21 @@ use App\Http\Controllers\DetailRekapMedisController;
 
 
 // if (config('app.env') == 'local') {
+Route::get('/tes-satset', function () {
+    // $array = SatusehatPasienHelper::searchPasienByNik('3204102601980002');
+    // return $array;
+    $cek_pasien = RequestSatuSehatHelper::makeRequest('get-pasien-by-nik','get','/Patient?identifier=https://fhir.kemkes.go.id/id/nik|3204102601980002');
+    $data = [
+        "patient_id"=> 'P01536385279',
+        "action"=> "OPTIN",
+        "agent"=> "Fikri Ramadhan"
+    ];
+    // $response = RequestSatuSehatHelper::makeRequest('consent_update','post','/Consent',$data,1);
+    return EncounterHelper::updateFinised('9ecfe7cd-2227-4661-b44c-ba492b1e71a8');
+    // return EncounterHelper::updateInProgress('9ecfe7cd-2227-4661-b44c-ba492b1e71a8');
+    return $response;
+    return $cek_pasien;
+});
 Route::get('/get-data-histori', function () {
     $rawat = Rawat::find(54140);
     if ($rawat) {
@@ -179,7 +195,7 @@ Route::get('/tes-sep', function () {
     $data = [
         'request' => [
             't_sep' => [
-                'noSep' => "0171R0010824V000174",
+                'noSep' => "0120R0120824V000408",
                 'user' => auth()->user()->username
             ]
         ]
@@ -831,9 +847,6 @@ Route::prefix('/pasien')->middleware('auth')->group(function () {
     Route::get('/view/{id}', [PasienController::class, 'rekammedis_detail'])->name('pasien.rekammedis_detail');
     Route::get('/create', [PasienController::class, 'tambah_pasien_baru'])->name('pasien.tambah-pasien');
     Route::get('/create-kunjungan/{id}/{jenis}', [PasienController::class, 'tambah_kunjungan'])->name('pasien.tambah-kunjungan');
-    Route::post('/store', [PasienController::class, 'store'])->name('pasien.post-tambah-pasien');
-    Route::post('/store-kunjungan', [PasienController::class, 'store_kunjungan'])->name('pasien.post-tambah-kunjungan');
-    Route::post('/check-password', [PasienController::class, 'check_password'])->name('pasien.check-password');
     Route::get('/cari-kelurahan', [PasienController::class, 'cari_kelurahan'])->name('pasien.cari-kelurahan');
     Route::get('/get-jadwal-dokter', [PasienController::class, 'get_jadwal_dokter'])->name('get-jadwal-dokter');
     Route::get('/get-rujukan-faskes', [PasienController::class, 'get_rujukan_faskes'])->name('get-rujukan-faskes');
@@ -845,7 +858,10 @@ Route::prefix('/pasien')->middleware('auth')->group(function () {
     Route::get('/buat-sep-manual', [PasienController::class, 'buat_sep_manual'])->name('buat-sep-manual');
     Route::get('/histori-pelayanan', [PasienController::class, 'get_histori_pasien'])->name('histori-pelayanan');
     Route::get('/data-kontrol-sep', [PasienController::class, 'get_sep_kontrol'])->name('data-kontrol-sep');
-
+    Route::post('/store', [PasienController::class, 'store'])->name('pasien.post-tambah-pasien');
+    Route::post('/store-kunjungan', [PasienController::class, 'store_kunjungan'])->name('pasien.post-tambah-kunjungan');
+    Route::post('/check-password', [PasienController::class, 'check_password'])->name('pasien.check-password');
+    Route::post('/post-form-concent', [PasienController::class, 'post_form_consent'])->name('pasien.post-form-concent');
     //Rekam Medis
     Route::prefix('/bpjs')->middleware('auth')->group(function () {
         Route::get('/get-pasien', [PasienController::class, 'get_bpjs_by_nik'])->name('pasien.get-by-nik');

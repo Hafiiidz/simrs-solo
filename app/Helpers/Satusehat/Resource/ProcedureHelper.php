@@ -96,17 +96,6 @@ class ProcedureHelper
                     "coding" => $diagnosa
                 ]
             ],
-            // "bodySite" => [
-            //     [
-            //         "coding" => [
-            //             [
-            //                 "system" => "http://snomed.info/sct",
-            //                 "code" => "302551006",
-            //                 "display" => "Entire Thorax"
-            //             ]
-            //         ]
-            //     ]
-            // ],
             "note" => [
                 [
                     "text" => "-"

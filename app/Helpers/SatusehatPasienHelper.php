@@ -11,6 +11,8 @@ use App\Models\Pasien\Pasien;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\SatusehatAuthHelper;
 use Illuminate\Support\Facades\Http;
+use App\Helpers\SatusehatResourceHelper;
+use App\Helpers\Satusehat\RequestSatuSehatHelper;
 
 class SatusehatPasienHelper
 {
@@ -24,39 +26,65 @@ class SatusehatPasienHelper
 
     }
     public static function searchPasienNik($nik){
-        $get_token = SatusehatAuthHelper::generate_token();
-        $token = $get_token['access_token'];
-        $url = env('PROD_BASE_URL_SS');
-        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
-        ->withHeaders([
-            'Authorization' => 'Bearer '.$token,
-        ])
-        ->get($url.'/Patient?identifier=https://fhir.kemkes.go.id/id/nik|'.$nik);
+        try{
+            $response = RequestSatuSehatHelper::makeRequest('get-pasien-by-nik','get','/Patient?identifier=https://fhir.kemkes.go.id/id/nik|'.$nik);
+            return $response->json();
+        }catch (\Exception $e) {
+            return [
+                'error' => $e->getMessage(),
+            ];
+        }
+        // $get_token = SatusehatAuthHelper::generate_token();
+        // $token = $get_token['access_token'];
+        // $url = env('PROD_BASE_URL_SS');
+        // $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
+        // ->withHeaders([
+        //     'Authorization' => 'Bearer '.$token,
+        // ])
+        // ->get($url.'/Patient?identifier=https://fhir.kemkes.go.id/id/nik|'.$nik);
         
-        return $response->json();
+        // return $response->json();
     }
     public static function searchPasienByNik($nik){
-        $pasien = Pasien::where('nik',$nik)->first();
-        $get_token = SatusehatAuthHelper::generate_token();
-        $token = $get_token['access_token'];
-        $url = env('PROD_BASE_URL_SS');
-        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
-        ->withHeaders([
-            'Authorization' => 'Bearer '.$token,
-        ])
-        ->get($url.'/Patient?identifier=https://fhir.kemkes.go.id/id/nik|'.$nik);
+        // $pasien = Pasien::where('nik',$nik)->first();
+        // return $pasien;
+        // $get_token = SatusehatAuthHelper::generate_token();
+        // $token = $get_token['access_token'];
+        // $url = env('PROD_BASE_URL_SS');
+        // $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
+        // ->withHeaders([
+        //     'Authorization' => 'Bearer '.$token,
+        // ])
+        // ->get($url.'/Patient?identifier=https://fhir.kemkes.go.id/id/nik|'.$nik);
         
-        if(isset($response['total']) && $response['total'] > 0){
+        // if(isset($response['total']) && $response['total'] > 0){
             
-            // $consent = SatusehatResourceHelper::consent_update($pasien->ihs);
-            // return $consent;
-            if($pasien){
-                $pasien->ihs = $response['entry'][0]['resource']['id'];
-                $pasien->save();
-            }
-        }
+        //     // $consent = SatusehatResourceHelper::consent_update($pasien->ihs);
+        //     // return $consent;
+        //     if($pasien){
+        //         $pasien->ihs = $response['entry'][0]['resource']['id'];
+        //         $pasien->save();
+        //     }
+        // }
        
-        return $response->json();
+        try{
+            $response = RequestSatuSehatHelper::makeRequest('get-pasien-by-nik','get','/Patient?identifier=https://fhir.kemkes.go.id/id/nik|'.$nik,null,2);
+            // return $response;
+            if(isset($response['total']) && $response['total'] > 0){
+                $pasien = Pasien::where('nik',$nik)->first();
+                if($pasien){
+                    $pasien->ihs = $response['entry'][0]['resource']['id'];
+                    $pasien->save();
+                }
+            }
+       
+            return $response;
+        }catch (\Exception $e) {
+            return [
+                'error' => $e->getMessage(),
+            ];
+        }
+
     }
     #Patient - Search Name, Gender, Birthdate
     public static function searchPasien($name, $gender, $birthdate){
