@@ -13,6 +13,8 @@ use App\Helpers\SatusehatAuthHelper;
 use Illuminate\Support\Facades\Http;
 use App\Helpers\SatusehatPasienHelper;
 use App\Helpers\Satusehat\RequestSatuSehatHelper;
+use App\Helpers\SatusehatKondisiHelper;
+
 // use App\Helpers\Satusehat\Resource\EncounterHelper;
 
 class EncounterHelper
@@ -275,8 +277,10 @@ class EncounterHelper
     public static function updateFinised($id){
         try{
             $rawat = Rawat::where('id_encounter',$id)->first();
+            // return $rawat;
             $pasien = Pasien::where('no_rm',$rawat->no_rm)->first();
             $encounter = EncounterHelper::searchSubject($rawat->id);
+            // return $encounter;
             $arrived = collect($encounter['resource']['statusHistory'])->where('status','arrived')->first();
             $in_progres = collect($encounter['resource']['statusHistory'])->where('status','in-progress')->first();
             // return $in_progres;
@@ -286,6 +290,38 @@ class EncounterHelper
             }else{
                 $organisasi_lokasi = DB::table('organisasi_satusehat')->where('id_ruangan', $rawat->poli->kode)->first();
             }
+            $rekap_medis = DB::table('demo_detail_rekap_medis')->where('idrawat',$rawat->id)->first();
+            $condisi_id = SatusehatKondisiHelper::search_kondisi_id_endcounter($rawat->id);
+            // return $condisi_id;
+            $diagnosa =  [];
+                $rank = 0;
+                foreach(json_decode($rekap_medis->icdx) as $value){
+                    $split = explode(' - ', $value->diagnosa_icdx);
+                    $diagnosa[] = 
+                        // [
+                        //     'system' => 'http://hl7.org/fhir/sid/icd-10',
+                        //     'code' => $split[0],
+                        //     'display' => $split[1]
+                        // ];
+                        [
+                            "condition" => [
+                                "reference" => "Condition/".$condisi_id['entry'][0]['resource']['id'],
+                                "display" => $condisi_id['entry'][0]['resource']['code']['coding'][$rank]['display']
+                            ],
+                            "use" => [
+                                "coding" => [
+                                    [
+                                        "system" => "http://terminology.hl7.org/CodeSystem/diagnosis-role",
+                                        "code" => "DD",
+                                        "display" => "Discharge diagnosis"
+                                    ]
+                                ]
+                            ],
+                            "rank" => $rank+1
+                        ];
+                    
+                }
+               
             $data = [
                 'resourceType' => 'Encounter',
                 'id' => $id,
@@ -336,6 +372,7 @@ class EncounterHelper
                         ]
                     ]
                 ],
+            "diagnosis"=> $diagnosa,
                 'statusHistory' => [
                     [
                         "status"=> "arrived",

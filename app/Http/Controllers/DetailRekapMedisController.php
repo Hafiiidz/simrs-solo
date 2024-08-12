@@ -292,9 +292,11 @@ class DetailRekapMedisController extends Controller
         }
 
         $rekap->save();
-       
+         
+        EncounterHelper::updatedischargeDisposition($rawat->id_encounter);
         SatusehatKondisiHelper::create_kondisi($rawat->id);
         ProcedureHelper::create($rawat->id);
+        
         return redirect()->route('rekam-medis-poli', $rekap->idrawat)->with('berhasil', 'Data Rekam Medis Pasien Berhasil Di Simpan!');
     }
 

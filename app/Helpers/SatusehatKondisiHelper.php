@@ -25,6 +25,18 @@ class SatusehatKondisiHelper
 
     }
 
+   public static function search_kondisi_id_endcounter($id){
+        try{
+            $rawat = Rawat::find($id);
+            // return $rawat;
+            $response = RequestSatuSehatHelper::makeRequest('search-kondisi-encounter','get','/Condition?encounter='.$rawat->id_encounter,null,2);
+            return $response;
+        }catch(\Exception $e){
+            return [
+                'error' => $e->getMessage(),
+            ];
+        }
+   }
    public static function create_kondisi($id){
     try{
         $rawat = Rawat::find($id);

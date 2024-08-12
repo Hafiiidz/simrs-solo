@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\Satusehat\Resource\ObservationHelper;
-use App\Helpers\SatusehatObservasiHelper;
+use Exception;
 use App\Models\Rawat;
 use App\Models\Tarif;
 use App\Models\Dokter;
@@ -25,8 +24,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 use App\Models\RekapMedis\RekapMedis;
 use Yajra\DataTables\Facades\DataTables;
+use App\Helpers\SatusehatObservasiHelper;
 use App\Models\RekapMedis\DetailRekapMedis;
-use Exception;
+use App\Helpers\Satusehat\Resource\EncounterHelper;
+use App\Helpers\Satusehat\Resource\ObservationHelper;
 
 class RekapMedisController extends Controller
 {
@@ -103,6 +104,7 @@ class RekapMedisController extends Controller
             VclaimHelper::update_task2($rawat->idrawat,4,$current_time);
         }elseif($request->jenis == 'bpjs'){
             $rekap_medis->bpjs = 1;
+            EncounterHelper::updateFinised($rawat->id_encounter);
             // return 'aaa';
         } else {
             $rekap_medis->dokter = 1;
