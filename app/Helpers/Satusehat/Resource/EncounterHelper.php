@@ -266,7 +266,7 @@ class EncounterHelper
                     'reference' => 'Organization/100026489'
                 ]
             ];
-            $response = RequestSatuSehatHelper::makeRequest('update-encounter','put','/Encounter/'.$id,$data,2);
+            $response = RequestSatuSehatHelper::makeRequest('update-encounter-progres','put','/Encounter/'.$id,$data,2);
             return $response;
         }catch(\Exception $e){
             return [
@@ -412,7 +412,7 @@ class EncounterHelper
                     'reference' => 'Organization/100026489'
                 ]
             ];
-            $response = RequestSatuSehatHelper::makeRequest('update-encounter','put','/Encounter/'.$id,$data,2);
+            $response = RequestSatuSehatHelper::makeRequest('update-encounter-finish','put','/Encounter/'.$id,$data,2);
             return $response;
         }catch(\Exception $e){
             return [
@@ -516,7 +516,7 @@ class EncounterHelper
                     'reference' => 'Organization/100026489'
                 ]
             ];
-            $response = RequestSatuSehatHelper::makeRequest('update-encounter','put','/Encounter/'.$id,$data,2);
+            $response = RequestSatuSehatHelper::makeRequest('update-encounter-charge-disposition','put','/Encounter/'.$id,$data,2);
             return $response;
         }catch(\Exception $e){
             return [
