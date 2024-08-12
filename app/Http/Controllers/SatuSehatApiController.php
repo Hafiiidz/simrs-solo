@@ -14,6 +14,9 @@ class SatuSehatApiController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function encounter_progres($idencounter){
+        return EncounterHelper::updateInProgress($idencounter);
+    }
     public function encounter_create($idrawat){
         return EncounterHelper::create($idrawat);
     }

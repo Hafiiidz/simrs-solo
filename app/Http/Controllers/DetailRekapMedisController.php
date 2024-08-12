@@ -19,6 +19,8 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Models\RekapMedis\DetailRekapMedis;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Helpers\Satusehat\Resource\EncounterHelper;
+use App\Helpers\Satusehat\Resource\ProcedureHelper;
+use App\Helpers\SatusehatKondisiHelper;
 
 class DetailRekapMedisController extends Controller
 {
@@ -275,6 +277,7 @@ class DetailRekapMedisController extends Controller
             $rekap->pemeriksaan_fisik = $pemeriksaan_fisik->toJson();
             $rekap->riwayat_kesehatan = $riwayat_kesehatan->toJson();
         }else{
+            // return $request->all();
             $rekap->diagnosa = $request->diagnosa;
             if ($request->icdx) {
                 $rekap->icdx = json_encode($request->icdx);
@@ -289,7 +292,9 @@ class DetailRekapMedisController extends Controller
         }
 
         $rekap->save();
-
+       
+        SatusehatKondisiHelper::create_kondisi($rawat->id);
+        ProcedureHelper::create($rawat->id);
         return redirect()->route('rekam-medis-poli', $rekap->idrawat)->with('berhasil', 'Data Rekam Medis Pasien Berhasil Di Simpan!');
     }
 
@@ -334,6 +339,8 @@ class DetailRekapMedisController extends Controller
         );
         $pdf = PDF::loadview('detail-rekap-medis.cetak-resep', compact('data', 'alergi', 'pfisik', 'rkesehatan', 'obat', 'rawat', 'qr'));
         return $pdf->stream();
+  
+        
         // return $pdf->download('rekap-medis.pdf');
         // return view('detail-rekap-medis.cetak');
     }

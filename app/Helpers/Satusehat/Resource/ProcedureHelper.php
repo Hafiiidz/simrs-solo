@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Satusehat\Resource;
 
+use App\Helpers\Satusehat\RequestSatuSehatHelper;
 use App\Models\Rawat;
 use App\Models\Dokter;
 use App\Models\Obat\Obat;
@@ -28,88 +29,107 @@ class ProcedureHelper
     }
 
     public static function create($id){
-        $rawat = Rawat::find($id);
-        // return $rawat;
-        $rekap_medis = DB::table('demo_detail_rekap_medis')->where('idrawat',$rawat->id)->first();
-        $encounter_id = $rawat->id_encounter;
-
-        $diagnosa =  [];
-            foreach(json_decode($rekap_medis->icdx) as $value){
-                $split = explode(' - ', $value->diagnosa_icdx);
-                $diagnosa[] = 
+        try{
+            $rawat = Rawat::find($id);
+            // return $rawat;
+            $rekap_medis = DB::table('demo_detail_rekap_medis')->where('idrawat',$rawat->id)->first();
+            $encounter_id = $rawat->id_encounter;
+    
+            $diagnosa =  [];
+                foreach(json_decode($rekap_medis->icdx) as $value){
+                    $split = explode(' - ', $value->diagnosa_icdx);
+                    $diagnosa[] = 
+                        [
+                            'system' => 'http://hl7.org/fhir/sid/icd-10',
+                            'code' => $split[0],
+                            'display' => $split[1]
+                        ];
+                    
+                }
+            $prosedur =  [];
+                foreach(json_decode($rekap_medis->icd9) as $value9){
+                    $split9 = explode(' - ', $value9->diagnosa_icd9);
+                    $prosedur[] = 
+                        [
+                            'system' => 'http://hl7.org/fhir/sid/icd-9-cm',
+                            'code' => $split9[0],
+                            'display' => $split9[1]
+                        ];
+                    
+                }
+            $data = [
+                "resourceType" => "Procedure",
+                "status" => "completed",
+                "category" => [
+                    "coding" => [
+                        [
+                            "system" => "http://snomed.info/sct",
+                            "code" => "103693007",
+                            "display" => "Diagnostic procedure"
+                        ]
+                    ],
+                    "text" => "Diagnostic procedure"
+                ],
+                "code" => [
+                    "coding" => $prosedur
+                ],
+                "subject" => [
+                    "reference" => "Patient/".$rawat->pasien->ihs,
+                    "display" => $rawat->pasien->nama_pasien
+                ],
+                "encounter" => [
+                    "reference" => "Encounter/" . $encounter_id,
+                    "display" => "Tindakan Pada ".$rawat->pasien->nama_pasien
+                ],
+                "performedPeriod" => [
+                    "start" =>  date('Y-m-d')."T".date('H:i:s')."+07:00",
+                    "end" => date('Y-m-d')."T".date('H:i:s')."+07:00"
+                ],
+                "performer" => [
                     [
-                        'system' => 'http://hl7.org/fhir/sid/icd-10',
-                        'code' => $split[0],
-                        'display' => $split[1]
-                    ];
-                
-            }
-        $prosedur =  [];
-            foreach(json_decode($rekap_medis->icd9) as $value9){
-                $split9 = explode(' - ', $value9->diagnosa_icd9);
-                $prosedur[] = 
-                    [
-                        'system' => 'http://hl7.org/fhir/sid/icd-9-cm',
-                        'code' => $split9[0],
-                        'display' => $split9[1]
-                    ];
-                
-            }
-        $data = [
-            "resourceType" => "Procedure",
-            "status" => "completed",
-            "category" => [
-                "coding" => [
-                    [
-                        "system" => "http://snomed.info/sct",
-                        "code" => "103693007",
-                        "display" => "Diagnostic procedure"
+                        "actor" => [
+                            "reference" => "Practitioner/".$rawat->dokter->kode_ihs,
+                            "display" => $rawat->dokter->nama_dokter
+                        ]
                     ]
                 ],
-                "text" => "Diagnostic procedure"
-            ],
-            "code" => [
-                "coding" => $prosedur
-            ],
-            "subject" => [
-                "reference" => "Patient/".$rawat->pasien->ihs,
-                "display" => $rawat->pasien->nama_pasien
-            ],
-            "encounter" => [
-                "reference" => "Encounter/" . $encounter_id,
-                "display" => "Tindakan Pada ".$rawat->pasien->nama_pasien
-            ],
-            "performedPeriod" => [
-                "start" =>  date('Y-m-d')."T".date('H:i:s')."+07:00",
-                "end" => date('Y-m-d')."T".date('H:i:s')."+07:00"
-            ],
-            "performer" => [
-                [
-                    "actor" => [
-                        "reference" => "Practitioner/".$rawat->dokter->kode_ihs,
-                        "display" => $rawat->dokter->nama_dokter
+                "reasonCode" => [
+                    [
+                        "coding" => $diagnosa
+                    ]
+                ],
+                // "bodySite" => [
+                //     [
+                //         "coding" => [
+                //             [
+                //                 "system" => "http://snomed.info/sct",
+                //                 "code" => "302551006",
+                //                 "display" => "Entire Thorax"
+                //             ]
+                //         ]
+                //     ]
+                // ],
+                "note" => [
+                    [
+                        "text" => "-"
                     ]
                 ]
-            ],
-            "reasonCode" => [
-                [
-                    "coding" => $diagnosa
-                ]
-            ],
-            "note" => [
-                [
-                    "text" => "-"
-                ]
-            ]
-        ];
-        // return $data;
-        $response = Http::withOptions(["verify" => false])
-        ->withHeaders([
-            'Authorization' => 'Bearer '.ProcedureHelper::token(),
-        ])
-        ->post(ProcedureHelper::url().'/Procedure', $data);
+            ];
+            // return $data;
+            // $response = Http::withOptions(["verify" => false])
+            // ->withHeaders([
+            //     'Authorization' => 'Bearer '.ProcedureHelper::token(),
+            // ])
+            // ->post(ProcedureHelper::url().'/Procedure', $data);
+            
+            $response = RequestSatuSehatHelper::makeRequest('create-prosedur','post','/Procedure',$data,2);
+            return $response;
+        }catch(\Exception $e){
+            return [
+                'error' => $e->getMessage(),
+            ];
+        }
 
-        return $response->json();
     }
 
     public static function searchSubject($subject){

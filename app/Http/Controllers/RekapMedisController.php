@@ -103,7 +103,7 @@ class RekapMedisController extends Controller
             VclaimHelper::update_task2($rawat->idrawat,4,$current_time);
         }elseif($request->jenis == 'bpjs'){
             $rekap_medis->bpjs = 1;
-            
+            // return 'aaa';
         } else {
             $rekap_medis->dokter = 1;
             $resep_dokter = DB::table('demo_resep_dokter')->where('idrawat', "$rawat->id")->get();
