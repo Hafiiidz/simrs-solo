@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\VclaimHelper;
-use App\Models\Dokter;
-use App\Models\Pasien\Pasien;
 use App\Models\Poli;
 use App\Models\Rawat;
+use App\Models\Dokter;
 use App\Models\TindakLanjut;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use App\Helpers\VclaimHelper;
+use App\Models\Pasien\Pasien;
+use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Collection;
+use App\Helpers\Satusehat\Resource\EncounterHelper;
 
 class TindakLanjutController extends Controller
 {
@@ -34,6 +36,7 @@ class TindakLanjutController extends Controller
             $tindak_lanjut->poli_rujuk = $rawat->poli->kode;
             $tindak_lanjut->tujuan_tindak_lanjut = NULL;
             $tindak_lanjut->tgl_tindak_lanjut = $request->tgl_kontrol;
+            EncounterHelper::updatedischargeDisposition($rawat->id_encounter,'home.Home',$request->catatan);
         } elseif ($request->rencana_tindak_lanjut == 'Dirujuk') {
             $tindak_lanjut->poli_rujuk = $request->poli_rujuk;
             $tindak_lanjut->tujuan_tindak_lanjut = $request->tujuan_rujuk;
@@ -41,6 +44,7 @@ class TindakLanjutController extends Controller
             $tindak_lanjut->operasi = NULL;
             $tindak_lanjut->tindakan_operasi = NULL;
             $tindak_lanjut->iddokter = NULL;
+            EncounterHelper::updatedischargeDisposition($rawat->id_encounter,'other-hcf.Other healthcare facility',$request->catatan);
         } elseif ($request->rencana_tindak_lanjut == 'Dirawat') {
             if($request->iddokter == null){
                 return redirect()->back()->with('gagal', 'Dokter harus diisi');
@@ -58,11 +62,13 @@ class TindakLanjutController extends Controller
             $tindak_lanjut->tindakan_operasi = NULL;
             $tindak_lanjut->iddokter = NULL;
             $tindak_lanjut->tujuan_tindak_lanjut = "Rujuk Interm";
+            EncounterHelper::updatedischargeDisposition($rawat->id_encounter,'other-hcf.Other healthcare facility',$request->catatan);
         }elseif ($request->rencana_tindak_lanjut == 'Prb') {
             $prb = new Collection([
                 'alasan' => $request->alasan,
                 'rencana_selanjutnya' => $request->rencana_selanjutnya,
             ]);
+            EncounterHelper::updatedischargeDisposition($rawat->id_encounter,'other-hcf.Other healthcare facility',$request->catatan);
             $tindak_lanjut->poli_rujuk = $rawat->poli->kode;
             $tindak_lanjut->tgl_tindak_lanjut = $request->tgl_kontrol;
             $tindak_lanjut->operasi = NULL;
@@ -73,6 +79,7 @@ class TindakLanjutController extends Controller
 
         }elseif($request->rencana_tindak_lanjut == 'Meninggal') {
             $tindak_lanjut->tgl_tindak_lanjut = $request->tgl_kontrol;
+            EncounterHelper::updatedischargeDisposition($rawat->id_encounter,'exp.Expired',$request->catatan);
         } 
         
         $tindak_lanjut->nomor = $tindak_lanjut->generateNomorOtomatis();
@@ -144,12 +151,14 @@ class TindakLanjutController extends Controller
         if ($request->rencana_tindak_lanjut == 'Kontrol Kembali') {
             $tindak_lanjut->poli_rujuk = $rawat->poli->kode;
             $tindak_lanjut->tujuan_tindak_lanjut = NULL;
+            EncounterHelper::updatedischargeDisposition($rawat->id_encounter,'home.Home',$request->catatan);
         } elseif ($request->rencana_tindak_lanjut == 'Dirujuk') {
             $tindak_lanjut->poli_rujuk = $request->poli_rujuk;
             $tindak_lanjut->tujuan_tindak_lanjut = $request->tujuan_rujuk;
             $tindak_lanjut->operasi = NULL;
             $tindak_lanjut->tindakan_operasi = NULL;
             $tindak_lanjut->iddokter = NULL;
+            EncounterHelper::updatedischargeDisposition($rawat->id_encounter,'other-hcf.Other healthcare facility',$request->catatan);
         } elseif ($request->rencana_tindak_lanjut == 'Dirawat') {
             if($request->iddokter == null){
                 return redirect()->back()->with('gagal', 'Dokter harus diisi');
@@ -166,6 +175,7 @@ class TindakLanjutController extends Controller
             $tindak_lanjut->tindakan_operasi = NULL;
             $tindak_lanjut->iddokter = NULL;
             $tindak_lanjut->tujuan_tindak_lanjut = "Rujuk Interm";
+            EncounterHelper::updatedischargeDisposition($rawat->id_encounter,'other-hcf.Other healthcare facility',$request->catatan);
         } elseif ($request->rencana_tindak_lanjut == 'Prb') {
             # insert prb
         }

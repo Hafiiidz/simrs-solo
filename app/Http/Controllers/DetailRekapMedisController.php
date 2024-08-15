@@ -293,7 +293,7 @@ class DetailRekapMedisController extends Controller
 
         $rekap->save();
          
-        EncounterHelper::updatedischargeDisposition($rawat->id_encounter);
+        EncounterHelper::updatedischargeDisposition($rawat->id_encounter,'other-hcf.Other healthcare facility',$request->catatan);
         SatusehatKondisiHelper::create_kondisi($rawat->id);
         ProcedureHelper::create($rawat->id);
         

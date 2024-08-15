@@ -420,8 +420,9 @@ class EncounterHelper
             ];
         }
     }
-    public static function updatedischargeDisposition($id){
+    public static function updatedischargeDisposition($id,$aksi,$catatan){
         try{
+            $aksi_ = explode('.',$aksi);
             $rawat = Rawat::where('id_encounter',$id)->first();
             $pasien = Pasien::where('no_rm',$rawat->no_rm)->first();
             $encounter = EncounterHelper::searchSubject($rawat->id);
@@ -505,11 +506,11 @@ class EncounterHelper
                         "coding"=> [
                             [
                                 "system"=> "http://terminology.hl7.org/CodeSystem/discharge-disposition",
-                                "code"=> "home",
-                                "display"=> "Home"
+                                "code"=> $aksi_[0],
+                                "display"=> $aksi_[1]
                             ]
                         ],
-                        "text" => "Anjuran dokter untuk pulang dan kontrol kembali 1 bulan setelah minum obat"
+                        "text" => $catatan
                     ]
                 ],
                 'serviceProvider' => [
