@@ -397,10 +397,10 @@ Route::get('/practitioner-nik', function () {
     $dokter = Dokter::whereNull('kode_ihs')->whereNotNull('nik')->get();
     $array = [];
     foreach($dokter as $dr){
-        $response = SatusehatResourceHelper::practitioner_nik($dr->nik);
-        $array[] =  $response->json();
+        SatusehatResourceHelper::practitioner_nik($dr->nik);
+        // $array[] =  $response->json();
     }
-    return response($array);
+    return 'berhasil';
     // return 
 });
 Route::get('/practitioner-search/{name}/{gender}/{birthdate}', function ($name, $gender, $birthdate) {
