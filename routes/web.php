@@ -2,20 +2,20 @@
 
 // use GuzzleHttp\Psr7\Request;
 
-use App\Helpers\Antrol\WsBpjsHelper;
-use App\Helpers\Satusehat\RequestSatuSehatHelper;
 use App\Models\Rawat;
+use App\Models\Dokter;
 use App\Jobs\UpdateBilling;
 use Illuminate\Http\Request;
 use App\Helpers\VclaimHelper;
 use App\Models\Pasien\Pasien;
-use Illuminate\Support\Carbon;
 use App\Jobs\ProcessPasienJob;
 use App\Jobs\SendSatuSehatJob;
+use Illuminate\Support\Carbon;
 use App\Jobs\ProcessRawatSendJob;
 use Illuminate\Support\Facades\DB;
 use App\Jobs\SatuseharObservasiJob;
 use Illuminate\Support\Facades\Bus;
+use App\Helpers\Antrol\WsBpjsHelper;
 use App\Helpers\SatusehatAuthHelper;
 use Illuminate\Support\Facades\Hash;
 use App\Jobs\ProcessEncounterSendJob;
@@ -24,6 +24,7 @@ use App\Helpers\SatusehatPasienHelper;
 use App\Jobs\ProcessRawatObservasiJob;
 use App\Jobs\SatusehatUpdatePasienJob;
 use App\Helpers\SatusehatKondisiHelper;
+use App\Helpers\Vclaim\VclaimSepHelper;
 use App\Helpers\SatusehatResourceHelper;
 use App\Http\Controllers\GiziController;
 use App\Http\Controllers\UserController;
@@ -39,20 +40,20 @@ use App\Http\Controllers\MasterBhpController;
 use App\Http\Controllers\PenunjangController;
 use App\Http\Controllers\RadiologiController;
 use App\Http\Controllers\RawatInapController;
+use App\Helpers\Vclaim\VclaimMonitoringHelper;
 use App\Http\Controllers\PoliklinikController;
 use App\Http\Controllers\RekapMedisController;
 use App\Http\Controllers\RuanganBedController;
 use App\Http\Controllers\FisioTerapiController;
 use App\Http\Controllers\LaboratoriumController;
 use App\Http\Controllers\TindakLanjutController;
+use App\Helpers\Satusehat\RequestSatuSehatHelper;
 use App\Helpers\Satusehat\Resource\PatientHelper;
 use App\Helpers\Satusehat\Resource\LocationHelper;
 use App\Helpers\Vclaim\VclaimRencanaKontrolHelper;
 use App\Http\Controllers\LaporanOperasiController;
 use App\Helpers\Satusehat\Resource\EncounterHelper;
 use App\Helpers\Satusehat\Resource\ProcedureHelper;
-use App\Helpers\Vclaim\VclaimMonitoringHelper;
-use App\Helpers\Vclaim\VclaimSepHelper;
 use App\Http\Controllers\DetailRekapMedisController;
 
 /*
@@ -393,7 +394,14 @@ Route::get('/generate-token-ss', function () {
 });
 #Practitioner
 Route::get('/practitioner-nik/{nik}', function ($nik) {
-    return SatusehatResourceHelper::practitioner_nik($nik);
+    $dokter = Dokter::whereNull('kode_ihs')->whereNotNull('nik')->get();
+    $array = [];
+    foreach($dokter as $dr){
+        $response = SatusehatResourceHelper::practitioner_nik($nik);
+        $array[] =  $response->json();
+    }
+    return response($array);
+    // return 
 });
 Route::get('/practitioner-search/{name}/{gender}/{birthdate}', function ($name, $gender, $birthdate) {
     return SatusehatResourceHelper::practitioner_search($name, $gender, $birthdate);
