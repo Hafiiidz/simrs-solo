@@ -393,11 +393,11 @@ Route::get('/generate-token-ss', function () {
     return SatusehatAuthHelper::generate_token();
 });
 #Practitioner
-Route::get('/practitioner-nik/{nik}', function ($nik) {
+Route::get('/practitioner-nik', function () {
     $dokter = Dokter::whereNull('kode_ihs')->whereNotNull('nik')->get();
     $array = [];
     foreach($dokter as $dr){
-        $response = SatusehatResourceHelper::practitioner_nik($nik);
+        $response = SatusehatResourceHelper::practitioner_nik($dr->nik);
         $array[] =  $response->json();
     }
     return response($array);
