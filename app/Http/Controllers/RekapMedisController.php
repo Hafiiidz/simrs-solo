@@ -23,6 +23,7 @@ use App\Models\RekapMedis\Kategori;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 use App\Models\RekapMedis\RekapMedis;
+use App\Helpers\SatusehatKondisiHelper;
 use Yajra\DataTables\Facades\DataTables;
 use App\Helpers\SatusehatObservasiHelper;
 use App\Models\RekapMedis\DetailRekapMedis;
@@ -104,6 +105,8 @@ class RekapMedisController extends Controller
             VclaimHelper::update_task2($rawat->idrawat,4,$current_time);
         }elseif($request->jenis == 'bpjs'){
             $rekap_medis->bpjs = 1;
+            
+            SatusehatKondisiHelper::update_kondisi($rawat->id);
             EncounterHelper::updateFinised($rawat->id_encounter);
             // return 'aaa';
         } else {

@@ -122,6 +122,7 @@ class SatusehatKondisiHelper
             $rawat = Rawat::find($id);
             $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
             $rekap_medis = DB::table('demo_detail_rekap_medis')->where('idrawat',$id)->first();
+            $condisi_id = SatusehatKondisiHelper::search_kondisi_id_endcounter($rawat->id);
             $diagnosa =  [];
             foreach(json_decode($rekap_medis->icdx) as $value){
                 $split = explode(' - ', $value->diagnosa_icdx);
@@ -135,13 +136,13 @@ class SatusehatKondisiHelper
             }
             $data = [
                 "resourceType" => "Condition",
-                "id" => $rawat->id_condition,
+                "id" => $condisi_id['entry'][0]['resource']['id'],
                 "clinicalStatus" => [
                     "coding" => [
                         [
                             "system" => "http://terminology.hl7.org/CodeSystem/condition-clinical",
-                            "code" => "remission",
-                            "display" => "Remission"
+                            "code" => "inactive",
+                            "display" => "Inactive"
                         ]
                     ]
                 ],
