@@ -856,6 +856,7 @@ Route::prefix('/pasien')->middleware('auth')->group(function () {
     Route::get('/create', [PasienController::class, 'tambah_pasien_baru'])->name('pasien.tambah-pasien');
     Route::get('/create-kunjungan/{id}/{jenis}', [PasienController::class, 'tambah_kunjungan'])->name('pasien.tambah-kunjungan');
     Route::get('/cari-kelurahan', [PasienController::class, 'cari_kelurahan'])->name('pasien.cari-kelurahan');
+    Route::get('/get-jadwal-dokter-kontrol', [PasienController::class, 'get_jadwal_dokter_kontrol'])->name('get-jadwal-dokter-kontrol');
     Route::get('/get-jadwal-dokter', [PasienController::class, 'get_jadwal_dokter'])->name('get-jadwal-dokter');
     Route::get('/get-rujukan-faskes', [PasienController::class, 'get_rujukan_faskes'])->name('get-rujukan-faskes');
     Route::get('/pilih-rujukan-faskes', [PasienController::class, 'pilih_rujukan_faskes'])->name('pilih-rujukan-faskes');
@@ -870,6 +871,7 @@ Route::prefix('/pasien')->middleware('auth')->group(function () {
     Route::post('/store-kunjungan', [PasienController::class, 'store_kunjungan'])->name('pasien.post-tambah-kunjungan');
     Route::post('/check-password', [PasienController::class, 'check_password'])->name('pasien.check-password');
     Route::post('/post-form-concent', [PasienController::class, 'post_form_consent'])->name('pasien.post-form-concent');
+    Route::post('/post-surat-kontrol', [PasienController::class, 'post_surat_kotrol'])->name('pasien.post-surat-kontrol');
     //Rekam Medis
     Route::prefix('/bpjs')->middleware('auth')->group(function () {
         Route::get('/get-pasien', [PasienController::class, 'get_bpjs_by_nik'])->name('pasien.get-by-nik');

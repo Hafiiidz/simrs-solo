@@ -13,17 +13,17 @@ class VclaimRencanaKontrolHelper
 {
     public static function getInsert($post_data = null)
     {
-        if ($post_data == null) {
-            $post_data = [
-                "request" => [
-                    "noSEP" => "0301R0111018V000006",
-                    "kodeDokter" => "227186",
-                    "poliKontrol" => "INT",
-                    "tglRencanaKontrol" => "2024-07-11",
-                    "user" => "ws"
-                ]
-            ];
-        }
+        // if ($post_data == null) {
+        //     $post_data = [
+        //         "request" => [
+        //             "noSEP" => "0301R0111018V000006",
+        //             "kodeDokter" => "227186",
+        //             "poliKontrol" => "INT",
+        //             "tglRencanaKontrol" => "2024-07-11",
+        //             "user" => "ws"
+        //         ]
+        //     ];
+        // }
         // return json_encode($post_data);
         try {
             $response = MakeRequestHelper::makeRequest('post-insest-rencana-kontrol','post', '/RencanaKontrol/insert', $post_data);
@@ -80,6 +80,16 @@ class VclaimRencanaKontrolHelper
     {
         try {
             return MakeRequestHelper::makeRequest('get-surat-by-sep','get', '/RencanaKontrol/nosep/'.$nosep);
+        } catch (\Exception $e) {
+            return [
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+    public static function getDatabynosurat($nosurat)
+    {
+        try {
+            return MakeRequestHelper::makeRequest('get-surat-by-nosurat','get', '/RencanaKontrol/noSuratKontrol/'.$nosurat);
         } catch (\Exception $e) {
             return [
                 'error' => $e->getMessage(),

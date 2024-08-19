@@ -14,7 +14,7 @@
                 <th>Terbit SEP</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="kontrol-table-body">
             @foreach ($response['response']['list'] as $list)
                 <tr>
                     <td>
@@ -49,6 +49,7 @@
     $('.btn-tambah-nomer-kontrol').on('click', function() {
         var noKartu = $(this).data('nokartu');
         $('#form-tambah').empty();
+        $('#buat-surat').empty();
         $.ajax({
             url: '{{ route('histori-pelayanan') }}',
             type: 'GET',
@@ -80,6 +81,7 @@
         });
     });
     $('.btn-pilih-nomor').on('click', function() {
+        $('#poli').empty();
         var no_surat = $(this).data('id');
         var dokter = $(this).data('dokter');
         var poli = $(this).data('poli');

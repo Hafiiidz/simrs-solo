@@ -64,7 +64,7 @@ class PasienController extends Controller
         // return $pemeriksaan_fisik;
         $soap_icdx = DB::table('soap_rajalicdx')
             ->select([
-                'soap_rajalicdx.icd10',
+                'soap_rajalicdx.'.env('ICDX'),
                 'rawat.tglmasuk',
             ])
             ->join('rawat', 'rawat.id', '=', 'soap_rajalicdx.idrawat')
@@ -452,6 +452,89 @@ class PasienController extends Controller
             ]);
         }
     }
+    public function post_surat_kotrol(Request $request){
+        $dokter = Dokter::find($request->iddokter_kontrol);
+        $poli = Poli::find($request->poli_tujuan);
+        $data = [
+            "request"=>[
+                'noSEP'=>$request->no_sep,
+                'kodeDokter'=>$dokter->kode_dpjp,
+                'poliKontrol'=>$poli->kode,
+                'tglRencanaKontrol'=>$request->tgl_kontrol,
+                'user'=>auth()->user()->detail->nama,
+            ]
+            
+        ];
+
+        $kontrol = VclaimRencanaKontrolHelper::getInsert($data);
+        if($kontrol['metaData']['code'] == 200){
+
+            $response = VclaimRencanaKontrolHelper::getDatabynosurat($kontrol['response']['noSuratKontrol']);
+           
+            return response()->json([
+                'status'=>'success',
+                'code'=>$kontrol['metaData']['code'],
+                'message'=>$kontrol['metaData']['message'],
+                'data'=>$kontrol['response'],
+                'data_surat'=>$response['response'],
+                'poli'=>$poli->kode,
+                'dokter'=>$dokter->kode_dpjp,
+                'sep_asal'=>$request->no_sep,
+            ]);
+        }else{
+            return response()->json([
+                'status' => 'failed',
+                'code' => $kontrol['metaData']['code'] ?? 201,
+                'message' => $kontrol['metaData']['message'] ?? 'Server Error'
+            ]);
+        }
+        return $request->all();
+    }
+    public function get_jadwal_dokter_kontrol(Request $request){
+        $poli = Poli::find($request->poli);
+        $date = date('Y-m-d');
+
+        // Convert the date to a timestamp
+        $timestamp = strtotime($date);
+
+        // Get the numeric representation of the day of the week
+        $dayNumber = date('N', $timestamp);
+        // $kuota = DB::table('dokter_kuota')->where('idpoli',$request->poli)->where('tgl',$request->tgl)->first();
+        if ($request->poli == 1) {
+            $poliId = 1;
+        } else {
+            if ($request->penanggung == 2) {
+                $results = WsBpjsHelper::referensi_jadwaldokter($poli->kode, $date);
+                // return $results;
+                // return $poli->kode;
+                if ($results['metaData']['code'] == 200) {
+                    return View::make('pasien.modal.jadwal-dokter-bpjs-kontrol', compact('results'));
+                }
+            }
+
+            $poliId = $poli->id;
+        }
+
+        $results = DB::table('dokter_jadwal')
+            ->join('dokter', 'dokter.id', '=', 'dokter_jadwal.iddokter')
+            ->join('poli', 'poli.id', '=', 'dokter_jadwal.idpoli')
+            ->join('hari', 'hari.id', '=', 'dokter_jadwal.idhari')
+            ->select(
+                'dokter.nama_dokter',
+                'poli.poli',
+                'hari.hari',
+                'dokter_jadwal.iddokter',
+                'dokter_jadwal.kuota',
+                'dokter_jadwal.jam_mulai',
+                'dokter_jadwal.jam_selesai'
+            )
+            ->where('dokter_jadwal.idpoli', $poliId)
+            ->where('dokter.status', 1)
+            ->where('dokter_jadwal.idhari', $dayNumber)
+            ->get();
+
+        return View::make('pasien.modal.jadwal-dokter', compact('results'));
+    }
     public function get_jadwal_dokter(Request $request)
     {
         $poli = Poli::find($request->poli);
@@ -468,8 +551,9 @@ class PasienController extends Controller
         } else {
             if ($request->penanggung == 2) {
                 $results = WsBpjsHelper::referensi_jadwaldokter($poli->kode, $date);
+                // return $results;
                 // return $poli->kode;
-                if ($results['metadata']['code'] == 200) {
+                if ($results['metaData']['code'] == 200) {
                     return View::make('pasien.modal.jadwal-dokter-bpjs', compact('results'));
                 }
             }
@@ -729,7 +813,7 @@ class PasienController extends Controller
                                     ]
                                 ]
                             ],
-                            "tujuanKunj" =>0,
+                            "tujuanKunj" =>$request->tujuanKunjungan ?? 0,
                             "flagProcedure" => $request->prosedur ?? "",
                             "kdPenunjang" => $request->prosedurTidakBerkelanjutan ?? "",
                             "assesmentPel" => $request->alasanTidakSelesai ?? "",
