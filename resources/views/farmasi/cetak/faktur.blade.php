@@ -26,6 +26,7 @@
 </head>
 
 <body>
+    @if ($cek_bpjs > 0)
     <div class="container">
         <div class="row">
             <table>
@@ -102,29 +103,31 @@
                             @endphp
                             @foreach ($detail_resep as $val)
                                 @if ($val->idbayar == 2)
-                                @if( $val->qty >0)
-                                    @php
-                                        $total += $val->total;
-                                    @endphp
-                                    <tr class="border">
-                                        <td style="border: 1px solid black;" class="text-center">{{ $no1++ }}
-                                        </td>
-                                        <td style="border: 1px solid black;">{{ $val->nama_obat }}</td>
-                                        <td style="border: 1px solid black;" class="text-center">{{ $val->qty }}
-                                        </td>
-                                        <td style="border: 1px solid black;" class="text-end">
-                                            Rp.{{ App\Helpers\VclaimHelper::IndoCurr($val->total) }}</td>
-                                    </tr>
-                                @endif
+                                    @if ($val->qty > 0)
+                                        @php
+                                            $total += $val->total;
+                                        @endphp
+                                        <tr class="border">
+                                            <td style="border: 1px solid black;" class="text-center">
+                                                {{ $no1++ }}
+                                            </td>
+                                            <td style="border: 1px solid black;">{{ $val->nama_obat }}</td>
+                                            <td style="border: 1px solid black;" class="text-center">
+                                                {{ $val->qty }}
+                                            </td>
+                                            <td style="border: 1px solid black;" class="text-end">
+                                                Rp.{{ App\Helpers\VclaimHelper::IndoCurr($val->total) }}</td>
+                                        </tr>
+                                    @endif
                                 @endif
                             @endforeach
                             @php
                                 $total_racik = 0;
                             @endphp
                             @if (count($racik) > 0)
-                                    @php
-                                        $total_racik = 10000 * count($racik);
-                                    @endphp
+                                @php
+                                    $total_racik = 10000 * count($racik);
+                                @endphp
                                 <tr class="border">
                                     <td style="border: 1px solid black;" colspan="3" class="text-end">Total Racik
                                     </td>
@@ -135,7 +138,8 @@
                             @endif
                             <tr class="border">
                                 <td style="border: 1px solid black;" colspan="3" class="text-end">Total Harga</td>
-                                <td style="border: 1px solid black;" class="text-end">Rp.{{ App\Helpers\VclaimHelper::IndoCurr($total+$total_racik) }}
+                                <td style="border: 1px solid black;" class="text-end">
+                                    Rp.{{ App\Helpers\VclaimHelper::IndoCurr($total + $total_racik) }}
                                 </td>
                             </tr>
                         </tbody>
@@ -144,8 +148,11 @@
             </div>
         </div>
     </div>
+    <div class="page_break"></div>
+    @endif
+   
     @if ($cek_pribadi > 0)
-        <div class="page_break"></div>
+       
         <div class="container">
             <div class="row">
                 <table>
@@ -223,42 +230,65 @@
                                     $total_pribadi = 0;
                                 @endphp
                                 @foreach ($detail_resep as $val)
-                                @if( $val->qty >0)
-                                    @if ($val->idbayar == 1)
-                                        @php
-                                            $total_pribadi += $val->total;
-                                        @endphp
-                                        <tr class="border">
-                                            <td style="border: 1px solid black;" class="text-center">
-                                                {{ $no2++ }}
-                                            </td>
-                                            <td style="border: 1px solid black;">{{ $val->nama_obat }}</td>
-                                            <td style="border: 1px solid black;" class="text-center">
-                                                {{ $val->qty }}
-                                            </td>
-                                            <td style="border: 1px solid black;" class="text-end">
-                                                Rp.{{ App\Helpers\VclaimHelper::IndoCurr($val->total) }}</td>
-                                        </tr>
-                                    @endif
+                                    @if ($val->qty > 0)
+                                        @if ($val->idbayar == 1)
+                                            @php
+                                                $total_pribadi += $val->total;
+                                            @endphp
+                                            <tr class="border">
+                                                <td style="border: 1px solid black;" class="text-center">
+                                                    {{ $no2++ }}
+                                                </td>
+                                                <td style="border: 1px solid black;">{{ $val->nama_obat }}</td>
+                                                <td style="border: 1px solid black;" class="text-center">
+                                                    {{ $val->qty }}
+                                                </td>
+                                                <td style="border: 1px solid black;" class="text-end">
+                                                    Rp.{{ App\Helpers\VclaimHelper::IndoCurr($val->total) }}</td>
+                                            </tr>
+                                        @endif
                                     @endif
                                 @endforeach
-
+                                @php
+                                    $total_racik_umum = 0;
+                                @endphp
+                                @if (count($racik_umum) > 0)
+                                    @php
+                                        $total_racik_umum = 10000 * count($racik_umum);
+                                    @endphp
+                                    <tr class="border">
+                                        <td style="border: 1px solid black;" colspan="3" class="text-end">Total Racik
+                                        </td>
+                                        <td style="border: 1px solid black;" class="text-end">
+                                            Rp.{{ App\Helpers\VclaimHelper::IndoCurr($total_racik_umum) }}
+                                        </td>
+                                    </tr>
+                                @endif
                                 <tr class="border">
                                     <td style="border: 1px solid black;" colspan="3" class="text-end">Total Harga
                                     </td>
                                     <td style="border: 1px solid black;" class="text-end">
-                                        Rp.{{ App\Helpers\VclaimHelper::IndoCurr($total_pribadi) }}
+                                        Rp.{{ App\Helpers\VclaimHelper::IndoCurr($total_pribadi + $total_racik_umum) }}
                                     </td>
                                 </tr>
                             </tbody>
+                            {{-- <tr class="border">
+                                <td style="border: 1px solid black;" colspan="3" class="text-end">Total Harga
+                                </td>
+                                <td style="border: 1px solid black;" class="text-end">
+                                    Rp.{{ App\Helpers\VclaimHelper::IndoCurr($total_pribadi) }}
+                                </td>
+                            </tr>
+                            </tbody> --}}
                         </table>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="page_break"></div>
     @endif
     @if ($cek_kronis > 0)
-        <div class="page_break"></div>
+        
         <div class="container">
             <div class="row">
                 <table>
@@ -336,23 +366,23 @@
                                     $total_kronis = 0;
                                 @endphp
                                 @foreach ($detail_resep as $val)
-                                    @if( $val->qty >0)
-                                    @if ($val->idbayar == 3)
-                                        @php
-                                            $total_kronis += $val->total;
-                                        @endphp
-                                        <tr class="border">
-                                            <td style="border: 1px solid black;" class="text-center">
-                                                {{ $no3++ }}
-                                            </td>
-                                            <td style="border: 1px solid black;">{{ $val->nama_obat }}</td>
-                                            <td style="border: 1px solid black;" class="text-center">
-                                                {{ $val->qty }}
-                                            </td>
-                                            <td style="border: 1px solid black;" class="text-end">
-                                                Rp.{{ App\Helpers\VclaimHelper::IndoCurr($val->total) }}</td>
-                                        </tr>
-                                    @endif
+                                    @if ($val->qty > 0)
+                                        @if ($val->idbayar == 3)
+                                            @php
+                                                $total_kronis += $val->total;
+                                            @endphp
+                                            <tr class="border">
+                                                <td style="border: 1px solid black;" class="text-center">
+                                                    {{ $no3++ }}
+                                                </td>
+                                                <td style="border: 1px solid black;">{{ $val->nama_obat }}</td>
+                                                <td style="border: 1px solid black;" class="text-center">
+                                                    {{ $val->qty }}
+                                                </td>
+                                                <td style="border: 1px solid black;" class="text-end">
+                                                    Rp.{{ App\Helpers\VclaimHelper::IndoCurr($val->total) }}</td>
+                                            </tr>
+                                        @endif
                                     @endif
                                 @endforeach
 
@@ -369,6 +399,7 @@
                 </div>
             </div>
         </div>
+        <div class="page_break"></div>
     @endif
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"

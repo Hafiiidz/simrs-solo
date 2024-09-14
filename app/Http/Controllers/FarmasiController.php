@@ -715,14 +715,16 @@ class FarmasiController extends Controller
         $rawat = Rawat::find($resep->idrawat);
         $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
         $detail_resep = DB::table('obat_transaksi_detail')->where('idtrx', $resep->id)->get();
-        $racik = DB::table('obat_racik')->where('idresep', $resep->id)->get();
+        $racik = DB::table('obat_racik')->where('idresep', $resep->id)->where('idbayar',2)->get();
+        $racik_umum = DB::table('obat_racik')->where('idresep', $resep->id)->where('idbayar',1)->get();
         // dd($racik);
         $cek_kronis = DB::table('obat_transaksi_detail')->where('idbayar',3)->where('idtrx', $resep->id)->count();
         $cek_pribadi = DB::table('obat_transaksi_detail')->where('idbayar',1)->where('idtrx', $resep->id)->count();
+        $cek_bpjs = DB::table('obat_transaksi_detail')->where('idbayar',2)->where('idtrx', $resep->id)->count();
         $no1=1;
         $no2=2;
         $no3=3;
-        $pdf = PDF::loadview('farmasi.cetak.faktur', compact('resep', 'rawat', 'pasien', 'detail_resep', 'cek_kronis','racik','cek_pribadi','no1','no2','no3'));
+        $pdf = PDF::loadview('farmasi.cetak.faktur', compact('resep', 'rawat', 'pasien', 'detail_resep', 'cek_kronis','racik','cek_pribadi','no1','no2','no3','racik_umum','cek_bpjs'));
         $customPaper = array(0, 0, 323.15, 790.866);
         $pdf->setPaper($customPaper);
         return $pdf->stream();
@@ -761,12 +763,14 @@ class FarmasiController extends Controller
     }
 
     public function hapus_obat(Request $request){
+        // return $request->all();
         // $antrian = AntrianFarmasi::find($request->antrian);
         // return $antrian;
         try{
             DB::table('demo_resep_dokter')->where('jenis','Non Racik')->where('idantrian', $request->antrian)->where('idobat',$request->idobat)->delete();
             $antrian = AntrianFarmasi::find($request->antrian);
             $resep_dokter = DB::table('demo_resep_dokter')->where('jenis','Non Racik')->where('idantrian',$request->antrian)->get();
+            // return count($resep_dokter);
             $rawat = Rawat::find($antrian->idrawat);
             if($rawat->idbayar == 2){
                 $jenis = 2;
@@ -795,6 +799,15 @@ class FarmasiController extends Controller
                 
                 DB::table('demo_antrian_resep')->where('id',$request->antrian)->update([
                     'obat' => json_encode($non_racik),
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ]);
+                return response()->json([
+                    'status'=>true,
+                    'pesan'=>'Data Berhasil Di Hapus'
+                ]);
+            }else{
+                DB::table('demo_antrian_resep')->where('id',$request->antrian)->update([
+                    'obat' => [],
                     'updated_at' => date('Y-m-d H:i:s'),
                 ]);
                 return response()->json([
@@ -1059,12 +1072,8 @@ class FarmasiController extends Controller
         //     'obat'=>$obat
         // ]);
         try{
-            DB::table('demo_resep_dokter')->where('idrawat', $request->idrawat)->where('jenis','Non Racik')->whereNotNull('idantrian')->update([
-                'idantrian'=>$request->idtambah,
-            ]);
-
-
-            $resep = DB::table('demo_resep_dokter')->insertGetId([
+            // $cek_resep_dokter =  DB::table('demo_resep_dokter')->where('idantrian',$request->idtambah)->first();
+            DB::table('demo_resep_dokter')->insertGetId([
                 'idrawat'=>$request->idrawat,
                 'idantrian'=>$request->idtambah,
                 'idobat'=>$request->obat_non,
@@ -1079,6 +1088,34 @@ class FarmasiController extends Controller
                 'diminum'=>$request->takaran,
                 'tambahan_farmasi'=>1,
             ]);
+            // if(!$cek_resep_dokter){
+                
+            // }else{
+            //     DB::table('demo_resep_dokter')->insertGetId([
+            //         'idrawat'=>$request->idrawat,
+            //         'idantrian'=>$request->idtambah,
+            //         'idobat'=>$request->obat_non,
+            //         'nama_obat'=>$obat->nama_obat,
+            //         'jenis'=>'Non Racik',
+            //         'jumlah'=>$request->jumlah_obat,
+            //         'diberikan'=>$request->jumlah_obat,
+            //         'takaran'=>$request->takaran_obat,
+            //         'dosis'=>$request->dosis_obat,
+            //         'signa'=>json_encode($request->diminum),
+            //         'catatan'=>$request->catatan,
+            //         'diminum'=>$request->takaran,
+            //         'tambahan_farmasi'=>1,
+            //     ]);
+            // }
+            // else{
+            //     DB::table('demo_resep_dokter')->where('idrawat', $request->idrawat)->where('jenis','Non Racik')->whereNotNull('idantrian')->update([
+            //         'idantrian'=>$request->idtambah,
+            //     ]);
+            // }
+            
+
+
+           
 
             $resep_dokter = DB::table('demo_resep_dokter')->where('jenis','Non Racik')->where('idrawat', $request->idrawat)->where('idantrian',$request->idtambah)->get();
             // return $resep_dokter;

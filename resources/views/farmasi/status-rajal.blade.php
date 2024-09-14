@@ -255,11 +255,11 @@
                                                                 <td class="align-middle text-center">{{ $val->dosis }}
                                                                     {{ $val->takaran }} ( {{ $val->signa }} )
                                                                     {{ $val->diminum . ' makan' }}
-                                                                    @if(isset($val->dtd))
-                                                                    <b>{!! $val->dtd == 1 ? '<b> - (DTD)</b>' : '' !!}</b>
+                                                                    @if (isset($val->dtd))
+                                                                        <b>{!! $val->dtd == 1 ? '<b> - (DTD)</b>' : '' !!}</b>
                                                                     @endif
                                                                     <br>
-                                                                    <pre>{{ $val->catatan  }}</pre>
+                                                                    <pre>{{ $val->catatan }}</pre>
                                                                 </td>
                                                                 <td class="align-middle text-center">
                                                                     <select name="jenis_obat[{{ $val->idresep }}]"
@@ -347,7 +347,7 @@
                                                                             {!! App\Helpers\VclaimHelper::get_data_obat($val->obat) !!}
                                                                         </button>
                                                                     @endif
-                                                                   
+
                                                                 </td>
                                                                 <td>
                                                                     {!! App\Helpers\VclaimHelper::IndoCurr(App\Helpers\VclaimHelper::get_harga_obat($val->obat, $rawat->idbayar)) !!}
@@ -377,7 +377,7 @@
                                                                     {{ $val->takaran }} ( {{ $val->signa }} )
                                                                     {{ $val->diminum . ' makan' }}
                                                                     <br>
-                                                                    <pre>{{ $val->catatan  }}</pre>
+                                                                    <pre>{{ $val->catatan }}</pre>
                                                                 </td>
                                                                 <td class="align-middle text-center">
                                                                     <select
@@ -559,7 +559,7 @@
                                 <input type="hidden" name="idrawat" id="id_rawat" value="{{ $rawat->id }}">
                                 <div class="row mb-5">
                                     <div class="col-md-12">
-                                        <label class="form-label" >Obat</label>
+                                        <label class="form-label">Obat</label>
                                         <select name="obat_non" id='nama_obat_non' class="form-select form-select-sm"
                                             data-control="select2" data-placeholder="-Pilih-" required>
                                             <option value=""></option>
@@ -626,13 +626,13 @@
                                                 <div class="form-check form-check-inline mb-2">
                                                     <input class="form-check-input" type="radio" name="takaran"
                                                         id="kapsul" value="sebelum">
-                                                    <label class="form-check-label" >Sebelum</label>
+                                                    <label class="form-check-label">Sebelum</label>
                                                 </div>
 
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="radio" name="takaran"
                                                         id="kapsul" value="sesudah">
-                                                    <label class="form-check-label" >Sesudah</label>
+                                                    <label class="form-check-label">Sesudah</label>
                                                 </div>
                                             </td>
 
@@ -781,13 +781,13 @@
                                         <div class="form-check form-check-inline mb-2">
                                             <input class="form-check-input" type="radio" name="takaran" id="kapsul"
                                                 value="sebelum">
-                                            <label class="form-check-label" >Sebelum</label>
+                                            <label class="form-check-label">Sebelum</label>
                                         </div>
 
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="takaran" id="kapsul"
                                                 value="sesudah">
-                                            <label class="form-check-label" >Sesudah</label>
+                                            <label class="form-check-label">Sesudah</label>
                                         </div>
                                     </td>
                                     <td class="text-center" width='10'>
@@ -957,28 +957,31 @@
                     confirmButtonText: 'Ya, Hapus Data',
                     cancelButtonText: 'Tidak'
                 }).then((result) => {
-                    $.ajax({
-                            method: "GET",
-                            url: "{{ route('hapus-data-resep') }}",
-                            data: {
-                                antrian: idantrian,
-                                idobat: idobat
-                            }
-                        })
-                        .done(function(msg) {
-                            //reload page
-                            console.log(msg);
-                            Swal.fire({
-                                text: 'Data berhasil di hapus',
-                                icon: "success",
-                                buttonsStyling: false,
-                                confirmButtonText: "Ok",
-                                customClass: {
-                                    confirmButton: "btn btn-primary"
+                    if (result.isConfirmed) {
+                        $.ajax({
+                                method: "GET",
+                                url: "{{ route('hapus-data-resep') }}",
+                                data: {
+                                    antrian: idantrian,
+                                    idobat: idobat
                                 }
+                            })
+                            .done(function(msg) {
+                                //reload page
+                                console.log(msg);
+                                Swal.fire({
+                                    text: 'Data berhasil di hapus',
+                                    icon: "success",
+                                    buttonsStyling: false,
+                                    confirmButtonText: "Ok",
+                                    customClass: {
+                                        confirmButton: "btn btn-primary"
+                                    }
+                                });
+                                location.reload();
                             });
-                            location.reload();
-                        });
+
+                    }
                 });
 
 
