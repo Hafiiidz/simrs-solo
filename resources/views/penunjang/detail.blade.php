@@ -467,7 +467,7 @@
                                                                                         <label
                                                                                             class="form-label">Klinis</label>
                                                                                         <input class="form-control"
-                                                                                            value="{{ $val->klinis }}"
+                                                                                            value="{{ $val?->klinis }}"
                                                                                             name='klinis' required
                                                                                             placeholder="Klinis" />
                                                                                     </div>

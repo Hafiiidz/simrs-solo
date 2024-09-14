@@ -394,10 +394,11 @@ Route::get('/generate-token-ss', function () {
 });
 #Practitioner
 Route::get('/practitioner-nik', function () {
-    $dokter = Dokter::whereNull('kode_ihs')->whereNotNull('nik')->get();
+    $dokter = Dokter::whereNull('kode_ihs')->whereNotNull('nik')->where('nik','!=','')->get();
+    // return $dokter;
     $array = [];
     foreach($dokter as $dr){
-        SatusehatResourceHelper::practitioner_nik($dr->nik);
+        return SatusehatResourceHelper::practitioner_nik($dr->nik);
         // $array[] =  $response->json();
     }
     return 'berhasil';

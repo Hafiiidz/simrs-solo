@@ -509,7 +509,7 @@ class VclaimHelper
         // // return $token;
         $helper = new VclaimHelper();
         $token = $helper->getToken();
-        $response = Http::withOptions(["verify" => $token['ssl']])->get('https://live.simrs.rsaudrsiswanto.co.id/dashboard/rest/update-taks?kode_booking='.$rawat->idrawat.'&taks='.$taksid);
+        $response = Http::withOptions(["verify" => false])->get('http://117.20.59.250:8012/dashboard/rest/update-taks?kode_booking='.$rawat->idrawat.'&taks='.$taksid);
         return $response;
     }
     public static function add_antrian($idrawat){

@@ -345,7 +345,7 @@ class RekapMedisController extends Controller
                                     'idpaket' => 0,
                                     'idjenis' => 0,
                                     'idrawat' => $rawat->id,
-                                    'idtransaksi' => $transaksi->id,
+                                    'idtransaksi' => $transaksi?->id,
                                     'idtarif' => $tindakan->tindakan,
                                     'tarif' => $tarif->tarif,
                                     'idtindakan' => $tarif->kat_tindakan,
@@ -896,7 +896,8 @@ class RekapMedisController extends Controller
             VclaimHelper::update_task2($rawat->idrawat,4,$current_time);
         } else {
             $resume = RekapMedis::find($cek_resume->id);
-            // VclaimHelper::update_task2($rawat->idrawat,5,$current_time);
+            VclaimHelper::update_task2($rawat->idrawat,4,$current_time);
+            VclaimHelper::update_task2($rawat->idrawat,5,$current_time);
         }
         $triase = DB::table('soap_triase')->get();
         $data = RekapMedis::find($resume->id);

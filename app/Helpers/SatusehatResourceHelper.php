@@ -31,12 +31,14 @@ class SatusehatResourceHelper
         $url = env('PROD_BASE_URL_SS');
         // return $url;
         $dokter = Dokter::where('nik',$nik)->first();
+        // return $nik;
         $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
             'Authorization' => 'Bearer '.$token,
         ])
         ->get($url.'/Practitioner?identifier=https://fhir.kemkes.go.id/id/nik|'.$nik);
         // if($dokter)
+        // return $response;
         if($response['total'] > 0){
             if($dokter){
                 $dokter->kode_ihs = $response['entry'][0]['resource']['id'];
