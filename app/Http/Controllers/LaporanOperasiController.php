@@ -137,7 +137,9 @@ class LaporanOperasiController extends Controller
         // $bhp = DB::table('operasi_tindakan_bhp')->where('idoperasi',$operasi_tindakan->id)->get();
         // $list_bhp = DB::table('demo_template_bhp')->get();
         $implan = Bhp::where('jenis','Implan')->get();
+        // return count($implan);
         $bhp = Bhp::where('jenis','BHP')->get();
+        
         $total_bhp = DB::table('operasi_tindakan_bhp')->where('idoperasi',$operasi_tindakan->id)->where('idtindakan',$operasi_tindakan->idtindakan)->sum('harga');
         // dd($bhp);
         return view('operasi.bhp',compact('operasi_tindakan','rawat','implan','bhp','total_bhp','data'));
@@ -145,18 +147,16 @@ class LaporanOperasiController extends Controller
 
     #create fungsi simpan bhp
     public function post_bhp_ok(Request $request,$id){
+        // dd($request->all());
+        // return $request->all();
         DB::beginTransaction();
 
         try {
             $bhp = $request->bhp;
             $implan = $request->implan;
-            // return $request->all();
             $operasi_tindakan = DB::table('operasi_tindakan')->where('id',$id)->first();
-            
-            
             if($bhp){
-                foreach ($bhp as $b) {
-                  
+                foreach ($bhp as $b) {                 
 
                     if($b['jumlah'] != null){
                         $cek_bhp = DB::table('operasi_tindakan_bhp')->where('nama_obat',$b['nama'])->where('idoperasi',$operasi_tindakan->id)->where('idtindakan',$operasi_tindakan->idtindakan)->first();
@@ -188,18 +188,19 @@ class LaporanOperasiController extends Controller
                 }
             }
             if($implan){
-                foreach ($implan as $b) {
+                foreach ($implan as $i) {
                     
-
-                    if($b['jumlah'] != null){
-                        $cek_bhp = DB::table('operasi_tindakan_bhp')->where('nama_obat',$b['nama'])->where('idoperasi',$operasi_tindakan->id)->where('idtindakan',$operasi_tindakan->idtindakan)->first();
+                    $barang = Bhp::find($i['id']);
+                    if($i['jumlah'] != null){
+                        $cek_bhp = DB::table('operasi_tindakan_bhp')->where('nama_obat',$barang->nama_barang)->where('idoperasi',$operasi_tindakan->id)->where('idtindakan',$operasi_tindakan->idtindakan)->first();
                         if($cek_bhp){
                             #update
+                            
                             $data = [
-                                'jumlah'=>$b['jumlah'],
-                                'satuan'=>$b['satuan'],
-                                'harga'=>$b['harga'] * $b['jumlah'],
-                                'nama_obat'=>$b['nama'],
+                                'jumlah'=>$i['jumlah'],
+                                'satuan'=>$i['satuan'],
+                                'harga'=>$i['harga'] * $i['jumlah'],
+                                'nama_obat'=> $barang->nama_barang,
                             ];
                             DB::table('operasi_tindakan_bhp')->where('id',$cek_bhp->id)->update($data);
                         }else{
@@ -208,10 +209,10 @@ class LaporanOperasiController extends Controller
                                 'idoperasi'=>$operasi_tindakan->id,
                                 'idtindakan'=>$operasi_tindakan->idtindakan,
                                 'iddokter'=>$operasi_tindakan->iddokter,
-                                'nama_obat'=>$b['nama'],
-                                'jumlah'=>$b['jumlah'] ,
-                                'satuan'=>$b['satuan'],
-                                'harga'=>$b['harga']* $b['jumlah'],
+                                'nama_obat'=>$barang->nama_barang,
+                                'jumlah'=>$i['jumlah'] ,
+                                'satuan'=>$i['satuan'],
+                                'harga'=>$i['harga']* $i['jumlah'],
                                 'status'=>1,
                                 'tgl'=>date('Y-m-d')
                             ];
@@ -231,6 +232,7 @@ class LaporanOperasiController extends Controller
             $transaksi_detail = DB::table('transaksi_detail_rinci')->where('idtransaksi',$operasi_tindakan->idtrx)->where('idtarif',$operasi_tindakan->idtindakan)->where('idrawat',$operasi_tindakan->idrawat)->update([
                 'tarif'=>$operasi_tindakan->harga_tindakan + $total_bhp
             ]);
+
             DB::commit();
             return redirect()->back()->with('berhasil','Data Berhasil Disimpan! Total BHP : '.number_format($total_bhp,0,',','.'));
         } catch (\Exception $e) {
