@@ -1,0 +1,41 @@
+services:
+    app:
+        build:
+            args:
+                user: server-rsau
+                uid: 1000
+            context: ./
+            dockerfile: Dockerfile
+        image: rsau-local-erm
+        container_name: rsau-local-erm-app
+        restart: unless-stopped
+        working_dir: /var/www/
+        volumes:
+          - ./:/var/www
+          - ./php.ini:/usr/local/etc/php/php.ini
+        networks:
+          - rsau-net
+    nginx:
+        image: nginx:alpine
+        container_name: rsau-local-erm-nginx
+        restart: unless-stopped
+        ports:
+        - 8011:80
+        volumes:
+        - ./:/var/www
+        - ./nginx:/etc/nginx/conf.d/
+        networks:
+        - rsau-net
+
+    # supervisor:
+    #   container_name: kominfo-simp3-supervisor
+    #   networks:
+    #       - kominfo-net
+    #   depends_on:
+    #       - app
+    #       - nginx
+    #   command: supervisord
+
+networks:
+    rsau-net:
+        driver: bridge
