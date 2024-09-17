@@ -132,10 +132,10 @@
                                                     <td>
                                                         <input type="hidden" name="implan[{{ $key2 }}][id]"
                                                             value="{{ $item2->id }}">
-                                                        <input type="hidden" name="implan[{{ $key2 }}][satuan]"
+                                                        <!-- <input type="hidden" name="implan[{{ $key2 }}][satuan]"
                                                             value="{{ $item2->satuan }}">
                                                         <input type="hidden" name="implan[{{ $key2 }}][harga]"
-                                                            value="{{ $item2->harga }}">
+                                                            value="{{ $item2->harga }}"> -->
                                                         {{-- <input type="hidden" name="implan[{{ $key2 }}][nama_barang]" value="{{ $item2->nama_barang }}"> --}}
                                                         {{-- <input type="hidden" name="implan[{{ $key }}][satuan]" value="{{ $item2->satuan }}">
                                                     <input type="hidden" name="implan[{{ $key }}][harga]" value="{{ $item2->harga }}">
