@@ -439,4 +439,8 @@ class LaporanOperasiController extends Controller
         $pdf->setPaper('A4', 'portrait');
         return $pdf->stream();
     }
+
+    public function laporan_harian($tgl){
+        return $tgl;
+    }
 }

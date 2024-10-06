@@ -924,6 +924,7 @@ Route::prefix('/pasien')->middleware('auth')->group(function () {
         Route::post('{id}/post-tindakan', [LaporanOperasiController::class, 'post_tindakan_ok'])->name('post_tindakan_ok.operasi');
         Route::post('{id}/post-bhp', [LaporanOperasiController::class, 'post_bhp_ok'])->name('post_bhp_ok.operasi');
         Route::get('{id}/cetak-laporan', [LaporanOperasiController::class, 'cetakLaporan'])->name('cetak-laporan.operasi');
+        Route::get('laporan-harian/{tgl}', [LaporanOperasiController::class, 'laporan_harian'])->name('bhp.laporan-harian');
         Route::prefix('/anestesi')->group(function () {
             Route::post('/update-template/{id}', [TemplateController::class, 'update_anestesi'])->name('post-update-anestesi.operasi');
             Route::post('/catatan', [LaporanOperasiController::class, 'postAnestesi'])->name('post-catatan-anestesi.operasi');
