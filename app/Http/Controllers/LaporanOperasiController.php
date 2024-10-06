@@ -149,6 +149,7 @@ class LaporanOperasiController extends Controller
     public function post_bhp_ok(Request $request,$id){
         // dd($request->all());
         // return $request->all();
+        // dd($request->all());
         DB::beginTransaction();
 
         try {
@@ -191,15 +192,15 @@ class LaporanOperasiController extends Controller
                 foreach ($implan as $i) {
                     
                     $barang = Bhp::find($i['id']);
-                    if($i['jumlah'] != null){
+                    if(isset($i['jumlah']) && $i['jumlah'] != null){
                         $cek_bhp = DB::table('operasi_tindakan_bhp')->where('nama_obat',$barang->nama_barang)->where('idoperasi',$operasi_tindakan->id)->where('idtindakan',$operasi_tindakan->idtindakan)->first();
                         if($cek_bhp){
                             #update
                             
                             $data = [
                                 'jumlah'=>$i['jumlah'],
-                                'satuan'=>$i['satuan'],
-                                'harga'=>$i['harga'] * $i['jumlah'],
+                                'satuan'=>$barang->satuan,
+                                'harga'=>$barang->harga * $i['jumlah'],
                                 'nama_obat'=> $barang->nama_barang,
                             ];
                             DB::table('operasi_tindakan_bhp')->where('id',$cek_bhp->id)->update($data);
@@ -211,8 +212,8 @@ class LaporanOperasiController extends Controller
                                 'iddokter'=>$operasi_tindakan->iddokter,
                                 'nama_obat'=>$barang->nama_barang,
                                 'jumlah'=>$i['jumlah'] ,
-                                'satuan'=>$i['satuan'],
-                                'harga'=>$i['harga']* $i['jumlah'],
+                                'satuan'=>$barang->satuan,
+                                'harga'=>$barang->harga* $i['jumlah'],
                                 'status'=>1,
                                 'tgl'=>date('Y-m-d')
                             ];
