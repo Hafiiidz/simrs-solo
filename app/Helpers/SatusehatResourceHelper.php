@@ -41,6 +41,9 @@ class SatusehatResourceHelper
         // return $response;
         if($response['total'] > 0){
             if($dokter){
+                Dokter::where('nik',$nik)->update([
+                    'kode_ihs'=> $response['entry'][0]['resource']['id']
+                ]);
                 $dokter->kode_ihs = $response['entry'][0]['resource']['id'];
                 $dokter->save();
             }
