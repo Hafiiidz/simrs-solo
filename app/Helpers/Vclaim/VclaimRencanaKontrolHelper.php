@@ -96,4 +96,14 @@ class VclaimRencanaKontrolHelper
             ];
         }
     }
+    public static function listSuratKontrol($start,$end,$filter)
+    {
+        try {
+            return MakeRequestHelper::makeRequest('list-surat-nosurat','get', '/RencanaKontrol/ListRencanaKontrol/tglAwal/'.$start.'/tglAkhir/'.$end.'/filter/'.$filter);
+        } catch (\Exception $e) {
+            return [
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
 }

@@ -79,4 +79,17 @@ class VclaimRujukanHelper
             ];
         }
     }
+
+    //Rujukan Keluar RS
+
+    public static function list_rujukan_luar_rs($start,$end){
+        try {
+            $response = MakeRequestHelper::makeRequest('list-rujukan-keluar-rs','get','/Rujukan/Keluar/List/tglMulai/'.$start.'/tglAkhir/'.$end);
+            return $response;           
+        } catch (\Exception $e) {
+            return [
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
 }

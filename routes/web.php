@@ -55,6 +55,7 @@ use App\Http\Controllers\LaporanOperasiController;
 use App\Helpers\Satusehat\Resource\EncounterHelper;
 use App\Helpers\Satusehat\Resource\ProcedureHelper;
 use App\Http\Controllers\DetailRekapMedisController;
+use App\Http\Controllers\RujukanBpjsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -399,9 +400,9 @@ Route::get('/practitioner-nik', function () {
     $array = [];
     foreach($dokter as $dr){
         return SatusehatResourceHelper::practitioner_nik($dr->nik);
-        // $array[] =  $response->json();
+        $array[] =  $response->json();
     }
-    return 'berhasil';
+    return $array;
     // return 
 });
 Route::get('/practitioner-search/{name}/{gender}/{birthdate}', function ($name, $gender, $birthdate) {
@@ -730,7 +731,12 @@ Route::prefix('/fisio')->middleware('auth')->group(function () {
 });
 
 //pasien
-
+//Rujukan BPJS
+Route::prefix('/rujukan')->middleware('auth')->group(function () {
+    #index
+    Route::get('/', [RujukanBpjsController::class, 'index'])->name('rujukan.index');
+    // Route::get('/antrian-radiologi', [RadiologiController::class, 'antrian_radiologi'])->name('radiologi.antrian');
+});
 Route::prefix('/radiologi')->middleware('auth')->group(function () {
     #index
     Route::get('/', [RadiologiController::class, 'index_radiologi'])->name('radiologi.index');

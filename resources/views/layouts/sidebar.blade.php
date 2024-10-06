@@ -5,14 +5,18 @@
         <!--begin::Logo-->
         <div class=" d-flex flex-stack d-lg-flex bg-white rounded p-5">
             <a href="index.html" class="app-sidebar-logo">
-                <img alt="Logo" src="https://live.simrs.rsaudrsiswanto.co.id//frontend/images/logosiswanto.png" class="h-40px d-none d-sm-inline app-sidebar-logo-default theme-light-show me-1" />
+                <img alt="Logo" src="https://live.simrs.rsaudrsiswanto.co.id//frontend/images/logosiswanto.png"
+                    class="h-40px d-none d-sm-inline app-sidebar-logo-default theme-light-show me-1" />
                 {{-- <img alt="Logo" src="https://live.simrs.rsaudrsiswanto.co.id//frontend/images/logosiswanto.png" class="h-20px h-lg-25px theme-dark-show" /> --}}
 
                 <span class="fw-bold fs-7" style="color:#262e6a;">E-REKAM MEDIS</span>
             </a>
             <!--end::Logo-->
             <!--begin::Sidebar toggle-->
-            <div id="kt_app_sidebar_toggle" class="app-sidebar-toggle btn btn-sm btn-icon bg-light btn-color-gray-700 btn-active-color-success d-none d-lg-flex rotate" data-kt-toggle="true" data-kt-toggle-state="active" data-kt-toggle-target="body" data-kt-toggle-name="app-sidebar-minimize">
+            <div id="kt_app_sidebar_toggle"
+                class="app-sidebar-toggle btn btn-sm btn-icon bg-light btn-color-gray-700 btn-active-color-success d-none d-lg-flex rotate"
+                data-kt-toggle="true" data-kt-toggle-state="active" data-kt-toggle-target="body"
+                data-kt-toggle-name="app-sidebar-minimize">
                 <i class="ki-outline ki-text-align-right rotate-180 fs-1"></i>
             </div>
             <!--end::Sidebar toggle-->
@@ -201,7 +205,7 @@
                                 <div class="menu-item">
                                     <!--begin:Menu link-->
 
-                                    <a class="menu-link {{  Request::is('/pasien') ? 'active' : '' }}"
+                                    <a class="menu-link {{ Request::is('/pasien') ? 'active' : '' }}"
                                         href="{{ url('/pasien') }}">
                                         <span class="menu-bullet">
                                             <span class="bullet bullet-dot"></span>
@@ -253,38 +257,38 @@
                         <!--End User Perawat Ruangan-->
                         <!--User Bidan-->
                         @if (auth()->user()->idpriv == 20)
-                        <div class="menu-sub menu-sub-accordion">
-                            <!--begin:Menu item-->
-                            <div class="menu-item">
-                                <!--begin:Menu link-->
+                            <div class="menu-sub menu-sub-accordion">
+                                <!--begin:Menu item-->
+                                <div class="menu-item">
+                                    <!--begin:Menu link-->
 
-                                <a class="menu-link {{ Request::is('rawat-jalan') || Request::is('rawat-jalan/poli') ? 'active' : '' }}"
-                                    href="{{ route('poliklinik') }}">
-                                    <span class="menu-bullet">
-                                        <span class="bullet bullet-dot"></span>
-                                    </span>
-                                    <span class="menu-title">List Pasien</span>
-                                </a>
-                                <!--end:Menu link-->
+                                    <a class="menu-link {{ Request::is('rawat-jalan') || Request::is('rawat-jalan/poli') ? 'active' : '' }}"
+                                        href="{{ route('poliklinik') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">List Pasien</span>
+                                    </a>
+                                    <!--end:Menu link-->
+                                </div>
+                                <!--end:Menu item-->
                             </div>
-                            <!--end:Menu item-->
-                        </div>
-                        <div class="menu-sub menu-sub-accordion">
-                            <!--begin:Menu item-->
-                            <div class="menu-item">
-                                <!--begin:Menu link-->
+                            <div class="menu-sub menu-sub-accordion">
+                                <!--begin:Menu item-->
+                                <div class="menu-item">
+                                    <!--begin:Menu link-->
 
-                                <a class="menu-link {{ Request::is('rawat-jalan') || Request::is('rawat-jalan/poli-semua') ? 'active' : '' }}"
-                                    href="{{ route('poliklinik-semua') }}">
-                                    <span class="menu-bullet">
-                                        <span class="bullet bullet-dot"></span>
-                                    </span>
-                                    <span class="menu-title">Semua Pasien</span>
-                                </a>
-                                <!--end:Menu link-->
+                                    <a class="menu-link {{ Request::is('rawat-jalan') || Request::is('rawat-jalan/poli-semua') ? 'active' : '' }}"
+                                        href="{{ route('poliklinik-semua') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Semua Pasien</span>
+                                    </a>
+                                    <!--end:Menu link-->
+                                </div>
+                                <!--end:Menu item-->
                             </div>
-                            <!--end:Menu item-->
-                        </div>
                         @endif
                         @if (auth()->user()->idpriv == 12)
                             <div class="menu-sub menu-sub-accordion">
@@ -436,7 +440,7 @@
                                 <!--begin:Menu link-->
 
                                 <a class="menu-link {{ Request::is('pasien/gizi') || Request::is('pasien/gizi/2') ? 'active' : '' }}"
-                                    href="{{ route('index.gizi',2) }}">
+                                    href="{{ route('index.gizi', 2) }}">
                                     <span class="menu-bullet">
                                         <span class="bullet bullet-dot"></span>
                                     </span>
@@ -452,7 +456,7 @@
                                 <!--begin:Menu link-->
 
                                 <a class="menu-link {{ Request::is('pasien/gizi') || Request::is('pasien/gizi/1') ? 'active' : '' }}"
-                                    href="{{ route('index.gizi',1) }}">
+                                    href="{{ route('index.gizi', 1) }}">
                                     <span class="menu-bullet">
                                         <span class="bullet bullet-dot"></span>
                                     </span>
@@ -468,7 +472,7 @@
                                 <!--begin:Menu link-->
 
                                 <a class="menu-link {{ Request::is('pasien/gizi') || Request::is('pasien/gizi/3') ? 'active' : '' }}"
-                                    href="{{ route('index.gizi',3) }}">
+                                    href="{{ route('index.gizi', 3) }}">
                                     <span class="menu-bullet">
                                         <span class="bullet bullet-dot"></span>
                                     </span>
@@ -483,33 +487,101 @@
                 </div>
 
                 @if (auth()->user()->idpriv == 8)
-                <div data-kt-menu-trigger="click"
-                class="menu-item {{ Request::is('pasien') || Request::is('pasien/*') ? 'show' : '' }} menu-accordion">
-                <!--begin:Menu link-->
-                <span class="menu-link">
-                    <span class="menu-icon">
-                        <i class="ki-outline ki-profile-user fs-2"></i>
-                    </span>
-                    <span class="menu-title">Pendaftaran</span>
-                    <span class="menu-arrow"></span>
-                </span>
-                <div class="menu-sub menu-sub-accordion">
-                    <!--begin:Menu item-->
-                    <div class="menu-item">
+                    <div data-kt-menu-trigger="click"
+                        class="menu-item {{ Request::is('pasien') || Request::is('pasien/*') ? 'show' : '' }} menu-accordion">
                         <!--begin:Menu link-->
-
-                        <a class="menu-link {{ Request::is('pasien/create') ? 'active' : '' }}"
-                            href="{{ route('pasien.tambah-pasien') }}">
-                            <span class="menu-bullet">
-                                <span class="bullet bullet-dot"></span>
+                        <span class="menu-link">
+                            <span class="menu-icon">
+                                <i class="ki-outline ki-profile-user fs-2"></i>
                             </span>
-                            <span class="menu-title">Tambah Pasien Baru</span>
-                        </a>
-                        <!--end:Menu link-->
+                            <span class="menu-title">Pendaftaran</span>
+                            <span class="menu-arrow"></span>
+                        </span>
+                        <div class="menu-sub menu-sub-accordion">
+                            <!--begin:Menu item-->
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+
+                                <a class="menu-link {{ Request::is('pasien/create') ? 'active' : '' }}"
+                                    href="{{ route('pasien.tambah-pasien') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <span class="menu-title">Tambah Pasien Baru</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <!--end:Menu item-->
+                        </div>
                     </div>
-                    <!--end:Menu item-->
-                </div>
-                </div>
+                    <div data-kt-menu-trigger="click"
+                        class="menu-item {{ Request::is('rujukan') || Request::is('rujukan/*') ? 'show' : '' }} menu-accordion">
+                        <!--begin:Menu link-->
+                        <span class="menu-link">
+                            <span class="menu-icon">
+                                <i class="ki-duotone ki-abstract-42">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                            </span>
+                            <span class="menu-title">Vclaim</span>
+                            <span class="menu-arrow"></span>
+                        </span>
+                        <div class="menu-sub menu-sub-accordion">
+                            <!--begin:Menu item-->
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+
+                                <a class="menu-link {{ Request::is('rujukan/') ? 'active' : '' }}"
+                                    href="{{ route('rujukan.index') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <span class="menu-title">Rujukan Pasien</span>
+                                </a>
+                                <!--end:Menu link-->
+
+
+                            </div>
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+
+                                <a class="menu-link {{ Request::is('pasien/create') ? 'active' : '' }}"
+                                    href="{{ route('pasien.tambah-pasien') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <span class="menu-title">Tambah Pasien Baru</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+
+                                <a class="menu-link {{ Request::is('pasien/create') ? 'active' : '' }}"
+                                    href="{{ route('pasien.tambah-pasien') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <span class="menu-title">Tambah Pasien Baru</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+
+                                <a class="menu-link {{ Request::is('pasien/create') ? 'active' : '' }}"
+                                    href="{{ route('pasien.tambah-pasien') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <span class="menu-title">Tambah Pasien Baru</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <!--end:Menu item-->
+                        </div>
+                    </div>
                 @endif
                 @if (auth()->user()->idpriv == 10)
                     <div data-kt-menu-trigger="click"
