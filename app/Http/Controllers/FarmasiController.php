@@ -703,9 +703,10 @@ class FarmasiController extends Controller
         $resep = ObatTransaksi::where('id', $id)->first();
         $rawat = Rawat::find($resep->idrawat);
         $pasien = Pasien::where('no_rm', $rawat->no_rm)->first();
+        $alamat = DB::table('pasien_alamat')->where('idpasien', $pasien->id)->first();
         $detail_resep = DB::table('obat_transaksi_detail')->where('idtrx', $resep->id)->get();
         $obat = Obat::get();
-        $pdf = PDF::loadview('farmasi.cetak.resep', compact('resep', 'rawat', 'pasien', 'obat', 'detail_resep'));
+        $pdf = PDF::loadview('farmasi.cetak.resep', compact('resep', 'rawat', 'pasien', 'obat', 'detail_resep','alamat'));
         $pdf->setPaper('a5','portrait');
         return $pdf->stream();
     }

@@ -112,6 +112,9 @@
                         <td>Alamat Pasien</td>
                         <td>:</td>
                         <td>{{ $alamat?->alamat }}</td>
+                        <td>Tlp Pasien</td>
+                        <td>:</td>
+                        <td>{{ $pasien?->nohp }}</td>
                     </tr>
                 </table>
             </div>
