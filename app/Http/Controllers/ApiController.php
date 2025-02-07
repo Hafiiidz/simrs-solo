@@ -34,7 +34,7 @@ class ApiController extends Controller
         // return $response['token'];
         if($response['status'] == 'success'){
             $client = new \GuzzleHttp\Client();
-            $response_satset = $client->post('http://192.168.100.22:5000/generate-url', [
+            $response_satset = $client->post('http://117.20.59.250:5000/generate-url', [
             'json' => [
                 'agen' => $r->nama,
                 'nik_agen' => $r->nik,

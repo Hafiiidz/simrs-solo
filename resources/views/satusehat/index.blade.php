@@ -112,7 +112,7 @@
                 var nama = $('#nama').val();
 
                 // Placeholder untuk domain yang akan diakses
-                var domain = '{{ env('API_URL').'/api/login-satset' }}';
+                var domain = '{{ url('api/login-satset')  }}';
 
                 // Contoh penggunaan AJAX untuk mengirim data ke domain tertentu
                 var token = $('meta[name="csrf-token"]').attr('content');
@@ -131,7 +131,12 @@
                     success: function(response) {
                         toastr.success('Data berhasil dikirim!');
                         if (response.status == 'success') {
-                            window.open(response.url, '_blank');
+                            // Tampilkan loading
+                            toastr.info('Loading...');
+                            setTimeout(function() {
+                                window.open(response.url, '_blank');
+                                toastr.clear(); // Hapus loading setelah membuka URL
+                            }, 1000); // Waktu delay 1 detik sebelum membuka URL
                         }
                         console.log(response);
                     },

@@ -54,6 +54,7 @@ use App\Helpers\Vclaim\VclaimRencanaKontrolHelper;
 use App\Http\Controllers\LaporanOperasiController;
 use App\Helpers\Satusehat\Resource\EncounterHelper;
 use App\Helpers\Satusehat\Resource\ProcedureHelper;
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\DetailRekapMedisController;
 use App\Http\Controllers\RujukanBpjsController;
 
@@ -70,14 +71,15 @@ use App\Http\Controllers\RujukanBpjsController;
 
 
 // if (config('app.env') == 'local') {
+Route::post('/post-login/satset', [DashboardController::class, 'getPraktisi'])->name('login-satset2');
 Route::get('/tes-satset', function () {
     // $array = SatusehatPasienHelper::searchPasienByNik('3204102601980002');
     // return $array;
-    $cek_pasien = RequestSatuSehatHelper::makeRequest('get-pasien-by-nik','get','/Patient?identifier=https://fhir.kemkes.go.id/id/nik|3204102601980002');
+    $cek_pasien = RequestSatuSehatHelper::makeRequest('get-pasien-by-nik', 'get', '/Patient?identifier=https://fhir.kemkes.go.id/id/nik|3204102601980002');
     $data = [
-        "patient_id"=> 'P01536385279',
-        "action"=> "OPTIN",
-        "agent"=> "Fikri Ramadhan"
+        "patient_id" => 'P01536385279',
+        "action" => "OPTIN",
+        "agent" => "Fikri Ramadhan"
     ];
     // $response = RequestSatuSehatHelper::makeRequest('consent_update','post','/Consent',$data,1);
     return EncounterHelper::updateFinised('9ecfe7cd-2227-4661-b44c-ba492b1e71a8');
@@ -208,7 +210,7 @@ Route::get('/tes-monitoring', function () {
     $now = Carbon::now()->format('Y-m-d');
     $threeMonthsAgo = Carbon::now()->subMonths(2)->format('Y-m-d');
 
-    $getHistoriPelayananPeserta = VclaimMonitoringHelper::getHistoriPelayananPeserta('0002753924499', $threeMonthsAgo,$now);
+    $getHistoriPelayananPeserta = VclaimMonitoringHelper::getHistoriPelayananPeserta('0002753924499', $threeMonthsAgo, $now);
     return $getHistoriPelayananPeserta;
 });
 Route::get('/tes-antrol', function () {
