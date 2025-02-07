@@ -25,3 +25,4 @@ Route::get('get-data-ss/{nik}',  [SatuSehatApiController::class,'get_data_ss'])-
 Route::get('consent-update/{rm}',  [SatuSehatApiController::class,'consent_update'])->name('consent-update');
 Route::get('encounter-create/{idrawat}',  [SatuSehatApiController::class,'encounter_create'])->name('encounter-create');
 Route::get('encounter-progres/{idencounter}',  [SatuSehatApiController::class,'encounter_progres'])->name('encounter-progres');
+Route::post('login-satset',  [ApiController::class,'getPraktisi'])->name('login-satset');

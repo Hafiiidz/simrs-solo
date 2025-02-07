@@ -390,19 +390,23 @@ Route::get('/running-ss', function () { {
 // }
 
 #SS
+Route::get('/validasi-satset', function () {
+    return view('satusehat.index');
+});
 Route::get('/generate-token-ss', function () {
     return SatusehatAuthHelper::generate_token();
 });
 #Practitioner
 Route::get('/practitioner-nik', function () {
-    $dokter = Dokter::whereNull('kode_ihs')->whereNotNull('nik')->where('nik','!=','')->get();
-    // return $dokter;
-    $array = [];
-    foreach($dokter as $dr){
-        return SatusehatResourceHelper::practitioner_nik($dr->nik);
-        $array[] =  $response->json();
-    }
-    return $array;
+    return SatusehatResourceHelper::practitioner_nik_verifikasi('3314023006910003');
+    // $dokter = Dokter::whereNull('kode_ihs')->whereNotNull('nik')->where('nik','!=','')->get();
+    // // return $dokter;
+    // $array = [];
+    // foreach($dokter as $dr){
+    //     return SatusehatResourceHelper::practitioner_nik($dr->nik);
+    //     $array[] =  $response->json();
+    // }
+    // return $array;
     // return 
 });
 Route::get('/practitioner-search/{name}/{gender}/{birthdate}', function ($name, $gender, $birthdate) {

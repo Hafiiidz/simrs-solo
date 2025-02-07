@@ -25,12 +25,42 @@ class SatusehatResourceHelper
     }
     #Practitioner
     #NIK
+    public static function practitioner_nik_verifikasi($nik){
+        $get_token = SatusehatAuthHelper::generate_token();
+        $token = $get_token['access_token'];
+        $url = env('PROD_BASE_URL_SS');
+        // return $url;
+      
+        // return $nik;
+        $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
+        ->withHeaders([
+            'Authorization' => 'Bearer '.$token,
+        ])
+        ->get($url.'/Practitioner?identifier=https://fhir.kemkes.go.id/id/nik|'.$nik);
+        // if($dokter)
+        if($response['total'] > 0){
+            return [
+                'status' => 'success',
+                'message' => 'NIK Ditemukan',
+                'data' => $response['entry'][0]['resource'],
+                'token'=>$token
+            ];
+        }else{
+            return response()->json([
+                'status' => 'error',
+                'message' => 'NIK Tidak Ditemukan',
+                'data' => null,
+                'token'=>null
+            ]);
+        }
+        // return $response;
+    }
     public static function practitioner_nik($nik){
         $get_token = SatusehatAuthHelper::generate_token();
         $token = $get_token['access_token'];
         $url = env('PROD_BASE_URL_SS');
         // return $url;
-        $dokter = Dokter::where('nik',$nik)->first();
+      
         // return $nik;
         $response = Http::withOptions(["verify" => SatusehatAuthHelper::ssl()])
         ->withHeaders([
@@ -39,6 +69,7 @@ class SatusehatResourceHelper
         ->get($url.'/Practitioner?identifier=https://fhir.kemkes.go.id/id/nik|'.$nik);
         // if($dokter)
         // return $response;
+        $dokter = Dokter::where('nik',$nik)->first();
         if($response['total'] > 0){
             if($dokter){
                 Dokter::where('nik',$nik)->update([
