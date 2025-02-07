@@ -112,7 +112,7 @@
                 var nama = $('#nama').val();
 
                 // Placeholder untuk domain yang akan diakses
-                var domain = 'http://localhost:8083/api/login-satset';
+                var domain = '{{ env('APP_URL').'/api/login-satset' }}';
 
                 // Contoh penggunaan AJAX untuk mengirim data ke domain tertentu
                 var token = $('meta[name="csrf-token"]').attr('content');
@@ -129,14 +129,14 @@
                         nama: nama
                     },
                     success: function(response) {
-                        alert('Data berhasil dikirim!');
+                        toastr.success('Data berhasil dikirim!');
                         if (response.status == 'success') {
                             window.open(response.url, '_blank');
                         }
                         console.log(response);
                     },
                     error: function(xhr, status, error) {
-                        alert('Terjadi kesalahan saat mengirim data.');
+                        toastr.error('Terjadi kesalahan saat mengirim data.');
                         console.error(error);
                     }
                 });
