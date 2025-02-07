@@ -112,7 +112,7 @@
                 var nama = $('#nama').val();
 
                 // Placeholder untuk domain yang akan diakses
-                var domain = '{{ env('APP_URL').'/api/login-satset' }}';
+                var domain = '{{ env('API_URL').'/api/login-satset' }}';
 
                 // Contoh penggunaan AJAX untuk mengirim data ke domain tertentu
                 var token = $('meta[name="csrf-token"]').attr('content');
