@@ -334,6 +334,21 @@ class RawatInapController extends Controller
         }
         $rawat = Rawat::find($id);
         $transaksi = DB::table('transaksi')->where('kode_kunjungan', $rawat->idkunjungan)->first();
+        if(!$transaksi){
+            $kunjungan = DB::table('rawat_kunjungan')->where('idkunjungan',$rawat->idkunjungan)->first();
+            DB::table('transaksi')->create([
+                'idtransaksi' => 'TRX' . date('dmY') . rand(1000, 9999),
+                'tgltransaksi' => date('Y-m-d H:i:s'),
+                'iduser' => auth()->user()->id,
+                'status' => 1,
+                'idkunjungan' => $kunjungan?->id,
+                'no_rm' => $pasien->no_rm,
+                'tgl_masuk' => $rawat->tglmasuk,
+                'kode_kunjungan' => $rawat->idkunjungan,
+                'idpasien' => $rawat->pasien->id,
+                'id_bayar' => $rawat->idbayar
+            ]);
+        }
         foreach($request->tindakan_repeater as $tindakan){
             if($tindakan['dokter'] == null){
                 $profesi = 'Perawat';

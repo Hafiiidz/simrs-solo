@@ -82,7 +82,7 @@
                                                     <!--begin::Section-->
                                                     <div class="">
                                                         <a href="{{ route('farmasi.status-rajal', $rr->idrawat) }}"
-                                                            class="text-gray-800 text-hover-primary fs-3 fw-bold lh-0">{{ $rr->pasien->nama_pasien }}</a>
+                                                            class="text-gray-800 text-hover-primary fs-3 fw-bold lh-0">{{ $rr->pasien?->nama_pasien }}</a>
 
                                                         <span class="text-gray-500 fw-semibold d-block fs-7">No RM:
                                                             {{ $rr->no_rm }}</span>
@@ -183,7 +183,7 @@
                                                         <!--begin::Section-->
                                                         <div class="">
                                                             <a href="{{ route('farmasi.status-rajal', $rr->idrawat) }}"
-                                                                class="text-gray-800 text-hover-primary fs-3 fw-bold lh-0">{{ $rr->pasien->nama_pasien }}</a>
+                                                                class="text-gray-800 text-hover-primary fs-3 fw-bold lh-0">{{ $rr->pasien?->nama_pasien }}</a>
 
                                                             <span class="text-gray-500 fw-semibold d-block fs-7">No RM:
                                                                 {{ $rr->no_rm }}</span>
@@ -244,7 +244,7 @@
                                                     <!--begin::Section-->
                                                     <div class="">
                                                         <a href="{{ route('farmasi.status-ranap', $rr->idrawat) }}"
-                                                            class="text-gray-800 text-hover-primary fs-3 fw-bold lh-0">{{ $rr->pasien->nama_pasien }}</a>
+                                                            class="text-gray-800 text-hover-primary fs-3 fw-bold lh-0">{{ $rr->pasien?->nama_pasien }}</a>
 
                                                         <span class="text-gray-500 fw-semibold d-block fs-7">No RM:
                                                             {{ $rr->no_rm }}</span>
