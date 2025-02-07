@@ -139,7 +139,7 @@
                                     <!--begin::Col-->
                                     <div class="col-lg-8">
                                         <span
-                                            class="fw-bold fs-6 text-gray-800">{{ $data->rawat->pasien->alamat->alamat }}</span>
+                                            class="fw-bold fs-6 text-gray-800">{{ $data->rawat->pasien->alamat?->alamat }}</span>
                                     </div>
                                     <!--end::Col-->
                                 </div>

@@ -26,7 +26,7 @@
         </tr>
         <tr style="border: 1px solid black; text-align:left;">
             <td colspan="3">
-                Alamat : {{ $rawat->pasien->alamat->alamat }}<br>
+                Alamat : {{ $rawat->pasien->alamat?->alamat }}<br>
             </td>
         </tr>
         <tr style="border: 1px solid black; text-align:left;">
