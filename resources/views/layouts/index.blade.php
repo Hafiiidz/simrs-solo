@@ -3,7 +3,7 @@
 <!--begin::Head-->
 
 <head>
-    <title>Metro</title>
+    <title>Parakarta</title>
     <meta charset="utf-8" />
     <link rel="shortcut icon" href="assets/media/logos/favicon.ico" />
     <!--begin::Fonts(mandatory for all pages)-->

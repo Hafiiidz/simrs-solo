@@ -5,11 +5,11 @@
         <!--begin::Logo-->
         <div class=" d-flex flex-stack d-lg-flex bg-white rounded p-5">
             <a href="index.html" class="app-sidebar-logo">
-                <img alt="Logo" src="https://live.simrs.rsaudrsiswanto.co.id//frontend/images/logosiswanto.png"
+                <img alt="Logo" src="{{ asset('assets/media/framework-logos/yii.png') }}"
                     class="h-40px d-none d-sm-inline app-sidebar-logo-default theme-light-show me-1" />
                 {{-- <img alt="Logo" src="https://live.simrs.rsaudrsiswanto.co.id//frontend/images/logosiswanto.png" class="h-20px h-lg-25px theme-dark-show" /> --}}
 
-                <span class="fw-bold fs-7" style="color:#262e6a;">E-REKAM MEDIS</span>
+                <span class="fw-bold fs-7" style="color:#262e6a;">PARAKARTA</span>
             </a>
             <!--end::Logo-->
             <!--begin::Sidebar toggle-->
@@ -54,35 +54,7 @@
                 <!--end:Menu item-->
                 {{-- @canany(['dokter', 'perawat', 'rekammedis']) --}}
                 <!--begin:Menu item-->
-                <div data-kt-menu-trigger="click"
-                    class="menu-item {{ Request::is('data-master') || Request::is('data-master/*') ? 'show' : '' }} menu-accordion">
-                    <!--begin:Menu link-->
-                    <span class="menu-link">
-                        <span class="menu-icon">
-                            <i class="ki-outline ki-data fs-2"></i>
-                        </span>
-                        <span class="menu-title">Data Master</span>
-                        <span class="menu-arrow"></span>
-                    </span>
-                    <!--end:Menu link-->
-                    <!--begin:Menu sub-->
-                    <div class="menu-sub menu-sub-accordion">
-                        <!--begin:Menu item-->
-                        <div class="menu-item">
-                            <!--begin:Menu link-->
-                            <a class="menu-link {{ Request::is('data-master') || Request::is('data-master/*') ? 'active' : '' }}"
-                                href="{{ url('/data-master/ruangan/') }}">
-                                <span class="menu-bullet">
-                                    <span class="bullet bullet-dot"></span>
-                                </span>
-                                <span class="menu-title">Ruangan</span>
-                            </a>
-                            <!--end:Menu link-->
-                        </div>
-                        <!--end:Menu item-->
-                    </div>
-                    <!--end:Menu sub-->
-                </div>
+
                 <!--end:Menu item-->
                 <!--begin:Menu item-->
                 <div data-kt-menu-trigger="click"
@@ -658,6 +630,35 @@
                     <!--end:Menu link-->
                 </div> --}}
                 <!--end:Menu item-->
+                <div data-kt-menu-trigger="click"
+                    class="menu-item {{ Request::is('data-master') || Request::is('data-master/*') ? 'show' : '' }} menu-accordion">
+                    <!--begin:Menu link-->
+                    <span class="menu-link">
+                        <span class="menu-icon">
+                            <i class="ki-outline ki-data fs-2"></i>
+                        </span>
+                        <span class="menu-title">Data Master</span>
+                        <span class="menu-arrow"></span>
+                    </span>
+                    <!--end:Menu link-->
+                    <!--begin:Menu sub-->
+                    <div class="menu-sub menu-sub-accordion">
+                        <!--begin:Menu item-->
+                        <div class="menu-item">
+                            <!--begin:Menu link-->
+                            <a class="menu-link {{ Request::is('data-master') || Request::is('data-master/*') ? 'active' : '' }}"
+                                href="{{ url('/data-master/ruangan/') }}">
+                                <span class="menu-bullet">
+                                    <span class="bullet bullet-dot"></span>
+                                </span>
+                                <span class="menu-title">Ruangan</span>
+                            </a>
+                            <!--end:Menu link-->
+                        </div>
+                        <!--end:Menu item-->
+                    </div>
+                    <!--end:Menu sub-->
+                </div>
             </div>
             <!--end::Sidebar menu-->
         </div>

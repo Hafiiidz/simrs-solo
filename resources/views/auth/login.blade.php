@@ -98,23 +98,24 @@
 				</div>
 				<!--end::Body-->
 				<!--begin::Aside-->
-				<div class="d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-1 order-lg-2" style="background-image: url({{ asset('image/rsaubackground.jpg') }})">
+				<div class="d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-1 order-lg-2" style="background-image: url({{ asset('assets/media/auth/bg10-dark.jpeg') }})">
 					<!--begin::Content-->
 					<div class="d-flex flex-column flex-center py-7 py-lg-15 px-5 px-md-15 w-100">
 						<!--begin::Logo-->
 						<a href="" class="mb-0 mb-lg-12">
-							<img alt="Logo" src="https://live.simrs.rsaudrsiswanto.co.id//frontend/images/logosiswanto.png" class="h-80px h-lg-300px" />
+							<img alt="Logo" src="{{ asset('assets/media/auth/agency.png') }}" class="h-80px h-lg-300px" />
 						</a>
 						<!--end::Logo-->
 						<!--begin::Image-->
 						<!-- <img class="d-none d-lg-block mx-auto w-275px w-md-50 w-xl-500px mb-10 mb-lg-20" src="assets/media/misc/auth-screens.png" alt="" /> -->
 						<!--end::Image-->
 						<!--begin::Title-->
-						<h1 class="d-none d-lg-block text-white fs-2qx fw-bolder text-center mb-7">Rekam Medis Elektronik</h1>
+						<h1 class="d-none d-lg-block text-white fs-2qx fw-bolder text-center mb-7">Parakarta e-Clinic Solution
+						</h1>
 						<!--end::Title-->
 						<!--begin::Text-->
-						<div class="d-none d-lg-block text-white fs-base text-center">Sistem Informasi Rumah Sakit RSAU dr Siswanto</div>
-						<div class="d-none d-lg-block text-white fs-base text-center">Jl. Tentara Pelajar - Colomadu, Karanganyar</div>
+						{{-- <div class="d-none d-lg-block text-white fs-base text-center">Sistem Informasi Rumah Sakit RSAU dr Siswanto</div>
+						<div class="d-none d-lg-block text-white fs-base text-center">Jl. Tentara Pelajar - Colomadu, Karanganyar</div> --}}
 						<!--end::Text-->
 					</div>
 					<!--end::Content-->
